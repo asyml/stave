@@ -1,21 +1,19 @@
 import React from 'react';
-import { IMetadata, ILegend } from '../lib/interfaces';
+import { ILegend, IAttributes } from '../lib/interfaces';
 import {
   useTextViewerState,
   useTextViewerDispatch
 } from '../contexts/text-viewer.context';
-import style from '../styles/TextAttribute.module.css';
+import style from '../styles/TextDetail.module.css';
 import Tab from './Tab';
+import Attributes from './Attributes';
 
-export interface TextAttributeProp {
-  metadata: IMetadata;
+export interface TextDetailProp {
+  attributes: IAttributes;
   legends: ILegend[];
 }
 
-export default function TextAttribute({
-  metadata,
-  legends
-}: TextAttributeProp) {
+export default function TextDetail({ attributes, legends }: TextDetailProp) {
   const state = useTextViewerState();
   const dispatch = useTextViewerDispatch();
 
@@ -79,12 +77,7 @@ export default function TextAttribute({
     title: 'metadata',
     body: () => (
       <div>
-        {Object.keys(metadata).map(key => (
-          <div className={style.metadata} key={key}>
-            <div className={style.metadata_name}>{key}</div>
-            <div className={style.metadata_value}>{metadata[key]}</div>
-          </div>
-        ))}
+        <Attributes attributes={attributes} />
       </div>
     )
   };

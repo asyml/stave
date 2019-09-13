@@ -2,8 +2,8 @@ import React, { useRef, useEffect, useState } from 'react';
 import style from '../styles/TextViewer.module.css';
 import { ISinglePack } from '../lib/interfaces';
 import Annotation from './Annotation';
-import AnnotationAttribute from './AnnotationAttribute';
-import TextAttribute from './TextAttribute';
+import AnnotationDetail from './AnnotationDetail';
+import TextDetail from './TextDetail';
 import { useTextViewerState } from '../contexts/text-viewer.context';
 
 export interface TextViewerProp {
@@ -20,7 +20,7 @@ export interface AnnotationPosition {
 }
 
 function TextViewer({ textPack }: TextViewerProp) {
-  const { annotations, legends, text, metadata } = textPack;
+  const { annotations, legends, text, attributes } = textPack;
   const inputEl = useRef<HTMLDivElement>(null);
   const [annotationPositions, setAnnotationPositions] = useState<
     AnnotationPosition[]
@@ -69,7 +69,7 @@ function TextViewer({ textPack }: TextViewerProp) {
 
       <main className={style.layout_container}>
         <div className={style.metadata_side_container}>
-          <TextAttribute legends={legends} metadata={metadata} />
+          <TextDetail legends={legends} attributes={attributes} />
         </div>
 
         <div className={style.main_container}>
@@ -108,7 +108,7 @@ function TextViewer({ textPack }: TextViewerProp) {
         </div>
 
         <div className={style.attributes_side_container}>
-          <AnnotationAttribute annotation={selectedAnnotation} />
+          <AnnotationDetail annotation={selectedAnnotation} />
         </div>
       </main>
     </div>

@@ -768,7 +768,7 @@ const singlePack1: ISinglePack = {
   ],
   links: [],
   groups: [],
-  metadata: { docid: 'bn/abc/00/abc_0059' },
+  attributes: { docid: 'bn/abc/00/abc_0059' },
   legends: [
     { id: 'l1', name: 'Token', color: '#099AEB' },
     { id: 'l2', name: 'EntityMention', color: '#FCB527' },

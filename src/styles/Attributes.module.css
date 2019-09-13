@@ -4,11 +4,11 @@
 
 .attribute_name {
   font-weight: bold;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .attribute_value {
-  font-size: 11px;
+  font-size: 12px;
   overflow-wrap: break-word;
   width: 234px; /* 250 - 16 */
 }

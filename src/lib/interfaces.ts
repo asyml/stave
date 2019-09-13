@@ -1,4 +1,4 @@
-export interface IMetadata {
+export interface IAttributes {
   [key: string]: any;
 }
 
@@ -9,9 +9,7 @@ export interface ISpan {
 
 export interface IEntry {
   id: string;
-  attributes: {
-    [key: string]: any;
-  };
+  attributes: IAttributes;
 }
 
 export interface IAnnotation extends IEntry {
@@ -22,6 +20,7 @@ export interface IAnnotation extends IEntry {
 export interface ILink extends IEntry {
   fromEntryId: string;
   toEntryId: string;
+  attributes: IAttributes;
 }
 
 export interface IGroup extends IEntry {
@@ -34,7 +33,7 @@ export interface ISinglePack {
   links: ILink[];
   groups: IGroup[];
   legends: ILegend[];
-  metadata: IMetadata;
+  attributes: IAttributes;
 }
 
 export interface ILegend {

@@ -29,7 +29,10 @@ function textViewerReducer(state: State, action: Action): State {
       return {
         ...state,
         textPack: action.textPach,
-        selectedLegendIds: action.textPach.legends.map(l => l.id)
+
+        // TODO: remove the following test code
+        selectedLegendIds: ['l4'],
+        selectedAnnotationId: 'OntonotesOntology.PredicateMention.7'
       };
 
     case 'select-legend':
