@@ -1,5 +1,5 @@
 .attribute {
-  margin-bottom: 4px;
+  margin-bottom: 8px;
 }
 
 .attribute_name {
@@ -11,4 +11,10 @@
   font-size: 11px;
   overflow-wrap: break-word;
   width: 234px; /* 250 - 16 */
+}
+
+.attribute_value_array {
+  font-size: 11px;
+  padding-left: 16px;
+  margin: 0;
 }

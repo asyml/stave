@@ -23,20 +23,22 @@ export default function TextAttribute({
     title: 'legend',
     body: () => (
       <>
-        <button
-          onClick={() => {
-            dispatch({ type: 'select-all-legend' });
-          }}
-        >
-          select all
-        </button>
-        <button
-          onClick={() => {
-            dispatch({ type: 'deselect-all-legend' });
-          }}
-        >
-          clear all
-        </button>
+        <div className={style.clear_buttons}>
+          <button
+            onClick={() => {
+              dispatch({ type: 'select-all-legend' });
+            }}
+          >
+            select all
+          </button>
+          <button
+            onClick={() => {
+              dispatch({ type: 'deselect-all-legend' });
+            }}
+          >
+            clear
+          </button>
+        </div>
         <ul className={style.list}>
           {legends.map(legend => {
             const isSelected = state.selectedLegendIds.indexOf(legend.id) > -1;
