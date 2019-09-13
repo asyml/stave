@@ -1,8 +1,8 @@
 import React from 'react';
-import { ILegend, IAttributes } from '../lib/interfaces';
+import { IColoredLegend, IAttributes } from '../lib/interfaces';
 import {
   useTextViewerState,
-  useTextViewerDispatch
+  useTextViewerDispatch,
 } from '../contexts/text-viewer.context';
 import style from '../styles/TextDetail.module.css';
 import Tab from './Tab';
@@ -10,7 +10,7 @@ import Attributes from './Attributes';
 
 export interface TextDetailProp {
   attributes: IAttributes;
-  legends: ILegend[];
+  legends: IColoredLegend[];
 }
 
 export default function TextDetail({ attributes, legends }: TextDetailProp) {
@@ -48,11 +48,11 @@ export default function TextDetail({ attributes, legends }: TextDetailProp) {
                   isSelected
                     ? dispatch({
                         type: 'deselect-legend',
-                        legendId: legend.id
+                        legendId: legend.id,
                       })
                     : dispatch({
                         type: 'select-legend',
-                        legendId: legend.id
+                        legendId: legend.id,
                       });
                 }}
               >
@@ -60,7 +60,7 @@ export default function TextDetail({ attributes, legends }: TextDetailProp) {
                 <span
                   style={{
                     backgroundColor: legend.color,
-                    color: 'white'
+                    color: 'white',
                   }}
                 >
                   {legend.name}
@@ -70,7 +70,7 @@ export default function TextDetail({ attributes, legends }: TextDetailProp) {
           })}
         </ul>
       </>
-    )
+    ),
   };
 
   const metadataTabItem = {
@@ -79,7 +79,7 @@ export default function TextDetail({ attributes, legends }: TextDetailProp) {
       <div>
         <Attributes attributes={attributes} />
       </div>
-    )
+    ),
   };
 
   return <Tab tabs={[legendTabItem, metadataTabItem]}></Tab>;

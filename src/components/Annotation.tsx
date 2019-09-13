@@ -1,12 +1,12 @@
 import React from 'react';
-import { IAnnotation, ILegend } from '../lib/interfaces';
+import { IAnnotation, IColoredLegend } from '../lib/interfaces';
 import { AnnotationPosition } from './TextViewer';
 import { useTextViewerDispatch } from '../contexts/text-viewer.context';
 
 export interface AnnotaionProp {
   annotation: IAnnotation;
   isSelected: boolean;
-  legend: ILegend;
+  legend: IColoredLegend;
   position: AnnotationPosition;
 }
 
@@ -14,7 +14,7 @@ function Annotaion({
   annotation,
   isSelected,
   legend,
-  position
+  position,
 }: AnnotaionProp) {
   const dispatch = useTextViewerDispatch();
 
@@ -33,16 +33,16 @@ function Annotaion({
               transform: `translate(${rect.x}px,${rect.y}px)`,
               height: rect.height,
               width: rect.width,
-              cursor: 'pointer'
+              cursor: 'pointer',
             }}
             onClick={() => {
               isSelected
                 ? dispatch({
-                    type: 'deselect-annotation'
+                    type: 'deselect-annotation',
                   })
                 : dispatch({
                     type: 'select-annotation',
-                    annotationId: annotation.id
+                    annotationId: annotation.id,
                   });
             }}
           ></div>

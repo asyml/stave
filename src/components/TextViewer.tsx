@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import style from '../styles/TextViewer.module.css';
 import { ISinglePack } from '../lib/interfaces';
+import { applyColorToLegend, notNullOrUndefined } from '../lib/utils';
 import Annotation from './Annotation';
 import AnnotationDetail from './AnnotationDetail';
 import TextDetail from './TextDetail';
@@ -20,11 +21,12 @@ export interface AnnotationPosition {
 }
 
 function TextViewer({ textPack }: TextViewerProp) {
-  const { annotations, legends, text, attributes } = textPack;
+  const { annotations, legends, text, attributes, links } = textPack;
   const inputEl = useRef<HTMLDivElement>(null);
   const [annotationPositions, setAnnotationPositions] = useState<
     AnnotationPosition[]
   >([]);
+  const legendsWithColor = applyColorToLegend(legends);
 
   const state = useTextViewerState();
 
@@ -42,8 +44,8 @@ function TextViewer({ textPack }: TextViewerProp) {
             x: rect.x,
             y: rect.y,
             width: rect.width,
-            height: rect.height
-          }))
+            height: rect.height,
+          })),
         };
       });
 
@@ -55,10 +57,32 @@ function TextViewer({ textPack }: TextViewerProp) {
     (position, i) => {
       return {
         position,
-        annotation: annotations[i]
+        annotation: annotations[i],
       };
     }
   );
+
+  // TODO: this is assuming link is only between entry
+  const linkWithPosition = links
+    .map(link => {
+      const fromEntryWithPosition = annotationWithPosition.find(
+        ann => ann.annotation.id === link.fromEntryId
+      );
+      const toEntryWithPosition = annotationWithPosition.find(
+        ann => ann.annotation.id === link.toEntryId
+      );
+
+      if (fromEntryWithPosition && toEntryWithPosition) {
+        return {
+          link,
+          fromEntryWithPos: fromEntryWithPosition,
+          toEntryWithPos: toEntryWithPosition,
+        };
+      } else {
+        return null;
+      }
+    })
+    .filter(notNullOrUndefined);
 
   const selectedAnnotation =
     annotations.find(ann => ann.id === state.selectedAnnotationId) || null;
@@ -69,7 +93,7 @@ function TextViewer({ textPack }: TextViewerProp) {
 
       <main className={style.layout_container}>
         <div className={style.metadata_side_container}>
-          <TextDetail legends={legends} attributes={attributes} />
+          <TextDetail legends={legendsWithColor} attributes={attributes} />
         </div>
 
         <div className={style.main_container}>
@@ -84,7 +108,7 @@ function TextViewer({ textPack }: TextViewerProp) {
                   state.selectedLegendIds.indexOf(ann.annotation.legendId) > -1
               )
               .map((ann, i) => {
-                const legend = legends.find(
+                const legend = legendsWithColor.find(
                   legend => legend.id === ann.annotation.legendId
                 );
 
@@ -104,6 +128,57 @@ function TextViewer({ textPack }: TextViewerProp) {
                   />
                 );
               })}
+          </div>
+
+          <div className="links-container">
+            {linkWithPosition.map(linkPos => {
+              if (
+                linkPos.fromEntryWithPos.position.rects.length === 1 &&
+                linkPos.toEntryWithPos.position.rects.length === 1 &&
+                linkPos.fromEntryWithPos.position.rects[0].y ===
+                  linkPos.toEntryWithPos.position.rects[0].y
+              ) {
+                const fromX = linkPos.fromEntryWithPos.position.rects[0].x;
+                const fromWidth =
+                  linkPos.fromEntryWithPos.position.rects[0].width;
+
+                const toX = linkPos.toEntryWithPos.position.rects[0].x;
+                const toWidth = linkPos.toEntryWithPos.position.rects[0].width;
+
+                let x, width;
+                if (toX > fromX) {
+                  x = fromX + fromWidth / 2;
+                  width = toX + toWidth / 2 - (fromX + fromWidth / 2);
+                } else {
+                  x = toX + toWidth / 2;
+                  width = fromX + fromWidth / 2 - (toX + toWidth / 2);
+                }
+                const y = linkPos.fromEntryWithPos.position.rects[0].y - 10;
+                const height = 10;
+
+                return (
+                  <div
+                    key={linkPos.link.id}
+                    data-from-id={linkPos.link.fromEntryId}
+                    data-to-id={linkPos.link.toEntryId}
+                    style={{
+                      height,
+                      width,
+                      transform: `translate(${x}px,${y}px)`,
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      border: '1px solid #555',
+                      borderTopLeftRadius: 5,
+                      borderTopRightRadius: 5,
+                      borderBottom: 0,
+                    }}
+                  ></div>
+                );
+              } else {
+                return null;
+              }
+            })}
           </div>
         </div>
 

@@ -1,6 +1,6 @@
 import { ISinglePack } from './interfaces';
 
-const singlePack1: ISinglePack = {
+export const singlePack: ISinglePack = {
   text: `The Indonesian billionaire James Riady has agreed to pay $ 8.5 million and plead guilty to illegally donating money for Bill Clinton 's 1992 presidential campaign . He admits he was trying to influence American policy on China .`,
   annotations: [
     {
@@ -10,8 +10,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'DT',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 4, end: 14 },
@@ -20,8 +20,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'JJ',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 4, end: 14 },
@@ -29,8 +29,8 @@ const singlePack1: ISinglePack = {
       legendId: 'l2',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
-        ner_type: 'NORP'
-      }
+        ner_type: 'NORP',
+      },
     },
     {
       span: { begin: 15, end: 26 },
@@ -39,8 +39,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'NN',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 27, end: 32 },
@@ -49,8 +49,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'NNP',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 33, end: 38 },
@@ -59,8 +59,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'NNP',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 27, end: 38 },
@@ -68,24 +68,24 @@ const singlePack1: ISinglePack = {
       legendId: 'l2',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
-        ner_type: 'PERSON'
-      }
+        ner_type: 'PERSON',
+      },
     },
     {
       span: { begin: 0, end: 38 },
       id: 'BaseOntology.PredicateArgument.0',
       legendId: 'l5',
       attributes: {
-        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
-      }
+        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
+      },
     },
     {
       span: { begin: 0, end: 38 },
       id: 'BaseOntology.CoreferenceMention.0',
       legendId: 'l6',
       attributes: {
-        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
-      }
+        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
+      },
     },
     {
       span: { begin: 39, end: 42 },
@@ -94,8 +94,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'VBZ',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 39, end: 42 },
@@ -106,8 +106,8 @@ const singlePack1: ISinglePack = {
         framenet_id: '01',
         links: [],
         pred_lemma: 'have',
-        pred_type: 'verb'
-      }
+        pred_type: 'verb',
+      },
     },
     {
       span: { begin: 43, end: 49 },
@@ -116,8 +116,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'VBN',
-        sense: '3'
-      }
+        sense: '3',
+      },
     },
     {
       span: { begin: 43, end: 49 },
@@ -128,8 +128,8 @@ const singlePack1: ISinglePack = {
         framenet_id: '01',
         links: ['BaseOntology.PredicateLink.0', 'BaseOntology.PredicateLink.1'],
         pred_lemma: 'agree',
-        pred_type: 'verb'
-      }
+        pred_type: 'verb',
+      },
     },
     {
       span: { begin: 50, end: 52 },
@@ -138,8 +138,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'TO',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 53, end: 56 },
@@ -148,8 +148,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'VB',
-        sense: '1'
-      }
+        sense: '1',
+      },
     },
     {
       span: { begin: 53, end: 56 },
@@ -160,8 +160,8 @@ const singlePack1: ISinglePack = {
         framenet_id: '01',
         links: ['BaseOntology.PredicateLink.2', 'BaseOntology.PredicateLink.3'],
         pred_lemma: 'pay',
-        pred_type: 'verb'
-      }
+        pred_type: 'verb',
+      },
     },
     {
       span: { begin: 57, end: 58 },
@@ -170,8 +170,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: '$',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 59, end: 62 },
@@ -180,8 +180,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'CD',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 63, end: 70 },
@@ -190,8 +190,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'CD',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 57, end: 70 },
@@ -199,16 +199,16 @@ const singlePack1: ISinglePack = {
       legendId: 'l2',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
-        ner_type: 'MONEY'
-      }
+        ner_type: 'MONEY',
+      },
     },
     {
       span: { begin: 57, end: 70 },
       id: 'BaseOntology.PredicateArgument.1',
       legendId: 'l5',
       attributes: {
-        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
-      }
+        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
+      },
     },
     {
       span: { begin: 71, end: 74 },
@@ -217,8 +217,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'CC',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 75, end: 80 },
@@ -227,8 +227,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'VB',
-        sense: '3'
-      }
+        sense: '3',
+      },
     },
     {
       span: { begin: 75, end: 80 },
@@ -240,11 +240,11 @@ const singlePack1: ISinglePack = {
         links: [
           'BaseOntology.PredicateLink.4',
           'BaseOntology.PredicateLink.5',
-          'BaseOntology.PredicateLink.6'
+          'BaseOntology.PredicateLink.6',
         ],
         pred_lemma: 'plead',
-        pred_type: 'verb'
-      }
+        pred_type: 'verb',
+      },
     },
     {
       span: { begin: 81, end: 87 },
@@ -253,16 +253,16 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'JJ',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 81, end: 87 },
       id: 'BaseOntology.PredicateArgument.2',
       legendId: 'l5',
       attributes: {
-        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
-      }
+        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
+      },
     },
     {
       span: { begin: 88, end: 90 },
@@ -271,8 +271,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'IN',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 91, end: 100 },
@@ -281,16 +281,16 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'RB',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 91, end: 100 },
       id: 'BaseOntology.PredicateArgument.3',
       legendId: 'l5',
       attributes: {
-        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
-      }
+        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
+      },
     },
     {
       span: { begin: 101, end: 109 },
@@ -299,8 +299,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'VBG',
-        sense: '1'
-      }
+        sense: '1',
+      },
     },
     {
       span: { begin: 101, end: 109 },
@@ -312,11 +312,11 @@ const singlePack1: ISinglePack = {
         links: [
           'BaseOntology.PredicateLink.7',
           'BaseOntology.PredicateLink.8',
-          'BaseOntology.PredicateLink.9'
+          'BaseOntology.PredicateLink.9',
         ],
         pred_lemma: 'donate',
-        pred_type: 'verb'
-      }
+        pred_type: 'verb',
+      },
     },
     {
       span: { begin: 110, end: 115 },
@@ -325,8 +325,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'NN',
-        sense: '2'
-      }
+        sense: '2',
+      },
     },
     {
       span: { begin: 110, end: 115 },
@@ -337,16 +337,16 @@ const singlePack1: ISinglePack = {
         framenet_id: '-',
         links: [],
         pred_lemma: 'money',
-        pred_type: 'other'
-      }
+        pred_type: 'other',
+      },
     },
     {
       span: { begin: 110, end: 115 },
       id: 'BaseOntology.PredicateArgument.4',
       legendId: 'l5',
       attributes: {
-        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
-      }
+        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
+      },
     },
     {
       span: { begin: 116, end: 119 },
@@ -355,8 +355,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'IN',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 120, end: 124 },
@@ -365,8 +365,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'NNP',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 125, end: 132 },
@@ -375,8 +375,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'NNP',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 133, end: 135 },
@@ -385,8 +385,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'POS',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 120, end: 135 },
@@ -394,8 +394,8 @@ const singlePack1: ISinglePack = {
       legendId: 'l2',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
-        ner_type: 'PERSON'
-      }
+        ner_type: 'PERSON',
+      },
     },
     {
       span: { begin: 136, end: 140 },
@@ -404,8 +404,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'CD',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 136, end: 140 },
@@ -413,8 +413,8 @@ const singlePack1: ISinglePack = {
       legendId: 'l2',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
-        ner_type: 'DATE'
-      }
+        ner_type: 'DATE',
+      },
     },
     {
       span: { begin: 141, end: 153 },
@@ -423,8 +423,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'JJ',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 154, end: 162 },
@@ -433,8 +433,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'NN',
-        sense: '1'
-      }
+        sense: '1',
+      },
     },
     {
       span: { begin: 154, end: 162 },
@@ -445,32 +445,32 @@ const singlePack1: ISinglePack = {
         framenet_id: '-',
         links: [],
         pred_lemma: 'campaign',
-        pred_type: 'other'
-      }
+        pred_type: 'other',
+      },
     },
     {
       span: { begin: 50, end: 162 },
       id: 'BaseOntology.PredicateArgument.5',
       legendId: 'l5',
       attributes: {
-        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
-      }
+        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
+      },
     },
     {
       span: { begin: 88, end: 162 },
       id: 'BaseOntology.PredicateArgument.6',
       legendId: 'l5',
       attributes: {
-        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
-      }
+        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
+      },
     },
     {
       span: { begin: 116, end: 162 },
       id: 'BaseOntology.PredicateArgument.7',
       legendId: 'l5',
       attributes: {
-        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
-      }
+        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
+      },
     },
     {
       span: { begin: 163, end: 164 },
@@ -479,8 +479,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: '.',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 0, end: 164 },
@@ -489,8 +489,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         part_id: 0,
-        speaker: '-'
-      }
+        speaker: '-',
+      },
     },
     {
       span: { begin: 165, end: 167 },
@@ -499,24 +499,24 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'PRP',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 165, end: 167 },
       id: 'BaseOntology.PredicateArgument.8',
       legendId: 'l5',
       attributes: {
-        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
-      }
+        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
+      },
     },
     {
       span: { begin: 165, end: 167 },
       id: 'BaseOntology.CoreferenceMention.1',
       legendId: 'l6',
       attributes: {
-        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
-      }
+        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
+      },
     },
     {
       span: { begin: 168, end: 174 },
@@ -525,8 +525,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'VBZ',
-        sense: '1'
-      }
+        sense: '1',
+      },
     },
     {
       span: { begin: 168, end: 174 },
@@ -537,11 +537,11 @@ const singlePack1: ISinglePack = {
         framenet_id: '01',
         links: [
           'BaseOntology.PredicateLink.10',
-          'BaseOntology.PredicateLink.11'
+          'BaseOntology.PredicateLink.11',
         ],
         pred_lemma: 'admit',
-        pred_type: 'verb'
-      }
+        pred_type: 'verb',
+      },
     },
     {
       span: { begin: 175, end: 177 },
@@ -550,24 +550,24 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'PRP',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 175, end: 177 },
       id: 'BaseOntology.PredicateArgument.9',
       legendId: 'l5',
       attributes: {
-        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
-      }
+        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
+      },
     },
     {
       span: { begin: 175, end: 177 },
       id: 'BaseOntology.CoreferenceMention.2',
       legendId: 'l6',
       attributes: {
-        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
-      }
+        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
+      },
     },
     {
       span: { begin: 178, end: 181 },
@@ -576,8 +576,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'VBD',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 178, end: 181 },
@@ -588,8 +588,8 @@ const singlePack1: ISinglePack = {
         framenet_id: '03',
         links: [],
         pred_lemma: 'be',
-        pred_type: 'verb'
-      }
+        pred_type: 'verb',
+      },
     },
     {
       span: { begin: 182, end: 188 },
@@ -598,8 +598,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'VBG',
-        sense: '1'
-      }
+        sense: '1',
+      },
     },
     {
       span: { begin: 182, end: 188 },
@@ -610,11 +610,11 @@ const singlePack1: ISinglePack = {
         framenet_id: '01',
         links: [
           'BaseOntology.PredicateLink.12',
-          'BaseOntology.PredicateLink.13'
+          'BaseOntology.PredicateLink.13',
         ],
         pred_lemma: 'try',
-        pred_type: 'verb'
-      }
+        pred_type: 'verb',
+      },
     },
     {
       span: { begin: 189, end: 191 },
@@ -623,8 +623,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'TO',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 192, end: 201 },
@@ -633,8 +633,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'VB',
-        sense: '1'
-      }
+        sense: '1',
+      },
     },
     {
       span: { begin: 192, end: 201 },
@@ -645,11 +645,11 @@ const singlePack1: ISinglePack = {
         framenet_id: '01',
         links: [
           'BaseOntology.PredicateLink.14',
-          'BaseOntology.PredicateLink.15'
+          'BaseOntology.PredicateLink.15',
         ],
         pred_lemma: 'influence',
-        pred_type: 'verb'
-      }
+        pred_type: 'verb',
+      },
     },
     {
       span: { begin: 202, end: 210 },
@@ -658,8 +658,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'JJ',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 202, end: 210 },
@@ -667,8 +667,8 @@ const singlePack1: ISinglePack = {
       legendId: 'l2',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
-        ner_type: 'NORP'
-      }
+        ner_type: 'NORP',
+      },
     },
     {
       span: { begin: 211, end: 217 },
@@ -677,8 +677,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'NN',
-        sense: '1'
-      }
+        sense: '1',
+      },
     },
     {
       span: { begin: 211, end: 217 },
@@ -689,8 +689,8 @@ const singlePack1: ISinglePack = {
         framenet_id: '-',
         links: [],
         pred_lemma: 'policy',
-        pred_type: 'other'
-      }
+        pred_type: 'other',
+      },
     },
     {
       span: { begin: 218, end: 220 },
@@ -699,8 +699,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'IN',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 221, end: 226 },
@@ -709,8 +709,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'NNP',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 221, end: 226 },
@@ -718,32 +718,32 @@ const singlePack1: ISinglePack = {
       legendId: 'l2',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
-        ner_type: 'GPE'
-      }
+        ner_type: 'GPE',
+      },
     },
     {
       span: { begin: 175, end: 226 },
       id: 'BaseOntology.PredicateArgument.10',
       legendId: 'l5',
       attributes: {
-        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
-      }
+        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
+      },
     },
     {
       span: { begin: 189, end: 226 },
       id: 'BaseOntology.PredicateArgument.11',
       legendId: 'l5',
       attributes: {
-        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
-      }
+        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
+      },
     },
     {
       span: { begin: 202, end: 226 },
       id: 'BaseOntology.PredicateArgument.12',
       legendId: 'l5',
       attributes: {
-        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
-      }
+        component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
+      },
     },
     {
       span: { begin: 227, end: 228 },
@@ -752,8 +752,8 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: '.',
-        sense: '-'
-      }
+        sense: '-',
+      },
     },
     {
       span: { begin: 165, end: 228 },
@@ -762,21 +762,19 @@ const singlePack1: ISinglePack = {
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         part_id: 0,
-        speaker: '-'
-      }
-    }
+        speaker: '-',
+      },
+    },
   ],
   links: [],
   groups: [],
   attributes: { docid: 'bn/abc/00/abc_0059' },
   legends: [
-    { id: 'l1', name: 'Token', color: '#099AEB' },
-    { id: 'l2', name: 'EntityMention', color: '#FCB527' },
-    { id: 'l3', name: 'Sentence', color: '#00BFA4' },
-    { id: 'l4', name: 'PredicateMention', color: '#FF9961' },
-    { id: 'l5', name: 'PredicateArgument', color: '#52BA52' },
-    { id: 'l6', name: 'CoreferenceMention', color: '#F26DCC' }
-  ]
+    { id: 'l1', name: 'Token' },
+    { id: 'l2', name: 'EntityMention' },
+    { id: 'l3', name: 'Sentence' },
+    { id: 'l4', name: 'PredicateMention' },
+    { id: 'l5', name: 'PredicateArgument' },
+    { id: 'l6', name: 'CoreferenceMention' },
+  ],
 };
-
-export const mockSinglePacks: ISinglePack[] = [singlePack1];
