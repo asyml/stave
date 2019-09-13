@@ -29,7 +29,7 @@ function Annotaion({
               background: legend.color,
               top: 0,
               left: 0,
-              opacity: isSelected ? 0.4 : 0.2,
+              opacity: isSelected ? 0.5 : 0.3,
               transform: `translate(${rect.x}px,${rect.y}px)`,
               height: rect.height,
               width: rect.width,

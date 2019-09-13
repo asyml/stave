@@ -768,18 +768,14 @@ const singlePack1: ISinglePack = {
   ],
   links: [],
   groups: [],
-  metadata: {
-    component: 'nlp',
-    pos_tag: 'VBG',
-    sense: '1'
-  },
+  metadata: { docid: 'bn/abc/00/abc_0059' },
   legends: [
-    { id: 'l1', name: 'Token', color: '#f44336' },
-    { id: 'l2', name: 'EntityMention', color: '#673ab7' },
-    { id: 'l3', name: 'Sentence', color: '#e91e63' },
-    { id: 'l4', name: 'PredicateMention', color: '#3f51b5' },
-    { id: 'l5', name: 'PredicateArgument', color: '#9c27b0' },
-    { id: 'l6', name: 'CoreferenceMention', color: '#2196f3' }
+    { id: 'l1', name: 'Token', color: '#099AEB' },
+    { id: 'l2', name: 'EntityMention', color: '#FCB527' },
+    { id: 'l3', name: 'Sentence', color: '#00BFA4' },
+    { id: 'l4', name: 'PredicateMention', color: '#FF9961' },
+    { id: 'l5', name: 'PredicateArgument', color: '#52BA52' },
+    { id: 'l6', name: 'CoreferenceMention', color: '#F26DCC' }
   ]
 };
 

@@ -1,6 +1,5 @@
 import React from 'react';
 import { IMetadata, ILegend } from '../lib/interfaces';
-import { lightenDarkenColor } from '../lib/color';
 import {
   useTextViewerState,
   useTextViewerDispatch
@@ -60,7 +59,7 @@ export default function TextAttribute({
                 <input type="checkbox" readOnly checked={isSelected} />
                 <span
                   style={{
-                    backgroundColor: lightenDarkenColor(legend.color, 10),
+                    backgroundColor: legend.color,
                     color: 'white'
                   }}
                 >

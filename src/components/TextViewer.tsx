@@ -84,7 +84,6 @@ function TextViewer({ textPack }: TextViewerProp) {
                   state.selectedLegendIds.indexOf(ann.annotation.legendId) > -1
               )
               .map((ann, i) => {
-                console.log(ann);
                 const legend = legends.find(
                   legend => legend.id === ann.annotation.legendId
                 );
