@@ -1,0 +1,41 @@
+.text {
+  font-size: 13px;
+}
+
+.text_viewer_container {
+  margin: 0 auto;
+  background: white;
+}
+
+.layout_header {
+  padding: 10px;
+  background: #eee;
+  border-bottom: 1px solid #ccc;
+}
+
+.layout_container {
+  display: flex;
+}
+
+.main_container {
+  padding: 16px;
+  border: 1px solid #ccc;
+  border-top: none;
+  min-height: calc(100vh - 50px);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.metadata_side_container {
+  flex: 0 0 250px;
+  padding: 8px 0;
+}
+
+.attributes_side_container {
+  flex: 0 0 250px;
+  padding: 8px;
+}
+
+.text_container {
+  line-height: 20px;
+}

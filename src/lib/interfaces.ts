@@ -1,11 +1,10 @@
+export interface IMetadata {
+  [key: string]: any;
+}
+
 export interface ISpan {
   begin: number;
   end: number;
-}
-
-export interface IAnnotationType {
-  name: string;
-  color: string;
 }
 
 export interface IEntry {
@@ -16,7 +15,7 @@ export interface IEntry {
 }
 
 export interface IAnnotation extends IEntry {
-  type: IAnnotationType;
+  legendId: string;
   span: ISpan;
 }
 
@@ -34,4 +33,12 @@ export interface ISinglePack {
   annotations: IAnnotation[];
   links: ILink[];
   groups: IGroup[];
+  legends: ILegend[];
+  metadata: IMetadata;
+}
+
+export interface ILegend {
+  id: string;
+  name: string;
+  color: string;
 }

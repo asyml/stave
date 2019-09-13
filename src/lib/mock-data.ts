@@ -6,7 +6,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 0, end: 3 },
       id: 'OntonotesOntology.Token.0',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'DT',
@@ -16,7 +16,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 4, end: 14 },
       id: 'OntonotesOntology.Token.1',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'JJ',
@@ -26,7 +26,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 4, end: 14 },
       id: 'BaseOntology.EntityMention.0',
-      type: { name: 'EntityMention', color: 'blue' },
+      legendId: 'l2',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         ner_type: 'NORP'
@@ -35,7 +35,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 15, end: 26 },
       id: 'OntonotesOntology.Token.2',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'NN',
@@ -45,7 +45,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 27, end: 32 },
       id: 'OntonotesOntology.Token.3',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'NNP',
@@ -55,7 +55,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 33, end: 38 },
       id: 'OntonotesOntology.Token.4',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'NNP',
@@ -65,7 +65,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 27, end: 38 },
       id: 'BaseOntology.EntityMention.1',
-      type: { name: 'EntityMention', color: 'blue' },
+      legendId: 'l2',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         ner_type: 'PERSON'
@@ -74,7 +74,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 0, end: 38 },
       id: 'BaseOntology.PredicateArgument.0',
-      type: { name: 'PredicateArgument', color: 'blue' },
+      legendId: 'l5',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
       }
@@ -82,7 +82,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 0, end: 38 },
       id: 'BaseOntology.CoreferenceMention.0',
-      type: { name: 'CoreferenceMention', color: 'blue' },
+      legendId: 'l6',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
       }
@@ -90,7 +90,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 39, end: 42 },
       id: 'OntonotesOntology.Token.5',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'VBZ',
@@ -100,7 +100,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 39, end: 42 },
       id: 'OntonotesOntology.PredicateMention.0',
-      type: { name: 'PredicateMention', color: 'blue' },
+      legendId: 'l4',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         framenet_id: '01',
@@ -112,7 +112,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 43, end: 49 },
       id: 'OntonotesOntology.Token.6',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'VBN',
@@ -122,7 +122,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 43, end: 49 },
       id: 'OntonotesOntology.PredicateMention.1',
-      type: { name: 'PredicateMention', color: 'blue' },
+      legendId: 'l4',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         framenet_id: '01',
@@ -134,7 +134,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 50, end: 52 },
       id: 'OntonotesOntology.Token.7',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'TO',
@@ -144,7 +144,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 53, end: 56 },
       id: 'OntonotesOntology.Token.8',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'VB',
@@ -154,7 +154,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 53, end: 56 },
       id: 'OntonotesOntology.PredicateMention.2',
-      type: { name: 'PredicateMention', color: 'blue' },
+      legendId: 'l4',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         framenet_id: '01',
@@ -166,7 +166,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 57, end: 58 },
       id: 'OntonotesOntology.Token.9',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: '$',
@@ -176,7 +176,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 59, end: 62 },
       id: 'OntonotesOntology.Token.10',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'CD',
@@ -186,7 +186,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 63, end: 70 },
       id: 'OntonotesOntology.Token.11',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'CD',
@@ -196,7 +196,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 57, end: 70 },
       id: 'BaseOntology.EntityMention.2',
-      type: { name: 'EntityMention', color: 'blue' },
+      legendId: 'l2',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         ner_type: 'MONEY'
@@ -205,7 +205,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 57, end: 70 },
       id: 'BaseOntology.PredicateArgument.1',
-      type: { name: 'PredicateArgument', color: 'blue' },
+      legendId: 'l5',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
       }
@@ -213,7 +213,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 71, end: 74 },
       id: 'OntonotesOntology.Token.12',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'CC',
@@ -223,7 +223,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 75, end: 80 },
       id: 'OntonotesOntology.Token.13',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'VB',
@@ -233,7 +233,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 75, end: 80 },
       id: 'OntonotesOntology.PredicateMention.3',
-      type: { name: 'PredicateMention', color: 'blue' },
+      legendId: 'l4',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         framenet_id: '02',
@@ -249,7 +249,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 81, end: 87 },
       id: 'OntonotesOntology.Token.14',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'JJ',
@@ -259,7 +259,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 81, end: 87 },
       id: 'BaseOntology.PredicateArgument.2',
-      type: { name: 'PredicateArgument', color: 'blue' },
+      legendId: 'l5',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
       }
@@ -267,7 +267,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 88, end: 90 },
       id: 'OntonotesOntology.Token.15',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'IN',
@@ -277,7 +277,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 91, end: 100 },
       id: 'OntonotesOntology.Token.16',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'RB',
@@ -287,7 +287,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 91, end: 100 },
       id: 'BaseOntology.PredicateArgument.3',
-      type: { name: 'PredicateArgument', color: 'blue' },
+      legendId: 'l5',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
       }
@@ -295,7 +295,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 101, end: 109 },
       id: 'OntonotesOntology.Token.17',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'VBG',
@@ -305,7 +305,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 101, end: 109 },
       id: 'OntonotesOntology.PredicateMention.4',
-      type: { name: 'PredicateMention', color: 'blue' },
+      legendId: 'l4',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         framenet_id: '01',
@@ -321,7 +321,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 110, end: 115 },
       id: 'OntonotesOntology.Token.18',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'NN',
@@ -331,7 +331,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 110, end: 115 },
       id: 'OntonotesOntology.PredicateMention.5',
-      type: { name: 'PredicateMention', color: 'blue' },
+      legendId: 'l4',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         framenet_id: '-',
@@ -343,7 +343,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 110, end: 115 },
       id: 'BaseOntology.PredicateArgument.4',
-      type: { name: 'PredicateArgument', color: 'blue' },
+      legendId: 'l5',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
       }
@@ -351,7 +351,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 116, end: 119 },
       id: 'OntonotesOntology.Token.19',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'IN',
@@ -361,7 +361,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 120, end: 124 },
       id: 'OntonotesOntology.Token.20',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'NNP',
@@ -371,7 +371,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 125, end: 132 },
       id: 'OntonotesOntology.Token.21',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'NNP',
@@ -381,7 +381,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 133, end: 135 },
       id: 'OntonotesOntology.Token.22',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'POS',
@@ -391,7 +391,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 120, end: 135 },
       id: 'BaseOntology.EntityMention.3',
-      type: { name: 'EntityMention', color: 'blue' },
+      legendId: 'l2',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         ner_type: 'PERSON'
@@ -400,7 +400,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 136, end: 140 },
       id: 'OntonotesOntology.Token.23',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'CD',
@@ -410,7 +410,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 136, end: 140 },
       id: 'BaseOntology.EntityMention.4',
-      type: { name: 'EntityMention', color: 'blue' },
+      legendId: 'l2',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         ner_type: 'DATE'
@@ -419,7 +419,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 141, end: 153 },
       id: 'OntonotesOntology.Token.24',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'JJ',
@@ -429,7 +429,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 154, end: 162 },
       id: 'OntonotesOntology.Token.25',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'NN',
@@ -439,7 +439,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 154, end: 162 },
       id: 'OntonotesOntology.PredicateMention.6',
-      type: { name: 'PredicateMention', color: 'blue' },
+      legendId: 'l4',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         framenet_id: '-',
@@ -451,7 +451,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 50, end: 162 },
       id: 'BaseOntology.PredicateArgument.5',
-      type: { name: 'PredicateArgument', color: 'blue' },
+      legendId: 'l5',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
       }
@@ -459,7 +459,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 88, end: 162 },
       id: 'BaseOntology.PredicateArgument.6',
-      type: { name: 'PredicateArgument', color: 'blue' },
+      legendId: 'l5',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
       }
@@ -467,7 +467,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 116, end: 162 },
       id: 'BaseOntology.PredicateArgument.7',
-      type: { name: 'PredicateArgument', color: 'blue' },
+      legendId: 'l5',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
       }
@@ -475,7 +475,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 163, end: 164 },
       id: 'OntonotesOntology.Token.26',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: '.',
@@ -485,7 +485,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 0, end: 164 },
       id: 'OntonotesOntology.Sentence.0',
-      type: { name: 'Sentence', color: 'blue' },
+      legendId: 'l3',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         part_id: 0,
@@ -495,7 +495,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 165, end: 167 },
       id: 'OntonotesOntology.Token.27',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'PRP',
@@ -505,7 +505,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 165, end: 167 },
       id: 'BaseOntology.PredicateArgument.8',
-      type: { name: 'PredicateArgument', color: 'blue' },
+      legendId: 'l5',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
       }
@@ -513,7 +513,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 165, end: 167 },
       id: 'BaseOntology.CoreferenceMention.1',
-      type: { name: 'CoreferenceMention', color: 'blue' },
+      legendId: 'l6',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
       }
@@ -521,7 +521,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 168, end: 174 },
       id: 'OntonotesOntology.Token.28',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'VBZ',
@@ -531,7 +531,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 168, end: 174 },
       id: 'OntonotesOntology.PredicateMention.7',
-      type: { name: 'PredicateMention', color: 'blue' },
+      legendId: 'l4',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         framenet_id: '01',
@@ -546,7 +546,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 175, end: 177 },
       id: 'OntonotesOntology.Token.29',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'PRP',
@@ -556,7 +556,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 175, end: 177 },
       id: 'BaseOntology.PredicateArgument.9',
-      type: { name: 'PredicateArgument', color: 'blue' },
+      legendId: 'l5',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
       }
@@ -564,7 +564,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 175, end: 177 },
       id: 'BaseOntology.CoreferenceMention.2',
-      type: { name: 'CoreferenceMention', color: 'blue' },
+      legendId: 'l6',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
       }
@@ -572,7 +572,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 178, end: 181 },
       id: 'OntonotesOntology.Token.30',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'VBD',
@@ -582,7 +582,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 178, end: 181 },
       id: 'OntonotesOntology.PredicateMention.8',
-      type: { name: 'PredicateMention', color: 'blue' },
+      legendId: 'l4',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         framenet_id: '03',
@@ -594,7 +594,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 182, end: 188 },
       id: 'OntonotesOntology.Token.31',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'VBG',
@@ -604,7 +604,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 182, end: 188 },
       id: 'OntonotesOntology.PredicateMention.9',
-      type: { name: 'PredicateMention', color: 'blue' },
+      legendId: 'l4',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         framenet_id: '01',
@@ -619,7 +619,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 189, end: 191 },
       id: 'OntonotesOntology.Token.32',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'TO',
@@ -629,7 +629,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 192, end: 201 },
       id: 'OntonotesOntology.Token.33',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'VB',
@@ -639,7 +639,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 192, end: 201 },
       id: 'OntonotesOntology.PredicateMention.10',
-      type: { name: 'PredicateMention', color: 'blue' },
+      legendId: 'l4',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         framenet_id: '01',
@@ -654,7 +654,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 202, end: 210 },
       id: 'OntonotesOntology.Token.34',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'JJ',
@@ -664,7 +664,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 202, end: 210 },
       id: 'BaseOntology.EntityMention.5',
-      type: { name: 'EntityMention', color: 'blue' },
+      legendId: 'l2',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         ner_type: 'NORP'
@@ -673,7 +673,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 211, end: 217 },
       id: 'OntonotesOntology.Token.35',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'NN',
@@ -683,7 +683,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 211, end: 217 },
       id: 'OntonotesOntology.PredicateMention.11',
-      type: { name: 'PredicateMention', color: 'blue' },
+      legendId: 'l4',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         framenet_id: '-',
@@ -695,7 +695,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 218, end: 220 },
       id: 'OntonotesOntology.Token.36',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'IN',
@@ -705,7 +705,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 221, end: 226 },
       id: 'OntonotesOntology.Token.37',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: 'NNP',
@@ -715,7 +715,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 221, end: 226 },
       id: 'BaseOntology.EntityMention.6',
-      type: { name: 'EntityMention', color: 'blue' },
+      legendId: 'l2',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         ner_type: 'GPE'
@@ -724,7 +724,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 175, end: 226 },
       id: 'BaseOntology.PredicateArgument.10',
-      type: { name: 'PredicateArgument', color: 'blue' },
+      legendId: 'l5',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
       }
@@ -732,7 +732,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 189, end: 226 },
       id: 'BaseOntology.PredicateArgument.11',
-      type: { name: 'PredicateArgument', color: 'blue' },
+      legendId: 'l5',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
       }
@@ -740,7 +740,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 202, end: 226 },
       id: 'BaseOntology.PredicateArgument.12',
-      type: { name: 'PredicateArgument', color: 'blue' },
+      legendId: 'l5',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader'
       }
@@ -748,7 +748,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 227, end: 228 },
       id: 'OntonotesOntology.Token.38',
-      type: { name: 'Token', color: 'blue' },
+      legendId: 'l1',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         pos_tag: '.',
@@ -758,7 +758,7 @@ const singlePack1: ISinglePack = {
     {
       span: { begin: 165, end: 228 },
       id: 'OntonotesOntology.Sentence.1',
-      type: { name: 'Sentence', color: 'blue' },
+      legendId: 'l3',
       attributes: {
         component: 'nlp.pipeline.io.readers.base_reader.OntonotesReader',
         part_id: 0,
@@ -767,7 +767,20 @@ const singlePack1: ISinglePack = {
     }
   ],
   links: [],
-  groups: []
+  groups: [],
+  metadata: {
+    component: 'nlp',
+    pos_tag: 'VBG',
+    sense: '1'
+  },
+  legends: [
+    { id: 'l1', name: 'Token', color: '#f44336' },
+    { id: 'l2', name: 'EntityMention', color: '#673ab7' },
+    { id: 'l3', name: 'Sentence', color: '#e91e63' },
+    { id: 'l4', name: 'PredicateMention', color: '#3f51b5' },
+    { id: 'l5', name: 'PredicateArgument', color: '#9c27b0' },
+    { id: 'l6', name: 'CoreferenceMention', color: '#2196f3' }
+  ]
 };
 
 export const mockSinglePacks: ISinglePack[] = [singlePack1];

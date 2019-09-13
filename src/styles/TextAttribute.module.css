@@ -1,0 +1,37 @@
+.list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.list li {
+  cursor: pointer;
+  padding: 4px;
+}
+
+.list li:hover {
+  background: #f8f8f8;
+}
+
+.list li span {
+  vertical-align: middle;
+  margin-left: 4px;
+  pointer-events: none;
+  padding: 2px 4px;
+  display: inline-block;
+  user-select: none;
+  border-radius: 3px;
+}
+
+.metadata {
+  margin-bottom: 4px;
+}
+.metadata_name {
+  font-weight: bold;
+  font-size: 10px;
+}
+.metadata_value {
+  font-size: 11px;
+  overflow-wrap: break-word;
+  width: 234px; /* 250 - 16 */
+}
