@@ -1,0 +1,19 @@
+.tab_header {
+  border-bottom: 1px solid #ccc;
+  padding: 0 8px;
+}
+
+.tab_body {
+  padding: 8px;
+}
+
+.tab_header_button {
+  display: inline-block;
+  padding: 4px;
+  cursor: pointer;
+}
+
+.tab_header_button_selected {
+  background: #555;
+  color: white;
+}
