@@ -29,14 +29,17 @@ function textViewerReducer(state: State, action: Action): State {
       return {
         ...state,
         textPack: action.textPach,
-        selectedLegendIds: action.textPach.legends.map(l => l.id)
+
+        // TODO: remove the following test code
+        selectedLegendIds: ['l0'],
+        // selectedAnnotationId: 'OntonotesOntology.PredicateMention.7'
       };
 
     case 'select-legend':
       if (state.selectedLegendIds.indexOf(action.legendId) === -1) {
         return {
           ...state,
-          selectedLegendIds: [...state.selectedLegendIds, action.legendId]
+          selectedLegendIds: [...state.selectedLegendIds, action.legendId],
         };
       } else {
         return { ...state, selectedLegendIds: [...state.selectedLegendIds] };
@@ -50,7 +53,7 @@ function textViewerReducer(state: State, action: Action): State {
           ...state,
           selectedLegendIds: state.selectedLegendIds.filter(
             id => id !== action.legendId
-          )
+          ),
         };
       }
 
@@ -61,25 +64,25 @@ function textViewerReducer(state: State, action: Action): State {
 
       return {
         ...state,
-        selectedLegendIds: state.textPack.legends.map(l => l.id)
+        selectedLegendIds: state.textPack.legends.map(l => l.id),
       };
 
     case 'deselect-all-legend':
       return {
         ...state,
-        selectedLegendIds: []
+        selectedLegendIds: [],
       };
 
     case 'select-annotation':
       return {
         ...state,
-        selectedAnnotationId: action.annotationId
+        selectedAnnotationId: action.annotationId,
       };
 
     case 'deselect-annotation':
       return {
         ...state,
-        selectedAnnotationId: null
+        selectedAnnotationId: null,
       };
   }
 }
@@ -88,7 +91,7 @@ function TextViewerProvider({ children }: TextViewerProviderProps) {
   const [state, dispatch] = useReducer(textViewerReducer, {
     textPack: null,
     selectedLegendIds: [],
-    selectedAnnotationId: null
+    selectedAnnotationId: null,
   });
 
   return (

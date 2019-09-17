@@ -6,7 +6,7 @@
 
 .list li {
   cursor: pointer;
-  padding: 4px;
+  padding: 2px 4px;
 }
 
 .list li:hover {
@@ -24,14 +24,20 @@
 }
 
 .metadata {
-  margin-bottom: 4px;
+  margin-bottom: 8px;
 }
 .metadata_name {
   font-weight: bold;
   font-size: 10px;
 }
+
 .metadata_value {
   font-size: 11px;
   overflow-wrap: break-word;
   width: 234px; /* 250 - 16 */
+}
+
+.clear_buttons {
+  margin-bottom: 4px;
+  text-align: right;
 }

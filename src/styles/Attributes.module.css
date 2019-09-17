@@ -1,0 +1,20 @@
+.attribute {
+  margin-bottom: 8px;
+}
+
+.attribute_name {
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.attribute_value {
+  font-size: 12px;
+  overflow-wrap: break-word;
+  width: 234px; /* 250 - 16 */
+}
+
+.attribute_value_array {
+  font-size: 11px;
+  padding-left: 16px;
+  margin: 0;
+}

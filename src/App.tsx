@@ -5,9 +5,9 @@ import TextViewer from './components/TextViewer';
 import {
   TextViewerProvider,
   useTextViewerDispatch,
-  useTextViewerState
+  useTextViewerState,
 } from './contexts/text-viewer.context';
-import { mockSinglePacks } from './lib/mock-data';
+import { singlePack } from './lib/mock-data-2';
 
 function App() {
   return (
@@ -24,7 +24,7 @@ function TextViewerFetchContainer() {
   useEffect(() => {
     dispatch({
       type: 'set-text-pack',
-      textPach: mockSinglePacks[0]
+      textPach: singlePack,
     });
   }, [dispatch]);
 

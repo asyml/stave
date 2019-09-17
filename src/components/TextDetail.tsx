@@ -1,22 +1,19 @@
 import React from 'react';
-import { IMetadata, ILegend } from '../lib/interfaces';
-import { lightenDarkenColor } from '../lib/color';
+import { IColoredLegend, IAttributes } from '../lib/interfaces';
 import {
   useTextViewerState,
-  useTextViewerDispatch
+  useTextViewerDispatch,
 } from '../contexts/text-viewer.context';
-import style from '../styles/TextAttribute.module.css';
+import style from '../styles/TextDetail.module.css';
 import Tab from './Tab';
+import Attributes from './Attributes';
 
-export interface TextAttributeProp {
-  metadata: IMetadata;
-  legends: ILegend[];
+export interface TextDetailProp {
+  attributes: IAttributes;
+  legends: IColoredLegend[];
 }
 
-export default function TextAttribute({
-  metadata,
-  legends
-}: TextAttributeProp) {
+export default function TextDetail({ attributes, legends }: TextDetailProp) {
   const state = useTextViewerState();
   const dispatch = useTextViewerDispatch();
 
@@ -24,20 +21,22 @@ export default function TextAttribute({
     title: 'legend',
     body: () => (
       <>
-        <button
-          onClick={() => {
-            dispatch({ type: 'select-all-legend' });
-          }}
-        >
-          select all
-        </button>
-        <button
-          onClick={() => {
-            dispatch({ type: 'deselect-all-legend' });
-          }}
-        >
-          clear all
-        </button>
+        <div className={style.clear_buttons}>
+          <button
+            onClick={() => {
+              dispatch({ type: 'select-all-legend' });
+            }}
+          >
+            select all
+          </button>
+          <button
+            onClick={() => {
+              dispatch({ type: 'deselect-all-legend' });
+            }}
+          >
+            clear
+          </button>
+        </div>
         <ul className={style.list}>
           {legends.map(legend => {
             const isSelected = state.selectedLegendIds.indexOf(legend.id) > -1;
@@ -49,19 +48,19 @@ export default function TextAttribute({
                   isSelected
                     ? dispatch({
                         type: 'deselect-legend',
-                        legendId: legend.id
+                        legendId: legend.id,
                       })
                     : dispatch({
                         type: 'select-legend',
-                        legendId: legend.id
+                        legendId: legend.id,
                       });
                 }}
               >
                 <input type="checkbox" readOnly checked={isSelected} />
                 <span
                   style={{
-                    backgroundColor: lightenDarkenColor(legend.color, 10),
-                    color: 'white'
+                    backgroundColor: legend.color,
+                    color: 'white',
                   }}
                 >
                   {legend.name}
@@ -71,21 +70,16 @@ export default function TextAttribute({
           })}
         </ul>
       </>
-    )
+    ),
   };
 
   const metadataTabItem = {
     title: 'metadata',
     body: () => (
       <div>
-        {Object.keys(metadata).map(key => (
-          <div className={style.metadata} key={key}>
-            <div className={style.metadata_name}>{key}</div>
-            <div className={style.metadata_value}>{metadata[key]}</div>
-          </div>
-        ))}
+        <Attributes attributes={attributes} />
       </div>
-    )
+    ),
   };
 
   return <Tab tabs={[legendTabItem, metadataTabItem]}></Tab>;
