@@ -1,7 +1,16 @@
 import React, { useRef, useEffect, useState } from 'react';
 import style from '../styles/TextViewer.module.css';
-import { ISinglePack } from '../lib/interfaces';
-import { applyColorToLegend, notNullOrUndefined } from '../lib/utils';
+import {
+  ISinglePack,
+  AnnotationPosition,
+  LinkWithPos,
+} from '../lib/interfaces';
+import {
+  applyColorToLegend,
+  notNullOrUndefined,
+  calcuateLinesLevels,
+  calcuateLinkHeight,
+} from '../lib/utils';
 import Annotation from './Annotation';
 import AnnotationDetail from './AnnotationDetail';
 import TextDetail from './TextDetail';
@@ -9,15 +18,6 @@ import { useTextViewerState } from '../contexts/text-viewer.context';
 
 export interface TextViewerProp {
   textPack: ISinglePack;
-}
-
-export interface AnnotationPosition {
-  rects: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  }[];
 }
 
 function TextViewer({ textPack }: TextViewerProp) {
@@ -62,8 +62,7 @@ function TextViewer({ textPack }: TextViewerProp) {
     }
   );
 
-  // TODO: this is assuming link is only between entry
-  const linkWithPosition = links
+  let linksWithPos: LinkWithPos[] = links
     .map(link => {
       const fromEntryWithPosition = annotationWithPosition.find(
         ann => ann.annotation.id === link.fromEntryId
@@ -73,16 +72,34 @@ function TextViewer({ textPack }: TextViewerProp) {
       );
 
       if (fromEntryWithPosition && toEntryWithPosition) {
+        const fromEntryX = fromEntryWithPosition.position.rects[0].x;
+        const fromEntryY = fromEntryWithPosition.position.rects[0].y;
+        const fromEntryWidth = fromEntryWithPosition.position.rects[0].width;
+
+        const toEntryX = toEntryWithPosition.position.rects[0].x;
+        const toEntryY = toEntryWithPosition.position.rects[0].y;
+        const toEntryWidth = toEntryWithPosition.position.rects[0].width;
+
+        const fromLinkX = fromEntryX + fromEntryWidth / 2;
+        const toLinkX = toEntryX + toEntryWidth / 2;
+
         return {
           link,
           fromEntryWithPos: fromEntryWithPosition,
           toEntryWithPos: toEntryWithPosition,
+          fromLinkX,
+          toLinkX,
+          fromLinkY: fromEntryY,
+          toLinkY: toEntryY,
         };
       } else {
         return null;
       }
     })
     .filter(notNullOrUndefined);
+
+  const linesLevels = calcuateLinesLevels(linksWithPos, 267, 660); //TODO: calculate line width
+  const linkHeight = calcuateLinkHeight(linesLevels);
 
   const selectedAnnotation =
     annotations.find(ann => ann.id === state.selectedAnnotationId) || null;
@@ -131,40 +148,22 @@ function TextViewer({ textPack }: TextViewerProp) {
           </div>
 
           <div className="links-container">
-            {linkWithPosition.map(linkPos => {
-              if (
-                linkPos.fromEntryWithPos.position.rects.length === 1 &&
-                linkPos.toEntryWithPos.position.rects.length === 1 &&
-                linkPos.fromEntryWithPos.position.rects[0].y ===
-                  linkPos.toEntryWithPos.position.rects[0].y
-              ) {
-                const fromX = linkPos.fromEntryWithPos.position.rects[0].x;
-                const fromWidth =
-                  linkPos.fromEntryWithPos.position.rects[0].width;
-
-                const toX = linkPos.toEntryWithPos.position.rects[0].x;
-                const toWidth = linkPos.toEntryWithPos.position.rects[0].width;
-
-                let x, width;
-                if (toX > fromX) {
-                  x = fromX + fromWidth / 2;
-                  width = toX + toWidth / 2 - (fromX + fromWidth / 2);
-                } else {
-                  x = toX + toWidth / 2;
-                  width = fromX + fromWidth / 2 - (toX + toWidth / 2);
-                }
-                const y = linkPos.fromEntryWithPos.position.rects[0].y - 10;
-                const height = 10;
-
+            {linksWithPos.map(linkPos => {
+              if (linkPos.fromLinkY === linkPos.toLinkY) {
+                const height =
+                  6 + linkHeight[linkPos.link.id][linkPos.fromLinkY];
                 return (
                   <div
                     key={linkPos.link.id}
                     data-from-id={linkPos.link.fromEntryId}
                     data-to-id={linkPos.link.toEntryId}
                     style={{
-                      height,
-                      width,
-                      transform: `translate(${x}px,${y}px)`,
+                      height: height,
+                      width: Math.abs(linkPos.fromLinkX - linkPos.toLinkX),
+                      transform: `translate(${Math.min(
+                        linkPos.fromLinkX,
+                        linkPos.toLinkX
+                      )}px,${linkPos.fromLinkY - height}px)`,
                       position: 'absolute',
                       top: 0,
                       left: 0,

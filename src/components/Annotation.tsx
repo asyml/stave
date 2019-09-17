@@ -1,6 +1,9 @@
 import React from 'react';
-import { IAnnotation, IColoredLegend } from '../lib/interfaces';
-import { AnnotationPosition } from './TextViewer';
+import {
+  IAnnotation,
+  IColoredLegend,
+  AnnotationPosition,
+} from '../lib/interfaces';
 import { useTextViewerDispatch } from '../contexts/text-viewer.context';
 
 export interface AnnotaionProp {

@@ -43,3 +43,28 @@ export interface ILegend {
 export interface IColoredLegend extends ILegend {
   color: string;
 }
+
+export interface AnnotationPosition {
+  rects: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }[];
+}
+
+export interface LinkWithPos {
+  link: ILink;
+  fromEntryWithPos: {
+    position: AnnotationPosition;
+    annotation: IAnnotation;
+  };
+  toEntryWithPos: {
+    position: AnnotationPosition;
+    annotation: IAnnotation;
+  };
+  fromLinkX: number;
+  toLinkX: number;
+  fromLinkY: number;
+  toLinkY: number;
+}
