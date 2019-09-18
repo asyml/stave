@@ -1,6 +1,5 @@
 import { ILegend, IColoredLegend, LinkWithPos } from './interfaces';
 import { colorPalettes } from './color';
-import { func, string } from 'prop-types';
 
 export function applyColorToLegend(legends: ILegend[]): IColoredLegend[] {
   return legends.map((leg, i) => {
@@ -39,7 +38,7 @@ export function calcuateLinesLevels(
       lineMap[link.fromLinkY] = lineMap[link.fromLinkY] || [];
       lineMap[link.fromLinkY].push(link);
     } else {
-      let goLeft = link.fromLinkX < lineStartX + lineWidth / 2;
+      const goLeft = shouldMultiLineGoLeft(link, lineStartX, lineWidth);
       lineMap[link.fromLinkY] = lineMap[link.fromLinkY] || [];
       lineMap[link.fromLinkY].push({
         ...link,
@@ -127,6 +126,8 @@ export function calcuateLinesLevels(
         for (let k = i + 1; k < levels.length; k++) {
           if (checkLevelOverlap(link, levels[k]) === 'no-overlap') {
             levelToProject = k;
+          } else {
+            break;
           }
         }
         if (levelToProject !== -1) {
@@ -199,10 +200,10 @@ export function calcuateLinesLevels(
 }
 
 export function calcuateLinkHeight(
-  linkLevels: Record<string, LinkWithPos[][]>
+  linkLevels: Record<string, LinkWithPos[][]>,
+  gap: number
 ) {
   const linksHeightMap: Record<string, Record<string, number>> = {};
-  const gap = 3;
 
   Object.keys(linkLevels).forEach(y => {
     linkLevels[y].forEach((links, i, arr) => {
@@ -214,4 +215,14 @@ export function calcuateLinkHeight(
   });
 
   return linksHeightMap;
+}
+
+export function shouldMultiLineGoLeft(
+  link: LinkWithPos,
+  lineStartX: number,
+  lineWidth: number
+) {
+  const topLineX =
+    link.fromLinkY < link.toLinkY ? link.fromLinkX : link.toLinkX;
+  return topLineX < lineStartX + lineWidth / 2;
 }

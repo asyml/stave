@@ -22,6 +22,7 @@ function TextViewerFetchContainer() {
   const state = useTextViewerState();
 
   useEffect(() => {
+    // here is where we send request to get the data
     dispatch({
       type: 'set-text-pack',
       textPach: singlePack,
