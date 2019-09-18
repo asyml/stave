@@ -126,8 +126,9 @@ function TextArea({ textPack }: TextAreaProp) {
 
   const lineStartX = textAreaDimention.x;
   const lineWidth = textAreaDimention.width;
-  const textLinkDistance = 3;
-  const linkGap = 3;
+  const textLinkDistance = 5;
+  const borderRadius = 8;
+  const linkGap = 5;
 
   const linesLevels = calcuateLinesLevels(linksWithPos, lineStartX, lineWidth);
   const linkHeight = calcuateLinkHeight(linesLevels, linkGap);
@@ -173,28 +174,52 @@ function TextArea({ textPack }: TextAreaProp) {
           if (linkPos.fromLinkY === linkPos.toLinkY) {
             const height =
               textLinkDistance + linkHeight[linkPos.link.id][linkPos.fromLinkY];
+            const goLeft = linkPos.fromLinkX > linkPos.toLinkX;
+            const arrowRadiusAdjust = Math.max(borderRadius - height, 0) / 2;
+            const arrowPosition = {
+              x: goLeft
+                ? linkPos.toLinkX - arrowRadiusAdjust
+                : linkPos.toLinkX - 4 + arrowRadiusAdjust,
+              y: linkPos.toLinkY - height - 2,
+            };
 
             return (
-              <div
-                key={linkPos.link.id}
-                data-from-id={linkPos.link.fromEntryId}
-                data-to-id={linkPos.link.toEntryId}
-                style={{
-                  height: height,
-                  width: Math.abs(linkPos.fromLinkX - linkPos.toLinkX),
-                  transform: `translate(${Math.min(
-                    linkPos.fromLinkX,
-                    linkPos.toLinkX
-                  )}px,${linkPos.fromLinkY - height}px)`,
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  border: '1px solid #555',
-                  borderTopLeftRadius: 5,
-                  borderTopRightRadius: 5,
-                  borderBottom: 0,
-                }}
-              ></div>
+              <div key={linkPos.link.id}>
+                <div
+                  data-from-id={linkPos.link.fromEntryId}
+                  data-to-id={linkPos.link.toEntryId}
+                  style={{
+                    height: height,
+                    width: Math.abs(linkPos.fromLinkX - linkPos.toLinkX),
+                    transform: `translate(${Math.min(
+                      linkPos.fromLinkX,
+                      linkPos.toLinkX
+                    )}px,${linkPos.fromLinkY - height}px)`,
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    border: '1px solid #555',
+                    borderTopLeftRadius: borderRadius,
+                    borderTopRightRadius: borderRadius,
+                    borderBottom: 0,
+                  }}
+                ></div>
+                <div
+                  className={style.arrow}
+                  style={{
+                    transformOrigin: 'center bottom',
+                    transform: `
+                        translate(
+                            ${arrowPosition.x}px,
+                            ${arrowPosition.y}px)
+                        rotate(
+                            ${goLeft ? '60deg' : '-60deg'})`,
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                  }}
+                ></div>
+              </div>
             );
           } else {
             const fromLineHeight =
@@ -208,6 +233,15 @@ function TextArea({ textPack }: TextAreaProp) {
               lineWidth
             );
             const sideGap = 5;
+            const arrowRadiusAdjust =
+              Math.max(borderRadius - toLineHeight, 0) / 2;
+            const arrowGoLeft = !goLeft;
+            const arrowPosition = {
+              x: arrowGoLeft
+                ? linkPos.toLinkX + arrowRadiusAdjust
+                : linkPos.toLinkX - 4 - arrowRadiusAdjust,
+              y: linkPos.toLinkY - toLineHeight - 2,
+            };
 
             return (
               <div
@@ -231,8 +265,8 @@ function TextArea({ textPack }: TextAreaProp) {
                     top: 0,
                     left: 0,
                     border: '1px solid #555',
-                    borderTopLeftRadius: goLeft ? 0 : 5,
-                    borderTopRightRadius: goLeft ? 5 : 0,
+                    borderTopLeftRadius: goLeft ? 0 : borderRadius,
+                    borderTopRightRadius: goLeft ? borderRadius : 0,
                     borderBottomWidth: 0,
                     borderLeftWidth: goLeft ? 0 : 1,
                     borderRightWidth: goLeft ? 1 : 0,
@@ -254,8 +288,8 @@ function TextArea({ textPack }: TextAreaProp) {
                     top: 0,
                     left: 0,
                     border: '1px solid #555',
-                    borderTopLeftRadius: goLeft ? 0 : 5,
-                    borderTopRightRadius: goLeft ? 5 : 0,
+                    borderTopLeftRadius: goLeft ? 0 : borderRadius,
+                    borderTopRightRadius: goLeft ? borderRadius : 0,
                     borderBottomWidth: 0,
                     borderLeftWidth: goLeft ? 0 : 1,
                     borderRightWidth: goLeft ? 1 : 0,
@@ -282,6 +316,22 @@ function TextArea({ textPack }: TextAreaProp) {
                     top: 0,
                     left: 0,
                     borderLeft: '1px solid #555',
+                  }}
+                ></div>
+
+                <div
+                  className={style.arrow}
+                  style={{
+                    transformOrigin: 'center bottom',
+                    transform: `
+                        translate(
+                            ${arrowPosition.x}px,
+                            ${arrowPosition.y}px)
+                        rotate(
+                            ${arrowGoLeft ? '60deg' : '-60deg'})`,
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
                   }}
                 ></div>
               </div>
