@@ -1,0 +1,11 @@
+.text_area_container {
+  padding: 16px;
+  border: 1px solid #ccc;
+  border-top: none;
+  min-height: calc(100vh - 50px);
+  overflow-y: auto;
+  flex: 1;
+}
+.text_node_container {
+  line-height: 45px;
+}
