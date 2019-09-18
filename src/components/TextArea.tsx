@@ -4,6 +4,7 @@ import {
   ISinglePack,
   AnnotationPosition,
   LinkWithPos,
+  IAnnotation,
 } from '../lib/interfaces';
 import {
   applyColorToLegend,
@@ -14,6 +15,7 @@ import {
 } from '../lib/utils';
 import Annotation from './Annotation';
 import { useTextViewerState } from '../contexts/text-viewer.context';
+import { throttle } from 'lodash-es';
 
 export interface TextAreaProp {
   textPack: ISinglePack;
@@ -44,7 +46,19 @@ function TextArea({ textPack }: TextAreaProp) {
   const legendsWithColor = applyColorToLegend(legends);
   const contextState = useTextViewerState();
 
-  useEffect(() => {
+  function calculateTextAreaSize() {
+    if (inputEl.current && inputEl.current) {
+      const rect = inputEl.current.getBoundingClientRect();
+      setTextAreaDimention({
+        width: rect.width,
+        height: rect.height,
+        x: rect.left,
+        y: rect.top,
+      });
+    }
+  }
+
+  function calculateAnnotationPosition(annotations: IAnnotation[]) {
     if (inputEl.current && inputEl.current) {
       const textNode = inputEl.current && inputEl.current.childNodes[0];
 
@@ -65,18 +79,20 @@ function TextArea({ textPack }: TextAreaProp) {
 
       setAnnotationPositions(annotationBlocks);
     }
-  }, [annotations]);
+  }
 
   useEffect(() => {
-    if (inputEl.current && inputEl.current) {
-      const rect = inputEl.current.getBoundingClientRect();
-      setTextAreaDimention({
-        width: rect.width,
-        height: rect.height,
-        x: rect.left,
-        y: rect.top,
-      });
-    }
+    const handleWindowResize = throttle(() => {
+      calculateTextAreaSize();
+      calculateAnnotationPosition(annotations);
+    }, 100);
+
+    handleWindowResize();
+    window.addEventListener('resize', handleWindowResize);
+
+    return () => {
+      window.removeEventListener('resize', handleWindowResize);
+    };
   }, [annotations]);
 
   const annotationWithPosition = (annotationPositions || []).map(
@@ -184,10 +200,13 @@ function TextArea({ textPack }: TextAreaProp) {
             };
 
             return (
-              <div key={linkPos.link.id}>
+              <div
+                className="single-line-container"
+                data-from-id={linkPos.link.fromEntryId}
+                data-to-id={linkPos.link.toEntryId}
+                key={linkPos.link.id}
+              >
                 <div
-                  data-from-id={linkPos.link.fromEntryId}
-                  data-to-id={linkPos.link.toEntryId}
                   style={{
                     height: height,
                     width: Math.abs(linkPos.fromLinkX - linkPos.toLinkX),
@@ -199,9 +218,12 @@ function TextArea({ textPack }: TextAreaProp) {
                     top: 0,
                     left: 0,
                     border: '1px solid #555',
+                    borderTopWidth: '1px',
+                    borderLeftWidth: '1px',
+                    borderRightWidth: '1px',
                     borderTopLeftRadius: borderRadius,
                     borderTopRightRadius: borderRadius,
-                    borderBottom: 0,
+                    borderBottomWidth: '0px',
                   }}
                 ></div>
                 <div
@@ -235,16 +257,18 @@ function TextArea({ textPack }: TextAreaProp) {
             const sideGap = 5;
             const arrowRadiusAdjust =
               Math.max(borderRadius - toLineHeight, 0) / 2;
+
             const arrowGoLeft = !goLeft;
             const arrowPosition = {
               x: arrowGoLeft
-                ? linkPos.toLinkX + arrowRadiusAdjust
-                : linkPos.toLinkX - 4 - arrowRadiusAdjust,
+                ? linkPos.toLinkX - arrowRadiusAdjust
+                : linkPos.toLinkX - 4 + arrowRadiusAdjust,
               y: linkPos.toLinkY - toLineHeight - 2,
             };
 
             return (
               <div
+                className="cross-line-container"
                 key={linkPos.link.id}
                 data-from-id={linkPos.link.fromEntryId}
                 data-to-id={linkPos.link.toEntryId}
@@ -265,6 +289,7 @@ function TextArea({ textPack }: TextAreaProp) {
                     top: 0,
                     left: 0,
                     border: '1px solid #555',
+                    borderWidth: '1px',
                     borderTopLeftRadius: goLeft ? 0 : borderRadius,
                     borderTopRightRadius: goLeft ? borderRadius : 0,
                     borderBottomWidth: 0,
@@ -288,6 +313,7 @@ function TextArea({ textPack }: TextAreaProp) {
                     top: 0,
                     left: 0,
                     border: '1px solid #555',
+                    borderWidth: '1px',
                     borderTopLeftRadius: goLeft ? 0 : borderRadius,
                     borderTopRightRadius: goLeft ? borderRadius : 0,
                     borderBottomWidth: 0,
