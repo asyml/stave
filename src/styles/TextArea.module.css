@@ -6,6 +6,13 @@
   overflow-y: auto;
   flex: 1;
 }
+
 .text_node_container {
-  line-height: 45px;
+  line-height: 70px;
+}
+
+.arrow {
+  border-left: 2px solid transparent;
+  border-right: 2px solid transparent;
+  border-top: 5px solid #555;
 }
