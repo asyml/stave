@@ -44,7 +44,7 @@ function TextArea({ textPack }: TextAreaProp) {
   );
 
   const legendsWithColor = applyColorToLegend(legends);
-  const contextState = useTextViewerState();
+  const { selectedLegendIds, selectedAnnotationId } = useTextViewerState();
 
   function calculateTextAreaSize() {
     if (inputEl.current && inputEl.current) {
@@ -95,14 +95,14 @@ function TextArea({ textPack }: TextAreaProp) {
     };
   }, [annotations]);
 
-  const annotationWithPosition = (annotationPositions || []).map(
-    (position, i) => {
+  const annotationWithPosition = (annotationPositions || [])
+    .map((position, i) => {
       return {
         position,
         annotation: annotations[i],
       };
-    }
-  );
+    })
+    .filter(ann => selectedLegendIds.indexOf(ann.annotation.legendId) > -1);
 
   let linksWithPos: LinkWithPos[] = links
     .map(link => {
@@ -156,33 +156,25 @@ function TextArea({ textPack }: TextAreaProp) {
       </div>
 
       <div className={style.annotation_container}>
-        {annotationWithPosition
-          .filter(
-            ann =>
-              contextState.selectedLegendIds.indexOf(ann.annotation.legendId) >
-              -1
-          )
-          .map((ann, i) => {
-            const legend = legendsWithColor.find(
-              legend => legend.id === ann.annotation.legendId
-            );
+        {annotationWithPosition.map((ann, i) => {
+          const legend = legendsWithColor.find(
+            legend => legend.id === ann.annotation.legendId
+          );
 
-            if (!legend) {
-              return null;
-            }
+          if (!legend) {
+            return null;
+          }
 
-            return (
-              <Annotation
-                key={i}
-                annotation={ann.annotation}
-                isSelected={
-                  ann.annotation.id === contextState.selectedAnnotationId
-                }
-                legend={legend}
-                position={ann.position}
-              />
-            );
-          })}
+          return (
+            <Annotation
+              key={i}
+              annotation={ann.annotation}
+              isSelected={ann.annotation.id === selectedAnnotationId}
+              legend={legend}
+              position={ann.position}
+            />
+          );
+        })}
       </div>
 
       <div className="links-container">
