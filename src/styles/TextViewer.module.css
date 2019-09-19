@@ -1,5 +1,6 @@
 .text_viewer {
   font-size: 13px;
+  min-width: 800px;
 }
 
 .layout_header {
