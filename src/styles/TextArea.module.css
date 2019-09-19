@@ -5,14 +5,22 @@
   min-height: calc(100vh - 50px);
   overflow-y: auto;
   flex: 1;
+  position: relative;
 }
 
 .text_node_container {
-  line-height: 70px;
+  line-height: 100px;
 }
 
 .arrow {
   border-left: 2px solid transparent;
   border-right: 2px solid transparent;
   border-top: 5px solid #555;
+}
+
+.link_label {
+  font-size: 9px;
+  line-height: 8px;
+  background: white;
+  color: #555;
 }

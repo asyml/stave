@@ -20,7 +20,7 @@ import { throttle } from 'lodash-es';
 export interface TextAreaProp {
   textPack: ISinglePack;
 }
-export interface TextAreaDimention {
+export interface TextNodeDimention {
   width: number;
   height: number;
   x: number;
@@ -29,12 +29,13 @@ export interface TextAreaDimention {
 
 function TextArea({ textPack }: TextAreaProp) {
   const { annotations, legends, text, links } = textPack;
-  const inputEl = useRef<HTMLDivElement>(null);
+  const textNodeEl = useRef<HTMLDivElement>(null);
+  const textAreaEl = useRef<HTMLDivElement>(null);
   const [annotationPositions, setAnnotationPositions] = useState<
     AnnotationPosition[]
   >([]);
 
-  const [textAreaDimention, setTextAreaDimention] = useState<TextAreaDimention>(
+  const [textNodeDimention, setTextNodeDimention] = useState<TextNodeDimention>(
     {
       width: 0,
       height: 0,
@@ -46,31 +47,29 @@ function TextArea({ textPack }: TextAreaProp) {
   const legendsWithColor = applyColorToLegend(legends);
   const { selectedLegendIds, selectedAnnotationId } = useTextViewerState();
 
-  function calculateTextAreaSize() {
-    if (inputEl.current && inputEl.current) {
-      const rect = inputEl.current.getBoundingClientRect();
-      setTextAreaDimention({
-        width: rect.width,
-        height: rect.height,
-        x: rect.left,
-        y: rect.top,
-      });
-    }
-  }
+  function calculateAnnotationPositionAndAreaSize(annotations: IAnnotation[]) {
+    if (textNodeEl.current && textAreaEl.current) {
+      const textNode = textNodeEl.current && textNodeEl.current.childNodes[0];
+      const textAreaRect = textAreaEl.current.getBoundingClientRect();
+      const textNodeRect = textNodeEl.current.getBoundingClientRect();
 
-  function calculateAnnotationPosition(annotations: IAnnotation[]) {
-    if (inputEl.current && inputEl.current) {
-      const textNode = inputEl.current && inputEl.current.childNodes[0];
+      const textAreaDimention = {
+        width: textNodeRect.width,
+        height: textNodeRect.height,
+        x: textNodeRect.left - textAreaRect.left,
+        y: textNodeRect.top - textAreaRect.top,
+      };
 
       const annotationBlocks = annotations.map(anno => {
         const range = document.createRange();
         range.setStart(textNode, anno.span.begin);
         range.setEnd(textNode, anno.span.end);
         const rects = Array.from(range.getClientRects() as DOMRectList);
+
         return {
           rects: rects.map(rect => ({
-            x: rect.x,
-            y: rect.y,
+            x: rect.x - textAreaRect.left,
+            y: rect.y - textAreaRect.top,
             width: rect.width,
             height: rect.height,
           })),
@@ -78,13 +77,13 @@ function TextArea({ textPack }: TextAreaProp) {
       });
 
       setAnnotationPositions(annotationBlocks);
+      setTextNodeDimention(textAreaDimention);
     }
   }
 
   useEffect(() => {
     const handleWindowResize = throttle(() => {
-      calculateTextAreaSize();
-      calculateAnnotationPosition(annotations);
+      calculateAnnotationPositionAndAreaSize(annotations);
     }, 100);
 
     handleWindowResize();
@@ -140,18 +139,18 @@ function TextArea({ textPack }: TextAreaProp) {
     })
     .filter(notNullOrUndefined);
 
-  const lineStartX = textAreaDimention.x;
-  const lineWidth = textAreaDimention.width;
-  const textLinkDistance = 5;
+  const lineStartX = textNodeDimention.x;
+  const lineWidth = textNodeDimention.width;
+  const textLinkDistance = 8;
+  const linkGap = 8;
   const borderRadius = 8;
-  const linkGap = 5;
 
   const linesLevels = calcuateLinesLevels(linksWithPos, lineStartX, lineWidth);
   const linkHeight = calcuateLinkHeight(linesLevels, linkGap);
 
   return (
-    <div className={style.text_area_container}>
-      <div className={style.text_node_container} ref={inputEl}>
+    <div className={style.text_area_container} ref={textAreaEl}>
+      <div className={style.text_node_container} ref={textNodeEl}>
         {text}
       </div>
 
@@ -190,6 +189,12 @@ function TextArea({ textPack }: TextAreaProp) {
                 : linkPos.toLinkX - 4 + arrowRadiusAdjust,
               y: linkPos.toLinkY - height - 2,
             };
+            const linkLabelPosition = {
+              x:
+                Math.min(linkPos.fromLinkX, linkPos.toLinkX) +
+                Math.abs(linkPos.fromLinkX - linkPos.toLinkX) / 2,
+              y: linkPos.toLinkY - height - 4,
+            };
 
             return (
               <div
@@ -202,13 +207,9 @@ function TextArea({ textPack }: TextAreaProp) {
                   style={{
                     height: height,
                     width: Math.abs(linkPos.fromLinkX - linkPos.toLinkX),
-                    transform: `translate(${Math.min(
-                      linkPos.fromLinkX,
-                      linkPos.toLinkX
-                    )}px,${linkPos.fromLinkY - height}px)`,
                     position: 'absolute',
-                    top: 0,
-                    left: 0,
+                    top: linkPos.fromLinkY - height,
+                    left: Math.min(linkPos.fromLinkX, linkPos.toLinkX),
                     border: '1px solid #555',
                     borderTopWidth: '1px',
                     borderLeftWidth: '1px',
@@ -223,16 +224,26 @@ function TextArea({ textPack }: TextAreaProp) {
                   style={{
                     transformOrigin: 'center bottom',
                     transform: `
-                        translate(
-                            ${arrowPosition.x}px,
-                            ${arrowPosition.y}px)
                         rotate(
                             ${goLeft ? '60deg' : '-60deg'})`,
                     position: 'absolute',
-                    top: 0,
-                    left: 0,
+                    top: arrowPosition.y,
+                    left: arrowPosition.x,
                   }}
                 ></div>
+
+                <div
+                  className={style.link_label}
+                  style={{
+                    transform: `translate(-50%)`,
+                    position: 'absolute',
+                    textAlign: goLeft ? 'left' : 'right',
+                    top: `${linkLabelPosition.y}px`,
+                    left: `${linkLabelPosition.x}px`,
+                  }}
+                >
+                  {linkPos.link.attributes.rel_type}
+                </div>
               </div>
             );
           } else {
@@ -257,6 +268,30 @@ function TextArea({ textPack }: TextAreaProp) {
                 : linkPos.toLinkX - 4 + arrowRadiusAdjust,
               y: linkPos.toLinkY - toLineHeight - 2,
             };
+            const fromLineX = goLeft
+              ? Math.min(linkPos.fromLinkX, lineStartX) - sideGap
+              : Math.min(linkPos.fromLinkX, lineStartX + lineWidth);
+            const fromLineWith = goLeft
+              ? Math.abs(linkPos.fromLinkX - lineStartX) + sideGap
+              : Math.abs(linkPos.fromLinkX - (lineStartX + lineWidth)) +
+                sideGap;
+
+            const toLineX = goLeft
+              ? Math.min(linkPos.toLinkX, lineStartX) - sideGap
+              : Math.min(linkPos.toLinkX, lineStartX + lineWidth);
+            const toLineWith = goLeft
+              ? Math.abs(linkPos.toLinkX - lineStartX) + sideGap
+              : Math.abs(linkPos.toLinkX - (lineStartX + lineWidth)) + sideGap;
+
+            const fromLinkLabelPosition = {
+              x: fromLineX + fromLineWith / 2,
+              y: linkPos.fromLinkY - fromLineHeight - 4,
+            };
+
+            const toLinkLabelPosition = {
+              x: toLineX + toLineWith / 2,
+              y: linkPos.toLinkY - toLineHeight - 4,
+            };
 
             return (
               <div
@@ -268,18 +303,10 @@ function TextArea({ textPack }: TextAreaProp) {
                 <div
                   style={{
                     height: fromLineHeight,
-                    width: goLeft
-                      ? Math.abs(linkPos.fromLinkX - lineStartX) + sideGap
-                      : Math.abs(linkPos.fromLinkX - (lineStartX + lineWidth)) +
-                        sideGap,
-                    transform: `translate(${
-                      goLeft
-                        ? Math.min(linkPos.fromLinkX, lineStartX) - sideGap
-                        : Math.min(linkPos.fromLinkX, lineStartX + lineWidth)
-                    }px,${linkPos.fromLinkY - fromLineHeight}px)`,
+                    width: fromLineWith,
                     position: 'absolute',
-                    top: 0,
-                    left: 0,
+                    top: linkPos.fromLinkY - fromLineHeight,
+                    left: fromLineX,
                     border: '1px solid #555',
                     borderWidth: '1px',
                     borderTopLeftRadius: goLeft ? 0 : borderRadius,
@@ -292,18 +319,10 @@ function TextArea({ textPack }: TextAreaProp) {
                 <div
                   style={{
                     height: toLineHeight,
-                    width: goLeft
-                      ? Math.abs(linkPos.toLinkX - lineStartX) + sideGap
-                      : Math.abs(linkPos.toLinkX - (lineStartX + lineWidth)) +
-                        sideGap,
-                    transform: `translate(${
-                      goLeft
-                        ? Math.min(linkPos.toLinkX, lineStartX) - sideGap
-                        : Math.min(linkPos.toLinkX, lineStartX + lineWidth)
-                    }px,${linkPos.toLinkY - toLineHeight}px)`,
+                    width: toLineWith,
                     position: 'absolute',
-                    top: 0,
-                    left: 0,
+                    top: linkPos.toLinkY - toLineHeight,
+                    left: toLineX,
                     border: '1px solid #555',
                     borderWidth: '1px',
                     borderTopLeftRadius: goLeft ? 0 : borderRadius,
@@ -322,17 +341,14 @@ function TextArea({ textPack }: TextAreaProp) {
                           (linkPos.fromLinkY - fromLineHeight)
                       ) + 1,
                     width: 1,
-                    transform: `translate(${
-                      goLeft
-                        ? lineStartX - sideGap
-                        : lineStartX + lineWidth + sideGap
-                    }px,${Math.min(
+                    position: 'absolute',
+                    top: Math.min(
                       linkPos.toLinkY - toLineHeight,
                       linkPos.fromLinkY - fromLineHeight
-                    )}px)`,
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
+                    ),
+                    left: goLeft
+                      ? lineStartX - sideGap
+                      : lineStartX + lineWidth + sideGap,
                     borderLeft: '1px solid #555',
                   }}
                 ></div>
@@ -342,16 +358,38 @@ function TextArea({ textPack }: TextAreaProp) {
                   style={{
                     transformOrigin: 'center bottom',
                     transform: `
-                        translate(
-                            ${arrowPosition.x}px,
-                            ${arrowPosition.y}px)
-                        rotate(
-                            ${arrowGoLeft ? '60deg' : '-60deg'})`,
+                        rotate(${arrowGoLeft ? '60deg' : '-60deg'})`,
                     position: 'absolute',
-                    top: 0,
-                    left: 0,
+                    top: arrowPosition.y,
+                    left: arrowPosition.x,
                   }}
                 ></div>
+
+                <div
+                  className={style.link_label}
+                  style={{
+                    transform: `translate(-50%)`,
+                    position: 'absolute',
+                    textAlign: goLeft ? 'left' : 'right',
+                    top: `${fromLinkLabelPosition.y}px`,
+                    left: `${fromLinkLabelPosition.x}px`,
+                  }}
+                >
+                  {linkPos.link.attributes.rel_type}
+                </div>
+
+                <div
+                  className={style.link_label}
+                  style={{
+                    transform: `translate(-50%)`,
+                    position: 'absolute',
+                    textAlign: goLeft ? 'left' : 'right',
+                    top: `${toLinkLabelPosition.y}px`,
+                    left: `${toLinkLabelPosition.x}px`,
+                  }}
+                >
+                  {linkPos.link.attributes.rel_type}
+                </div>
               </div>
             );
           }
