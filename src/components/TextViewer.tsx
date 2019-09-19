@@ -29,7 +29,9 @@ function TextViewer({ textPack }: TextViewerProp) {
           <TextDetail legends={legendsWithColor} attributes={attributes} />
         </div>
 
-        <TextArea textPack={textPack} />
+        <div className={style.text_area_container}>
+          <TextArea textPack={textPack} />
+        </div>
 
         <div className={style.attributes_side_container}>
           <AnnotationDetail annotation={selectedAnnotation} />
