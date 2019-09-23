@@ -20,6 +20,7 @@ export interface IAnnotation extends IEntry {
 export interface ILink extends IEntry {
   fromEntryId: string;
   toEntryId: string;
+  legendId: string;
 }
 
 export interface IGroup extends IEntry {
@@ -31,7 +32,10 @@ export interface ISinglePack {
   annotations: IAnnotation[];
   links: ILink[];
   groups: IGroup[];
-  legends: ILegend[];
+  legends: {
+    annotations: ILegend[];
+    links: ILegend[];
+  };
   attributes: IAttributes;
 }
 
@@ -67,4 +71,23 @@ export interface LinkWithPos {
   toLinkX: number;
   fromLinkY: number;
   toLinkY: number;
+}
+
+export interface IOntology {
+  ontologyName: string;
+  entryDefinitions: IEntryDefinition[];
+}
+
+export interface IEntryDefinition {
+  entryName: string;
+  parentEntryName: string;
+  parentType?: string;
+  childType?: string;
+  attributes?: IEntryAttributeDefinition[];
+}
+
+export interface IEntryAttributeDefinition {
+  attributeType: string;
+  attributeName: string;
+  [key: string]: any;
 }
