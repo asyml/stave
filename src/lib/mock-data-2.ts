@@ -10,7 +10,7 @@ export const singlePack: ISinglePack = {
         end: 3,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.0',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -29,7 +29,7 @@ export const singlePack: ISinglePack = {
         end: 66,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Sentence.0',
-      legendId: 'l1',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Sentence',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -43,7 +43,7 @@ export const singlePack: ISinglePack = {
         end: 190,
       },
       id: 'forte.data.ontology.base_ontology.Document.0',
-      legendId: 'l2',
+      legendId: 'forte.data.ontology.base_ontology.Document',
       attributes: {
         component: 'forte.data.readers.string_reader.StringReader',
         'py/object': 'forte.data.ontology.base_ontology.Document',
@@ -55,7 +55,7 @@ export const singlePack: ISinglePack = {
         end: 9,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.1',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -74,7 +74,7 @@ export const singlePack: ISinglePack = {
         end: 15,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.2',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -93,7 +93,7 @@ export const singlePack: ISinglePack = {
         end: 22,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.3',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -112,7 +112,7 @@ export const singlePack: ISinglePack = {
         end: 29,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.4',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -131,7 +131,7 @@ export const singlePack: ISinglePack = {
         end: 32,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.5',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -150,7 +150,7 @@ export const singlePack: ISinglePack = {
         end: 42,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.6',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -169,7 +169,7 @@ export const singlePack: ISinglePack = {
         end: 45,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.7',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -188,7 +188,7 @@ export const singlePack: ISinglePack = {
         end: 49,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.8',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -207,7 +207,7 @@ export const singlePack: ISinglePack = {
         end: 57,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.9',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -226,7 +226,7 @@ export const singlePack: ISinglePack = {
         end: 59,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.10',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -245,7 +245,7 @@ export const singlePack: ISinglePack = {
         end: 65,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.11',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -264,7 +264,7 @@ export const singlePack: ISinglePack = {
         end: 66,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.12',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -283,7 +283,7 @@ export const singlePack: ISinglePack = {
         end: 76,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.13',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -302,7 +302,7 @@ export const singlePack: ISinglePack = {
         end: 142,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Sentence.1',
-      legendId: 'l1',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Sentence',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -316,7 +316,7 @@ export const singlePack: ISinglePack = {
         end: 83,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.14',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -335,7 +335,7 @@ export const singlePack: ISinglePack = {
         end: 86,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.15',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -354,7 +354,7 @@ export const singlePack: ISinglePack = {
         end: 89,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.16',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -373,7 +373,7 @@ export const singlePack: ISinglePack = {
         end: 99,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.17',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -392,7 +392,7 @@ export const singlePack: ISinglePack = {
         end: 102,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.18',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -411,7 +411,7 @@ export const singlePack: ISinglePack = {
         end: 111,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.19',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -430,7 +430,7 @@ export const singlePack: ISinglePack = {
         end: 117,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.20',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -449,7 +449,7 @@ export const singlePack: ISinglePack = {
         end: 123,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.21',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -468,7 +468,7 @@ export const singlePack: ISinglePack = {
         end: 126,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.22',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -487,7 +487,7 @@ export const singlePack: ISinglePack = {
         end: 130,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.23',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -506,7 +506,7 @@ export const singlePack: ISinglePack = {
         end: 135,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.24',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -525,7 +525,7 @@ export const singlePack: ISinglePack = {
         end: 141,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.25',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -544,7 +544,7 @@ export const singlePack: ISinglePack = {
         end: 142,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.26',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -563,7 +563,7 @@ export const singlePack: ISinglePack = {
         end: 146,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.27',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -582,7 +582,7 @@ export const singlePack: ISinglePack = {
         end: 190,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Sentence.2',
-      legendId: 'l1',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Sentence',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -596,7 +596,7 @@ export const singlePack: ISinglePack = {
         end: 157,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.28',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -615,7 +615,7 @@ export const singlePack: ISinglePack = {
         end: 160,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.29',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -634,7 +634,7 @@ export const singlePack: ISinglePack = {
         end: 162,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.30',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -653,7 +653,7 @@ export const singlePack: ISinglePack = {
         end: 171,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.31',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -672,7 +672,7 @@ export const singlePack: ISinglePack = {
         end: 176,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.32',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -691,7 +691,7 @@ export const singlePack: ISinglePack = {
         end: 179,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.33',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -710,7 +710,7 @@ export const singlePack: ISinglePack = {
         end: 183,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.34',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -729,7 +729,7 @@ export const singlePack: ISinglePack = {
         end: 189,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.35',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -748,7 +748,7 @@ export const singlePack: ISinglePack = {
         end: 190,
       },
       id: 'forte.data.ontology.stanfordnlp_ontology.Token.36',
-      legendId: 'l0',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Token',
       attributes: {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
@@ -765,7 +765,7 @@ export const singlePack: ISinglePack = {
   links: [
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.0',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.4',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.0',
       attributes: {
@@ -773,11 +773,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'det',
+        rel_type_2: 'det_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.1',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.4',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.1',
       attributes: {
@@ -785,11 +786,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'amod',
+        rel_type_2: 'amod_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.2',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.4',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.2',
       attributes: {
@@ -797,11 +799,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'amod',
+        rel_type_2: 'amod_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.3',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.4',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.3',
       attributes: {
@@ -809,11 +812,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'compound',
+        rel_type_2: 'compound_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.4',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.6',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.4',
       attributes: {
@@ -821,11 +825,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'nsubj:pass',
+        rel_type_2: 'nsubj:pass_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.5',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.6',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.5',
       attributes: {
@@ -833,11 +838,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'aux:pass',
+        rel_type_2: 'aux:pass_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.6',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.12',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.6',
       attributes: {
@@ -845,11 +851,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'root',
+        rel_type_2: 'root_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.7',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.11',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.7',
       attributes: {
@@ -857,11 +864,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'case',
+        rel_type_2: 'case_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.8',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.9',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.8',
       attributes: {
@@ -869,11 +877,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'det',
+        rel_type_2: 'det_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.9',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.11',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.9',
       attributes: {
@@ -881,11 +890,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'nmod:poss',
+        rel_type_2: 'nmod:poss_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.10',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.9',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.10',
       attributes: {
@@ -893,11 +903,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'case',
+        rel_type_2: 'case_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.11',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.6',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.11',
       attributes: {
@@ -905,11 +916,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'obl',
+        rel_type_2: 'obl_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.12',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.6',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.12',
       attributes: {
@@ -917,11 +929,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'punct',
+        rel_type_2: 'punct_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.13',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.14',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.13',
       attributes: {
@@ -929,11 +942,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'nsubj',
+        rel_type_2: 'nsubj_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.14',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.26',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.14',
       attributes: {
@@ -941,11 +955,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'root',
+        rel_type_2: 'root_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.15',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.17',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.15',
       attributes: {
@@ -953,11 +968,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'case',
+        rel_type_2: 'case_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.16',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.17',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.16',
       attributes: {
@@ -965,11 +981,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'det',
+        rel_type_2: 'det_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.17',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.14',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.17',
       attributes: {
@@ -977,11 +994,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'obl',
+        rel_type_2: 'obl_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.18',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.20',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.18',
       attributes: {
@@ -989,11 +1007,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'case',
+        rel_type_2: 'case_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.19',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.20',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.19',
       attributes: {
@@ -1001,11 +1020,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'compound',
+        rel_type_2: 'compound_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.20',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.17',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.20',
       attributes: {
@@ -1013,11 +1033,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'nmod',
+        rel_type_2: 'nmod_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.21',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.20',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.21',
       attributes: {
@@ -1025,11 +1046,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'flat',
+        rel_type_2: 'flat_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.22',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.25',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.22',
       attributes: {
@@ -1037,11 +1059,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'case',
+        rel_type_2: 'case_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.23',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.25',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.23',
       attributes: {
@@ -1049,11 +1072,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'det',
+        rel_type_2: 'det_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.24',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.25',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.24',
       attributes: {
@@ -1061,11 +1085,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'amod',
+        rel_type_2: 'amod_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.25',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.14',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.25',
       attributes: {
@@ -1073,11 +1098,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'obl',
+        rel_type_2: 'obl_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.26',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.14',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.26',
       attributes: {
@@ -1085,11 +1111,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'punct',
+        rel_type_2: 'punct_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.27',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.28',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.27',
       attributes: {
@@ -1097,11 +1124,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'nmod:poss',
+        rel_type_2: 'nmod:poss_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.28',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.32',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.28',
       attributes: {
@@ -1109,11 +1137,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'nsubj',
+        rel_type_2: 'nsubj_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.29',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.32',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.29',
       attributes: {
@@ -1121,11 +1150,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'mark',
+        rel_type_2: 'mark_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.30',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.31',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.30',
       attributes: {
@@ -1133,11 +1163,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'det',
+        rel_type_2: 'det_2',
       },
     },
     {
-      id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.31',
-      legendId: 'l4',
+      id: 'forte.data.ontology.stanfordnlp_ontology.Dependency2.31',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency2',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.32',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.31',
       attributes: {
@@ -1145,11 +1176,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'nsubj',
+        rel_type_2: 'nsubj_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.32',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.36',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.32',
       attributes: {
@@ -1157,11 +1189,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'root',
+        rel_type_2: 'root_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.33',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.35',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.33',
       attributes: {
@@ -1169,11 +1202,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'case',
+        rel_type_2: 'case_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.34',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.35',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.34',
       attributes: {
@@ -1181,11 +1215,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'det',
+        rel_type_2: 'det_2',
       },
     },
     {
       id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.35',
-      legendId: 'l3',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.32',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.35',
       attributes: {
@@ -1193,11 +1228,12 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'obl',
+        rel_type_2: 'obl_2',
       },
     },
     {
-      id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.36',
-      legendId: 'l4',
+      id: 'forte.data.ontology.stanfordnlp_ontology.Dependency2.36',
+      legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency2',
       fromEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.28',
       toEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.36',
       attributes: {
@@ -1205,6 +1241,7 @@ export const singlePack: ISinglePack = {
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         rel_type: 'punct',
+        rel_type_2: 'punct_2',
       },
     },
   ],
@@ -1222,25 +1259,25 @@ export const singlePack: ISinglePack = {
   legends: {
     annotations: [
       {
-        id: 'l0',
+        id: 'forte.data.ontology.stanfordnlp_ontology.Token',
         name: 'Token',
       },
       {
-        id: 'l1',
+        id: 'forte.data.ontology.stanfordnlp_ontology.Sentence',
         name: 'Sentence',
       },
       {
-        id: 'l2',
+        id: 'forte.data.ontology.base_ontology.Document',
         name: 'Document',
       },
     ],
     links: [
       {
-        id: 'l3',
+        id: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
         name: 'Dependency',
       },
       {
-        id: 'l4',
+        id: 'forte.data.ontology.stanfordnlp_ontology.Dependency2',
         name: 'Dependency2',
       },
     ],

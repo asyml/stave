@@ -5,11 +5,15 @@
 }
 
 .list li {
-  cursor: pointer;
+  margin-bottom: 8px;
+}
+
+.lengend_container {
   padding: 2px 4px;
 }
 
-.list li:hover {
+.lengend_container:hover {
+  cursor: pointer;
   background: #f8f8f8;
 }
 
@@ -35,4 +39,21 @@
   font-size: 11px;
   overflow-wrap: break-word;
   width: 234px; /* 250 - 16 */
+}
+
+.attribute_name_container {
+  margin-left: 16px;
+}
+
+.attribute_name {
+  padding: 2px 4px;
+}
+
+.attribute_name input {
+  margin-right: 4px;
+}
+
+.attribute_name:hover {
+  cursor: pointer;
+  background: #f8f8f8;
 }

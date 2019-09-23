@@ -1,6 +1,6 @@
 import React from 'react';
 import style from '../styles/TextViewer.module.css';
-import { ISinglePack } from '../lib/interfaces';
+import { ISinglePack, IOntology } from '../lib/interfaces';
 import { applyColorToLegend } from '../lib/utils';
 import AnnotationDetail from './AnnotationDetail';
 import TextDetail from './TextDetail';
@@ -9,9 +9,10 @@ import { useTextViewerState } from '../contexts/text-viewer.context';
 
 export interface TextViewerProp {
   textPack: ISinglePack;
+  ontology: IOntology;
 }
 
-function TextViewer({ textPack }: TextViewerProp) {
+function TextViewer({ textPack, ontology }: TextViewerProp) {
   const { annotations, legends, attributes } = textPack;
 
   const annotationLegendsWithColor = applyColorToLegend(legends.annotations);
@@ -31,6 +32,7 @@ function TextViewer({ textPack }: TextViewerProp) {
             annotationLegends={annotationLegendsWithColor}
             linkLegends={linksLegendsWithColor}
             attributes={attributes}
+            ontology={ontology}
           />
         </div>
 

@@ -72,3 +72,22 @@ export interface LinkWithPos {
   fromLinkY: number;
   toLinkY: number;
 }
+
+export interface IOntology {
+  ontologyName: string;
+  entryDefinitions: IEntryDefinition[];
+}
+
+export interface IEntryDefinition {
+  entryName: string;
+  parentEntryName: string;
+  parentType?: string;
+  childType?: string;
+  attributes?: IEntryAttributeDefinition[];
+}
+
+export interface IEntryAttributeDefinition {
+  attributeType: string;
+  attributeName: string;
+  [key: string]: any;
+}

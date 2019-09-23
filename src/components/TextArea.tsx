@@ -14,7 +14,10 @@ import {
   shouldMultiLineGoLeft,
 } from '../lib/utils';
 import Annotation from './Annotation';
-import { useTextViewerState } from '../contexts/text-viewer.context';
+import {
+  useTextViewerState,
+  attributeId,
+} from '../contexts/text-viewer.context';
 import { throttle } from 'lodash-es';
 
 export interface TextAreaProp {
@@ -45,7 +48,11 @@ function TextArea({ textPack }: TextAreaProp) {
   );
 
   const annotaionLegendsWithColor = applyColorToLegend(legends.annotations);
-  const { selectedLegendIds, selectedAnnotationId } = useTextViewerState();
+  const {
+    selectedLegendIds,
+    selectedAnnotationId,
+    selectedLegendAttributeIds,
+  } = useTextViewerState();
 
   function calculateAnnotationPositionAndAreaSize(annotations: IAnnotation[]) {
     if (textNodeEl.current && textAreaEl.current) {
@@ -196,6 +203,16 @@ function TextArea({ textPack }: TextAreaProp) {
                 Math.abs(linkPos.fromLinkX - linkPos.toLinkX) / 2,
               y: linkPos.toLinkY - height - 4,
             };
+            const linkLabel = Object.keys(linkPos.link.attributes)
+              .filter(attrKey => {
+                return (
+                  selectedLegendAttributeIds.indexOf(
+                    attributeId(linkPos.link.legendId, attrKey)
+                  ) > -1
+                );
+              })
+              .map(attrKey => linkPos.link.attributes[attrKey])
+              .join(', ');
 
             return (
               <div
@@ -233,18 +250,20 @@ function TextArea({ textPack }: TextAreaProp) {
                   }}
                 ></div>
 
-                <div
-                  className={style.link_label}
-                  style={{
-                    transform: `translate(-50%)`,
-                    position: 'absolute',
-                    textAlign: goLeft ? 'left' : 'right',
-                    top: `${linkLabelPosition.y}px`,
-                    left: `${linkLabelPosition.x}px`,
-                  }}
-                >
-                  {linkPos.link.attributes.rel_type}
-                </div>
+                {linkLabel ? (
+                  <div
+                    className={style.link_label}
+                    style={{
+                      transform: `translate(-50%)`,
+                      position: 'absolute',
+                      textAlign: goLeft ? 'left' : 'right',
+                      top: `${linkLabelPosition.y}px`,
+                      left: `${linkLabelPosition.x}px`,
+                    }}
+                  >
+                    {linkLabel}
+                  </div>
+                ) : null}
               </div>
             );
           } else {

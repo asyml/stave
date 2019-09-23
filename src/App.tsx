@@ -8,6 +8,7 @@ import {
   useTextViewerState,
 } from './contexts/text-viewer.context';
 import { singlePack } from './lib/mock-data-2';
+import { ontology } from './lib/mock-config-data';
 
 function App() {
   return (
@@ -25,15 +26,20 @@ function TextViewerFetchContainer() {
     // here is where we send request to get the data
     dispatch({
       type: 'set-text-pack',
-      textPach: singlePack,
+      textPack: singlePack,
+    });
+
+    dispatch({
+      type: 'set-ontology',
+      ontology: ontology,
     });
   }, [dispatch]);
 
-  if (!state.textPack) {
+  if (!state.textPack || !state.ontology) {
     return <div>loading...</div>;
   }
 
-  return <TextViewer textPack={state.textPack} />;
+  return <TextViewer textPack={state.textPack} ontology={state.ontology} />;
 }
 
 export default App;

@@ -1,22 +1,31 @@
 import React, { createContext, useReducer, useContext } from 'react';
-import { ISinglePack } from '../lib/interfaces';
+import { ISinglePack, IOntology } from '../lib/interfaces';
 
-type Action =
-  | { type: 'set-text-pack'; textPach: ISinglePack }
+export type Action =
+  | { type: 'set-text-pack'; textPack: ISinglePack }
+  | { type: 'set-ontology'; ontology: IOntology }
   | { type: 'select-legend'; legendId: string }
   | { type: 'deselect-legend'; legendId: string }
   | { type: 'select-all-legend' }
   | { type: 'deselect-all-legend' }
   | { type: 'select-annotation'; annotationId: string }
-  | { type: 'deselect-annotation' };
+  | { type: 'deselect-annotation' }
+  | { type: 'select-legend-attribute'; legendId: string; attributeId: string }
+  | {
+      type: 'deselect-legend-attribute';
+      legendId: string;
+      attributeId: string;
+    };
 
-type Dispatch = (action: Action) => void;
-type State = {
+export type Dispatch = (action: Action) => void;
+export type State = {
   textPack: ISinglePack | null;
+  ontology: IOntology | null;
   selectedLegendIds: string[];
+  selectedLegendAttributeIds: string[];
   selectedAnnotationId: string | null;
 };
-type TextViewerProviderProps = { children: React.ReactNode };
+export type TextViewerProviderProps = { children: React.ReactNode };
 
 const TextViewerStateContext = createContext<State | undefined>(undefined);
 const TextViewerDispatchContext = createContext<Dispatch | undefined>(
@@ -28,11 +37,23 @@ function textViewerReducer(state: State, action: Action): State {
     case 'set-text-pack':
       return {
         ...state,
-        textPack: action.textPach,
+        textPack: action.textPack,
 
         // TODO: remove the following test code
-        selectedLegendIds: ['l0', 'l3'],
+        selectedLegendIds: [
+          action.textPack.legends.annotations[0].id,
+          action.textPack.legends.links[0].id,
+        ],
+        selectedLegendAttributeIds: [
+          attributeId(action.textPack.legends.links[0].id, 'rel_type'),
+        ],
         // selectedAnnotationId: 'OntonotesOntology.PredicateMention.7'
+      };
+
+    case 'set-ontology':
+      return {
+        ...state,
+        ontology: action.ontology,
       };
 
     case 'select-legend':
@@ -84,13 +105,58 @@ function textViewerReducer(state: State, action: Action): State {
         ...state,
         selectedAnnotationId: null,
       };
+
+    case 'select-legend-attribute':
+      if (
+        state.selectedLegendAttributeIds.indexOf(
+          attributeId(action.legendId, action.attributeId)
+        ) === -1
+      ) {
+        return {
+          ...state,
+          selectedLegendAttributeIds: [
+            ...state.selectedLegendAttributeIds,
+            attributeId(action.legendId, action.attributeId),
+          ],
+        };
+      } else {
+        return {
+          ...state,
+          selectedLegendAttributeIds: [...state.selectedLegendAttributeIds],
+        };
+      }
+
+    case 'deselect-legend-attribute':
+      if (
+        state.selectedLegendAttributeIds.indexOf(
+          attributeId(action.legendId, action.attributeId)
+        ) === -1
+      ) {
+        return {
+          ...state,
+          selectedLegendAttributeIds: [...state.selectedLegendAttributeIds],
+        };
+      } else {
+        return {
+          ...state,
+          selectedLegendAttributeIds: state.selectedLegendAttributeIds.filter(
+            id => id !== attributeId(action.legendId, action.attributeId)
+          ),
+        };
+      }
   }
+}
+
+export function attributeId(legendId: string, attributeId: string) {
+  return legendId + '_' + attributeId;
 }
 
 function TextViewerProvider({ children }: TextViewerProviderProps) {
   const [state, dispatch] = useReducer(textViewerReducer, {
     textPack: null,
+    ontology: null,
     selectedLegendIds: [],
+    selectedLegendAttributeIds: [],
     selectedAnnotationId: null,
   });
 
