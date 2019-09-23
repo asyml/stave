@@ -14,7 +14,8 @@ export interface TextViewerProp {
 function TextViewer({ textPack }: TextViewerProp) {
   const { annotations, legends, attributes } = textPack;
 
-  const legendsWithColor = applyColorToLegend(legends);
+  const annotationLegendsWithColor = applyColorToLegend(legends.annotations);
+  const linksLegendsWithColor = applyColorToLegend(legends.links);
   const contextState = useTextViewerState();
   const selectedAnnotation =
     annotations.find(ann => ann.id === contextState.selectedAnnotationId) ||
@@ -26,7 +27,11 @@ function TextViewer({ textPack }: TextViewerProp) {
 
       <main className={style.layout_container}>
         <div className={style.metadata_side_container}>
-          <TextDetail legends={legendsWithColor} attributes={attributes} />
+          <TextDetail
+            annotationLegends={annotationLegendsWithColor}
+            linkLegends={linksLegendsWithColor}
+            attributes={attributes}
+          />
         </div>
 
         <div className={style.text_area_container}>

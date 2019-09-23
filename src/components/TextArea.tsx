@@ -44,7 +44,7 @@ function TextArea({ textPack }: TextAreaProp) {
     }
   );
 
-  const legendsWithColor = applyColorToLegend(legends);
+  const annotaionLegendsWithColor = applyColorToLegend(legends.annotations);
   const { selectedLegendIds, selectedAnnotationId } = useTextViewerState();
 
   function calculateAnnotationPositionAndAreaSize(annotations: IAnnotation[]) {
@@ -137,7 +137,8 @@ function TextArea({ textPack }: TextAreaProp) {
         return null;
       }
     })
-    .filter(notNullOrUndefined);
+    .filter(notNullOrUndefined)
+    .filter(link => selectedLegendIds.indexOf(link.link.legendId) > -1);
 
   const lineStartX = textNodeDimention.x;
   const lineWidth = textNodeDimention.width;
@@ -156,7 +157,7 @@ function TextArea({ textPack }: TextAreaProp) {
 
       <div className={style.annotation_container}>
         {annotationWithPosition.map((ann, i) => {
-          const legend = legendsWithColor.find(
+          const legend = annotaionLegendsWithColor.find(
             legend => legend.id === ann.annotation.legendId
           );
 

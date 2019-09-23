@@ -769,12 +769,15 @@ export const singlePack: ISinglePack = {
   links: [],
   groups: [],
   attributes: { docid: 'bn/abc/00/abc_0059' },
-  legends: [
-    { id: 'l1', name: 'Token' },
-    { id: 'l2', name: 'EntityMention' },
-    { id: 'l3', name: 'Sentence' },
-    { id: 'l4', name: 'PredicateMention' },
-    { id: 'l5', name: 'PredicateArgument' },
-    { id: 'l6', name: 'CoreferenceMention' },
-  ],
+  legends: {
+    annotations: [
+      { id: 'l1', name: 'Token' },
+      { id: 'l2', name: 'EntityMention' },
+      { id: 'l3', name: 'Sentence' },
+      { id: 'l4', name: 'PredicateMention' },
+      { id: 'l5', name: 'PredicateArgument' },
+      { id: 'l6', name: 'CoreferenceMention' },
+    ],
+    links: [],
+  },
 };

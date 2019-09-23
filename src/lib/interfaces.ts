@@ -20,6 +20,7 @@ export interface IAnnotation extends IEntry {
 export interface ILink extends IEntry {
   fromEntryId: string;
   toEntryId: string;
+  legendId: string;
 }
 
 export interface IGroup extends IEntry {
@@ -31,7 +32,10 @@ export interface ISinglePack {
   annotations: IAnnotation[];
   links: ILink[];
   groups: IGroup[];
-  legends: ILegend[];
+  legends: {
+    annotations: ILegend[];
+    links: ILegend[];
+  };
   attributes: IAttributes;
 }
 

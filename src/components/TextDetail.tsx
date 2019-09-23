@@ -10,10 +10,15 @@ import Attributes from './Attributes';
 
 export interface TextDetailProp {
   attributes: IAttributes;
-  legends: IColoredLegend[];
+  annotationLegends: IColoredLegend[];
+  linkLegends: IColoredLegend[];
 }
 
-export default function TextDetail({ attributes, legends }: TextDetailProp) {
+export default function TextDetail({
+  attributes,
+  annotationLegends,
+  linkLegends,
+}: TextDetailProp) {
   const state = useTextViewerState();
   const dispatch = useTextViewerDispatch();
 
@@ -21,54 +26,79 @@ export default function TextDetail({ attributes, legends }: TextDetailProp) {
     title: 'legend',
     body: () => (
       <>
-        <div className={style.clear_buttons}>
-          <button
-            onClick={() => {
-              dispatch({ type: 'select-all-legend' });
-            }}
-          >
-            select all
-          </button>
-          <button
-            onClick={() => {
-              dispatch({ type: 'deselect-all-legend' });
-            }}
-          >
-            clear
-          </button>
-        </div>
-        <ul className={style.list}>
-          {legends.map(legend => {
-            const isSelected = state.selectedLegendIds.indexOf(legend.id) > -1;
+        <div className="annotation-legend-container">
+          <h3>Annotations</h3>
+          <ul className={style.list}>
+            {annotationLegends.map(legend => {
+              const isSelected =
+                state.selectedLegendIds.indexOf(legend.id) > -1;
 
-            return (
-              <li
-                key={legend.id}
-                onClick={() => {
-                  isSelected
-                    ? dispatch({
-                        type: 'deselect-legend',
-                        legendId: legend.id,
-                      })
-                    : dispatch({
-                        type: 'select-legend',
-                        legendId: legend.id,
-                      });
-                }}
-              >
-                <input type="checkbox" readOnly checked={isSelected} />
-                <span
-                  style={{
-                    backgroundColor: legend.color,
-                    color: 'white',
+              return (
+                <li
+                  key={legend.id}
+                  onClick={() => {
+                    isSelected
+                      ? dispatch({
+                          type: 'deselect-legend',
+                          legendId: legend.id,
+                        })
+                      : dispatch({
+                          type: 'select-legend',
+                          legendId: legend.id,
+                        });
                   }}
                 >
-                  {legend.name}
-                </span>
-              </li>
-            );
-          })}
-        </ul>
+                  <input type="checkbox" readOnly checked={isSelected} />
+                  <span
+                    style={{
+                      backgroundColor: legend.color,
+                      color: 'white',
+                    }}
+                  >
+                    {legend.name}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+
+        <div className="annotation-legend-container">
+          <h3>Links</h3>
+          <ul className={style.list}>
+            {linkLegends.map(legend => {
+              const isSelected =
+                state.selectedLegendIds.indexOf(legend.id) > -1;
+
+              return (
+                <li
+                  key={legend.id}
+                  onClick={() => {
+                    isSelected
+                      ? dispatch({
+                          type: 'deselect-legend',
+                          legendId: legend.id,
+                        })
+                      : dispatch({
+                          type: 'select-legend',
+                          legendId: legend.id,
+                        });
+                  }}
+                >
+                  <input type="checkbox" readOnly checked={isSelected} />
+                  <span
+                    style={{
+                      backgroundColor: legend.color,
+                      color: 'white',
+                    }}
+                  >
+                    {legend.name}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </>
     ),
   };

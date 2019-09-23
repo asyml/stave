@@ -31,7 +31,7 @@ function textViewerReducer(state: State, action: Action): State {
         textPack: action.textPach,
 
         // TODO: remove the following test code
-        selectedLegendIds: ['l0'],
+        selectedLegendIds: ['l0', 'l3'],
         // selectedAnnotationId: 'OntonotesOntology.PredicateMention.7'
       };
 
@@ -64,7 +64,7 @@ function textViewerReducer(state: State, action: Action): State {
 
       return {
         ...state,
-        selectedLegendIds: state.textPack.legends.map(l => l.id),
+        selectedLegendIds: state.textPack.legends.annotations.map(l => l.id),
       };
 
     case 'deselect-all-legend':
