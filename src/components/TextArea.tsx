@@ -156,6 +156,8 @@ function TextArea({ textPack }: TextAreaProp) {
   const linesLevels = calcuateLinesLevels(linksWithPos, lineStartX, lineWidth);
   const linkHeight = calcuateLinkHeight(linesLevels, linkGap);
 
+  // selectedLegendAttributeIds;
+
   return (
     <div className={style.text_area_container} ref={textAreaEl}>
       <div className={style.text_node_container} ref={textNodeEl}>
@@ -180,6 +182,56 @@ function TextArea({ textPack }: TextAreaProp) {
               legend={legend}
               position={ann.position}
             />
+          );
+        })}
+      </div>
+
+      <div className="annotation_labe_container">
+        {annotationWithPosition.map((ann, i) => {
+          const legend = annotaionLegendsWithColor.find(
+            legend => legend.id === ann.annotation.legendId
+          );
+
+          if (!legend) {
+            return null;
+          }
+
+          return (
+            <div key={ann.annotation.id}>
+              {Object.keys(ann.annotation.attributes)
+                .filter(attrKey => {
+                  return (
+                    selectedLegendAttributeIds.indexOf(
+                      attributeId(ann.annotation.legendId, attrKey)
+                    ) > -1
+                  );
+                })
+                .map(attrKey => {
+                  return (
+                    <div key={attrKey}>
+                      {ann.position.rects.map((rect, i) => {
+                        return (
+                          <div
+                            key={i}
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              left: 0,
+                              transform: `translate(${rect.x}px,${rect.y}px)`,
+                              height: rect.height,
+                              width: rect.width,
+                              cursor: 'pointer',
+                              fontSize: 10,
+                            }}
+                          >
+                            {ann.annotation.attributes[attrKey]}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })}
+            </div>
           );
         })}
       </div>
