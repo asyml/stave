@@ -3,8 +3,9 @@ import style from '../styles/TextArea.module.css';
 import {
   ISinglePack,
   AnnotationPosition,
-  LinkWithPos,
+  ISpaceMap,
   IAnnotation,
+  ILink,
 } from '../lib/interfaces';
 import {
   applyColorToLegend,
@@ -12,11 +13,14 @@ import {
   calcuateLinesLevels,
   calcuateLinkHeight,
   shouldMultiLineGoLeft,
+  calculateSpacedText,
 } from '../lib/utils';
 import Annotation from './Annotation';
 import {
   useTextViewerState,
   attributeId,
+  SpacedAnnotationSpan,
+  useTextViewerDispatch,
 } from '../contexts/text-viewer.context';
 import { throttle } from 'lodash-es';
 
@@ -52,100 +56,165 @@ function TextArea({ textPack }: TextAreaProp) {
     selectedLegendIds,
     selectedAnnotationId,
     selectedLegendAttributeIds,
+    spacingCalcuated,
+    spacedAnnotationSpan,
+    spacedText,
   } = useTextViewerState();
-
-  function calculateAnnotationPositionAndAreaSize(annotations: IAnnotation[]) {
-    if (textNodeEl.current && textAreaEl.current) {
-      const textNode = textNodeEl.current && textNodeEl.current.childNodes[0];
-      const textAreaRect = textAreaEl.current.getBoundingClientRect();
-      const textNodeRect = textNodeEl.current.getBoundingClientRect();
-
-      const textAreaDimention = {
-        width: textNodeRect.width,
-        height: textNodeRect.height,
-        x: textNodeRect.left - textAreaRect.left,
-        y: textNodeRect.top - textAreaRect.top,
-      };
-
-      const annotationBlocks = annotations.map(anno => {
-        const range = document.createRange();
-        range.setStart(textNode, anno.span.begin);
-        range.setEnd(textNode, anno.span.end);
-        const rects = Array.from(range.getClientRects() as DOMRectList);
-
-        return {
-          rects: rects.map(rect => ({
-            x: rect.x - textAreaRect.left,
-            y: rect.y - textAreaRect.top,
-            width: rect.width,
-            height: rect.height,
-          })),
-        };
-      });
-
-      setAnnotationPositions(annotationBlocks);
-      setTextNodeDimention(textAreaDimention);
-    }
-  }
+  const dispatch = useTextViewerDispatch();
 
   useEffect(() => {
+    function calculateAnnotationPositionAndAreaSize(
+      textPack: ISinglePack,
+      selectedLegendIds: string[],
+      selectedLegendAttributeIds: string[],
+      spacingCalcuated: boolean,
+      spacedAnnotationSpan: SpacedAnnotationSpan
+    ) {
+      const { annotations, links } = textPack;
+
+      if (textNodeEl.current && textAreaEl.current) {
+        const textNode = textNodeEl.current && textNodeEl.current.childNodes[0];
+        const textAreaRect = textAreaEl.current.getBoundingClientRect();
+        const textNodeRect = textNodeEl.current.getBoundingClientRect();
+
+        const textAreaDimention = {
+          width: textNodeRect.width,
+          height: textNodeRect.height,
+          x: textNodeRect.left - textAreaRect.left,
+          y: textNodeRect.top - textAreaRect.top,
+        };
+
+        const annotationPositions = annotations.map(anno => {
+          const range = document.createRange();
+
+          range.setStart(
+            textNode,
+            spacedAnnotationSpan[anno.id]
+              ? spacedAnnotationSpan[anno.id].begin
+              : anno.span.begin
+          );
+          range.setEnd(
+            textNode,
+            spacedAnnotationSpan[anno.id]
+              ? spacedAnnotationSpan[anno.id].end
+              : anno.span.end
+          );
+          const rects = Array.from(range.getClientRects() as DOMRectList);
+
+          return {
+            rects: rects.map(rect => ({
+              x: rect.x - textAreaRect.left,
+              y: rect.y - textAreaRect.top,
+              width: rect.width,
+              height: rect.height,
+            })),
+          };
+        });
+
+        setAnnotationPositions(annotationPositions);
+        setTextNodeDimention(textAreaDimention);
+
+        if (!spacingCalcuated) {
+          console.log('spacingCalcuated', spacingCalcuated);
+          const annotationWithPosition = mergeAnnotationWithPosition(
+            annotationPositions,
+            annotations
+          ).filter(
+            ann => selectedLegendIds.indexOf(ann.annotation.legendId) > -1
+          );
+
+          const linksWithPos = mergeLinkWithPosition(
+            links,
+            annotationWithPosition
+          ).filter(link => selectedLegendIds.indexOf(link.link.legendId) > -1);
+
+          const spaceMap: ISpaceMap = {};
+
+          linksWithPos.forEach(linkPos => {
+            const label = Object.keys(linkPos.link.attributes)
+              .filter(attrKey => {
+                return (
+                  selectedLegendAttributeIds.indexOf(
+                    attributeId(linkPos.link.legendId, attrKey)
+                  ) > -1
+                );
+              })
+              .map(attrKey => linkPos.link.attributes[attrKey])
+              .join(',');
+
+            const fontWidth = 6;
+            const spaceNeedForLabel = label.length * fontWidth + 15;
+            const distance = Math.abs(linkPos.fromLinkX - linkPos.toLinkX);
+            const annotaionId =
+              linkPos.fromLinkX < linkPos.toLinkX
+                ? linkPos.fromEntryWithPos.annotation.id
+                : linkPos.toEntryWithPos.annotation.id;
+            const spaceToMove =
+              distance > spaceNeedForLabel
+                ? 0
+                : Math.ceil((spaceNeedForLabel - distance) / fontWidth);
+
+            if (spaceMap[annotaionId] === undefined) {
+              spaceMap[annotaionId] = { annotaionId, spaceToMove };
+            } else {
+              if (spaceToMove > spaceMap[annotaionId].spaceToMove) {
+                spaceMap[annotaionId] = { annotaionId, spaceToMove };
+              }
+            }
+          });
+          const [
+            caculcatedSpacedText,
+            caculcatedSpacedAnnotationSpan,
+          ] = calculateSpacedText(textPack, spaceMap);
+
+          dispatch({
+            type: 'set-spaced-annotation-span',
+            spacedAnnotationSpan: caculcatedSpacedAnnotationSpan,
+            spacedText: caculcatedSpacedText,
+          });
+        }
+      }
+    }
+
     const handleWindowResize = throttle(() => {
-      calculateAnnotationPositionAndAreaSize(annotations);
+      console.log('calculateAnnotationPositionAndAreaSize');
+      calculateAnnotationPositionAndAreaSize(
+        textPack,
+        selectedLegendIds,
+        selectedLegendAttributeIds,
+        spacingCalcuated,
+        spacedAnnotationSpan
+      );
     }, 100);
 
+    // setTimeout(() => {
     handleWindowResize();
+    // }, 1000);
+
     window.addEventListener('resize', handleWindowResize);
 
     return () => {
       window.removeEventListener('resize', handleWindowResize);
     };
-  }, [annotations]);
+  }, [
+    textPack,
+    selectedLegendIds,
+    selectedLegendAttributeIds,
+    spacingCalcuated,
+    // spacedText,
+    spacedAnnotationSpan,
+    dispatch,
+  ]);
 
-  const annotationWithPosition = (annotationPositions || [])
-    .map((position, i) => {
-      return {
-        position,
-        annotation: annotations[i],
-      };
-    })
-    .filter(ann => selectedLegendIds.indexOf(ann.annotation.legendId) > -1);
+  const annotationWithPosition = mergeAnnotationWithPosition(
+    annotationPositions,
+    annotations
+  ).filter(ann => selectedLegendIds.indexOf(ann.annotation.legendId) > -1);
 
-  let linksWithPos: LinkWithPos[] = links
-    .map(link => {
-      const fromEntryWithPosition = annotationWithPosition.find(
-        ann => ann.annotation.id === link.fromEntryId
-      );
-      const toEntryWithPosition = annotationWithPosition.find(
-        ann => ann.annotation.id === link.toEntryId
-      );
-
-      if (fromEntryWithPosition && toEntryWithPosition) {
-        const fromEntryX = fromEntryWithPosition.position.rects[0].x;
-        const fromEntryY = fromEntryWithPosition.position.rects[0].y;
-        const fromEntryWidth = fromEntryWithPosition.position.rects[0].width;
-
-        const toEntryX = toEntryWithPosition.position.rects[0].x;
-        const toEntryY = toEntryWithPosition.position.rects[0].y;
-        const toEntryWidth = toEntryWithPosition.position.rects[0].width;
-
-        const fromLinkX = fromEntryX + fromEntryWidth / 2;
-        const toLinkX = toEntryX + toEntryWidth / 2;
-
-        return {
-          link,
-          fromEntryWithPos: fromEntryWithPosition,
-          toEntryWithPos: toEntryWithPosition,
-          fromLinkX,
-          toLinkX,
-          fromLinkY: fromEntryY,
-          toLinkY: toEntryY,
-        };
-      } else {
-        return null;
-      }
-    })
-    .filter(notNullOrUndefined)
-    .filter(link => selectedLegendIds.indexOf(link.link.legendId) > -1);
+  const linksWithPos = mergeLinkWithPosition(
+    links,
+    annotationWithPosition
+  ).filter(link => selectedLegendIds.indexOf(link.link.legendId) > -1);
 
   const lineStartX = textNodeDimention.x;
   const lineWidth = textNodeDimention.width;
@@ -158,9 +227,11 @@ function TextArea({ textPack }: TextAreaProp) {
 
   return (
     <div className={style.text_area_container} ref={textAreaEl}>
-      <div className={style.text_node_container} ref={textNodeEl}>
-        {text}
-      </div>
+      <div
+        className={style.text_node_container}
+        ref={textNodeEl}
+        dangerouslySetInnerHTML={{ __html: spacedText || text }}
+      ></div>
 
       <div className={style.annotation_container}>
         {annotationWithPosition.map((ann, i) => {
@@ -180,6 +251,56 @@ function TextArea({ textPack }: TextAreaProp) {
               legend={legend}
               position={ann.position}
             />
+          );
+        })}
+      </div>
+
+      <div className="annotation_label_container">
+        {annotationWithPosition.map((ann, i) => {
+          const legend = annotaionLegendsWithColor.find(
+            legend => legend.id === ann.annotation.legendId
+          );
+
+          if (!legend) {
+            return null;
+          }
+
+          return (
+            <div key={ann.annotation.id}>
+              {Object.keys(ann.annotation.attributes)
+                .filter(attrKey => {
+                  return (
+                    selectedLegendAttributeIds.indexOf(
+                      attributeId(ann.annotation.legendId, attrKey)
+                    ) > -1
+                  );
+                })
+                .map(attrKey => {
+                  return (
+                    <div key={attrKey}>
+                      {ann.position.rects.map((rect, i) => {
+                        return (
+                          <div
+                            key={i}
+                            style={{
+                              position: 'absolute',
+                              top: 20,
+                              left: 0,
+                              transform: `translate(${rect.x}px,${rect.y}px)`,
+                              height: rect.height,
+                              width: rect.width,
+                              cursor: 'pointer',
+                              fontSize: 10,
+                            }}
+                          >
+                            {ann.annotation.attributes[attrKey]}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })}
+            </div>
           );
         })}
       </div>
@@ -212,7 +333,7 @@ function TextArea({ textPack }: TextAreaProp) {
                 );
               })
               .map(attrKey => linkPos.link.attributes[attrKey])
-              .join(', ');
+              .join(',');
 
             return (
               <div
@@ -313,6 +434,17 @@ function TextArea({ textPack }: TextAreaProp) {
               y: linkPos.toLinkY - toLineHeight - 4,
             };
 
+            const linkLabel = Object.keys(linkPos.link.attributes)
+              .filter(attrKey => {
+                return (
+                  selectedLegendAttributeIds.indexOf(
+                    attributeId(linkPos.link.legendId, attrKey)
+                  ) > -1
+                );
+              })
+              .map(attrKey => linkPos.link.attributes[attrKey])
+              .join(',');
+
             return (
               <div
                 className="cross-line-container"
@@ -372,7 +504,6 @@ function TextArea({ textPack }: TextAreaProp) {
                     borderLeft: '1px solid #555',
                   }}
                 ></div>
-
                 <div
                   className={style.arrow}
                   style={{
@@ -384,7 +515,6 @@ function TextArea({ textPack }: TextAreaProp) {
                     left: arrowPosition.x,
                   }}
                 ></div>
-
                 <div
                   className={style.link_label}
                   style={{
@@ -395,9 +525,8 @@ function TextArea({ textPack }: TextAreaProp) {
                     left: `${fromLinkLabelPosition.x}px`,
                   }}
                 >
-                  {linkPos.link.attributes.rel_type}
+                  {linkLabel}
                 </div>
-
                 <div
                   className={style.link_label}
                   style={{
@@ -408,7 +537,7 @@ function TextArea({ textPack }: TextAreaProp) {
                     left: `${toLinkLabelPosition.x}px`,
                   }}
                 >
-                  {linkPos.link.attributes.rel_type}
+                  {linkLabel}
                 </div>
               </div>
             );
@@ -420,3 +549,55 @@ function TextArea({ textPack }: TextAreaProp) {
 }
 
 export default TextArea;
+
+function mergeAnnotationWithPosition(
+  annotationPositions: AnnotationPosition[],
+  annotations: IAnnotation[]
+) {
+  return (annotationPositions || []).map((position, i) => {
+    return {
+      position,
+      annotation: annotations[i],
+    };
+  });
+}
+
+function mergeLinkWithPosition(
+  links: ILink[],
+  annotationWithPosition: {
+    position: AnnotationPosition;
+    annotation: IAnnotation;
+  }[]
+) {
+  return links
+    .map(link => {
+      const fromEntryWithPosition = annotationWithPosition.find(
+        ann => ann.annotation.id === link.fromEntryId
+      );
+      const toEntryWithPosition = annotationWithPosition.find(
+        ann => ann.annotation.id === link.toEntryId
+      );
+      if (fromEntryWithPosition && toEntryWithPosition) {
+        const fromEntryX = fromEntryWithPosition.position.rects[0].x;
+        const fromEntryY = fromEntryWithPosition.position.rects[0].y;
+        const fromEntryWidth = fromEntryWithPosition.position.rects[0].width;
+        const toEntryX = toEntryWithPosition.position.rects[0].x;
+        const toEntryY = toEntryWithPosition.position.rects[0].y;
+        const toEntryWidth = toEntryWithPosition.position.rects[0].width;
+        const fromLinkX = fromEntryX + fromEntryWidth / 2;
+        const toLinkX = toEntryX + toEntryWidth / 2;
+        return {
+          link,
+          fromEntryWithPos: fromEntryWithPosition,
+          toEntryWithPos: toEntryWithPosition,
+          fromLinkX,
+          toLinkX,
+          fromLinkY: fromEntryY,
+          toLinkY: toEntryY,
+        };
+      } else {
+        return null;
+      }
+    })
+    .filter(notNullOrUndefined);
+}

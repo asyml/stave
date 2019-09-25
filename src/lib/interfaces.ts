@@ -91,3 +91,10 @@ export interface IEntryAttributeDefinition {
   attributeName: string;
   [key: string]: any;
 }
+
+export interface ISpaceMap {
+  [key: string]: {
+    annotaionId: string;
+    spaceToMove: number;
+  };
+}
