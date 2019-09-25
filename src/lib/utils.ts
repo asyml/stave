@@ -1,4 +1,10 @@
-import { ILegend, IColoredLegend, LinkWithPos } from './interfaces';
+import {
+  ILegend,
+  IColoredLegend,
+  LinkWithPos,
+  ISinglePack,
+  ISpaceMap,
+} from './interfaces';
 import { colorPalettes } from './color';
 
 export function applyColorToLegend(legends: ILegend[]): IColoredLegend[] {
@@ -225,4 +231,83 @@ export function shouldMultiLineGoLeft(
   const topLineX =
     link.fromLinkY < link.toLinkY ? link.fromLinkX : link.toLinkX;
   return topLineX < lineStartX + lineWidth / 2;
+}
+
+export function calculateSpacedText(
+  textPack: ISinglePack,
+  spaceMap: ISpaceMap
+) {
+  const textSplit = textPack.text.split('');
+  const sortedSpaceMap = Object.keys(spaceMap)
+    .filter(annId => spaceMap[annId].spaceToMove > 0)
+    .map(annId => {
+      return {
+        space: spaceMap[annId],
+        annotation: textPack.annotations.find(an => an.id === annId),
+      };
+    })
+    .sort((annA, annB) => {
+      if (annA.annotation && annB.annotation) {
+        return annA.annotation.span.end - annB.annotation.span.end;
+      } else {
+        return 0;
+      }
+    })
+    .map(ann => {
+      return {
+        spaceToMove: ann.space.spaceToMove,
+        annotaion: ann.annotation,
+        end: ann.annotation ? ann.annotation.span.end : -1,
+      };
+    });
+
+  console.log(sortedSpaceMap);
+
+  const spacedAnnotationSpan: {
+    [key: string]: { begin: number; end: number };
+  } = {};
+
+  textPack.annotations.forEach(ann => {
+    spacedAnnotationSpan[ann.id] = {
+      begin: ann.span.begin,
+      end: ann.span.end,
+    };
+  });
+
+  for (let i = 0; i < sortedSpaceMap.length; i++) {
+    const space = sortedSpaceMap[i];
+    const spaceFromLast = sortedSpaceMap[sortedSpaceMap.length - i - 1];
+    const emptySpaces = Array(spaceFromLast.spaceToMove)
+      .fill('&nbsp;')
+      .join('');
+
+    textSplit.splice(spaceFromLast.end, 0, emptySpaces);
+
+    if (space.annotaion) {
+      const end = spacedAnnotationSpan[space.annotaion.id].end;
+      Object.keys(spacedAnnotationSpan).forEach(annId => {
+        if (spacedAnnotationSpan[annId].begin >= end) {
+          spacedAnnotationSpan[annId].begin =
+            spacedAnnotationSpan[annId].begin + space.spaceToMove;
+          spacedAnnotationSpan[annId].end =
+            spacedAnnotationSpan[annId].end + space.spaceToMove;
+        } else if (
+          spacedAnnotationSpan[annId].begin < end &&
+          spacedAnnotationSpan[annId].end > end
+        ) {
+          spacedAnnotationSpan[annId].end =
+            spacedAnnotationSpan[annId].end + space.spaceToMove;
+        } else {
+          // don't change
+        }
+      });
+    }
+  }
+
+  const spacedText = textSplit.join('');
+
+  return [spacedText, spacedAnnotationSpan] as [
+    typeof spacedText,
+    typeof spacedAnnotationSpan
+  ];
 }

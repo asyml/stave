@@ -12,10 +12,19 @@ export type Action =
   | { type: 'deselect-annotation' }
   | { type: 'select-legend-attribute'; legendId: string; attributeId: string }
   | {
+      type: 'set-spaced-annotation-span';
+      spacedAnnotationSpan: SpacedAnnotationSpan;
+      spacedText: string;
+    }
+  | {
       type: 'deselect-legend-attribute';
       legendId: string;
       attributeId: string;
     };
+
+export interface SpacedAnnotationSpan {
+  [annotationId: string]: { begin: number; end: number };
+}
 
 export type Dispatch = (action: Action) => void;
 export type State = {
@@ -24,6 +33,9 @@ export type State = {
   selectedLegendIds: string[];
   selectedLegendAttributeIds: string[];
   selectedAnnotationId: string | null;
+  spacingCalcuated: boolean;
+  spacedAnnotationSpan: SpacedAnnotationSpan;
+  spacedText: string | null;
 };
 export type TextViewerProviderProps = { children: React.ReactNode };
 
@@ -32,11 +44,18 @@ const TextViewerDispatchContext = createContext<Dispatch | undefined>(
   undefined
 );
 
+const defaultSpacingState = {
+  spacingCalcuated: false,
+  spacedText: null,
+  spacedAnnotationSpan: {},
+};
+
 function textViewerReducer(state: State, action: Action): State {
   switch (action.type) {
     case 'set-text-pack':
       return {
         ...state,
+        ...defaultSpacingState,
         textPack: action.textPack,
 
         // TODO: remove the following test code
@@ -53,6 +72,7 @@ function textViewerReducer(state: State, action: Action): State {
     case 'set-ontology':
       return {
         ...state,
+        ...defaultSpacingState,
         ontology: action.ontology,
       };
 
@@ -60,18 +80,28 @@ function textViewerReducer(state: State, action: Action): State {
       if (state.selectedLegendIds.indexOf(action.legendId) === -1) {
         return {
           ...state,
+          ...defaultSpacingState,
           selectedLegendIds: [...state.selectedLegendIds, action.legendId],
         };
       } else {
-        return { ...state, selectedLegendIds: [...state.selectedLegendIds] };
+        return {
+          ...state,
+          ...defaultSpacingState,
+          selectedLegendIds: [...state.selectedLegendIds],
+        };
       }
 
     case 'deselect-legend':
       if (state.selectedLegendIds.indexOf(action.legendId) === -1) {
-        return { ...state, selectedLegendIds: [...state.selectedLegendIds] };
+        return {
+          ...state,
+          ...defaultSpacingState,
+          selectedLegendIds: [...state.selectedLegendIds],
+        };
       } else {
         return {
           ...state,
+          ...defaultSpacingState,
           selectedLegendIds: state.selectedLegendIds.filter(
             id => id !== action.legendId
           ),
@@ -85,12 +115,14 @@ function textViewerReducer(state: State, action: Action): State {
 
       return {
         ...state,
+        ...defaultSpacingState,
         selectedLegendIds: state.textPack.legends.annotations.map(l => l.id),
       };
 
     case 'deselect-all-legend':
       return {
         ...state,
+        ...defaultSpacingState,
         selectedLegendIds: [],
       };
 
@@ -114,6 +146,7 @@ function textViewerReducer(state: State, action: Action): State {
       ) {
         return {
           ...state,
+          ...defaultSpacingState,
           selectedLegendAttributeIds: [
             ...state.selectedLegendAttributeIds,
             attributeId(action.legendId, action.attributeId),
@@ -122,6 +155,7 @@ function textViewerReducer(state: State, action: Action): State {
       } else {
         return {
           ...state,
+          ...defaultSpacingState,
           selectedLegendAttributeIds: [...state.selectedLegendAttributeIds],
         };
       }
@@ -134,16 +168,26 @@ function textViewerReducer(state: State, action: Action): State {
       ) {
         return {
           ...state,
+          ...defaultSpacingState,
           selectedLegendAttributeIds: [...state.selectedLegendAttributeIds],
         };
       } else {
         return {
           ...state,
+          ...defaultSpacingState,
           selectedLegendAttributeIds: state.selectedLegendAttributeIds.filter(
             id => id !== attributeId(action.legendId, action.attributeId)
           ),
         };
       }
+
+    case 'set-spaced-annotation-span':
+      return {
+        ...state,
+        spacingCalcuated: true,
+        spacedAnnotationSpan: action.spacedAnnotationSpan,
+        spacedText: action.spacedText,
+      };
   }
 }
 
@@ -158,6 +202,9 @@ function TextViewerProvider({ children }: TextViewerProviderProps) {
     selectedLegendIds: [],
     selectedLegendAttributeIds: [],
     selectedAnnotationId: null,
+    spacingCalcuated: false,
+    spacedAnnotationSpan: {},
+    spacedText: null,
   });
 
   return (
