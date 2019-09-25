@@ -115,53 +115,14 @@ function TextArea({ textPack }: TextAreaProp) {
         setTextNodeDimention(textAreaDimention);
 
         if (!spacingCalcuated) {
-          console.log('spacingCalcuated', spacingCalcuated);
-          const annotationWithPosition = mergeAnnotationWithPosition(
+          const spaceMap: ISpaceMap = calcuateSpaceMap(
             annotationPositions,
-            annotations
-          ).filter(
-            ann => selectedLegendIds.indexOf(ann.annotation.legendId) > -1
+            annotations,
+            links,
+            selectedLegendIds,
+            selectedLegendAttributeIds
           );
 
-          const linksWithPos = mergeLinkWithPosition(
-            links,
-            annotationWithPosition
-          ).filter(link => selectedLegendIds.indexOf(link.link.legendId) > -1);
-
-          const spaceMap: ISpaceMap = {};
-
-          linksWithPos.forEach(linkPos => {
-            const label = Object.keys(linkPos.link.attributes)
-              .filter(attrKey => {
-                return (
-                  selectedLegendAttributeIds.indexOf(
-                    attributeId(linkPos.link.legendId, attrKey)
-                  ) > -1
-                );
-              })
-              .map(attrKey => linkPos.link.attributes[attrKey])
-              .join(',');
-
-            const fontWidth = 6;
-            const spaceNeedForLabel = label.length * fontWidth + 15;
-            const distance = Math.abs(linkPos.fromLinkX - linkPos.toLinkX);
-            const annotaionId =
-              linkPos.fromLinkX < linkPos.toLinkX
-                ? linkPos.fromEntryWithPos.annotation.id
-                : linkPos.toEntryWithPos.annotation.id;
-            const spaceToMove =
-              distance > spaceNeedForLabel
-                ? 0
-                : Math.ceil((spaceNeedForLabel - distance) / fontWidth);
-
-            if (spaceMap[annotaionId] === undefined) {
-              spaceMap[annotaionId] = { annotaionId, spaceToMove };
-            } else {
-              if (spaceToMove > spaceMap[annotaionId].spaceToMove) {
-                spaceMap[annotaionId] = { annotaionId, spaceToMove };
-              }
-            }
-          });
           const [
             caculcatedSpacedText,
             caculcatedSpacedAnnotationSpan,
@@ -187,9 +148,7 @@ function TextArea({ textPack }: TextAreaProp) {
       );
     }, 100);
 
-    // setTimeout(() => {
     handleWindowResize();
-    // }, 1000);
 
     window.addEventListener('resize', handleWindowResize);
 
@@ -201,7 +160,6 @@ function TextArea({ textPack }: TextAreaProp) {
     selectedLegendIds,
     selectedLegendAttributeIds,
     spacingCalcuated,
-    // spacedText,
     spacedAnnotationSpan,
     dispatch,
   ]);
@@ -265,41 +223,44 @@ function TextArea({ textPack }: TextAreaProp) {
             return null;
           }
 
+          const attrKeys = Object.keys(ann.annotation.attributes).filter(
+            attrKey => {
+              return (
+                selectedLegendAttributeIds.indexOf(
+                  attributeId(ann.annotation.legendId, attrKey)
+                ) > -1
+              );
+            }
+          );
+
           return (
             <div key={ann.annotation.id}>
-              {Object.keys(ann.annotation.attributes)
-                .filter(attrKey => {
+              {ann.position.rects.map((rect, i) => {
+                return attrKeys.map((attrKey, j) => {
                   return (
-                    selectedLegendAttributeIds.indexOf(
-                      attributeId(ann.annotation.legendId, attrKey)
-                    ) > -1
-                  );
-                })
-                .map(attrKey => {
-                  return (
-                    <div key={attrKey}>
-                      {ann.position.rects.map((rect, i) => {
-                        return (
-                          <div
-                            key={i}
-                            style={{
-                              position: 'absolute',
-                              top: 20,
-                              left: 0,
-                              transform: `translate(${rect.x}px,${rect.y}px)`,
-                              height: rect.height,
-                              width: rect.width,
-                              cursor: 'pointer',
-                              fontSize: 10,
-                            }}
-                          >
-                            {ann.annotation.attributes[attrKey]}
-                          </div>
-                        );
-                      })}
+                    <div
+                      className="annotation_attr_rect"
+                      key={attrKey + i}
+                      style={{
+                        position: 'absolute',
+                        top: rect.y + 20 + j * 2,
+                        left: rect.x + rect.width / 2 + j * 2,
+                        transform: `translate(-50%, 0)`,
+                        width: 30,
+                        cursor: 'pointer',
+                        textAlign: 'center',
+                        fontSize: 10,
+                        border: '1px solid #ccc',
+                        backgroundColor: 'white',
+                      }}
+                    >
+                      {ann.annotation.attributes[attrKey]
+                        .substring(0, 3)
+                        .toUpperCase()}
                     </div>
                   );
-                })}
+                });
+              })}
             </div>
           );
         })}
@@ -600,4 +561,98 @@ function mergeLinkWithPosition(
       }
     })
     .filter(notNullOrUndefined);
+}
+
+function calcuateSpaceMap(
+  annotationPositions: AnnotationPosition[],
+  annotations: IAnnotation[],
+  links: ILink[],
+  selectedLegendIds: string[],
+  selectedLegendAttributeIds: string[]
+) {
+  const spaceMap: ISpaceMap = {};
+
+  const annotationWithPosition = mergeAnnotationWithPosition(
+    annotationPositions,
+    annotations
+  ).filter(ann => selectedLegendIds.indexOf(ann.annotation.legendId) > -1);
+
+  const linksWithPos = mergeLinkWithPosition(
+    links,
+    annotationWithPosition
+  ).filter(link => selectedLegendIds.indexOf(link.link.legendId) > -1);
+
+  linksWithPos.forEach(linkPos => {
+    const label = Object.keys(linkPos.link.attributes)
+      .filter(attrKey => {
+        return (
+          selectedLegendAttributeIds.indexOf(
+            attributeId(linkPos.link.legendId, attrKey)
+          ) > -1
+        );
+      })
+      .map(attrKey => linkPos.link.attributes[attrKey])
+      .join(',');
+
+    const fontWidth = 6;
+    const spaceNeedForLabel = label.length * fontWidth + 15;
+    const distance = Math.abs(linkPos.fromLinkX - linkPos.toLinkX);
+    const annotationWithPos =
+      linkPos.fromLinkX < linkPos.toLinkX
+        ? linkPos.fromEntryWithPos
+        : linkPos.toEntryWithPos;
+    const spaceToMove =
+      distance > spaceNeedForLabel
+        ? 0
+        : Math.ceil((spaceNeedForLabel - distance) / fontWidth);
+
+    if (spaceMap[annotationWithPos.annotation.id] === undefined) {
+      spaceMap[annotationWithPos.annotation.id] = {
+        annotationWithPos,
+        spaceToMove,
+      };
+    } else {
+      if (spaceToMove > spaceMap[annotationWithPos.annotation.id].spaceToMove) {
+        spaceMap[annotationWithPos.annotation.id] = {
+          annotationWithPos,
+          spaceToMove,
+        };
+      }
+    }
+  });
+
+  annotationWithPosition
+    .slice(0)
+    .sort((a, b) => a.annotation.span.end - b.annotation.span.end)
+    .forEach((annPos, i, arr) => {
+      if (i < arr.length - 1 && annPos.position.rects.length === 1) {
+        const nextAnnPos = arr[i + 1];
+        const midAnnX =
+          annPos.position.rects[0].x + annPos.position.rects[0].width / 2;
+        const nextAnnX =
+          nextAnnPos.position.rects[0].x +
+          nextAnnPos.position.rects[0].width / 2;
+        const fontWidth = 6;
+        if (nextAnnX - midAnnX < 35 && nextAnnX - midAnnX > 0) {
+          const spaceToMove = Math.ceil(
+            (35 - (nextAnnX - midAnnX)) / fontWidth
+          );
+          if (spaceMap[annPos.annotation.id] === undefined) {
+            spaceMap[annPos.annotation.id] = {
+              annotationWithPos: annPos,
+              spaceToMove,
+            };
+          } else {
+            if (spaceToMove > spaceMap[annPos.annotation.id].spaceToMove) {
+              spaceMap[annPos.annotation.id] = {
+                annotationWithPos: annPos,
+                spaceToMove,
+              };
+            }
+          }
+        }
+      }
+    });
+
+  return spaceMap;
 }
