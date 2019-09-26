@@ -64,6 +64,8 @@ function textViewerReducer(state: State, action: Action): State {
           action.textPack.legends.links[0].id,
         ],
         selectedLegendAttributeIds: [
+          attributeId(action.textPack.legends.annotations[0].id, 'lemma'),
+          attributeId(action.textPack.legends.annotations[0].id, 'pos_tag'),
           attributeId(action.textPack.legends.links[0].id, 'rel_type'),
         ],
         // selectedAnnotationId: 'OntonotesOntology.PredicateMention.7'

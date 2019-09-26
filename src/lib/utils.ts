@@ -240,28 +240,13 @@ export function calculateSpacedText(
   const textSplit = textPack.text.split('');
   const sortedSpaceMap = Object.keys(spaceMap)
     .filter(annId => spaceMap[annId].spaceToMove > 0)
-    .map(annId => {
-      return {
-        space: spaceMap[annId],
-        annotation: textPack.annotations.find(an => an.id === annId),
-      };
-    })
+    .map(annId => spaceMap[annId])
     .sort((annA, annB) => {
-      if (annA.annotation && annB.annotation) {
-        return annA.annotation.span.end - annB.annotation.span.end;
-      } else {
-        return 0;
-      }
-    })
-    .map(ann => {
-      return {
-        spaceToMove: ann.space.spaceToMove,
-        annotaion: ann.annotation,
-        end: ann.annotation ? ann.annotation.span.end : -1,
-      };
+      return (
+        annA.annotationWithPos.annotation.span.end -
+        annB.annotationWithPos.annotation.span.end
+      );
     });
-
-  console.log(sortedSpaceMap);
 
   const spacedAnnotationSpan: {
     [key: string]: { begin: number; end: number };
@@ -281,27 +266,30 @@ export function calculateSpacedText(
       .fill('&nbsp;')
       .join('');
 
-    textSplit.splice(spaceFromLast.end, 0, emptySpaces);
+    textSplit.splice(
+      spaceFromLast.annotationWithPos.annotation.span.end,
+      0,
+      emptySpaces
+    );
 
-    if (space.annotaion) {
-      const end = spacedAnnotationSpan[space.annotaion.id].end;
-      Object.keys(spacedAnnotationSpan).forEach(annId => {
-        if (spacedAnnotationSpan[annId].begin >= end) {
-          spacedAnnotationSpan[annId].begin =
-            spacedAnnotationSpan[annId].begin + space.spaceToMove;
-          spacedAnnotationSpan[annId].end =
-            spacedAnnotationSpan[annId].end + space.spaceToMove;
-        } else if (
-          spacedAnnotationSpan[annId].begin < end &&
-          spacedAnnotationSpan[annId].end > end
-        ) {
-          spacedAnnotationSpan[annId].end =
-            spacedAnnotationSpan[annId].end + space.spaceToMove;
-        } else {
-          // don't change
-        }
-      });
-    }
+    const end = spacedAnnotationSpan[space.annotationWithPos.annotation.id].end;
+
+    Object.keys(spacedAnnotationSpan).forEach(annId => {
+      if (spacedAnnotationSpan[annId].begin >= end) {
+        spacedAnnotationSpan[annId].begin =
+          spacedAnnotationSpan[annId].begin + space.spaceToMove;
+        spacedAnnotationSpan[annId].end =
+          spacedAnnotationSpan[annId].end + space.spaceToMove;
+      } else if (
+        spacedAnnotationSpan[annId].begin < end &&
+        spacedAnnotationSpan[annId].end > end
+      ) {
+        spacedAnnotationSpan[annId].end =
+          spacedAnnotationSpan[annId].end + space.spaceToMove;
+      } else {
+        // don't change
+      }
+    });
   }
 
   const spacedText = textSplit.join('');
@@ -311,3 +299,5 @@ export function calculateSpacedText(
     typeof spacedAnnotationSpan
   ];
 }
+
+export const fontWidth = 6;

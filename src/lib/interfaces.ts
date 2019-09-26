@@ -59,18 +59,17 @@ export interface AnnotationPosition {
 
 export interface LinkWithPos {
   link: ILink;
-  fromEntryWithPos: {
-    position: AnnotationPosition;
-    annotation: IAnnotation;
-  };
-  toEntryWithPos: {
-    position: AnnotationPosition;
-    annotation: IAnnotation;
-  };
+  fromEntryWithPos: IAnnotationWithPos;
+  toEntryWithPos: IAnnotationWithPos;
   fromLinkX: number;
   toLinkX: number;
   fromLinkY: number;
   toLinkY: number;
+}
+
+export interface IAnnotationWithPos {
+  position: AnnotationPosition;
+  annotation: IAnnotation;
 }
 
 export interface IOntology {
@@ -94,7 +93,7 @@ export interface IEntryAttributeDefinition {
 
 export interface ISpaceMap {
   [key: string]: {
-    annotaionId: string;
+    annotationWithPos: IAnnotationWithPos;
     spaceToMove: number;
   };
 }
