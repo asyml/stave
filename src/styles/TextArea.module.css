@@ -24,3 +24,7 @@
   background: white;
   color: #555;
 }
+
+.annotation_attr_rect {
+  transition: all 0.3s;
+}

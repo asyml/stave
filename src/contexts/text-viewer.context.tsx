@@ -66,9 +66,11 @@ function textViewerReducer(state: State, action: Action): State {
         selectedLegendAttributeIds: [
           attributeId(action.textPack.legends.annotations[0].id, 'lemma'),
           attributeId(action.textPack.legends.annotations[0].id, 'pos_tag'),
+          attributeId(action.textPack.legends.annotations[0].id, 'upos'),
           attributeId(action.textPack.legends.links[0].id, 'rel_type'),
         ],
-        // selectedAnnotationId: 'OntonotesOntology.PredicateMention.7'
+        selectedAnnotationId:
+          'forte.data.ontology.stanfordnlp_ontology.Token.6',
       };
 
     case 'set-ontology':

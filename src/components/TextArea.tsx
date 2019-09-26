@@ -224,6 +224,7 @@ function TextArea({ textPack }: TextAreaProp) {
             return null;
           }
 
+          const isSelected = ann.annotation.id === selectedAnnotationId;
           const attrKeys = Object.keys(ann.annotation.attributes).filter(
             attrKey => {
               return (
@@ -235,25 +236,40 @@ function TextArea({ textPack }: TextAreaProp) {
           );
 
           return (
-            <div key={ann.annotation.id}>
+            <div
+              key={ann.annotation.id}
+              style={{
+                position: 'absolute',
+                zIndex: isSelected ? 10 : 0,
+                transform: `translate(-50%, 0)`,
+                top: ann.position.rects[0].y + 20,
+                left: ann.position.rects[0].x + ann.position.rects[0].width / 2,
+              }}
+            >
               {ann.position.rects.map((rect, i) => {
                 return attrKeys.map((attrKey, j) => {
                   return (
                     <div
-                      className="annotation_attr_rect"
+                      className={style.annotation_attr_rect}
                       key={attrKey + i}
                       style={{
-                        position: 'absolute',
-                        top: rect.y + 20 + j * 2,
-                        left: rect.x + rect.width / 2 + j * 2,
-                        transform: `translate(-50%, 0)`,
-                        // width: 30,
                         padding: '0 4px',
                         cursor: 'pointer',
                         textAlign: 'center',
                         fontSize: 10,
                         border: '1px solid #ccc',
                         backgroundColor: 'white',
+                        ...(isSelected
+                          ? {
+                              display: 'inline-block',
+                              marginRight: j === attrKeys.length - 1 ? 0 : 4,
+                              boxShadow: '0 3px 8px rgba(0, 0, 0, .3)',
+                            }
+                          : {
+                              position: j > 0 ? 'absolute' : 'relative',
+                              top: j * 2,
+                              left: j * 2,
+                            }),
                       }}
                     >
                       {ann.annotation.attributes[attrKey]
