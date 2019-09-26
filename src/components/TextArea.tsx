@@ -14,6 +14,7 @@ import {
   calcuateLinkHeight,
   shouldMultiLineGoLeft,
   calculateSpacedText,
+  fontWidth,
 } from '../lib/utils';
 import Annotation from './Annotation';
 import {
@@ -27,7 +28,7 @@ import { throttle } from 'lodash-es';
 export interface TextAreaProp {
   textPack: ISinglePack;
 }
-export interface TextNodeDimention {
+export interface TextNodeDimension {
   width: number;
   height: number;
   x: number;
@@ -42,7 +43,7 @@ function TextArea({ textPack }: TextAreaProp) {
     AnnotationPosition[]
   >([]);
 
-  const [textNodeDimention, setTextNodeDimention] = useState<TextNodeDimention>(
+  const [textNodeDimension, setTextNodeDimension] = useState<TextNodeDimension>(
     {
       width: 0,
       height: 0,
@@ -77,7 +78,7 @@ function TextArea({ textPack }: TextAreaProp) {
         const textAreaRect = textAreaEl.current.getBoundingClientRect();
         const textNodeRect = textNodeEl.current.getBoundingClientRect();
 
-        const textAreaDimention = {
+        const textAreaDimension = {
           width: textNodeRect.width,
           height: textNodeRect.height,
           x: textNodeRect.left - textAreaRect.left,
@@ -112,7 +113,7 @@ function TextArea({ textPack }: TextAreaProp) {
         });
 
         setAnnotationPositions(annotationPositions);
-        setTextNodeDimention(textAreaDimention);
+        setTextNodeDimension(textAreaDimension);
 
         if (!spacingCalcuated) {
           const spaceMap: ISpaceMap = calcuateSpaceMap(
@@ -174,8 +175,8 @@ function TextArea({ textPack }: TextAreaProp) {
     annotationWithPosition
   ).filter(link => selectedLegendIds.indexOf(link.link.legendId) > -1);
 
-  const lineStartX = textNodeDimention.x;
-  const lineWidth = textNodeDimention.width;
+  const lineStartX = textNodeDimension.x;
+  const lineWidth = textNodeDimension.width;
   const textLinkDistance = 8;
   const linkGap = 8;
   const borderRadius = 8;
@@ -246,7 +247,8 @@ function TextArea({ textPack }: TextAreaProp) {
                         top: rect.y + 20 + j * 2,
                         left: rect.x + rect.width / 2 + j * 2,
                         transform: `translate(-50%, 0)`,
-                        width: 30,
+                        // width: 30,
+                        padding: '0 4px',
                         cursor: 'pointer',
                         textAlign: 'center',
                         fontSize: 10,
@@ -594,7 +596,6 @@ function calcuateSpaceMap(
       .map(attrKey => linkPos.link.attributes[attrKey])
       .join(',');
 
-    const fontWidth = 6;
     const spaceNeedForLabel = label.length * fontWidth + 15;
     const distance = Math.abs(linkPos.fromLinkX - linkPos.toLinkX);
     const annotationWithPos =
@@ -621,6 +622,7 @@ function calcuateSpaceMap(
     }
   });
 
+  const pxielNeededForLabel = 35;
   annotationWithPosition
     .slice(0)
     .sort((a, b) => a.annotation.span.end - b.annotation.span.end)
@@ -629,13 +631,25 @@ function calcuateSpaceMap(
         const nextAnnPos = arr[i + 1];
         const midAnnX =
           annPos.position.rects[0].x + annPos.position.rects[0].width / 2;
-        const nextAnnX =
+        const nextMidAnnX =
           nextAnnPos.position.rects[0].x +
           nextAnnPos.position.rects[0].width / 2;
-        const fontWidth = 6;
-        if (nextAnnX - midAnnX < 35 && nextAnnX - midAnnX > 0) {
+        const isSameLine =
+          annPos.position.rects[0].y === nextAnnPos.position.rects[0].y;
+
+        let distance;
+        if (isSameLine) {
+          distance = nextMidAnnX - midAnnX;
+        } else {
+          const midAnnXToEnd = annPos.position.rects[0].width / 2;
+          const nextMidAnnXToStart = nextAnnPos.position.rects[0].width / 2;
+
+          distance = midAnnXToEnd + nextMidAnnXToStart + 4;
+        }
+
+        if (distance < pxielNeededForLabel && distance > 0) {
           const spaceToMove = Math.ceil(
-            (35 - (nextAnnX - midAnnX)) / fontWidth
+            (pxielNeededForLabel - distance) / fontWidth
           );
           if (spaceMap[annPos.annotation.id] === undefined) {
             spaceMap[annPos.annotation.id] = {

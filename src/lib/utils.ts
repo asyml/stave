@@ -299,3 +299,5 @@ export function calculateSpacedText(
     typeof spacedAnnotationSpan
   ];
 }
+
+export const fontWidth = 6;
