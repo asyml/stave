@@ -4,6 +4,7 @@ import {
   ISpacedAnnotationSpan,
 } from '../lib/interfaces';
 import { createContextProvider } from '../lib/create-context-provider';
+import { attributeId } from '../lib/utils';
 
 export type Dispatch = (action: Action) => void;
 
@@ -24,6 +25,7 @@ export type Action =
   | { type: 'deselect-all-legend' }
   | { type: 'select-annotation'; annotationId: string }
   | { type: 'deselect-annotation' }
+  | { type: 'reset-calculated-text-space' }
   | { type: 'select-legend-attribute'; legendId: string; attributeId: string }
   | {
       type: 'set-spaced-annotation-span';
@@ -213,6 +215,12 @@ function textViewerReducer(state: State, action: Action): State {
         };
       }
 
+    case 'reset-calculated-text-space':
+      return {
+        ...state,
+        ...defaultSpacingState,
+      };
+
     case 'set-spaced-annotation-span':
       return {
         ...state,
@@ -221,10 +229,6 @@ function textViewerReducer(state: State, action: Action): State {
         spacedText: action.spacedText,
       };
   }
-}
-
-export function attributeId(legendId: string, attributeId: string) {
-  return legendId + '_' + attributeId;
 }
 
 const [

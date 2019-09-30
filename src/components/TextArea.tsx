@@ -3,24 +3,23 @@ import style from '../styles/TextArea.module.css';
 import {
   ISinglePack,
   AnnotationPosition,
-  ISpaceMap,
-  IAnnotation,
-  ILink,
   ISpacedAnnotationSpan,
 } from '../lib/interfaces';
 import {
   applyColorToLegend,
-  notNullOrUndefined,
   calcuateLinesLevels,
   calcuateLinkHeight,
   shouldMultiLineGoLeft,
-  calculateSpacedText,
-  fontWidth,
+  attributeId,
 } from '../lib/utils';
+import {
+  spaceOutText,
+  mergeLinkWithPosition,
+  mergeAnnotationWithPosition,
+} from '../lib/text-spacer';
 import Annotation from './Annotation';
 import {
   useTextViewerState,
-  attributeId,
   useTextViewerDispatch,
 } from '../contexts/text-viewer.context';
 import { throttle } from 'lodash-es';
@@ -53,25 +52,39 @@ function TextArea({ textPack }: TextAreaProp) {
   );
 
   const annotaionLegendsWithColor = applyColorToLegend(legends.annotations);
+
+  const dispatch = useTextViewerDispatch();
   const {
     selectedLegendIds,
     selectedAnnotationId,
     selectedLegendAttributeIds,
     spacingCalcuated,
+
     spacedAnnotationSpan,
     spacedText,
   } = useTextViewerState();
-  const dispatch = useTextViewerDispatch();
 
   useEffect(() => {
-    function calculateAnnotationPositionAndAreaSize(
+    function calculateTextSpace(
       textPack: ISinglePack,
       selectedLegendIds: string[],
       selectedLegendAttributeIds: string[],
       spacingCalcuated: boolean,
       spacedAnnotationSpan: ISpacedAnnotationSpan
     ) {
-      const { annotations, links } = textPack;
+      if (!spacingCalcuated) {
+        const { text, annotationSpanMap } = spaceOutText(
+          textPack,
+          selectedLegendIds,
+          selectedLegendAttributeIds
+        );
+
+        dispatch({
+          type: 'set-spaced-annotation-span',
+          spacedAnnotationSpan: annotationSpanMap,
+          spacedText: text,
+        });
+      }
 
       if (textNodeEl.current && textAreaEl.current) {
         const textNode = textNodeEl.current && textNodeEl.current.childNodes[0];
@@ -85,7 +98,7 @@ function TextArea({ textPack }: TextAreaProp) {
           y: textNodeRect.top - textAreaRect.top,
         };
 
-        const annotationPositions = annotations.map(anno => {
+        const annotationPositions = textPack.annotations.map(anno => {
           const range = document.createRange();
 
           range.setStart(
@@ -114,42 +127,22 @@ function TextArea({ textPack }: TextAreaProp) {
 
         setAnnotationPositions(annotationPositions);
         setTextNodeDimension(textAreaDimension);
-
-        if (!spacingCalcuated) {
-          const spaceMap: ISpaceMap = calcuateSpaceMap(
-            annotationPositions,
-            annotations,
-            links,
-            selectedLegendIds,
-            selectedLegendAttributeIds
-          );
-
-          const [
-            caculcatedSpacedText,
-            caculcatedSpacedAnnotationSpan,
-          ] = calculateSpacedText(textPack, spaceMap);
-
-          dispatch({
-            type: 'set-spaced-annotation-span',
-            spacedAnnotationSpan: caculcatedSpacedAnnotationSpan,
-            spacedText: caculcatedSpacedText,
-          });
-        }
       }
     }
 
     const handleWindowResize = throttle(() => {
-      console.log('calculateAnnotationPositionAndAreaSize');
-      calculateAnnotationPositionAndAreaSize(
-        textPack,
-        selectedLegendIds,
-        selectedLegendAttributeIds,
-        spacingCalcuated,
-        spacedAnnotationSpan
-      );
+      dispatch({
+        type: 'reset-calculated-text-space',
+      });
     }, 100);
 
-    handleWindowResize();
+    calculateTextSpace(
+      textPack,
+      selectedLegendIds,
+      selectedLegendAttributeIds,
+      spacingCalcuated,
+      spacedAnnotationSpan
+    );
 
     window.addEventListener('resize', handleWindowResize);
 
@@ -185,12 +178,16 @@ function TextArea({ textPack }: TextAreaProp) {
   const linkHeight = calcuateLinkHeight(linesLevels, linkGap);
 
   return (
-    <div className={style.text_area_container} ref={textAreaEl}>
-      <div
-        className={style.text_node_container}
-        ref={textNodeEl}
-        dangerouslySetInnerHTML={{ __html: spacedText || text }}
-      ></div>
+    <div
+      className={style.text_area_container}
+      ref={textAreaEl}
+      style={{
+        opacity: spacingCalcuated ? 1 : 0,
+      }}
+    >
+      <div className={style.text_node_container} ref={textNodeEl}>
+        {spacedText || text}
+      </div>
 
       <div className={style.annotation_container}>
         {annotationWithPosition.map((ann, i) => {
@@ -528,161 +525,3 @@ function TextArea({ textPack }: TextAreaProp) {
 }
 
 export default TextArea;
-
-function mergeAnnotationWithPosition(
-  annotationPositions: AnnotationPosition[],
-  annotations: IAnnotation[]
-) {
-  return (annotationPositions || []).map((position, i) => {
-    return {
-      position,
-      annotation: annotations[i],
-    };
-  });
-}
-
-function mergeLinkWithPosition(
-  links: ILink[],
-  annotationWithPosition: {
-    position: AnnotationPosition;
-    annotation: IAnnotation;
-  }[]
-) {
-  return links
-    .map(link => {
-      const fromEntryWithPosition = annotationWithPosition.find(
-        ann => ann.annotation.id === link.fromEntryId
-      );
-      const toEntryWithPosition = annotationWithPosition.find(
-        ann => ann.annotation.id === link.toEntryId
-      );
-      if (fromEntryWithPosition && toEntryWithPosition) {
-        const fromEntryX = fromEntryWithPosition.position.rects[0].x;
-        const fromEntryY = fromEntryWithPosition.position.rects[0].y;
-        const fromEntryWidth = fromEntryWithPosition.position.rects[0].width;
-        const toEntryX = toEntryWithPosition.position.rects[0].x;
-        const toEntryY = toEntryWithPosition.position.rects[0].y;
-        const toEntryWidth = toEntryWithPosition.position.rects[0].width;
-        const fromLinkX = fromEntryX + fromEntryWidth / 2;
-        const toLinkX = toEntryX + toEntryWidth / 2;
-        return {
-          link,
-          fromEntryWithPos: fromEntryWithPosition,
-          toEntryWithPos: toEntryWithPosition,
-          fromLinkX,
-          toLinkX,
-          fromLinkY: fromEntryY,
-          toLinkY: toEntryY,
-        };
-      } else {
-        return null;
-      }
-    })
-    .filter(notNullOrUndefined);
-}
-
-function calcuateSpaceMap(
-  annotationPositions: AnnotationPosition[],
-  annotations: IAnnotation[],
-  links: ILink[],
-  selectedLegendIds: string[],
-  selectedLegendAttributeIds: string[]
-) {
-  const spaceMap: ISpaceMap = {};
-
-  const annotationWithPosition = mergeAnnotationWithPosition(
-    annotationPositions,
-    annotations
-  ).filter(ann => selectedLegendIds.indexOf(ann.annotation.legendId) > -1);
-
-  const linksWithPos = mergeLinkWithPosition(
-    links,
-    annotationWithPosition
-  ).filter(link => selectedLegendIds.indexOf(link.link.legendId) > -1);
-
-  linksWithPos.forEach(linkPos => {
-    const label = Object.keys(linkPos.link.attributes)
-      .filter(attrKey => {
-        return (
-          selectedLegendAttributeIds.indexOf(
-            attributeId(linkPos.link.legendId, attrKey)
-          ) > -1
-        );
-      })
-      .map(attrKey => linkPos.link.attributes[attrKey])
-      .join(',');
-
-    const spaceNeedForLabel = label.length * fontWidth + 15;
-    const distance = Math.abs(linkPos.fromLinkX - linkPos.toLinkX);
-    const annotationWithPos =
-      linkPos.fromLinkX < linkPos.toLinkX
-        ? linkPos.fromEntryWithPos
-        : linkPos.toEntryWithPos;
-    const spaceToMove =
-      distance > spaceNeedForLabel
-        ? 0
-        : Math.ceil((spaceNeedForLabel - distance) / fontWidth);
-
-    if (spaceMap[annotationWithPos.annotation.id] === undefined) {
-      spaceMap[annotationWithPos.annotation.id] = {
-        annotationWithPos,
-        spaceToMove,
-      };
-    } else {
-      if (spaceToMove > spaceMap[annotationWithPos.annotation.id].spaceToMove) {
-        spaceMap[annotationWithPos.annotation.id] = {
-          annotationWithPos,
-          spaceToMove,
-        };
-      }
-    }
-  });
-
-  const pxielNeededForLabel = 35;
-  annotationWithPosition
-    .slice(0)
-    .sort((a, b) => a.annotation.span.end - b.annotation.span.end)
-    .forEach((annPos, i, arr) => {
-      if (i < arr.length - 1 && annPos.position.rects.length === 1) {
-        const nextAnnPos = arr[i + 1];
-        const midAnnX =
-          annPos.position.rects[0].x + annPos.position.rects[0].width / 2;
-        const nextMidAnnX =
-          nextAnnPos.position.rects[0].x +
-          nextAnnPos.position.rects[0].width / 2;
-        const isSameLine =
-          annPos.position.rects[0].y === nextAnnPos.position.rects[0].y;
-
-        let distance;
-        if (isSameLine) {
-          distance = nextMidAnnX - midAnnX;
-        } else {
-          const midAnnXToEnd = annPos.position.rects[0].width / 2;
-          const nextMidAnnXToStart = nextAnnPos.position.rects[0].width / 2;
-
-          distance = midAnnXToEnd + nextMidAnnXToStart + 4;
-        }
-
-        if (distance < pxielNeededForLabel && distance > 0) {
-          const spaceToMove = Math.ceil(
-            (pxielNeededForLabel - distance) / fontWidth
-          );
-          if (spaceMap[annPos.annotation.id] === undefined) {
-            spaceMap[annPos.annotation.id] = {
-              annotationWithPos: annPos,
-              spaceToMove,
-            };
-          } else {
-            if (spaceToMove > spaceMap[annPos.annotation.id].spaceToMove) {
-              spaceMap[annPos.annotation.id] = {
-                annotationWithPos: annPos,
-                spaceToMove,
-              };
-            }
-          }
-        }
-      }
-    });
-
-  return spaceMap;
-}
