@@ -6,6 +6,7 @@ import {
   ISpaceMap,
   IAnnotation,
   ILink,
+  ISpacedAnnotationSpan,
 } from '../lib/interfaces';
 import {
   applyColorToLegend,
@@ -20,7 +21,6 @@ import Annotation from './Annotation';
 import {
   useTextViewerState,
   attributeId,
-  SpacedAnnotationSpan,
   useTextViewerDispatch,
 } from '../contexts/text-viewer.context';
 import { throttle } from 'lodash-es';
@@ -69,7 +69,7 @@ function TextArea({ textPack }: TextAreaProp) {
       selectedLegendIds: string[],
       selectedLegendAttributeIds: string[],
       spacingCalcuated: boolean,
-      spacedAnnotationSpan: SpacedAnnotationSpan
+      spacedAnnotationSpan: ISpacedAnnotationSpan
     ) {
       const { annotations, links } = textPack;
 
