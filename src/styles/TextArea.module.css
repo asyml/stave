@@ -1,15 +1,9 @@
 .text_area_container {
-  padding: 16px;
-  border: 1px solid #ccc;
-  border-top: none;
-  min-height: calc(100vh - 50px);
-  overflow-y: auto;
-  flex: 1;
   position: relative;
 }
 
 .text_node_container {
-  line-height: 100px;
+  white-space: pre-wrap;
 }
 
 .arrow {

@@ -115,7 +115,7 @@ export function calcuateLinesLevels(
     });
 
     projectDownLinksInLevels(levels);
-    return levels;
+    return levels.filter(l => l.length);
   }
 
   // go through each level from bottom to top
@@ -235,7 +235,9 @@ export function shouldMultiLineGoLeft(
 
 export function calculateSpacedText(
   textPack: ISinglePack,
-  spaceMap: ISpaceMap
+  spaceMap: ISpaceMap,
+  fill: string,
+  insertDirection: 'before' | 'after' = 'after'
 ) {
   const textSplit = textPack.text.split('');
   const sortedSpaceMap = Object.keys(spaceMap)
@@ -263,11 +265,13 @@ export function calculateSpacedText(
     const space = sortedSpaceMap[i];
     const spaceFromLast = sortedSpaceMap[sortedSpaceMap.length - i - 1];
     const emptySpaces = Array(spaceFromLast.spaceToMove)
-      .fill('&nbsp;')
+      .fill(fill)
       .join('');
 
     textSplit.splice(
-      spaceFromLast.annotationWithPos.annotation.span.end,
+      insertDirection === 'before'
+        ? spaceFromLast.annotationWithPos.annotation.span.begin
+        : spaceFromLast.annotationWithPos.annotation.span.end,
       0,
       emptySpaces
     );
@@ -301,3 +305,7 @@ export function calculateSpacedText(
 }
 
 export const fontWidth = 6;
+
+export function attributeId(legendId: string, attributeId: string) {
+  return legendId + '_' + attributeId;
+}

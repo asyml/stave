@@ -97,3 +97,7 @@ export interface ISpaceMap {
     spaceToMove: number;
   };
 }
+
+export interface ISpacedAnnotationSpan {
+  [annotationId: string]: { begin: number; end: number };
+}

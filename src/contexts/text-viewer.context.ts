@@ -1,5 +1,20 @@
-import React, { createContext, useReducer, useContext } from 'react';
-import { ISinglePack, IOntology } from '../lib/interfaces';
+import {
+  ISinglePack,
+  IOntology,
+  ISpacedAnnotationSpan,
+} from '../lib/interfaces';
+import { createContextProvider } from '../lib/create-context-provider';
+import { attributeId } from '../lib/utils';
+
+export type Dispatch = (action: Action) => void;
+
+/**
+ *
+ *
+ * The actions
+ *
+ *
+ */
 
 export type Action =
   | { type: 'set-text-pack'; textPack: ISinglePack }
@@ -10,10 +25,11 @@ export type Action =
   | { type: 'deselect-all-legend' }
   | { type: 'select-annotation'; annotationId: string }
   | { type: 'deselect-annotation' }
+  | { type: 'reset-calculated-text-space' }
   | { type: 'select-legend-attribute'; legendId: string; attributeId: string }
   | {
       type: 'set-spaced-annotation-span';
-      spacedAnnotationSpan: SpacedAnnotationSpan;
+      spacedAnnotationSpan: ISpacedAnnotationSpan;
       spacedText: string;
     }
   | {
@@ -22,11 +38,14 @@ export type Action =
       attributeId: string;
     };
 
-export interface SpacedAnnotationSpan {
-  [annotationId: string]: { begin: number; end: number };
-}
+/**
+ *
+ *
+ * The state
+ *
+ *
+ */
 
-export type Dispatch = (action: Action) => void;
 export type State = {
   textPack: ISinglePack | null;
   ontology: IOntology | null;
@@ -34,21 +53,32 @@ export type State = {
   selectedLegendAttributeIds: string[];
   selectedAnnotationId: string | null;
   spacingCalcuated: boolean;
-  spacedAnnotationSpan: SpacedAnnotationSpan;
+  spacedAnnotationSpan: ISpacedAnnotationSpan;
   spacedText: string | null;
 };
-export type TextViewerProviderProps = { children: React.ReactNode };
-
-const TextViewerStateContext = createContext<State | undefined>(undefined);
-const TextViewerDispatchContext = createContext<Dispatch | undefined>(
-  undefined
-);
 
 const defaultSpacingState = {
   spacingCalcuated: false,
   spacedText: null,
   spacedAnnotationSpan: {},
 };
+
+const initialState: State = {
+  textPack: null,
+  ontology: null,
+  selectedLegendIds: [],
+  selectedLegendAttributeIds: [],
+  selectedAnnotationId: null,
+  ...defaultSpacingState,
+};
+
+/**
+ *
+ *
+ * The reducer
+ *
+ *
+ */
 
 function textViewerReducer(state: State, action: Action): State {
   switch (action.type) {
@@ -185,6 +215,12 @@ function textViewerReducer(state: State, action: Action): State {
         };
       }
 
+    case 'reset-calculated-text-space':
+      return {
+        ...state,
+        ...defaultSpacingState,
+      };
+
     case 'set-spaced-annotation-span':
       return {
         ...state,
@@ -195,49 +231,10 @@ function textViewerReducer(state: State, action: Action): State {
   }
 }
 
-export function attributeId(legendId: string, attributeId: string) {
-  return legendId + '_' + attributeId;
-}
-
-function TextViewerProvider({ children }: TextViewerProviderProps) {
-  const [state, dispatch] = useReducer(textViewerReducer, {
-    textPack: null,
-    ontology: null,
-    selectedLegendIds: [],
-    selectedLegendAttributeIds: [],
-    selectedAnnotationId: null,
-    spacingCalcuated: false,
-    spacedAnnotationSpan: {},
-    spacedText: null,
-  });
-
-  return (
-    <TextViewerStateContext.Provider value={state}>
-      <TextViewerDispatchContext.Provider value={dispatch}>
-        {children}
-      </TextViewerDispatchContext.Provider>
-    </TextViewerStateContext.Provider>
-  );
-}
-
-function useTextViewerState() {
-  const context = useContext(TextViewerStateContext);
-  if (context === undefined) {
-    throw new Error(
-      'useTextViewerState must be used with a TextViewerProvider'
-    );
-  }
-  return context;
-}
-
-function useTextViewerDispatch() {
-  const context = useContext(TextViewerDispatchContext);
-  if (context === undefined) {
-    throw new Error(
-      'useTextViewerDispatch must be used with a TextViewerProvider'
-    );
-  }
-  return context;
-}
+const [
+  TextViewerProvider,
+  useTextViewerState,
+  useTextViewerDispatch,
+] = createContextProvider(textViewerReducer, initialState);
 
 export { TextViewerProvider, useTextViewerState, useTextViewerDispatch };

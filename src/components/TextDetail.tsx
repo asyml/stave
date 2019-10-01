@@ -3,9 +3,9 @@ import { IColoredLegend, IAttributes, IOntology } from '../lib/interfaces';
 import {
   useTextViewerState,
   useTextViewerDispatch,
-  attributeId,
   Dispatch,
 } from '../contexts/text-viewer.context';
+import { attributeId } from '../lib/utils';
 import style from '../styles/TextDetail.module.css';
 import Tab from './Tab';
 import Attributes from './Attributes';

@@ -22,3 +22,13 @@
   flex: 0 0 250px;
   padding: 8px;
 }
+
+.text_area_container {
+  padding: 16px;
+  border: 1px solid #ccc;
+  border-top: none;
+  min-height: calc(100vh - 50px);
+  overflow-y: auto;
+  flex: 1;
+  position: relative;
+}
