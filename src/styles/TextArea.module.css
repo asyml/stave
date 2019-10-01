@@ -1,5 +1,11 @@
 .text_area_container {
   position: relative;
+  opacity: 0;
+}
+
+.text_area_container_visible {
+  opacity: 1;
+  transition: opacity 0.2s;
 }
 
 .text_node_container {

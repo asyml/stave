@@ -23,7 +23,8 @@ export interface SpacedText {
 export function spaceOutText(
   textPack: ISinglePack,
   selectedLegendIds: string[],
-  selectedLegendAttributeIds: string[]
+  selectedLegendAttributeIds: string[],
+  collpasedLinesIndex: number[]
 ): SpacedText {
   const existSpaceEl = document.getElementById('text-spacer');
   if (existSpaceEl) {
@@ -143,6 +144,7 @@ export function spaceOutText(
       annotationWithPosition,
       +lineHeight
     );
+
     spaceMap[firstAnnotation.annotation.id] = {
       annotationWithPos: {
         position: firstAnnotation.position,
@@ -158,11 +160,12 @@ export function spaceOutText(
           },
         },
       },
-      spaceToMove: Math.ceil(levelNum / 2) + (i === 0 ? 2 : 4),
+      spaceToMove:
+        (collpasedLinesIndex.indexOf(i) === -1 ? Math.ceil(levelNum / 2) : 0) +
+        (i === 0 ? 1 : 4),
     };
   });
 
-  console.log('spaceMap2', spaceMap);
   const updatedTextPack = {
     ...textPack,
     text: caculcatedSpacedTextStep1,
