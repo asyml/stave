@@ -233,13 +233,8 @@ function TextArea({ textPack }: TextAreaProp) {
             <button
               key={i}
               onClick={isCollpased ? uncollapse : collapse}
-              style={{
-                position: 'absolute',
-                top: lineHeight,
-                left: -22,
-                width: 18,
-                fontSize: 10,
-              }}
+              className={style.annotation_line_toggle}
+              style={{ top: lineHeight }}
             >
               {isCollpased ? '+' : '-'}
             </button>
@@ -260,54 +255,65 @@ function TextArea({ textPack }: TextAreaProp) {
           const isSelected = ann.annotation.id === selectedAnnotationId;
           const attrKeys = Object.keys(ann.annotation.attributes).filter(
             attrKey => {
-              return (
-                selectedLegendAttributeIds.indexOf(
-                  attributeId(ann.annotation.legendId, attrKey)
-                ) > -1
-              );
+              if (isSelected) {
+                return true;
+              } else {
+                return (
+                  selectedLegendAttributeIds.indexOf(
+                    attributeId(ann.annotation.legendId, attrKey)
+                  ) > -1
+                );
+              }
             }
           );
 
           return (
             <div
               key={ann.annotation.id}
+              className={
+                isSelected ? style.annotation_attr_container_selected : ''
+              }
               style={{
                 position: 'absolute',
                 zIndex: isSelected ? 10 : 0,
                 transform: `translate(-50%, 0)`,
                 top: ann.position.rects[0].y + 20,
                 left: ann.position.rects[0].x + ann.position.rects[0].width / 2,
+                fontSize: 10,
+                backgroundColor: 'white',
               }}
             >
               {ann.position.rects.map((rect, i) => {
                 return attrKeys.map((attrKey, j) => {
                   return (
                     <div
-                      className={style.annotation_attr_rect}
+                      className={
+                        isSelected
+                          ? style.annotation_attr_rect_selected
+                          : style.annotation_attr_rect
+                      }
                       key={attrKey + i}
                       style={{
-                        padding: '0 4px',
-                        cursor: 'pointer',
-                        textAlign: 'center',
-                        fontSize: 10,
-                        border: '1px solid #ccc',
-                        backgroundColor: 'white',
-                        ...(isSelected
-                          ? {
-                              display: 'inline-block',
-                              marginRight: j === attrKeys.length - 1 ? 0 : 4,
-                              boxShadow: '0 3px 8px rgba(0, 0, 0, .3)',
-                            }
-                          : {
-                              position: j > 0 ? 'absolute' : 'relative',
-                              top: j * 2,
-                              left: j * 2,
-                            }),
+                        ...(!isSelected && {
+                          top: j * 2,
+                          left: j * 2,
+                        }),
                       }}
                     >
-                      {ann.annotation.attributes[attrKey]
-                        .substring(0, 3)
-                        .toUpperCase()}
+                      {isSelected ? (
+                        <>
+                          <span className={style.annotation_attr_label}>
+                            {attrKey}
+                          </span>
+                          <span className={style.annotation_attr_value}>
+                            {ann.annotation.attributes[attrKey]}
+                          </span>
+                        </>
+                      ) : (
+                        ann.annotation.attributes[attrKey]
+                          .substring(0, 3)
+                          .toUpperCase()
+                      )}
                     </div>
                   );
                 });
@@ -367,7 +373,7 @@ function TextArea({ textPack }: TextAreaProp) {
                     position: 'absolute',
                     top: linkPos.fromLinkY - height,
                     left: Math.min(linkPos.fromLinkX, linkPos.toLinkX),
-                    border: '1px solid #555',
+                    border: '1px solid #aaa',
                     borderTopWidth: '1px',
                     borderLeftWidth: '1px',
                     borderRightWidth: '1px',
@@ -487,7 +493,7 @@ function TextArea({ textPack }: TextAreaProp) {
                     position: 'absolute',
                     top: linkPos.fromLinkY - fromLineHeight,
                     left: fromLineX,
-                    border: '1px solid #555',
+                    border: '1px solid #aaa',
                     borderWidth: '1px',
                     borderTopLeftRadius: goLeft ? 0 : borderRadius,
                     borderTopRightRadius: goLeft ? borderRadius : 0,
@@ -503,7 +509,7 @@ function TextArea({ textPack }: TextAreaProp) {
                     position: 'absolute',
                     top: linkPos.toLinkY - toLineHeight,
                     left: toLineX,
-                    border: '1px solid #555',
+                    border: '1px solid #aaa',
                     borderWidth: '1px',
                     borderTopLeftRadius: goLeft ? 0 : borderRadius,
                     borderTopRightRadius: goLeft ? borderRadius : 0,

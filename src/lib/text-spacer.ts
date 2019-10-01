@@ -7,7 +7,6 @@ import {
   ILink,
 } from './interfaces';
 import { notNullOrUndefined, attributeId } from './utils';
-import { ll } from './log';
 
 export const fontWidth = 6;
 

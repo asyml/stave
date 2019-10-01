@@ -131,7 +131,7 @@ function textViewerReducer(state: State, action: Action): State {
         // TODO: remove the following test code
         selectedLegendIds: [
           action.textPack.legends.annotations[0].id,
-          // action.textPack.legends.links[0].id,
+          action.textPack.legends.links[0].id,
         ],
         selectedLegendAttributeIds: [
           attributeId(action.textPack.legends.annotations[0].id, 'lemma'),
@@ -139,6 +139,7 @@ function textViewerReducer(state: State, action: Action): State {
         ],
         selectedAnnotationId:
           'forte.data.ontology.stanfordnlp_ontology.Token.6',
+        collpasedLineIndexes: [1],
       };
 
     case 'set-ontology':
