@@ -146,7 +146,7 @@ function LegendList({
                               });
                         }}
                       >
-                        <input type="checkbox" readOnly checked={isSelected} />
+                        <input type="radio" readOnly checked={isSelected} />
                         {attr.attributeName}
                       </div>
                     );
