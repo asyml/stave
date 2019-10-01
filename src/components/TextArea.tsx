@@ -59,9 +59,9 @@ function TextArea({ textPack }: TextAreaProp) {
     selectedAnnotationId,
     selectedLegendAttributeIds,
     spacingCalcuated,
-
     spacedAnnotationSpan,
     spacedText,
+    collpasedLineIndexes,
   } = useTextViewerState();
 
   useEffect(() => {
@@ -70,13 +70,15 @@ function TextArea({ textPack }: TextAreaProp) {
       selectedLegendIds: string[],
       selectedLegendAttributeIds: string[],
       spacingCalcuated: boolean,
-      spacedAnnotationSpan: ISpacedAnnotationSpan
+      spacedAnnotationSpan: ISpacedAnnotationSpan,
+      collpasedLinesIndex: number[]
     ) {
       if (!spacingCalcuated) {
         const { text, annotationSpanMap } = spaceOutText(
           textPack,
           selectedLegendIds,
-          selectedLegendAttributeIds
+          selectedLegendAttributeIds,
+          collpasedLinesIndex
         );
 
         dispatch({
@@ -141,7 +143,8 @@ function TextArea({ textPack }: TextAreaProp) {
       selectedLegendIds,
       selectedLegendAttributeIds,
       spacingCalcuated,
-      spacedAnnotationSpan
+      spacedAnnotationSpan,
+      collpasedLineIndexes
     );
 
     window.addEventListener('resize', handleWindowResize);
@@ -156,6 +159,7 @@ function TextArea({ textPack }: TextAreaProp) {
     spacingCalcuated,
     spacedAnnotationSpan,
     dispatch,
+    collpasedLineIndexes,
   ]);
 
   const annotationWithPosition = mergeAnnotationWithPosition(
@@ -176,15 +180,14 @@ function TextArea({ textPack }: TextAreaProp) {
 
   const linesLevels = calcuateLinesLevels(linksWithPos, lineStartX, lineWidth);
   const linkHeight = calcuateLinkHeight(linesLevels, linkGap);
+  const lineHeights = Object.keys(linesLevels).map(l => +l);
+
+  const textAreaClass = `${style.text_area_container} ${
+    spacedText ? style.text_area_container_visible : ''
+  }`;
 
   return (
-    <div
-      className={style.text_area_container}
-      ref={textAreaEl}
-      style={{
-        opacity: spacingCalcuated ? 1 : 0,
-      }}
-    >
+    <div className={textAreaClass} ref={textAreaEl}>
       <div className={style.text_node_container} ref={textNodeEl}>
         {spacedText || text}
       </div>
@@ -207,6 +210,39 @@ function TextArea({ textPack }: TextAreaProp) {
               legend={legend}
               position={ann.position}
             />
+          );
+        })}
+      </div>
+
+      <div className="annotation_line_toggles_container">
+        {lineHeights.map((lineHeight, i) => {
+          function collapse() {
+            dispatch({
+              type: 'collapse-line',
+              lineIndex: i,
+            });
+          }
+          function uncollapse() {
+            dispatch({
+              type: 'uncollapse-line',
+              lineIndex: i,
+            });
+          }
+          const isCollpased = collpasedLineIndexes.indexOf(i) > -1;
+          return (
+            <button
+              key={i}
+              onClick={isCollpased ? uncollapse : collapse}
+              style={{
+                position: 'absolute',
+                top: lineHeight,
+                left: -22,
+                width: 18,
+                fontSize: 10,
+              }}
+            >
+              {isCollpased ? '+' : '-'}
+            </button>
           );
         })}
       </div>
@@ -284,8 +320,14 @@ function TextArea({ textPack }: TextAreaProp) {
       <div className="links-container">
         {linksWithPos.map(linkPos => {
           if (linkPos.fromLinkY === linkPos.toLinkY) {
-            const height =
-              textLinkDistance + linkHeight[linkPos.link.id][linkPos.fromLinkY];
+            const lineIndex = lineHeights.indexOf(linkPos.fromLinkY);
+            const lineCollapsed =
+              collpasedLineIndexes.indexOf(lineIndex) !== -1;
+            const height = lineCollapsed
+              ? textLinkDistance
+              : textLinkDistance +
+                linkHeight[linkPos.link.id][linkPos.fromLinkY];
+
             const goLeft = linkPos.fromLinkX > linkPos.toLinkX;
             const arrowRadiusAdjust = Math.max(borderRadius - height, 0) / 2;
             const arrowPosition = {
@@ -347,7 +389,7 @@ function TextArea({ textPack }: TextAreaProp) {
                   }}
                 ></div>
 
-                {linkLabel ? (
+                {linkLabel && !lineCollapsed ? (
                   <div
                     className={style.link_label}
                     style={{
@@ -364,10 +406,20 @@ function TextArea({ textPack }: TextAreaProp) {
               </div>
             );
           } else {
-            const fromLineHeight =
-              textLinkDistance + linkHeight[linkPos.link.id][linkPos.fromLinkY];
-            const toLineHeight =
-              textLinkDistance + linkHeight[linkPos.link.id][linkPos.toLinkY];
+            const fromLineIndex = lineHeights.indexOf(linkPos.fromLinkY);
+            const fromLineCollapsed =
+              collpasedLineIndexes.indexOf(fromLineIndex) !== -1;
+            const fromLineHeight = fromLineCollapsed
+              ? textLinkDistance
+              : textLinkDistance +
+                linkHeight[linkPos.link.id][linkPos.fromLinkY];
+
+            const toLineIndex = lineHeights.indexOf(linkPos.toLinkY);
+            const toLineCollapsed =
+              collpasedLineIndexes.indexOf(toLineIndex) !== -1;
+            const toLineHeight = toLineCollapsed
+              ? textLinkDistance
+              : textLinkDistance + linkHeight[linkPos.link.id][linkPos.toLinkY];
 
             const goLeft = shouldMultiLineGoLeft(
               linkPos,
@@ -491,30 +543,34 @@ function TextArea({ textPack }: TextAreaProp) {
                     left: arrowPosition.x,
                   }}
                 ></div>
-                <div
-                  className={style.link_label}
-                  style={{
-                    transform: `translate(-50%)`,
-                    position: 'absolute',
-                    textAlign: goLeft ? 'left' : 'right',
-                    top: `${fromLinkLabelPosition.y}px`,
-                    left: `${fromLinkLabelPosition.x}px`,
-                  }}
-                >
-                  {linkLabel}
-                </div>
-                <div
-                  className={style.link_label}
-                  style={{
-                    transform: `translate(-50%)`,
-                    position: 'absolute',
-                    textAlign: goLeft ? 'left' : 'right',
-                    top: `${toLinkLabelPosition.y}px`,
-                    left: `${toLinkLabelPosition.x}px`,
-                  }}
-                >
-                  {linkLabel}
-                </div>
+                {fromLineCollapsed ? null : (
+                  <div
+                    className={style.link_label}
+                    style={{
+                      transform: `translate(-50%)`,
+                      position: 'absolute',
+                      textAlign: goLeft ? 'left' : 'right',
+                      top: `${fromLinkLabelPosition.y}px`,
+                      left: `${fromLinkLabelPosition.x}px`,
+                    }}
+                  >
+                    {linkLabel}
+                  </div>
+                )}
+                {toLineCollapsed ? null : (
+                  <div
+                    className={style.link_label}
+                    style={{
+                      transform: `translate(-50%)`,
+                      position: 'absolute',
+                      textAlign: goLeft ? 'left' : 'right',
+                      top: `${toLinkLabelPosition.y}px`,
+                      left: `${toLinkLabelPosition.x}px`,
+                    }}
+                  >
+                    {linkLabel}
+                  </div>
+                )}
               </div>
             );
           }

@@ -5,38 +5,9 @@ import {
 } from '../lib/interfaces';
 import { createContextProvider } from '../lib/create-context-provider';
 import { attributeId } from '../lib/utils';
+import { ll } from '../lib/log';
 
 export type Dispatch = (action: Action) => void;
-
-/**
- *
- *
- * The actions
- *
- *
- */
-
-export type Action =
-  | { type: 'set-text-pack'; textPack: ISinglePack }
-  | { type: 'set-ontology'; ontology: IOntology }
-  | { type: 'select-legend'; legendId: string }
-  | { type: 'deselect-legend'; legendId: string }
-  | { type: 'select-all-legend' }
-  | { type: 'deselect-all-legend' }
-  | { type: 'select-annotation'; annotationId: string }
-  | { type: 'deselect-annotation' }
-  | { type: 'reset-calculated-text-space' }
-  | { type: 'select-legend-attribute'; legendId: string; attributeId: string }
-  | {
-      type: 'set-spaced-annotation-span';
-      spacedAnnotationSpan: ISpacedAnnotationSpan;
-      spacedText: string;
-    }
-  | {
-      type: 'deselect-legend-attribute';
-      legendId: string;
-      attributeId: string;
-    };
 
 /**
  *
@@ -55,6 +26,7 @@ export type State = {
   spacingCalcuated: boolean;
   spacedAnnotationSpan: ISpacedAnnotationSpan;
   spacedText: string | null;
+  collpasedLineIndexes: number[];
 };
 
 const defaultSpacingState = {
@@ -69,8 +41,74 @@ const initialState: State = {
   selectedLegendIds: [],
   selectedLegendAttributeIds: [],
   selectedAnnotationId: null,
+  collpasedLineIndexes: [],
   ...defaultSpacingState,
 };
+
+/**
+ *
+ *
+ * The actions
+ *
+ *
+ */
+
+export type Action =
+  | {
+      type: 'set-text-pack';
+      textPack: ISinglePack;
+    }
+  | {
+      type: 'set-ontology';
+      ontology: IOntology;
+    }
+  | {
+      type: 'select-legend';
+      legendId: string;
+    }
+  | {
+      type: 'deselect-legend';
+      legendId: string;
+    }
+  | {
+      type: 'select-all-legend';
+    }
+  | {
+      type: 'deselect-all-legend';
+    }
+  | {
+      type: 'select-annotation';
+      annotationId: string;
+    }
+  | {
+      type: 'deselect-annotation';
+    }
+  | {
+      type: 'reset-calculated-text-space';
+    }
+  | {
+      type: 'select-legend-attribute';
+      legendId: string;
+      attributeId: string;
+    }
+  | {
+      type: 'set-spaced-annotation-span';
+      spacedAnnotationSpan: ISpacedAnnotationSpan;
+      spacedText: string;
+    }
+  | {
+      type: 'deselect-legend-attribute';
+      legendId: string;
+      attributeId: string;
+    }
+  | {
+      type: 'collapse-line';
+      lineIndex: number;
+    }
+  | {
+      type: 'uncollapse-line';
+      lineIndex: number;
+    };
 
 /**
  *
@@ -81,6 +119,8 @@ const initialState: State = {
  */
 
 function textViewerReducer(state: State, action: Action): State {
+  ll('reducer', action);
+
   switch (action.type) {
     case 'set-text-pack':
       return {
@@ -227,6 +267,28 @@ function textViewerReducer(state: State, action: Action): State {
         spacingCalcuated: true,
         spacedAnnotationSpan: action.spacedAnnotationSpan,
         spacedText: action.spacedText,
+      };
+
+    case 'collapse-line':
+      if (state.collpasedLineIndexes.indexOf(action.lineIndex) > -1) {
+        return state;
+      }
+      return {
+        ...state,
+        ...defaultSpacingState,
+        collpasedLineIndexes: [...state.collpasedLineIndexes, action.lineIndex],
+      };
+
+    case 'uncollapse-line':
+      if (state.collpasedLineIndexes.indexOf(action.lineIndex) === -1) {
+        return state;
+      }
+      return {
+        ...state,
+        ...defaultSpacingState,
+        collpasedLineIndexes: state.collpasedLineIndexes.filter(
+          i => i !== action.lineIndex
+        ),
       };
   }
 }
