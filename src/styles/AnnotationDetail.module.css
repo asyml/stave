@@ -1,0 +1,30 @@
+.linked_annotation_list {
+  margin: 0;
+  padding-left: 0;
+}
+
+.linked_annotation {
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  cursor: pointer;
+  padding: 4px;
+  text-decoration: underline;
+}
+
+.annotaition_detail_section {
+  border: 1px solid #ccc;
+  margin-bottom: 8px;
+}
+
+.annotaition_detail_section h2 {
+  font-size: 12px;
+  padding: 8px;
+  margin: 0;
+  border-bottom: 1px solid #ccc;
+  background: #eee;
+}
+
+.annotaition_detail_section_body {
+  padding: 8px;
+}

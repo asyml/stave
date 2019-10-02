@@ -34,6 +34,7 @@ function Annotaion({
             style={{
               background: legend.color,
               opacity: isSelected || isHighlighted ? 0.4 : 0.15,
+              borderBottom: isSelected ? '2px solid #000' : 'none',
               transform: `translate(${rect.x}px,${rect.y}px)`,
               height: rect.height,
               width: rect.width,

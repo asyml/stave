@@ -1,6 +1,6 @@
 import React from 'react';
 import style from '../styles/TextViewer.module.css';
-import { ISinglePack, IOntology } from '../lib/interfaces';
+import { ISinglePack, IOntology, IAnnotation } from '../lib/interfaces';
 import { applyColorToLegend } from '../lib/utils';
 import AnnotationDetail from './AnnotationDetail';
 import LinkDetail from './LinkDetail';
@@ -22,6 +22,20 @@ function TextViewer({ textPack, ontology }: TextViewerProp) {
   const selectedAnnotation =
     annotations.find(ann => ann.id === contextState.selectedAnnotationId) ||
     null;
+  const selectedAnnotaionParents: IAnnotation[] = [];
+  const selectedAnnotaionChildren: IAnnotation[] = [];
+
+  links.forEach(link => {
+    if (link.fromEntryId === contextState.selectedAnnotationId) {
+      selectedAnnotaionChildren.push(annotations.find(
+        ann => ann.id === link.toEntryId
+      ) as IAnnotation);
+    } else if (link.toEntryId === contextState.selectedAnnotationId) {
+      selectedAnnotaionParents.push(annotations.find(
+        ann => ann.id === link.fromEntryId
+      ) as IAnnotation);
+    }
+  });
 
   const selectedLink =
     links.find(link => link.id === contextState.selectedLinkId) || null;
@@ -48,7 +62,11 @@ function TextViewer({ textPack, ontology }: TextViewerProp) {
           {selectedLink ? (
             <LinkDetail link={selectedLink} />
           ) : (
-            <AnnotationDetail annotation={selectedAnnotation} />
+            <AnnotationDetail
+              parentAnnotations={selectedAnnotaionParents}
+              childAnnotations={selectedAnnotaionChildren}
+              annotation={selectedAnnotation}
+            />
           )}
         </div>
       </main>
