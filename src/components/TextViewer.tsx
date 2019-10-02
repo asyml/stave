@@ -3,6 +3,7 @@ import style from '../styles/TextViewer.module.css';
 import { ISinglePack, IOntology } from '../lib/interfaces';
 import { applyColorToLegend } from '../lib/utils';
 import AnnotationDetail from './AnnotationDetail';
+import LinkDetail from './LinkDetail';
 import TextDetail from './TextDetail';
 import TextArea from './TextArea';
 import { useTextViewerState } from '../contexts/text-viewer.context';
@@ -13,7 +14,7 @@ export interface TextViewerProp {
 }
 
 function TextViewer({ textPack, ontology }: TextViewerProp) {
-  const { annotations, legends, attributes } = textPack;
+  const { annotations, legends, links, attributes } = textPack;
 
   const annotationLegendsWithColor = applyColorToLegend(legends.annotations);
   const linksLegendsWithColor = applyColorToLegend(legends.links);
@@ -21,6 +22,9 @@ function TextViewer({ textPack, ontology }: TextViewerProp) {
   const selectedAnnotation =
     annotations.find(ann => ann.id === contextState.selectedAnnotationId) ||
     null;
+
+  const selectedLink =
+    links.find(link => link.id === contextState.selectedLinkId) || null;
 
   return (
     <div className={style.text_viewer}>
@@ -41,7 +45,11 @@ function TextViewer({ textPack, ontology }: TextViewerProp) {
         </div>
 
         <div className={style.attributes_side_container}>
-          <AnnotationDetail annotation={selectedAnnotation} />
+          {selectedLink ? (
+            <LinkDetail link={selectedLink} />
+          ) : (
+            <AnnotationDetail annotation={selectedAnnotation} />
+          )}
         </div>
       </main>
     </div>
