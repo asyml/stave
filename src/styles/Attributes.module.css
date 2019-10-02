@@ -10,7 +10,6 @@
 .attribute_value {
   font-size: 12px;
   overflow-wrap: break-word;
-  width: 234px; /* 250 - 16 */
 }
 
 .attribute_value_array {

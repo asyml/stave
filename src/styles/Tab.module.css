@@ -20,7 +20,6 @@
 }
 
 .tab_header_button_selected {
-  background: #eee;
   border: 1px solid #ccc;
   border-bottom: 0;
 }

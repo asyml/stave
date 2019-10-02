@@ -175,8 +175,8 @@ function textViewerReducer(state: State, action: Action): State {
           attributeId(action.textPack.legends.annotations[0].id, 'lemma'),
           attributeId(action.textPack.legends.links[0].id, 'rel_type'),
         ],
-        // selectedAnnotationId:
-        //   'forte.data.ontology.stanfordnlp_ontology.Token.6',
+        selectedAnnotationId:
+          'forte.data.ontology.stanfordnlp_ontology.Token.6',
         collpasedLineIndexes: [],
       };
 
