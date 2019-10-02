@@ -23,6 +23,8 @@
   line-height: 8px;
   background: white;
   color: #555;
+  pointer-events: none;
+  z-index: 5;
 }
 
 .annotation_attr_rect {
@@ -41,7 +43,6 @@
 .annotation_attr_container_selected {
   border: 1px solid #ccc;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-  border-radius: 5px;
   overflow: hidden;
   padding: 4px 0;
 }
@@ -70,4 +71,12 @@
   width: 18px;
   font-size: 10px;
   padding: 0px;
+}
+
+.link_line {
+  pointer-events: none;
+}
+
+.link_event_mask {
+  cursor: pointer;
 }

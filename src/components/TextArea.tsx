@@ -34,6 +34,9 @@ export interface TextNodeDimension {
   y: number;
 }
 
+const lineMaskWidth = 8;
+const lineMaskColor = 'none';
+
 function TextArea({ textPack }: TextAreaProp) {
   const { annotations, legends, text, links } = textPack;
   const textNodeEl = useRef<HTMLDivElement>(null);
@@ -56,12 +59,20 @@ function TextArea({ textPack }: TextAreaProp) {
   const dispatch = useTextViewerDispatch();
   const {
     selectedLegendIds,
-    selectedAnnotationId,
     selectedLegendAttributeIds,
+
     spacingCalcuated,
     spacedAnnotationSpan,
     spacedText,
     collpasedLineIndexes,
+
+    selectedAnnotationId,
+    heighligAnnotationIds,
+    halfSelectedAnnotationIds,
+
+    selectedLinkId,
+    highlightedLinkIds: heighlightedLinkIds,
+    halfSelectedLinkIds,
   } = useTextViewerState();
 
   useEffect(() => {
@@ -201,12 +212,15 @@ function TextArea({ textPack }: TextAreaProp) {
           if (!legend) {
             return null;
           }
-
           return (
             <Annotation
               key={i}
               annotation={ann.annotation}
               isSelected={ann.annotation.id === selectedAnnotationId}
+              isHighlighted={
+                heighligAnnotationIds.indexOf(ann.annotation.id) > -1 ||
+                halfSelectedAnnotationIds.indexOf(ann.annotation.id) > -1
+              }
               legend={legend}
               position={ann.position}
             />
@@ -325,6 +339,15 @@ function TextArea({ textPack }: TextAreaProp) {
 
       <div className="links-container">
         {linksWithPos.map(linkPos => {
+          const isLinkSelected = selectedLinkId === linkPos.link.id;
+          const isLinkHightlighted =
+            heighlightedLinkIds.includes(linkPos.link.id) ||
+            halfSelectedLinkIds.includes(linkPos.link.id);
+          const borderWidth = '1px';
+          const borderColor =
+            isLinkSelected || isLinkHightlighted ? '#555' : '#bbb';
+          const zIndex = isLinkSelected || isLinkHightlighted ? 1 : 0;
+
           if (linkPos.fromLinkY === linkPos.toLinkY) {
             const lineIndex = lineHeights.indexOf(linkPos.fromLinkY);
             const lineCollapsed =
@@ -367,6 +390,7 @@ function TextArea({ textPack }: TextAreaProp) {
                 key={linkPos.link.id}
               >
                 <div
+                  className={style.link_line}
                   style={{
                     height: height,
                     width: Math.abs(linkPos.fromLinkX - linkPos.toLinkX),
@@ -374,13 +398,89 @@ function TextArea({ textPack }: TextAreaProp) {
                     top: linkPos.fromLinkY - height,
                     left: Math.min(linkPos.fromLinkX, linkPos.toLinkX),
                     border: '1px solid #aaa',
-                    borderTopWidth: '1px',
-                    borderLeftWidth: '1px',
-                    borderRightWidth: '1px',
+                    borderTopWidth: borderWidth,
+                    borderLeftWidth: borderWidth,
+                    borderRightWidth: borderWidth,
+                    borderColor: borderColor,
                     borderTopLeftRadius: borderRadius,
                     borderTopRightRadius: borderRadius,
                     borderBottomWidth: '0px',
+                    zIndex,
                   }}
+                ></div>
+                <div
+                  onClick={() =>
+                    dispatch({ type: 'select-link', linkId: linkPos.link.id })
+                  }
+                  onMouseEnter={() => {
+                    dispatch({
+                      type: 'highlight-link',
+                      linkId: linkPos.link.id,
+                    });
+                  }}
+                  onMouseLeave={() => {
+                    dispatch({ type: 'unhighlight-link' });
+                  }}
+                  style={{
+                    position: 'absolute',
+                    width: Math.abs(linkPos.fromLinkX - linkPos.toLinkX),
+                    height: lineMaskWidth,
+                    background: lineMaskColor,
+                    top: linkPos.fromLinkY - height - lineMaskWidth / 2,
+                    left: Math.min(linkPos.fromLinkX, linkPos.toLinkX),
+                  }}
+                  className={style.link_event_mask}
+                ></div>
+                <div
+                  onClick={() =>
+                    dispatch({ type: 'select-link', linkId: linkPos.link.id })
+                  }
+                  onMouseEnter={() => {
+                    dispatch({
+                      type: 'highlight-link',
+                      linkId: linkPos.link.id,
+                    });
+                  }}
+                  onMouseLeave={() => {
+                    dispatch({ type: 'unhighlight-link' });
+                  }}
+                  style={{
+                    position: 'absolute',
+                    width: lineMaskWidth,
+                    background: lineMaskColor,
+                    height: height,
+                    top: linkPos.fromLinkY - height,
+                    left:
+                      Math.min(linkPos.fromLinkX, linkPos.toLinkX) -
+                      lineMaskWidth / 2,
+                  }}
+                  className={style.link_event_mask}
+                ></div>
+                <div
+                  onClick={() =>
+                    dispatch({ type: 'select-link', linkId: linkPos.link.id })
+                  }
+                  onMouseEnter={() => {
+                    dispatch({
+                      type: 'highlight-link',
+                      linkId: linkPos.link.id,
+                    });
+                  }}
+                  onMouseLeave={() => {
+                    dispatch({ type: 'unhighlight-link' });
+                  }}
+                  style={{
+                    position: 'absolute',
+                    width: lineMaskWidth,
+                    background: lineMaskColor,
+                    height: height,
+                    top: linkPos.fromLinkY - height,
+                    left:
+                      Math.min(linkPos.fromLinkX, linkPos.toLinkX) +
+                      Math.abs(linkPos.fromLinkX - linkPos.toLinkX) -
+                      lineMaskWidth / 2,
+                  }}
+                  className={style.link_event_mask}
                 ></div>
                 <div
                   className={style.arrow}
@@ -392,9 +492,9 @@ function TextArea({ textPack }: TextAreaProp) {
                     position: 'absolute',
                     top: arrowPosition.y,
                     left: arrowPosition.x,
+                    borderTopColor: borderColor,
                   }}
                 ></div>
-
                 {linkLabel && !lineCollapsed ? (
                   <div
                     className={style.link_label}
@@ -404,6 +504,8 @@ function TextArea({ textPack }: TextAreaProp) {
                       textAlign: goLeft ? 'left' : 'right',
                       top: `${linkLabelPosition.y}px`,
                       left: `${linkLabelPosition.x}px`,
+                      color:
+                        isLinkSelected || isLinkHightlighted ? '#555' : '#999',
                     }}
                   >
                     {linkLabel}
@@ -446,7 +548,7 @@ function TextArea({ textPack }: TextAreaProp) {
             const fromLineX = goLeft
               ? Math.min(linkPos.fromLinkX, lineStartX) - sideGap
               : Math.min(linkPos.fromLinkX, lineStartX + lineWidth);
-            const fromLineWith = goLeft
+            const fromLineWidth = goLeft
               ? Math.abs(linkPos.fromLinkX - lineStartX) + sideGap
               : Math.abs(linkPos.fromLinkX - (lineStartX + lineWidth)) +
                 sideGap;
@@ -454,17 +556,17 @@ function TextArea({ textPack }: TextAreaProp) {
             const toLineX = goLeft
               ? Math.min(linkPos.toLinkX, lineStartX) - sideGap
               : Math.min(linkPos.toLinkX, lineStartX + lineWidth);
-            const toLineWith = goLeft
+            const toLineWidth = goLeft
               ? Math.abs(linkPos.toLinkX - lineStartX) + sideGap
               : Math.abs(linkPos.toLinkX - (lineStartX + lineWidth)) + sideGap;
 
             const fromLinkLabelPosition = {
-              x: fromLineX + fromLineWith / 2,
+              x: fromLineX + fromLineWidth / 2,
               y: linkPos.fromLinkY - fromLineHeight - 4,
             };
 
             const toLinkLabelPosition = {
-              x: toLineX + toLineWith / 2,
+              x: toLineX + toLineWidth / 2,
               y: linkPos.toLinkY - toLineHeight - 4,
             };
 
@@ -487,38 +589,46 @@ function TextArea({ textPack }: TextAreaProp) {
                 data-to-id={linkPos.link.toEntryId}
               >
                 <div
+                  className={style.link_line}
                   style={{
                     height: fromLineHeight,
-                    width: fromLineWith,
+                    width: fromLineWidth,
                     position: 'absolute',
                     top: linkPos.fromLinkY - fromLineHeight,
                     left: fromLineX,
                     border: '1px solid #aaa',
-                    borderWidth: '1px',
+                    borderColor: borderColor,
                     borderTopLeftRadius: goLeft ? 0 : borderRadius,
                     borderTopRightRadius: goLeft ? borderRadius : 0,
                     borderBottomWidth: 0,
-                    borderLeftWidth: goLeft ? 0 : 1,
-                    borderRightWidth: goLeft ? 1 : 0,
+                    borderTopWidth: borderWidth,
+                    borderLeftWidth: goLeft ? 0 : borderWidth,
+                    borderRightWidth: goLeft ? borderWidth : 0,
+                    zIndex,
                   }}
                 ></div>
                 <div
+                  className={style.link_line}
                   style={{
                     height: toLineHeight,
-                    width: toLineWith,
+                    width: toLineWidth,
                     position: 'absolute',
                     top: linkPos.toLinkY - toLineHeight,
                     left: toLineX,
                     border: '1px solid #aaa',
-                    borderWidth: '1px',
+                    borderColor: borderColor,
                     borderTopLeftRadius: goLeft ? 0 : borderRadius,
                     borderTopRightRadius: goLeft ? borderRadius : 0,
                     borderBottomWidth: 0,
-                    borderLeftWidth: goLeft ? 0 : 1,
-                    borderRightWidth: goLeft ? 1 : 0,
+                    borderTopWidth: borderWidth,
+                    borderLeftWidth: goLeft ? 0 : borderWidth,
+                    borderRightWidth: goLeft ? borderWidth : 0,
+                    zIndex,
                   }}
                 ></div>
+
                 <div
+                  className={style.link_line}
                   style={{
                     height:
                       Math.abs(
@@ -535,9 +645,147 @@ function TextArea({ textPack }: TextAreaProp) {
                     left: goLeft
                       ? lineStartX - sideGap
                       : lineStartX + lineWidth + sideGap,
-                    borderLeft: '1px solid #555',
+                    borderLeft: '1px solid #aaa',
+                    borderLeftWidth: borderWidth,
+                    borderColor: borderColor,
+                    zIndex,
                   }}
                 ></div>
+
+                <div
+                  onClick={() =>
+                    dispatch({ type: 'select-link', linkId: linkPos.link.id })
+                  }
+                  onMouseEnter={() => {
+                    dispatch({
+                      type: 'highlight-link',
+                      linkId: linkPos.link.id,
+                    });
+                  }}
+                  onMouseLeave={() => {
+                    dispatch({ type: 'unhighlight-link' });
+                  }}
+                  style={{
+                    position: 'absolute',
+                    width: fromLineWidth,
+                    height: lineMaskWidth,
+                    background: lineMaskColor,
+                    top: linkPos.fromLinkY - fromLineHeight - lineMaskWidth / 2,
+                    left: fromLineX,
+                  }}
+                  className={style.link_event_mask}
+                ></div>
+
+                <div
+                  onClick={() =>
+                    dispatch({ type: 'select-link', linkId: linkPos.link.id })
+                  }
+                  onMouseEnter={() => {
+                    dispatch({
+                      type: 'highlight-link',
+                      linkId: linkPos.link.id,
+                    });
+                  }}
+                  onMouseLeave={() => {
+                    dispatch({ type: 'unhighlight-link' });
+                  }}
+                  style={{
+                    position: 'absolute',
+                    width: toLineWidth,
+                    height: lineMaskWidth,
+                    background: lineMaskColor,
+                    top: linkPos.toLinkY - toLineHeight - lineMaskWidth / 2,
+                    left: toLineX,
+                  }}
+                  className={style.link_event_mask}
+                ></div>
+
+                <div
+                  onClick={() =>
+                    dispatch({ type: 'select-link', linkId: linkPos.link.id })
+                  }
+                  onMouseEnter={() => {
+                    dispatch({
+                      type: 'highlight-link',
+                      linkId: linkPos.link.id,
+                    });
+                  }}
+                  onMouseLeave={() => {
+                    dispatch({ type: 'unhighlight-link' });
+                  }}
+                  style={{
+                    position: 'absolute',
+                    width: lineMaskWidth,
+                    background: lineMaskColor,
+                    height: fromLineHeight,
+                    top: linkPos.fromLinkY - fromLineHeight,
+                    left:
+                      fromLineX -
+                      lineMaskWidth / 2 +
+                      (goLeft ? fromLineWidth : 0),
+                  }}
+                  className={style.link_event_mask}
+                ></div>
+
+                <div
+                  onClick={() =>
+                    dispatch({ type: 'select-link', linkId: linkPos.link.id })
+                  }
+                  onMouseEnter={() => {
+                    dispatch({
+                      type: 'highlight-link',
+                      linkId: linkPos.link.id,
+                    });
+                  }}
+                  onMouseLeave={() => {
+                    dispatch({ type: 'unhighlight-link' });
+                  }}
+                  style={{
+                    position: 'absolute',
+                    width: lineMaskWidth,
+                    background: lineMaskColor,
+                    height: toLineHeight,
+                    top: linkPos.toLinkY - toLineHeight,
+                    left:
+                      toLineX - lineMaskWidth / 2 + (goLeft ? toLineWidth : 0),
+                  }}
+                  className={style.link_event_mask}
+                ></div>
+
+                <div
+                  onClick={() =>
+                    dispatch({ type: 'select-link', linkId: linkPos.link.id })
+                  }
+                  onMouseEnter={() => {
+                    dispatch({
+                      type: 'highlight-link',
+                      linkId: linkPos.link.id,
+                    });
+                  }}
+                  onMouseLeave={() => {
+                    dispatch({ type: 'unhighlight-link' });
+                  }}
+                  style={{
+                    height:
+                      Math.abs(
+                        linkPos.toLinkY -
+                          toLineHeight -
+                          (linkPos.fromLinkY - fromLineHeight)
+                      ) + 1,
+                    width: lineMaskWidth,
+                    background: lineMaskColor,
+                    position: 'absolute',
+                    top: Math.min(
+                      linkPos.toLinkY - toLineHeight,
+                      linkPos.fromLinkY - fromLineHeight
+                    ),
+                    left: goLeft
+                      ? lineStartX - sideGap
+                      : lineStartX + lineWidth + sideGap - lineMaskWidth / 2,
+                  }}
+                  className={style.link_event_mask}
+                ></div>
+
                 <div
                   className={style.arrow}
                   style={{
@@ -558,6 +806,8 @@ function TextArea({ textPack }: TextAreaProp) {
                       textAlign: goLeft ? 'left' : 'right',
                       top: `${fromLinkLabelPosition.y}px`,
                       left: `${fromLinkLabelPosition.x}px`,
+                      color:
+                        isLinkSelected || isLinkHightlighted ? '#555' : '#999',
                     }}
                   >
                     {linkLabel}
@@ -572,6 +822,8 @@ function TextArea({ textPack }: TextAreaProp) {
                       textAlign: goLeft ? 'left' : 'right',
                       top: `${toLinkLabelPosition.y}px`,
                       left: `${toLinkLabelPosition.x}px`,
+                      color:
+                        isLinkSelected || isLinkHightlighted ? '#555' : '#999',
                     }}
                   >
                     {linkLabel}

@@ -5,10 +5,12 @@ import {
   AnnotationPosition,
 } from '../lib/interfaces';
 import { useTextViewerDispatch } from '../contexts/text-viewer.context';
+import style from '../styles/Annotation.module.css';
 
 export interface AnnotaionProp {
   annotation: IAnnotation;
   isSelected: boolean;
+  isHighlighted: boolean;
   legend: IColoredLegend;
   position: AnnotationPosition;
 }
@@ -16,6 +18,7 @@ export interface AnnotaionProp {
 function Annotaion({
   annotation,
   isSelected,
+  isHighlighted,
   legend,
   position,
 }: AnnotaionProp) {
@@ -27,16 +30,13 @@ function Annotaion({
         return (
           <div
             key={i}
+            className={style.annotaion}
             style={{
-              position: 'absolute',
               background: legend.color,
-              top: 0,
-              left: 0,
-              opacity: isSelected ? 0.5 : 0.3,
+              opacity: isSelected || isHighlighted ? 0.4 : 0.15,
               transform: `translate(${rect.x}px,${rect.y}px)`,
               height: rect.height,
               width: rect.width,
-              cursor: 'pointer',
             }}
             onClick={() => {
               isSelected
@@ -47,6 +47,17 @@ function Annotaion({
                     type: 'select-annotation',
                     annotationId: annotation.id,
                   });
+            }}
+            onMouseEnter={() => {
+              dispatch({
+                type: 'highlight-annotation',
+                annotationId: annotation.id,
+              });
+            }}
+            onMouseLeave={() => {
+              dispatch({
+                type: 'unhighlight-annotation',
+              });
             }}
           ></div>
         );

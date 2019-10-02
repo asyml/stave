@@ -22,7 +22,16 @@ export type State = {
   ontology: IOntology | null;
   selectedLegendIds: string[];
   selectedLegendAttributeIds: string[];
+
   selectedAnnotationId: string | null;
+  // indicate a state that annotation is keep highlighted when link is selected
+  halfSelectedAnnotationIds: string[];
+  heighligAnnotationIds: string[];
+
+  selectedLinkId: string | null;
+  halfSelectedLinkIds: string[];
+  highlightedLinkIds: string[];
+
   spacingCalcuated: boolean;
   spacedAnnotationSpan: ISpacedAnnotationSpan;
   spacedText: string | null;
@@ -40,7 +49,15 @@ const initialState: State = {
   ontology: null,
   selectedLegendIds: [],
   selectedLegendAttributeIds: [],
+
   selectedAnnotationId: null,
+  halfSelectedAnnotationIds: [],
+  heighligAnnotationIds: [],
+
+  selectedLinkId: null,
+  halfSelectedLinkIds: [],
+  highlightedLinkIds: [],
+
   collpasedLineIndexes: [],
   ...defaultSpacingState,
 };
@@ -84,6 +101,13 @@ export type Action =
       type: 'deselect-annotation';
     }
   | {
+      type: 'highlight-annotation';
+      annotationId: string;
+    }
+  | {
+      type: 'unhighlight-annotation';
+    }
+  | {
       type: 'reset-calculated-text-space';
     }
   | {
@@ -108,6 +132,20 @@ export type Action =
   | {
       type: 'uncollapse-line';
       lineIndex: number;
+    }
+  | {
+      type: 'select-link';
+      linkId: string;
+    }
+  | {
+      type: 'deselect-link';
+    }
+  | {
+      type: 'highlight-link';
+      linkId: string;
+    }
+  | {
+      type: 'unhighlight-link';
     };
 
 /**
@@ -137,9 +175,9 @@ function textViewerReducer(state: State, action: Action): State {
           attributeId(action.textPack.legends.annotations[0].id, 'lemma'),
           attributeId(action.textPack.legends.links[0].id, 'rel_type'),
         ],
-        selectedAnnotationId:
-          'forte.data.ontology.stanfordnlp_ontology.Token.6',
-        collpasedLineIndexes: [1],
+        // selectedAnnotationId:
+        //   'forte.data.ontology.stanfordnlp_ontology.Token.6',
+        collpasedLineIndexes: [],
       };
 
     case 'set-ontology':
@@ -199,16 +237,77 @@ function textViewerReducer(state: State, action: Action): State {
         selectedLegendIds: [],
       };
 
-    case 'select-annotation':
+    case 'select-annotation': {
+      let halfSelectedAnnotationIds: string[] = [];
+      let halfSelectedLinkIds: string[] = [];
+
+      if (state.textPack) {
+        state.textPack.links.forEach(link => {
+          if (link.fromEntryId === action.annotationId) {
+            halfSelectedLinkIds.push(link.id);
+            halfSelectedAnnotationIds.push(link.toEntryId);
+            return;
+          }
+
+          if (link.toEntryId === action.annotationId) {
+            halfSelectedLinkIds.push(link.id);
+            halfSelectedAnnotationIds.push(link.fromEntryId);
+            return;
+          }
+        });
+      }
+
       return {
         ...state,
         selectedAnnotationId: action.annotationId,
+        selectedLinkId: null,
+        halfSelectedAnnotationIds: halfSelectedAnnotationIds,
+        halfSelectedLinkIds: halfSelectedLinkIds,
       };
+    }
 
     case 'deselect-annotation':
       return {
         ...state,
         selectedAnnotationId: null,
+        halfSelectedAnnotationIds: [],
+        halfSelectedLinkIds: [],
+      };
+
+    case 'highlight-annotation':
+      let highlightedAnnotationIds: string[] = [];
+      let highlightedLinkIds: string[] = [];
+
+      if (state.textPack) {
+        state.textPack.links.forEach(link => {
+          if (link.fromEntryId === action.annotationId) {
+            highlightedLinkIds.push(link.id);
+            highlightedAnnotationIds.push(link.toEntryId);
+            return;
+          }
+
+          if (link.toEntryId === action.annotationId) {
+            highlightedLinkIds.push(link.id);
+            highlightedAnnotationIds.push(link.fromEntryId);
+            return;
+          }
+        });
+      }
+
+      return {
+        ...state,
+        heighligAnnotationIds: [
+          action.annotationId,
+          ...highlightedAnnotationIds,
+        ],
+        highlightedLinkIds: highlightedLinkIds,
+      };
+
+    case 'unhighlight-annotation':
+      return {
+        ...state,
+        heighligAnnotationIds: [],
+        highlightedLinkIds: [],
       };
 
     case 'select-legend-attribute': {
@@ -276,6 +375,54 @@ function textViewerReducer(state: State, action: Action): State {
         collpasedLineIndexes: state.collpasedLineIndexes.filter(
           i => i !== action.lineIndex
         ),
+      };
+
+    case 'select-link': {
+      let halfSelectedAnnotationIds: string[] = [];
+      if (state.textPack) {
+        const link = state.textPack.links.find(l => l.id === action.linkId);
+        if (link) {
+          halfSelectedAnnotationIds = [link.fromEntryId, link.toEntryId];
+        }
+      }
+
+      return {
+        ...state,
+        selectedLinkId: action.linkId,
+        halfSelectedAnnotationIds: halfSelectedAnnotationIds,
+        highlightedLinkIds: [],
+        halfSelectedLinkIds: [],
+        selectedAnnotationId: null,
+      };
+    }
+
+    case 'deselect-link':
+      return {
+        ...state,
+        selectedLinkId: null,
+      };
+
+    case 'highlight-link': {
+      let heighligAnnotationIds = state.heighligAnnotationIds;
+      if (state.textPack) {
+        const link = state.textPack.links.find(l => l.id === action.linkId);
+        if (link) {
+          heighligAnnotationIds = [link.fromEntryId, link.toEntryId];
+        }
+      }
+
+      return {
+        ...state,
+        highlightedLinkIds: [action.linkId],
+        heighligAnnotationIds,
+      };
+    }
+
+    case 'unhighlight-link':
+      return {
+        ...state,
+        highlightedLinkIds: [],
+        heighligAnnotationIds: [],
       };
   }
 }
