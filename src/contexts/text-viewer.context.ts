@@ -135,12 +135,11 @@ function textViewerReducer(state: State, action: Action): State {
         ],
         selectedLegendAttributeIds: [
           attributeId(action.textPack.legends.annotations[0].id, 'lemma'),
-          attributeId(action.textPack.legends.annotations[0].id, 'pos_tag'),
-          attributeId(action.textPack.legends.annotations[0].id, 'upos'),
           attributeId(action.textPack.legends.links[0].id, 'rel_type'),
         ],
         selectedAnnotationId:
           'forte.data.ontology.stanfordnlp_ontology.Token.6',
+        collpasedLineIndexes: [1],
       };
 
     case 'set-ontology':
@@ -212,48 +211,36 @@ function textViewerReducer(state: State, action: Action): State {
         selectedAnnotationId: null,
       };
 
-    case 'select-legend-attribute':
-      if (
-        state.selectedLegendAttributeIds.indexOf(
-          attributeId(action.legendId, action.attributeId)
-        ) === -1
-      ) {
-        return {
-          ...state,
-          ...defaultSpacingState,
-          selectedLegendAttributeIds: [
-            ...state.selectedLegendAttributeIds,
-            attributeId(action.legendId, action.attributeId),
-          ],
-        };
-      } else {
-        return {
-          ...state,
-          ...defaultSpacingState,
-          selectedLegendAttributeIds: [...state.selectedLegendAttributeIds],
-        };
-      }
+    case 'select-legend-attribute': {
+      const selectedLegendAttributeIds = state.selectedLegendAttributeIds.filter(
+        id => {
+          return id.indexOf(action.legendId) !== 0;
+        }
+      );
+      selectedLegendAttributeIds.push(
+        attributeId(action.legendId, action.attributeId)
+      );
 
-    case 'deselect-legend-attribute':
-      if (
-        state.selectedLegendAttributeIds.indexOf(
-          attributeId(action.legendId, action.attributeId)
-        ) === -1
-      ) {
-        return {
-          ...state,
-          ...defaultSpacingState,
-          selectedLegendAttributeIds: [...state.selectedLegendAttributeIds],
-        };
-      } else {
-        return {
-          ...state,
-          ...defaultSpacingState,
-          selectedLegendAttributeIds: state.selectedLegendAttributeIds.filter(
-            id => id !== attributeId(action.legendId, action.attributeId)
-          ),
-        };
-      }
+      return {
+        ...state,
+        ...defaultSpacingState,
+        selectedLegendAttributeIds,
+      };
+    }
+
+    case 'deselect-legend-attribute': {
+      const selectedLegendAttributeIds = state.selectedLegendAttributeIds.filter(
+        id => {
+          return id.indexOf(action.legendId) !== 0;
+        }
+      );
+
+      return {
+        ...state,
+        ...defaultSpacingState,
+        selectedLegendAttributeIds,
+      };
+    }
 
     case 'reset-calculated-text-space':
       return {

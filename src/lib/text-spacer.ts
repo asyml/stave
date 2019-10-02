@@ -135,7 +135,10 @@ export function spaceOutText(
   const lineStartX = textAreaDimensionStep1.x;
   const lineWidth = textAreaDimensionStep1.width;
 
-  const linesLevels = calcuateLinesLevels(linksWithPos, lineStartX, lineWidth);
+  const linesLevels =
+    linksWithPos.length > 0
+      ? calcuateLinesLevels(linksWithPos, lineStartX, lineWidth)
+      : getLevelsFromJustAnnotations(annotationWithPosition);
 
   const spaceMap: ISpaceMap = {};
   Object.keys(linesLevels).forEach((lineHeight, i) => {
@@ -161,8 +164,9 @@ export function spaceOutText(
         },
       },
       spaceToMove:
-        (collpasedLinesIndex.indexOf(i) === -1 ? Math.ceil(levelNum / 2) : 0) +
-        (i === 0 ? 1 : 4),
+        (collpasedLinesIndex.indexOf(i) === -1
+          ? Math.ceil(levelNum / 1.5)
+          : 0) + (i === 0 ? 1 : 3),
     };
   });
 
@@ -670,4 +674,21 @@ export function shouldMultiLineGoLeft(
   const topLineX =
     link.fromLinkY < link.toLinkY ? link.fromLinkX : link.toLinkX;
   return topLineX < lineStartX + lineWidth / 2;
+}
+
+function getLevelsFromJustAnnotations(
+  annotationWithPosition: {
+    position: AnnotationPosition;
+    annotation: IAnnotation;
+  }[]
+): Record<string, LinkWithPos[][]> {
+  const levels: any = {};
+  const set = new Set(
+    annotationWithPosition.map(ann => ann.position.rects[0].y)
+  );
+  for (let height of Array.from(set)) {
+    levels[height] = [];
+  }
+
+  return levels;
 }
