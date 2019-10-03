@@ -10,6 +10,9 @@
 
 .text_node_container {
   white-space: pre-wrap;
+  position: relative;
+  z-index: 5;
+  pointer-events: none;
 }
 
 .arrow {
