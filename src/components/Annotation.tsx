@@ -27,14 +27,18 @@ function Annotaion({
   return (
     <>
       {position.rects.map((rect, i) => {
+        let opacity = 0.2;
+        if (isHighlighted) opacity = 0.4;
+        if (isSelected) opacity = 0.66;
+
         return (
           <div
             key={i}
             className={style.annotaion}
             style={{
               background: legend.color,
-              opacity: isSelected || isHighlighted ? 0.4 : 0.15,
-              borderBottom: isSelected ? '2px solid #000' : 'none',
+              opacity,
+              borderBottom: isSelected ? `2px solid #333` : 'none',
               transform: `translate(${rect.x}px,${rect.y}px)`,
               height: rect.height,
               width: rect.width,
