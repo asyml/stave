@@ -34,37 +34,63 @@ function Annotaion({
         return (
           <div
             key={i}
-            className={style.annotaion}
+            className={style.annotaion_container}
             style={{
-              background: legend.color,
-              opacity,
-              borderBottom: isSelected ? `2px solid #333` : 'none',
               transform: `translate(${rect.x}px,${rect.y}px)`,
-              height: rect.height,
-              width: rect.width,
             }}
-            onClick={() => {
-              isSelected
-                ? dispatch({
-                    type: 'deselect-annotation',
-                  })
-                : dispatch({
-                    type: 'select-annotation',
-                    annotationId: annotation.id,
-                  });
-            }}
-            onMouseEnter={() => {
-              dispatch({
-                type: 'highlight-annotation',
-                annotationId: annotation.id,
-              });
-            }}
-            onMouseLeave={() => {
-              dispatch({
-                type: 'unhighlight-annotation',
-              });
-            }}
-          ></div>
+          >
+            <div
+              className={style.annotaion}
+              style={{
+                opacity,
+                background: legend.color,
+                borderBottom: isSelected ? `2px solid #333` : 'none',
+                height: rect.height,
+                width: rect.width,
+              }}
+              onClick={() => {
+                isSelected
+                  ? dispatch({
+                      type: 'deselect-annotation',
+                    })
+                  : dispatch({
+                      type: 'select-annotation',
+                      annotationId: annotation.id,
+                    });
+              }}
+              onMouseEnter={() => {
+                dispatch({
+                  type: 'highlight-annotation',
+                  annotationId: annotation.id,
+                });
+                dispatch({
+                  type: 'set-create-link-target',
+                  annotationId: annotation.id,
+                });
+              }}
+              onMouseLeave={() => {
+                dispatch({
+                  type: 'unhighlight-annotation',
+                });
+                dispatch({
+                  type: 'set-create-link-target',
+                  annotationId: null,
+                });
+              }}
+            ></div>
+            <div
+              className={style.connect_point}
+              style={{
+                background: legend.color,
+              }}
+              onMouseDown={() => {
+                dispatch({
+                  type: 'start-create-link',
+                  annotationId: annotation.id,
+                });
+              }}
+            ></div>
+          </div>
         );
       })}
     </>

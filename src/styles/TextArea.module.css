@@ -83,3 +83,7 @@
 .link_event_mask {
   cursor: pointer;
 }
+
+.link_edit_connector {
+  background: #555;
+}

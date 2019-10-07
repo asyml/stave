@@ -4,6 +4,8 @@ import {
   ISinglePack,
   AnnotationPosition,
   ISpacedAnnotationSpan,
+  IAnnotation,
+  IPos,
 } from '../lib/interfaces';
 import {
   applyColorToLegend,
@@ -32,6 +34,8 @@ export interface TextNodeDimension {
   height: number;
   x: number;
   y: number;
+  clientX: number;
+  clientY: number;
 }
 
 const lineMaskWidth = 8;
@@ -51,6 +55,8 @@ function TextArea({ textPack }: TextAreaProp) {
       height: 0,
       x: 0,
       y: 0,
+      clientX: 0,
+      clientY: 0,
     }
   );
 
@@ -67,13 +73,45 @@ function TextArea({ textPack }: TextAreaProp) {
     collpasedLineIndexes,
 
     selectedAnnotationId,
-    heighligAnnotationIds,
+    highlightedAnnotationIds,
     halfSelectedAnnotationIds,
 
     selectedLinkId,
-    highlightedLinkIds: heighlightedLinkIds,
+    highlightedLinkIds,
     halfSelectedLinkIds,
+
+    linkEditFromEntryId,
+    linkEditIsCreating,
+    linkEditMovePosition,
   } = useTextViewerState();
+
+  useEffect(() => {
+    function updatePos(e: MouseEvent) {
+      requestAnimationFrame(() => {
+        dispatch({
+          type: 'update-move-pos',
+          pos: { x: e.clientX, y: e.clientY },
+        });
+      });
+    }
+    function endMove() {
+      dispatch({
+        type: 'end-create-link',
+      });
+    }
+
+    if (linkEditIsCreating) {
+      window.addEventListener('mousemove', updatePos);
+      window.addEventListener('mouseup', endMove);
+    }
+
+    return () => {
+      if (linkEditIsCreating) {
+        window.removeEventListener('mousemove', updatePos);
+        window.removeEventListener('mouseup', endMove);
+      }
+    };
+  }, [linkEditIsCreating, dispatch]);
 
   useEffect(() => {
     function calculateTextSpace(
@@ -109,6 +147,8 @@ function TextArea({ textPack }: TextAreaProp) {
           height: textNodeRect.height,
           x: textNodeRect.left - textAreaRect.left,
           y: textNodeRect.top - textAreaRect.top,
+          clientX: textAreaRect.left,
+          clientY: textAreaRect.top,
         };
 
         const annotationPositions = textPack.annotations.map(anno => {
@@ -198,7 +238,13 @@ function TextArea({ textPack }: TextAreaProp) {
   }`;
 
   return (
-    <div className={textAreaClass} ref={textAreaEl}>
+    <div
+      className={textAreaClass}
+      style={{
+        userSelect: linkEditIsCreating ? 'none' : 'auto',
+      }}
+      ref={textAreaEl}
+    >
       <div className={style.text_node_container} ref={textNodeEl}>
         {spacedText || text}
       </div>
@@ -218,7 +264,7 @@ function TextArea({ textPack }: TextAreaProp) {
               annotation={ann.annotation}
               isSelected={ann.annotation.id === selectedAnnotationId}
               isHighlighted={
-                heighligAnnotationIds.indexOf(ann.annotation.id) > -1 ||
+                highlightedAnnotationIds.indexOf(ann.annotation.id) > -1 ||
                 halfSelectedAnnotationIds.indexOf(ann.annotation.id) > -1
               }
               legend={legend}
@@ -337,11 +383,11 @@ function TextArea({ textPack }: TextAreaProp) {
         })}
       </div>
 
-      <div className="links-container">
+      <div className="links_container">
         {linksWithPos.map(linkPos => {
           const isLinkSelected = selectedLinkId === linkPos.link.id;
           const isLinkHightlighted =
-            heighlightedLinkIds.includes(linkPos.link.id) ||
+            highlightedLinkIds.includes(linkPos.link.id) ||
             halfSelectedLinkIds.includes(linkPos.link.id);
           const borderWidth = '1px';
           const borderColor =
@@ -834,7 +880,74 @@ function TextArea({ textPack }: TextAreaProp) {
           }
         })}
       </div>
+
+      <div
+        className="link_edit_container"
+        style={{
+          display: linkEditIsCreating ? 'block' : 'none',
+        }}
+      >
+        {linkEditConnector(
+          annotationWithPosition,
+          linkEditFromEntryId,
+          linkEditMovePosition,
+          textNodeDimension
+        )}
+      </div>
     </div>
+  );
+}
+
+function linkEditConnector(
+  annotationWithPosition: {
+    position: AnnotationPosition;
+    annotation: IAnnotation;
+  }[],
+  fromEntryId: string | null,
+  movePos: IPos,
+  textNodeDimension: TextNodeDimension
+) {
+  const startAnnotaion = annotationWithPosition.find(
+    link => link.annotation.id === fromEntryId
+  );
+  const isMoved = movePos.x !== 0 || movePos.y !== 0;
+  if (!startAnnotaion || !fromEntryId || !isMoved) return null;
+
+  let x =
+    startAnnotaion.position.rects[0].x + startAnnotaion.position.rects[0].width;
+  let y = startAnnotaion.position.rects[0].y;
+
+  let width = movePos.x - x - textNodeDimension.clientX;
+  let height = movePos.y - y - textNodeDimension.clientY;
+
+  let rotate = (Math.atan(height / width) * 180) / Math.PI;
+  if (width === 0) {
+    if (height > 0) {
+      rotate = -90;
+    } else {
+      rotate = 90;
+    }
+  } else if (width < 0) {
+    if (height > 0) {
+      rotate += 180;
+    } else {
+      rotate -= 180;
+    }
+  }
+
+  return (
+    <div
+      className={style.link_edit_connector}
+      style={{
+        position: 'absolute',
+        top: y,
+        left: x,
+        transformOrigin: `0 0`,
+        transform: `rotate(${rotate}deg)`,
+        width: Math.sqrt(width * width + height * height) - 2,
+        height: 1,
+      }}
+    ></div>
   );
 }
 
