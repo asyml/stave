@@ -20,6 +20,7 @@ import {
   mergeAnnotationWithPosition,
 } from '../lib/text-spacer';
 import Annotation from './Annotation';
+import AnnotationLabel from './AnnotationLabel';
 import {
   useTextViewerState,
   useTextViewerDispatch,
@@ -213,14 +214,14 @@ function TextArea({ textPack }: TextAreaProp) {
     collpasedLineIndexes,
   ]);
 
-  const annotationWithPosition = mergeAnnotationWithPosition(
+  const annotationsWithPosition = mergeAnnotationWithPosition(
     annotationPositions,
     annotations
   ).filter(ann => selectedLegendIds.indexOf(ann.annotation.legendId) > -1);
 
   const linksWithPos = mergeLinkWithPosition(
     links,
-    annotationWithPosition
+    annotationsWithPosition
   ).filter(link => selectedLegendIds.indexOf(link.link.legendId) > -1);
 
   const lineStartX = textNodeDimension.x;
@@ -250,7 +251,7 @@ function TextArea({ textPack }: TextAreaProp) {
       </div>
 
       <div className={style.annotation_container}>
-        {annotationWithPosition.map((ann, i) => {
+        {annotationsWithPosition.map((ann, i) => {
           const legend = annotaionLegendsWithColor.find(
             legend => legend.id === ann.annotation.legendId
           );
@@ -303,82 +304,16 @@ function TextArea({ textPack }: TextAreaProp) {
       </div>
 
       <div className="annotation_label_container">
-        {annotationWithPosition.map((ann, i) => {
-          const legend = annotaionLegendsWithColor.find(
-            legend => legend.id === ann.annotation.legendId
-          );
-
-          if (!legend) {
-            return null;
-          }
-
+        {annotationsWithPosition.map(ann => {
           const isSelected = ann.annotation.id === selectedAnnotationId;
-          const attrKeys = Object.keys(ann.annotation.attributes).filter(
-            attrKey => {
-              if (isSelected) {
-                return true;
-              } else {
-                return (
-                  selectedLegendAttributeIds.indexOf(
-                    attributeId(ann.annotation.legendId, attrKey)
-                  ) > -1
-                );
-              }
-            }
-          );
 
           return (
-            <div
+            <AnnotationLabel
               key={ann.annotation.id}
-              className={
-                isSelected ? style.annotation_attr_container_selected : ''
-              }
-              style={{
-                position: 'absolute',
-                zIndex: isSelected ? 10 : 0,
-                transform: `translate(-50%, 0)`,
-                top: ann.position.rects[0].y + 20,
-                left: ann.position.rects[0].x + ann.position.rects[0].width / 2,
-                fontSize: 10,
-                backgroundColor: 'white',
-              }}
-            >
-              {ann.position.rects.map((rect, i) => {
-                return attrKeys.map((attrKey, j) => {
-                  return (
-                    <div
-                      className={
-                        isSelected
-                          ? style.annotation_attr_rect_selected
-                          : style.annotation_attr_rect
-                      }
-                      key={attrKey + i}
-                      style={{
-                        ...(!isSelected && {
-                          top: j * 2,
-                          left: j * 2,
-                        }),
-                      }}
-                    >
-                      {isSelected ? (
-                        <>
-                          <span className={style.annotation_attr_label}>
-                            {attrKey}
-                          </span>
-                          <span className={style.annotation_attr_value}>
-                            {ann.annotation.attributes[attrKey]}
-                          </span>
-                        </>
-                      ) : (
-                        ann.annotation.attributes[attrKey]
-                          .substring(0, 3)
-                          .toUpperCase()
-                      )}
-                    </div>
-                  );
-                });
-              })}
-            </div>
+              annotationWithPosition={ann}
+              isSelected={isSelected}
+              selectedLegendAttributeIds={selectedLegendAttributeIds}
+            ></AnnotationLabel>
           );
         })}
       </div>
@@ -888,7 +823,7 @@ function TextArea({ textPack }: TextAreaProp) {
         }}
       >
         {linkEditConnector(
-          annotationWithPosition,
+          annotationsWithPosition,
           linkEditFromEntryId,
           linkEditMovePosition,
           textNodeDimension
