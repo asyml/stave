@@ -15,71 +15,10 @@
   pointer-events: none;
 }
 
-.arrow {
-  border-left: 2px solid transparent;
-  border-right: 2px solid transparent;
-  border-top: 5px solid #aaa;
-}
-
-.link_label {
-  font-size: 9px;
-  line-height: 8px;
-  background: white;
-  color: #555;
-  pointer-events: none;
-  z-index: 5;
-}
-
-.annotation_attr_rect {
-  padding: 0 4px;
-  text-align: center;
-  border: 1px solid #ccc;
-  position: relative;
-  border-radius: 2px;
-  font-size: 10px;
-}
-.annotation_attr_rect_selected {
-  display: flex;
-  font-size: 10px;
-}
-
-.annotation_attr_container_selected {
-  border: 1px solid #ccc;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-  overflow: hidden;
-  padding: 4px 0;
-}
-
-.annotation_attr_label {
-  display: inline-block;
-  width: 60px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-weight: bold;
-  margin-right: 2px;
-  padding: 2px 4px;
-}
-
-.annotation_attr_value {
-  display: inline-block;
-  width: 120px;
-  padding: 2px 4px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .annotation_line_toggle {
   position: absolute;
   left: -22px;
   width: 18px;
   font-size: 10px;
   padding: 0px;
-}
-
-.link_line {
-  pointer-events: none;
-}
-
-.link_event_mask {
-  cursor: pointer;
 }

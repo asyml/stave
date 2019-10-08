@@ -1,7 +1,24 @@
-.annotaion {
+.annotaion_container {
   position: absolute;
   top: 0;
   left: 0;
+}
+
+.annotaion {
   cursor: pointer;
   transition: opacity 0.2s;
+}
+
+.connect_point {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  opacity: 0.5;
+}
+
+.connect_point:hover {
+  opacity: 1;
 }

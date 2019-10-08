@@ -2,10 +2,10 @@ import {
   ISinglePack,
   IOntology,
   ISpacedAnnotationSpan,
+  IPos,
 } from '../lib/interfaces';
 import { createContextProvider } from '../lib/create-context-provider';
 import { attributeId } from '../lib/utils';
-import { ll } from '../lib/log';
 
 export type Dispatch = (action: Action) => void;
 
@@ -26,9 +26,10 @@ export type State = {
   selectedAnnotationId: string | null;
   // indicate a state that annotation is keep highlighted when link is selected
   halfSelectedAnnotationIds: string[];
-  heighligAnnotationIds: string[];
+  highlightedAnnotationIds: string[];
 
   selectedLinkId: string | null;
+  // indicate a state that link is keep highlighted when annotation is selected
   halfSelectedLinkIds: string[];
   highlightedLinkIds: string[];
 
@@ -36,6 +37,11 @@ export type State = {
   spacedAnnotationSpan: ISpacedAnnotationSpan;
   spacedText: string | null;
   collpasedLineIndexes: number[];
+
+  linkEditFromEntryId: string | null;
+  linkEditToEntryId: string | null;
+  linkEditMovePosition: IPos;
+  linkEditIsCreating: boolean;
 };
 
 const defaultSpacingState = {
@@ -52,11 +58,16 @@ const initialState: State = {
 
   selectedAnnotationId: null,
   halfSelectedAnnotationIds: [],
-  heighligAnnotationIds: [],
+  highlightedAnnotationIds: [],
 
   selectedLinkId: null,
   halfSelectedLinkIds: [],
   highlightedLinkIds: [],
+
+  linkEditFromEntryId: null,
+  linkEditToEntryId: null,
+  linkEditMovePosition: { x: 0, y: 0 },
+  linkEditIsCreating: false,
 
   collpasedLineIndexes: [],
   ...defaultSpacingState,
@@ -146,6 +157,21 @@ export type Action =
     }
   | {
       type: 'unhighlight-link';
+    }
+  | {
+      type: 'start-create-link';
+      annotationId: string;
+    }
+  | {
+      type: 'update-move-pos';
+      pos: IPos;
+    }
+  | {
+      type: 'set-create-link-target';
+      annotationId: string | null;
+    }
+  | {
+      type: 'end-create-link';
     };
 
 /**
@@ -157,7 +183,7 @@ export type Action =
  */
 
 function textViewerReducer(state: State, action: Action): State {
-  ll('reducer', action);
+  // ll('reducer', action);
 
   switch (action.type) {
     case 'set-text-pack':
@@ -296,7 +322,7 @@ function textViewerReducer(state: State, action: Action): State {
 
       return {
         ...state,
-        heighligAnnotationIds: [
+        highlightedAnnotationIds: [
           action.annotationId,
           ...highlightedAnnotationIds,
         ],
@@ -306,7 +332,7 @@ function textViewerReducer(state: State, action: Action): State {
     case 'unhighlight-annotation':
       return {
         ...state,
-        heighligAnnotationIds: [],
+        highlightedAnnotationIds: [],
         highlightedLinkIds: [],
       };
 
@@ -403,7 +429,7 @@ function textViewerReducer(state: State, action: Action): State {
       };
 
     case 'highlight-link': {
-      let heighligAnnotationIds = state.heighligAnnotationIds;
+      let heighligAnnotationIds = state.highlightedAnnotationIds;
       if (state.textPack) {
         const link = state.textPack.links.find(l => l.id === action.linkId);
         if (link) {
@@ -414,7 +440,7 @@ function textViewerReducer(state: State, action: Action): State {
       return {
         ...state,
         highlightedLinkIds: [action.linkId],
-        heighligAnnotationIds,
+        highlightedAnnotationIds: heighligAnnotationIds,
       };
     }
 
@@ -422,7 +448,73 @@ function textViewerReducer(state: State, action: Action): State {
       return {
         ...state,
         highlightedLinkIds: [],
-        heighligAnnotationIds: [],
+        highlightedAnnotationIds: [],
+      };
+
+    case 'start-create-link':
+      return {
+        ...state,
+        linkEditFromEntryId: action.annotationId,
+        linkEditIsCreating: true,
+      };
+
+    case 'update-move-pos':
+      return {
+        ...state,
+        linkEditMovePosition: action.pos,
+      };
+
+    case 'end-create-link':
+      // if (state.linkEditToEntryId && state.linkEditFromEntryId) {
+      //   ll('create!', state.linkEditToEntryId, state.linkEditFromEntryId);
+      // }
+
+      if (state.linkEditToEntryId && state.linkEditFromEntryId) {
+        const textPack = state.textPack as ISinglePack;
+        return {
+          ...state,
+          linkEditIsCreating: false,
+          linkEditFromEntryId: null,
+          linkEditToEntryId: null,
+          linkEditMovePosition: { x: 0, y: 0 },
+          textPack: {
+            ...textPack,
+            links: [
+              ...textPack.links,
+              {
+                id:
+                  'forte.data.ontology.stanfordnlp_ontology.Dependency.' +
+                  Math.random(),
+                legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
+                fromEntryId: state.linkEditFromEntryId,
+                toEntryId: state.linkEditToEntryId,
+                attributes: {
+                  component:
+                    'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
+                  'py/object':
+                    'forte.data.ontology.stanfordnlp_ontology.Dependency',
+                  rel_type: 'ADDED', // TODO: let use to choose.
+                  rel_type_2: 'ADDED_2',
+                },
+              },
+            ],
+          },
+          ...defaultSpacingState,
+        };
+      } else {
+        return {
+          ...state,
+          linkEditIsCreating: false,
+          linkEditFromEntryId: null,
+          linkEditToEntryId: null,
+          linkEditMovePosition: { x: 0, y: 0 },
+        };
+      }
+
+    case 'set-create-link-target':
+      return {
+        ...state,
+        linkEditToEntryId: action.annotationId,
       };
   }
 }

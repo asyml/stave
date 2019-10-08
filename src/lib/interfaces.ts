@@ -1,3 +1,5 @@
+import { isJSXIdentifier } from '@babel/types';
+
 export interface IAttributes {
   [key: string]: any;
 }
@@ -100,4 +102,18 @@ export interface ISpaceMap {
 
 export interface ISpacedAnnotationSpan {
   [annotationId: string]: { begin: number; end: number };
+}
+
+export interface IPos {
+  x: number;
+  y: number;
+}
+
+export interface ITextNodeDimension {
+  width: number;
+  height: number;
+  x: number;
+  y: number;
+  clientX: number;
+  clientY: number;
 }

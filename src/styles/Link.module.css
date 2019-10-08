@@ -1,0 +1,22 @@
+.link_line {
+  pointer-events: none;
+}
+
+.link_event_mask {
+  cursor: pointer;
+}
+
+.arrow {
+  border-left: 2px solid transparent;
+  border-right: 2px solid transparent;
+  border-top: 5px solid #aaa;
+}
+
+.link_label {
+  font-size: 9px;
+  line-height: 8px;
+  background: white;
+  color: #555;
+  pointer-events: none;
+  z-index: 5;
+}
