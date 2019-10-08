@@ -108,3 +108,12 @@ export interface IPos {
   x: number;
   y: number;
 }
+
+export interface ITextNodeDimension {
+  width: number;
+  height: number;
+  x: number;
+  y: number;
+  clientX: number;
+  clientY: number;
+}

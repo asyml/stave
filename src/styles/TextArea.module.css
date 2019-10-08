@@ -15,37 +15,10 @@
   pointer-events: none;
 }
 
-.arrow {
-  border-left: 2px solid transparent;
-  border-right: 2px solid transparent;
-  border-top: 5px solid #aaa;
-}
-
-.link_label {
-  font-size: 9px;
-  line-height: 8px;
-  background: white;
-  color: #555;
-  pointer-events: none;
-  z-index: 5;
-}
-
 .annotation_line_toggle {
   position: absolute;
   left: -22px;
   width: 18px;
   font-size: 10px;
   padding: 0px;
-}
-
-.link_line {
-  pointer-events: none;
-}
-
-.link_event_mask {
-  cursor: pointer;
-}
-
-.link_edit_connector {
-  background: #555;
 }
