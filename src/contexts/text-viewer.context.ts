@@ -2,7 +2,6 @@ import {
   ISinglePack,
   IOntology,
   ISpacedAnnotationSpan,
-  IPos,
 } from '../lib/interfaces';
 import { createContextProvider } from '../lib/create-context-provider';
 import { attributeId } from '../lib/utils';
@@ -40,7 +39,6 @@ export type State = {
 
   linkEditFromEntryId: string | null;
   linkEditToEntryId: string | null;
-  linkEditMovePosition: IPos;
   linkEditIsCreating: boolean;
 };
 
@@ -66,7 +64,6 @@ const initialState: State = {
 
   linkEditFromEntryId: null,
   linkEditToEntryId: null,
-  linkEditMovePosition: { x: 0, y: 0 },
   linkEditIsCreating: false,
 
   collpasedLineIndexes: [],
@@ -161,10 +158,6 @@ export type Action =
   | {
       type: 'start-create-link';
       annotationId: string;
-    }
-  | {
-      type: 'update-move-pos';
-      pos: IPos;
     }
   | {
       type: 'set-create-link-target';
@@ -301,6 +294,13 @@ function textViewerReducer(state: State, action: Action): State {
       };
 
     case 'highlight-annotation':
+      if (state.linkEditIsCreating) {
+        return {
+          ...state,
+          highlightedAnnotationIds: [action.annotationId],
+        };
+      }
+
       let highlightedAnnotationIds: string[] = [];
       let highlightedLinkIds: string[] = [];
 
@@ -429,6 +429,10 @@ function textViewerReducer(state: State, action: Action): State {
       };
 
     case 'highlight-link': {
+      if (state.linkEditIsCreating) {
+        return state;
+      }
+
       let heighligAnnotationIds = state.highlightedAnnotationIds;
       if (state.textPack) {
         const link = state.textPack.links.find(l => l.id === action.linkId);
@@ -458,17 +462,7 @@ function textViewerReducer(state: State, action: Action): State {
         linkEditIsCreating: true,
       };
 
-    case 'update-move-pos':
-      return {
-        ...state,
-        linkEditMovePosition: action.pos,
-      };
-
     case 'end-create-link':
-      // if (state.linkEditToEntryId && state.linkEditFromEntryId) {
-      //   ll('create!', state.linkEditToEntryId, state.linkEditFromEntryId);
-      // }
-
       if (state.linkEditToEntryId && state.linkEditFromEntryId) {
         const textPack = state.textPack as ISinglePack;
         return {
@@ -476,7 +470,6 @@ function textViewerReducer(state: State, action: Action): State {
           linkEditIsCreating: false,
           linkEditFromEntryId: null,
           linkEditToEntryId: null,
-          linkEditMovePosition: { x: 0, y: 0 },
           textPack: {
             ...textPack,
             links: [
@@ -507,7 +500,6 @@ function textViewerReducer(state: State, action: Action): State {
           linkEditIsCreating: false,
           linkEditFromEntryId: null,
           linkEditToEntryId: null,
-          linkEditMovePosition: { x: 0, y: 0 },
         };
       }
 
