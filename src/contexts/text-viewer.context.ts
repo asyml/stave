@@ -512,10 +512,17 @@ function textViewerReducer(state: State, action: Action): State {
       }
 
     case 'set-create-link-target':
-      return {
-        ...state,
-        linkEditToEntryId: action.annotationId,
-      };
+      if (state.linkEditIsCreating) {
+        return {
+          ...state,
+          linkEditToEntryId: action.annotationId,
+        };
+      } else {
+        return {
+          ...state,
+          linkEditFromEntryId: action.annotationId,
+        };
+      }
   }
 }
 

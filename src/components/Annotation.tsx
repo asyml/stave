@@ -4,7 +4,10 @@ import {
   IColoredLegend,
   AnnotationPosition,
 } from '../lib/interfaces';
-import { useTextViewerDispatch } from '../contexts/text-viewer.context';
+import {
+  useTextViewerDispatch,
+  useTextViewerState,
+} from '../contexts/text-viewer.context';
 import style from '../styles/Annotation.module.css';
 
 export interface AnnotaionProp {
@@ -23,6 +26,7 @@ function Annotaion({
   position,
 }: AnnotaionProp) {
   const dispatch = useTextViewerDispatch();
+  const { linkEditFromEntryId, linkEditIsCreating } = useTextViewerState();
 
   return (
     <>
@@ -37,6 +41,25 @@ function Annotaion({
             className={style.annotaion_container}
             style={{
               transform: `translate(${rect.x}px,${rect.y}px)`,
+            }}
+            onMouseEnter={() => {
+              dispatch({
+                type: 'highlight-annotation',
+                annotationId: annotation.id,
+              });
+              dispatch({
+                type: 'set-create-link-target',
+                annotationId: annotation.id,
+              });
+            }}
+            onMouseLeave={() => {
+              dispatch({
+                type: 'unhighlight-annotation',
+              });
+              dispatch({
+                type: 'set-create-link-target',
+                annotationId: null,
+              });
             }}
           >
             <div
@@ -58,30 +81,16 @@ function Annotaion({
                       annotationId: annotation.id,
                     });
               }}
-              onMouseEnter={() => {
-                dispatch({
-                  type: 'highlight-annotation',
-                  annotationId: annotation.id,
-                });
-                dispatch({
-                  type: 'set-create-link-target',
-                  annotationId: annotation.id,
-                });
-              }}
-              onMouseLeave={() => {
-                dispatch({
-                  type: 'unhighlight-annotation',
-                });
-                dispatch({
-                  type: 'set-create-link-target',
-                  annotationId: null,
-                });
-              }}
             ></div>
             <div
               className={style.connect_point}
               style={{
-                background: legend.color,
+                display:
+                  linkEditFromEntryId === annotation.id ? 'block' : 'none',
+                background:
+                  linkEditIsCreating && linkEditFromEntryId === annotation.id
+                    ? '#555'
+                    : undefined,
               }}
               onMouseDown={() => {
                 dispatch({

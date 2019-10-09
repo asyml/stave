@@ -16,9 +16,10 @@
   width: 8px;
   height: 8px;
   border-radius: 4px;
-  opacity: 0.5;
+  border: 1px solid #555;
+  background: #ccc;
 }
 
 .connect_point:hover {
-  opacity: 1;
+  background: #555;
 }
