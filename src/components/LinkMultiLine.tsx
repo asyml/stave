@@ -114,7 +114,6 @@ export default function LinkMultiLine({
   return (
     <div
       className="cross-line-container"
-      key={linkWithPosition.link.id}
       data-from-id={linkWithPosition.link.fromEntryId}
       data-to-id={linkWithPosition.link.toEntryId}
     >

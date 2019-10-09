@@ -320,6 +320,7 @@ function TextArea({ textPack }: TextAreaProp) {
 
             return (
               <LinkSingleLine
+                key={linkPos.link.id}
                 linkWithPosition={linkPos}
                 isSelected={isLinkSelected}
                 isHightlighted={isLinkHightlighted}
@@ -331,6 +332,7 @@ function TextArea({ textPack }: TextAreaProp) {
           } else {
             return (
               <LinkMultiLine
+                key={linkPos.link.id}
                 linkWithPosition={linkPos}
                 isSelected={isLinkSelected}
                 isHightlighted={isLinkHightlighted}
