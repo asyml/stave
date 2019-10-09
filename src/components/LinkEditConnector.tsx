@@ -89,6 +89,8 @@ export default function LinkEditConnector({
         width: Math.sqrt(width * width + height * height) - 2,
         height: 1,
       }}
-    ></div>
+    >
+      <span className={style.link_drag_arrow}></span>
+    </div>
   );
 }
