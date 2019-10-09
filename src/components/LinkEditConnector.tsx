@@ -29,15 +29,11 @@ export default function LinkEditConnector({
 
   useEffect(() => {
     function updatePos(e: MouseEvent) {
-      requestAnimationFrame(() => {
-        setPos({ x: e.clientX, y: e.clientY });
-      });
+      setPos({ x: e.clientX, y: e.clientY });
     }
 
     function endMove() {
-      dispatch({
-        type: 'end-create-link',
-      });
+      dispatch({ type: 'end-create-link' });
     }
 
     window.addEventListener('mousemove', updatePos);

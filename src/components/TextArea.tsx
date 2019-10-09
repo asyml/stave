@@ -319,18 +319,15 @@ function TextArea({ textPack }: TextAreaProp) {
         })}
       </div>
 
-      <div
-        className={style.link_edit_container}
-        style={{
-          display: linkEditIsCreating ? 'block' : 'none',
-        }}
-      >
-        <LinkEditConnector
-          annotationsWithPosition={annotationsWithPosition}
-          fromEntryId={linkEditFromEntryId}
-          textNodeDimension={textNodeDimension}
-        />
-      </div>
+      {linkEditIsCreating && (
+        <div className={style.link_edit_container}>
+          <LinkEditConnector
+            annotationsWithPosition={annotationsWithPosition}
+            fromEntryId={linkEditFromEntryId}
+            textNodeDimension={textNodeDimension}
+          />
+        </div>
+      )}
     </div>
   );
 }
