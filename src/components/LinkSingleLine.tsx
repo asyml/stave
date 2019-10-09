@@ -80,7 +80,6 @@ export default function LinkSingleLine({
       className="single-line-container"
       data-from-id={linkWithPosition.link.fromEntryId}
       data-to-id={linkWithPosition.link.toEntryId}
-      key={linkWithPosition.link.id}
     >
       <div
         className={style.link_line}

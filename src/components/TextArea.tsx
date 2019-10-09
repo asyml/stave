@@ -72,36 +72,7 @@ function TextArea({ textPack }: TextAreaProp) {
 
     linkEditFromEntryId,
     linkEditIsCreating,
-    linkEditMovePosition,
   } = useTextViewerState();
-
-  useEffect(() => {
-    function updatePos(e: MouseEvent) {
-      requestAnimationFrame(() => {
-        dispatch({
-          type: 'update-move-pos',
-          pos: { x: e.clientX, y: e.clientY },
-        });
-      });
-    }
-    function endMove() {
-      dispatch({
-        type: 'end-create-link',
-      });
-    }
-
-    if (linkEditIsCreating) {
-      window.addEventListener('mousemove', updatePos);
-      window.addEventListener('mouseup', endMove);
-    }
-
-    return () => {
-      if (linkEditIsCreating) {
-        window.removeEventListener('mousemove', updatePos);
-        window.removeEventListener('mouseup', endMove);
-      }
-    };
-  }, [linkEditIsCreating, dispatch]);
 
   useEffect(() => {
     function calculateTextSpace(
@@ -301,7 +272,7 @@ function TextArea({ textPack }: TextAreaProp) {
               annotationWithPosition={ann}
               isSelected={isSelected}
               selectedLegendAttributeIds={selectedLegendAttributeIds}
-            ></AnnotationLabel>
+            />
           );
         })}
       </div>
@@ -320,6 +291,7 @@ function TextArea({ textPack }: TextAreaProp) {
 
             return (
               <LinkSingleLine
+                key={linkPos.link.id}
                 linkWithPosition={linkPos}
                 isSelected={isLinkSelected}
                 isHightlighted={isLinkHightlighted}
@@ -331,6 +303,7 @@ function TextArea({ textPack }: TextAreaProp) {
           } else {
             return (
               <LinkMultiLine
+                key={linkPos.link.id}
                 linkWithPosition={linkPos}
                 isSelected={isLinkSelected}
                 isHightlighted={isLinkHightlighted}
@@ -340,25 +313,21 @@ function TextArea({ textPack }: TextAreaProp) {
                 lineHeights={lineHeights}
                 lineStartX={lineStartX}
                 lineWidth={lineWidth}
-              ></LinkMultiLine>
+              />
             );
           }
         })}
       </div>
 
-      <div
-        className="link_edit_container"
-        style={{
-          display: linkEditIsCreating ? 'block' : 'none',
-        }}
-      >
-        <LinkEditConnector
-          annotationsWithPosition={annotationsWithPosition}
-          fromEntryId={linkEditFromEntryId}
-          movePos={linkEditMovePosition}
-          textNodeDimension={textNodeDimension}
-        />
-      </div>
+      {linkEditIsCreating && (
+        <div className={style.link_edit_container}>
+          <LinkEditConnector
+            annotationsWithPosition={annotationsWithPosition}
+            fromEntryId={linkEditFromEntryId}
+            textNodeDimension={textNodeDimension}
+          />
+        </div>
+      )}
     </div>
   );
 }
