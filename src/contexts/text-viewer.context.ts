@@ -40,6 +40,7 @@ export type State = {
   linkEditFromEntryId: string | null;
   linkEditToEntryId: string | null;
   linkEditIsCreating: boolean;
+  linkEditIsCreatingTwoStep: boolean;
 };
 
 const defaultSpacingState = {
@@ -65,6 +66,7 @@ const initialState: State = {
   linkEditFromEntryId: null,
   linkEditToEntryId: null,
   linkEditIsCreating: false,
+  linkEditIsCreatingTwoStep: false,
 
   collpasedLineIndexes: [],
   ...defaultSpacingState,
@@ -160,11 +162,18 @@ export type Action =
       annotationId: string;
     }
   | {
+      type: 'start-create-link-two-step';
+      annotationId: string;
+    }
+  | {
       type: 'set-create-link-target';
       annotationId: string | null;
     }
   | {
       type: 'end-create-link';
+    }
+  | {
+      type: 'cancel-create-link';
     };
 
 /**
@@ -257,6 +266,13 @@ function textViewerReducer(state: State, action: Action): State {
       };
 
     case 'select-annotation': {
+      if (state.linkEditIsCreatingTwoStep && !state.linkEditToEntryId) {
+        return {
+          ...state,
+          linkEditToEntryId: action.annotationId,
+        };
+      }
+
       let halfSelectedAnnotationIds: string[] = [];
       let halfSelectedLinkIds: string[] = [];
 
@@ -404,6 +420,10 @@ function textViewerReducer(state: State, action: Action): State {
       };
 
     case 'select-link': {
+      if (state.linkEditIsCreatingTwoStep && !state.linkEditToEntryId) {
+        return state;
+      }
+
       let halfSelectedAnnotationIds: string[] = [];
       if (state.textPack) {
         const link = state.textPack.links.find(l => l.id === action.linkId);
@@ -456,10 +476,32 @@ function textViewerReducer(state: State, action: Action): State {
       };
 
     case 'start-create-link':
+      if (state.linkEditIsCreatingTwoStep) {
+        return state;
+      }
+
       return {
         ...state,
         linkEditFromEntryId: action.annotationId,
         linkEditIsCreating: true,
+      };
+
+    case 'start-create-link-two-step':
+      return {
+        ...state,
+        selectedAnnotationId: null,
+        selectedLinkId: null,
+        linkEditFromEntryId: action.annotationId,
+        linkEditIsCreatingTwoStep: true,
+      };
+
+    case 'cancel-create-link':
+      return {
+        ...state,
+        linkEditIsCreating: false,
+        linkEditIsCreatingTwoStep: false,
+        linkEditFromEntryId: null,
+        linkEditToEntryId: null,
       };
 
     case 'end-create-link':
@@ -468,28 +510,14 @@ function textViewerReducer(state: State, action: Action): State {
         return {
           ...state,
           linkEditIsCreating: false,
+          linkEditIsCreatingTwoStep: false,
           linkEditFromEntryId: null,
           linkEditToEntryId: null,
           textPack: {
             ...textPack,
             links: [
               ...textPack.links,
-              {
-                id:
-                  'forte.data.ontology.stanfordnlp_ontology.Dependency.' +
-                  Math.random(),
-                legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
-                fromEntryId: state.linkEditFromEntryId,
-                toEntryId: state.linkEditToEntryId,
-                attributes: {
-                  component:
-                    'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
-                  'py/object':
-                    'forte.data.ontology.stanfordnlp_ontology.Dependency',
-                  rel_type: 'ADDED', // TODO: let use to choose.
-                  rel_type_2: 'ADDED_2',
-                },
-              },
+              newLink(state.linkEditFromEntryId, state.linkEditToEntryId),
             ],
           },
           ...defaultSpacingState,
@@ -498,12 +526,17 @@ function textViewerReducer(state: State, action: Action): State {
         return {
           ...state,
           linkEditIsCreating: false,
+          linkEditIsCreatingTwoStep: false,
           linkEditFromEntryId: null,
           linkEditToEntryId: null,
         };
       }
 
     case 'set-create-link-target':
+      if (state.linkEditIsCreatingTwoStep) {
+        return state;
+      }
+
       if (state.linkEditIsCreating) {
         return {
           ...state,
@@ -525,3 +558,18 @@ const [
 ] = createContextProvider(textViewerReducer, initialState);
 
 export { TextViewerProvider, useTextViewerState, useTextViewerDispatch };
+
+function newLink(fromEntryId: string, toEntryId: string) {
+  return {
+    id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.' + Math.random(),
+    legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
+    fromEntryId: fromEntryId,
+    toEntryId: toEntryId,
+    attributes: {
+      component: 'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
+      'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
+      rel_type: 'ADDED', // TODO: let use to choose.
+      rel_type_2: 'ADDED_2',
+    },
+  };
+}

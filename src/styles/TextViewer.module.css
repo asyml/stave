@@ -33,3 +33,7 @@
   flex: 1;
   position: relative;
 }
+
+.attributes_side_container h2 {
+  font-size: 16px;
+}

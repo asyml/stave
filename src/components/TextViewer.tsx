@@ -7,6 +7,7 @@ import LinkDetail from './LinkDetail';
 import TextDetail from './TextDetail';
 import TextArea from './TextArea';
 import { useTextViewerState } from '../contexts/text-viewer.context';
+import LinkCreateBox from './LinkCreateBox';
 
 export interface TextViewerProp {
   textPack: ISinglePack;
@@ -18,27 +19,32 @@ function TextViewer({ textPack, ontology }: TextViewerProp) {
 
   const annotationLegendsWithColor = applyColorToLegend(legends.annotations);
   const linksLegendsWithColor = applyColorToLegend(legends.links);
-  const contextState = useTextViewerState();
+  const {
+    selectedAnnotationId,
+    selectedLinkId,
+    linkEditFromEntryId,
+    linkEditToEntryId,
+    linkEditIsCreatingTwoStep,
+  } = useTextViewerState();
+
   const selectedAnnotation =
-    annotations.find(ann => ann.id === contextState.selectedAnnotationId) ||
-    null;
+    annotations.find(ann => ann.id === selectedAnnotationId) || null;
   const selectedAnnotaionParents: IAnnotation[] = [];
   const selectedAnnotaionChildren: IAnnotation[] = [];
 
   links.forEach(link => {
-    if (link.fromEntryId === contextState.selectedAnnotationId) {
+    if (link.fromEntryId === selectedAnnotationId) {
       selectedAnnotaionChildren.push(annotations.find(
         ann => ann.id === link.toEntryId
       ) as IAnnotation);
-    } else if (link.toEntryId === contextState.selectedAnnotationId) {
+    } else if (link.toEntryId === selectedAnnotationId) {
       selectedAnnotaionParents.push(annotations.find(
         ann => ann.id === link.fromEntryId
       ) as IAnnotation);
     }
   });
 
-  const selectedLink =
-    links.find(link => link.id === contextState.selectedLinkId) || null;
+  const selectedLink = links.find(link => link.id === selectedLinkId) || null;
 
   return (
     <div className={style.text_viewer}>
@@ -59,14 +65,32 @@ function TextViewer({ textPack, ontology }: TextViewerProp) {
         </div>
 
         <div className={style.attributes_side_container}>
-          {selectedLink ? (
-            <LinkDetail link={selectedLink} />
-          ) : (
-            <AnnotationDetail
-              parentAnnotations={selectedAnnotaionParents}
-              childAnnotations={selectedAnnotaionChildren}
-              annotation={selectedAnnotation}
-            />
+          {linkEditIsCreatingTwoStep && (
+            <div>
+              <h2>Create Link</h2>
+              <LinkCreateBox
+                fromEntryId={linkEditFromEntryId}
+                toEntryId={linkEditToEntryId}
+              />
+            </div>
+          )}
+
+          {selectedLink && (
+            <div>
+              <h2>Link Attributes</h2>
+              <LinkDetail link={selectedLink} />
+            </div>
+          )}
+
+          {selectedAnnotation && (
+            <div>
+              <h2>Annotation Attributes</h2>
+              <AnnotationDetail
+                parentAnnotations={selectedAnnotaionParents}
+                childAnnotations={selectedAnnotaionChildren}
+                annotation={selectedAnnotation}
+              />
+            </div>
           )}
         </div>
       </main>

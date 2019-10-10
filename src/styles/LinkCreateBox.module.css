@@ -1,0 +1,41 @@
+.link_create_box {
+  transform: translateX(-30px);
+  opacity: 0;
+  transition: transform 0.36s, opacity 0.36s;
+}
+
+.animated {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.link_create_title {
+  font-weight: bold;
+  width: 40px;
+  font-size: 11px;
+  margin-right: 4px;
+}
+
+.link_create_entry_container {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.link_create_id {
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  cursor: pointer;
+  text-decoration: underline;
+  direction: rtl;
+}
+
+.buttons button {
+  margin-top: 8px;
+  margin-right: 8px;
+}
+
+.link_to_be_select {
+  color: #999;
+}
