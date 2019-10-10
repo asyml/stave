@@ -1,7 +1,10 @@
 .link_create_box {
   transform: translateX(-30px);
   opacity: 0;
+  background: rgba(9, 154, 235, 0.2);
+  border: 1px solid rgba(9, 154, 235);
   transition: transform 0.36s, opacity 0.36s;
+  padding: 8px;
 }
 
 .animated {

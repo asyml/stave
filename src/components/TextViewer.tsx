@@ -24,7 +24,7 @@ function TextViewer({ textPack, ontology }: TextViewerProp) {
     selectedLinkId,
     linkEditFromEntryId,
     linkEditToEntryId,
-    linkEditIsCreatingTwoStep,
+    linkEditIsCreating,
   } = useTextViewerState();
 
   const selectedAnnotation =
@@ -65,7 +65,7 @@ function TextViewer({ textPack, ontology }: TextViewerProp) {
         </div>
 
         <div className={style.attributes_side_container}>
-          {linkEditIsCreatingTwoStep && (
+          {linkEditIsCreating && (
             <div>
               <h2>Create Link</h2>
               <LinkCreateBox

@@ -29,14 +29,14 @@ function Annotaion({
   const {
     linkEditFromEntryId,
     linkEditToEntryId,
+    linkEditIsDragging,
     linkEditIsCreating,
-    linkEditIsCreatingTwoStep,
   } = useTextViewerState();
 
   const isLinkTarget =
-    linkEditIsCreatingTwoStep &&
+    linkEditIsCreating &&
     linkEditFromEntryId !== annotation.id &&
-    !linkEditToEntryId;
+    (!linkEditToEntryId || linkEditIsDragging);
 
   return (
     <>
@@ -99,7 +99,7 @@ function Annotaion({
                 display:
                   linkEditFromEntryId === annotation.id ? 'block' : 'none',
                 background:
-                  (linkEditIsCreating || linkEditIsCreatingTwoStep) &&
+                  (linkEditIsDragging || linkEditIsCreating) &&
                   linkEditFromEntryId === annotation.id
                     ? '#555'
                     : undefined,

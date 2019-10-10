@@ -33,9 +33,10 @@ export default function LinkEditConnector({
     }
 
     function endMove() {
-      dispatch({ type: 'end-create-link' });
+      dispatch({ type: 'stop-create-link-dragging' });
     }
 
+    console.log('addEventListener');
     window.addEventListener('mousemove', updatePos);
     window.addEventListener('mouseup', endMove);
 

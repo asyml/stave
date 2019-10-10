@@ -39,8 +39,8 @@ export type State = {
 
   linkEditFromEntryId: string | null;
   linkEditToEntryId: string | null;
+  linkEditIsDragging: boolean;
   linkEditIsCreating: boolean;
-  linkEditIsCreatingTwoStep: boolean;
 };
 
 const defaultSpacingState = {
@@ -65,8 +65,8 @@ const initialState: State = {
 
   linkEditFromEntryId: null,
   linkEditToEntryId: null,
+  linkEditIsDragging: false,
   linkEditIsCreating: false,
-  linkEditIsCreatingTwoStep: false,
 
   collpasedLineIndexes: [],
   ...defaultSpacingState,
@@ -174,6 +174,9 @@ export type Action =
     }
   | {
       type: 'cancel-create-link';
+    }
+  | {
+      type: 'stop-create-link-dragging';
     };
 
 /**
@@ -266,7 +269,7 @@ function textViewerReducer(state: State, action: Action): State {
       };
 
     case 'select-annotation': {
-      if (state.linkEditIsCreatingTwoStep && !state.linkEditToEntryId) {
+      if (state.linkEditIsCreating && !state.linkEditToEntryId) {
         return {
           ...state,
           linkEditToEntryId: action.annotationId,
@@ -310,7 +313,7 @@ function textViewerReducer(state: State, action: Action): State {
       };
 
     case 'highlight-annotation':
-      if (state.linkEditIsCreating) {
+      if (state.linkEditIsDragging) {
         return {
           ...state,
           highlightedAnnotationIds: [action.annotationId],
@@ -420,7 +423,7 @@ function textViewerReducer(state: State, action: Action): State {
       };
 
     case 'select-link': {
-      if (state.linkEditIsCreatingTwoStep && !state.linkEditToEntryId) {
+      if (state.linkEditIsCreating && !state.linkEditToEntryId) {
         return state;
       }
 
@@ -449,7 +452,7 @@ function textViewerReducer(state: State, action: Action): State {
       };
 
     case 'highlight-link': {
-      if (state.linkEditIsCreating) {
+      if (state.linkEditIsDragging) {
         return state;
       }
 
@@ -476,13 +479,14 @@ function textViewerReducer(state: State, action: Action): State {
       };
 
     case 'start-create-link':
-      if (state.linkEditIsCreatingTwoStep) {
+      if (state.linkEditIsCreating) {
         return state;
       }
 
       return {
         ...state,
         linkEditFromEntryId: action.annotationId,
+        linkEditIsDragging: true,
         linkEditIsCreating: true,
       };
 
@@ -492,25 +496,41 @@ function textViewerReducer(state: State, action: Action): State {
         selectedAnnotationId: null,
         selectedLinkId: null,
         linkEditFromEntryId: action.annotationId,
-        linkEditIsCreatingTwoStep: true,
+        linkEditIsCreating: true,
       };
 
     case 'cancel-create-link':
       return {
         ...state,
+        linkEditIsDragging: false,
         linkEditIsCreating: false,
-        linkEditIsCreatingTwoStep: false,
         linkEditFromEntryId: null,
         linkEditToEntryId: null,
       };
+
+    case 'stop-create-link-dragging':
+      if (state.linkEditToEntryId) {
+        return {
+          ...state,
+          linkEditIsDragging: false,
+        };
+      } else {
+        return {
+          ...state,
+          linkEditIsDragging: false,
+          linkEditIsCreating: false,
+          linkEditFromEntryId: null,
+          linkEditToEntryId: null,
+        };
+      }
 
     case 'end-create-link':
       if (state.linkEditToEntryId && state.linkEditFromEntryId) {
         const textPack = state.textPack as ISinglePack;
         return {
           ...state,
+          linkEditIsDragging: false,
           linkEditIsCreating: false,
-          linkEditIsCreatingTwoStep: false,
           linkEditFromEntryId: null,
           linkEditToEntryId: null,
           textPack: {
@@ -525,23 +545,21 @@ function textViewerReducer(state: State, action: Action): State {
       } else {
         return {
           ...state,
+          linkEditIsDragging: false,
           linkEditIsCreating: false,
-          linkEditIsCreatingTwoStep: false,
           linkEditFromEntryId: null,
           linkEditToEntryId: null,
         };
       }
 
     case 'set-create-link-target':
-      if (state.linkEditIsCreatingTwoStep) {
-        return state;
-      }
-
-      if (state.linkEditIsCreating) {
+      if (state.linkEditIsDragging) {
         return {
           ...state,
           linkEditToEntryId: action.annotationId,
         };
+      } else if (state.linkEditIsCreating) {
+        return state;
       } else {
         return {
           ...state,
