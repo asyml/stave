@@ -72,6 +72,7 @@ function TextArea({ textPack }: TextAreaProp) {
 
     linkEditFromEntryId,
     linkEditIsCreating,
+    linkEditIsDragging,
   } = useTextViewerState();
 
   useEffect(() => {
@@ -319,7 +320,7 @@ function TextArea({ textPack }: TextAreaProp) {
         })}
       </div>
 
-      {linkEditIsCreating && (
+      {linkEditIsDragging && (
         <div className={style.link_edit_container}>
           <LinkEditConnector
             annotationsWithPosition={annotationsWithPosition}

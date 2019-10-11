@@ -2,11 +2,12 @@
   position: absolute;
   top: 0;
   left: 0;
+  transition: box-shadow 0.36s;
 }
 
 .annotaion {
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: opacity 0.36s;
 }
 
 .connect_point {
@@ -22,4 +23,12 @@
 
 .connect_point:hover {
   background: #555;
+}
+
+.annotaion_container_to_be_link {
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+.annotaion_container_to_be_link:active {
+  box-shadow: none;
 }

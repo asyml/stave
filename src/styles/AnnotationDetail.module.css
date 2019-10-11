@@ -10,6 +10,7 @@
   cursor: pointer;
   padding: 4px;
   text-decoration: underline;
+  direction: rtl;
 }
 
 .annotaition_detail_section {

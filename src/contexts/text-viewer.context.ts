@@ -39,6 +39,7 @@ export type State = {
 
   linkEditFromEntryId: string | null;
   linkEditToEntryId: string | null;
+  linkEditIsDragging: boolean;
   linkEditIsCreating: boolean;
 };
 
@@ -64,6 +65,7 @@ const initialState: State = {
 
   linkEditFromEntryId: null,
   linkEditToEntryId: null,
+  linkEditIsDragging: false,
   linkEditIsCreating: false,
 
   collpasedLineIndexes: [],
@@ -165,6 +167,13 @@ export type Action =
     }
   | {
       type: 'end-create-link';
+    }
+  | {
+      type: 'cancel-create-link';
+    }
+  | {
+      type: 'stop-create-link-dragging';
+      hasMoved: boolean;
     };
 
 /**
@@ -257,6 +266,13 @@ function textViewerReducer(state: State, action: Action): State {
       };
 
     case 'select-annotation': {
+      if (state.linkEditIsCreating && !state.linkEditToEntryId) {
+        return {
+          ...state,
+          linkEditToEntryId: action.annotationId,
+        };
+      }
+
       let halfSelectedAnnotationIds: string[] = [];
       let halfSelectedLinkIds: string[] = [];
 
@@ -294,7 +310,7 @@ function textViewerReducer(state: State, action: Action): State {
       };
 
     case 'highlight-annotation':
-      if (state.linkEditIsCreating) {
+      if (state.linkEditIsDragging) {
         return {
           ...state,
           highlightedAnnotationIds: [action.annotationId],
@@ -404,6 +420,10 @@ function textViewerReducer(state: State, action: Action): State {
       };
 
     case 'select-link': {
+      if (state.linkEditIsCreating && !state.linkEditToEntryId) {
+        return state;
+      }
+
       let halfSelectedAnnotationIds: string[] = [];
       if (state.textPack) {
         const link = state.textPack.links.find(l => l.id === action.linkId);
@@ -429,7 +449,7 @@ function textViewerReducer(state: State, action: Action): State {
       };
 
     case 'highlight-link': {
-      if (state.linkEditIsCreating) {
+      if (state.linkEditIsDragging) {
         return state;
       }
 
@@ -456,10 +476,47 @@ function textViewerReducer(state: State, action: Action): State {
       };
 
     case 'start-create-link':
+      if (state.linkEditIsCreating) {
+        return state;
+      }
+
       return {
         ...state,
         linkEditFromEntryId: action.annotationId,
         linkEditIsCreating: true,
+        linkEditIsDragging: true,
+      };
+
+    case 'cancel-create-link':
+      return {
+        ...state,
+        linkEditIsDragging: false,
+        linkEditIsCreating: false,
+        linkEditFromEntryId: null,
+        linkEditToEntryId: null,
+      };
+
+    case 'stop-create-link-dragging':
+      if (!action.hasMoved) {
+        return {
+          ...state,
+          linkEditIsDragging: false,
+        };
+      }
+
+      if (state.linkEditToEntryId) {
+        return {
+          ...state,
+          linkEditIsDragging: false,
+        };
+      }
+
+      return {
+        ...state,
+        linkEditIsDragging: false,
+        linkEditIsCreating: false,
+        linkEditFromEntryId: null,
+        linkEditToEntryId: null,
       };
 
     case 'end-create-link':
@@ -467,6 +524,7 @@ function textViewerReducer(state: State, action: Action): State {
         const textPack = state.textPack as ISinglePack;
         return {
           ...state,
+          linkEditIsDragging: false,
           linkEditIsCreating: false,
           linkEditFromEntryId: null,
           linkEditToEntryId: null,
@@ -474,22 +532,7 @@ function textViewerReducer(state: State, action: Action): State {
             ...textPack,
             links: [
               ...textPack.links,
-              {
-                id:
-                  'forte.data.ontology.stanfordnlp_ontology.Dependency.' +
-                  Math.random(),
-                legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
-                fromEntryId: state.linkEditFromEntryId,
-                toEntryId: state.linkEditToEntryId,
-                attributes: {
-                  component:
-                    'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
-                  'py/object':
-                    'forte.data.ontology.stanfordnlp_ontology.Dependency',
-                  rel_type: 'ADDED', // TODO: let use to choose.
-                  rel_type_2: 'ADDED_2',
-                },
-              },
+              newLink(state.linkEditFromEntryId, state.linkEditToEntryId),
             ],
           },
           ...defaultSpacingState,
@@ -497,6 +540,7 @@ function textViewerReducer(state: State, action: Action): State {
       } else {
         return {
           ...state,
+          linkEditIsDragging: false,
           linkEditIsCreating: false,
           linkEditFromEntryId: null,
           linkEditToEntryId: null,
@@ -504,11 +548,13 @@ function textViewerReducer(state: State, action: Action): State {
       }
 
     case 'set-create-link-target':
-      if (state.linkEditIsCreating) {
+      if (state.linkEditIsDragging) {
         return {
           ...state,
           linkEditToEntryId: action.annotationId,
         };
+      } else if (state.linkEditIsCreating) {
+        return state;
       } else {
         return {
           ...state,
@@ -525,3 +571,18 @@ const [
 ] = createContextProvider(textViewerReducer, initialState);
 
 export { TextViewerProvider, useTextViewerState, useTextViewerDispatch };
+
+function newLink(fromEntryId: string, toEntryId: string) {
+  return {
+    id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.' + Math.random(),
+    legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
+    fromEntryId: fromEntryId,
+    toEntryId: toEntryId,
+    attributes: {
+      component: 'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
+      'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
+      rel_type: 'ADDED', // TODO: let use to choose.
+      rel_type_2: 'ADDED_2',
+    },
+  };
+}

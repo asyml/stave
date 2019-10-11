@@ -5,7 +5,7 @@ import style from '../styles/AnnotationDetail.module.css';
 import { useTextViewerDispatch } from '../contexts/text-viewer.context';
 
 export interface AnnotationDetailProp {
-  annotation: IAnnotation | null;
+  annotation: IAnnotation;
   parentAnnotations: IAnnotation[];
   childAnnotations: IAnnotation[];
 }
@@ -16,10 +16,6 @@ export default function AnnotationDetail({
   childAnnotations,
 }: AnnotationDetailProp) {
   const dispatch = useTextViewerDispatch();
-
-  if (annotation === null) {
-    return null;
-  }
 
   function renderLinkedAnnotations(annotations: IAnnotation[], title: string) {
     if (!annotations.length) {

@@ -26,7 +26,17 @@ function Annotaion({
   position,
 }: AnnotaionProp) {
   const dispatch = useTextViewerDispatch();
-  const { linkEditFromEntryId, linkEditIsCreating } = useTextViewerState();
+  const {
+    linkEditFromEntryId,
+    linkEditToEntryId,
+    linkEditIsDragging,
+    linkEditIsCreating,
+  } = useTextViewerState();
+
+  const isLinkTarget =
+    linkEditIsCreating &&
+    linkEditFromEntryId !== annotation.id &&
+    (!linkEditToEntryId || linkEditIsDragging);
 
   return (
     <>
@@ -38,7 +48,8 @@ function Annotaion({
         return (
           <div
             key={i}
-            className={style.annotaion_container}
+            className={`${style.annotaion_container} ${isLinkTarget &&
+              style.annotaion_container_to_be_link}`}
             style={{
               transform: `translate(${rect.x}px,${rect.y}px)`,
             }}
@@ -88,11 +99,14 @@ function Annotaion({
                 display:
                   linkEditFromEntryId === annotation.id ? 'block' : 'none',
                 background:
-                  linkEditIsCreating && linkEditFromEntryId === annotation.id
+                  (linkEditIsDragging || linkEditIsCreating) &&
+                  linkEditFromEntryId === annotation.id
                     ? '#555'
                     : undefined,
               }}
               onMouseDown={() => {
+                dispatch({ type: 'deselect-link' });
+                dispatch({ type: 'deselect-annotation' });
                 dispatch({
                   type: 'start-create-link',
                   annotationId: annotation.id,

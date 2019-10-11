@@ -28,12 +28,15 @@ export default function LinkEditConnector({
   });
 
   useEffect(() => {
+    let moved = false;
+
     function updatePos(e: MouseEvent) {
+      moved = true;
       setPos({ x: e.clientX, y: e.clientY });
     }
 
     function endMove() {
-      dispatch({ type: 'end-create-link' });
+      dispatch({ type: 'stop-create-link-dragging', hasMoved: moved });
     }
 
     window.addEventListener('mousemove', updatePos);
