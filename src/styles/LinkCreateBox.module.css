@@ -27,11 +27,11 @@
 
 .link_create_id {
   width: 100%;
+  flex: 1;
   text-overflow: ellipsis;
   overflow: hidden;
   cursor: pointer;
   text-decoration: underline;
-  direction: rtl;
 }
 
 .buttons button {

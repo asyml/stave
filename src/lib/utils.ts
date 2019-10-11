@@ -309,3 +309,7 @@ export const fontWidth = 6;
 export function attributeId(legendId: string, attributeId: string) {
   return legendId + '_' + attributeId;
 }
+
+export function shortId(id: string) {
+  return id.replace('forte.data.ontology.stanfordnlp_ontology.', '');
+}

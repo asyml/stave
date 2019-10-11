@@ -2,9 +2,11 @@ import {
   ISinglePack,
   IOntology,
   ISpacedAnnotationSpan,
+  IAttributes,
 } from '../lib/interfaces';
 import { createContextProvider } from '../lib/create-context-provider';
 import { attributeId } from '../lib/utils';
+import { ll } from '../lib/log';
 
 export type Dispatch = (action: Action) => void;
 
@@ -41,12 +43,23 @@ export type State = {
   linkEditToEntryId: string | null;
   linkEditIsDragging: boolean;
   linkEditIsCreating: boolean;
+  linkEditSelectedLegendId: string | null;
+  linkEditSelectedAttributes: IAttributes;
 };
 
 const defaultSpacingState = {
   spacingCalcuated: false,
   spacedText: null,
   spacedAnnotationSpan: {},
+};
+
+const defaultLinkSelecgtState = {
+  linkEditFromEntryId: null,
+  linkEditToEntryId: null,
+  linkEditIsDragging: false,
+  linkEditIsCreating: false,
+  linkEditSelectedLegendId: null,
+  linkEditSelectedAttributes: {},
 };
 
 const initialState: State = {
@@ -63,12 +76,8 @@ const initialState: State = {
   halfSelectedLinkIds: [],
   highlightedLinkIds: [],
 
-  linkEditFromEntryId: null,
-  linkEditToEntryId: null,
-  linkEditIsDragging: false,
-  linkEditIsCreating: false,
-
   collpasedLineIndexes: [],
+  ...defaultLinkSelecgtState,
   ...defaultSpacingState,
 };
 
@@ -167,6 +176,7 @@ export type Action =
     }
   | {
       type: 'end-create-link';
+      enteredAttributes?: Record<number, any>;
     }
   | {
       type: 'cancel-create-link';
@@ -174,6 +184,10 @@ export type Action =
   | {
       type: 'stop-create-link-dragging';
       hasMoved: boolean;
+    }
+  | {
+      type: 'link-edit-select-legend-type';
+      legendId: string;
     };
 
 /**
@@ -185,7 +199,7 @@ export type Action =
  */
 
 function textViewerReducer(state: State, action: Action): State {
-  // ll('reducer', action);
+  ll('reducer', action);
 
   switch (action.type) {
     case 'set-text-pack':
@@ -206,6 +220,12 @@ function textViewerReducer(state: State, action: Action): State {
         // selectedAnnotationId:
         //   'forte.data.ontology.stanfordnlp_ontology.Token.6',
         collpasedLineIndexes: [],
+
+        // test linkEditIsCreating
+        linkEditFromEntryId:
+          'forte.data.ontology.stanfordnlp_ontology.Token.19',
+        linkEditToEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.11',
+        linkEditIsCreating: true,
       };
 
     case 'set-ontology':
@@ -490,10 +510,7 @@ function textViewerReducer(state: State, action: Action): State {
     case 'cancel-create-link':
       return {
         ...state,
-        linkEditIsDragging: false,
-        linkEditIsCreating: false,
-        linkEditFromEntryId: null,
-        linkEditToEntryId: null,
+        ...defaultLinkSelecgtState,
       };
 
     case 'stop-create-link-dragging':
@@ -520,30 +537,36 @@ function textViewerReducer(state: State, action: Action): State {
       };
 
     case 'end-create-link':
-      if (state.linkEditToEntryId && state.linkEditFromEntryId) {
+      if (
+        state.linkEditToEntryId &&
+        state.linkEditFromEntryId &&
+        state.linkEditSelectedLegendId
+      ) {
         const textPack = state.textPack as ISinglePack;
+        const linkToAdd = newLink(
+          state.linkEditFromEntryId,
+          state.linkEditToEntryId,
+          state.linkEditSelectedLegendId,
+          action.enteredAttributes
+        );
+
         return {
           ...state,
           linkEditIsDragging: false,
           linkEditIsCreating: false,
           linkEditFromEntryId: null,
           linkEditToEntryId: null,
+          selectedLinkId: linkToAdd.id,
           textPack: {
             ...textPack,
-            links: [
-              ...textPack.links,
-              newLink(state.linkEditFromEntryId, state.linkEditToEntryId),
-            ],
+            links: [...textPack.links, linkToAdd],
           },
           ...defaultSpacingState,
         };
       } else {
         return {
           ...state,
-          linkEditIsDragging: false,
-          linkEditIsCreating: false,
-          linkEditFromEntryId: null,
-          linkEditToEntryId: null,
+          ...defaultLinkSelecgtState,
         };
       }
 
@@ -561,6 +584,12 @@ function textViewerReducer(state: State, action: Action): State {
           linkEditFromEntryId: action.annotationId,
         };
       }
+
+    case 'link-edit-select-legend-type':
+      return {
+        ...state,
+        linkEditSelectedLegendId: action.legendId,
+      };
   }
 }
 
@@ -572,17 +601,21 @@ const [
 
 export { TextViewerProvider, useTextViewerState, useTextViewerDispatch };
 
-function newLink(fromEntryId: string, toEntryId: string) {
+function newLink(
+  fromEntryId: string,
+  toEntryId: string,
+  legendId: string,
+  attributes: Record<string, any> = {}
+) {
   return {
-    id: 'forte.data.ontology.stanfordnlp_ontology.Dependency.' + Math.random(),
-    legendId: 'forte.data.ontology.stanfordnlp_ontology.Dependency',
+    id: legendId + '.' + Math.random(),
+    legendId: legendId,
     fromEntryId: fromEntryId,
     toEntryId: toEntryId,
     attributes: {
       component: 'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
-      'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
-      rel_type: 'ADDED', // TODO: let use to choose.
-      rel_type_2: 'ADDED_2',
+      'py/object': legendId,
+      ...attributes,
     },
   };
 }
