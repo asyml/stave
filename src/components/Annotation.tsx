@@ -112,14 +112,6 @@ function Annotaion({
                   annotationId: annotation.id,
                 });
               }}
-              onClick={() => {
-                dispatch({ type: 'deselect-link' });
-                dispatch({ type: 'deselect-annotation' });
-                dispatch({
-                  type: 'start-create-link-two-step',
-                  annotationId: annotation.id,
-                });
-              }}
             ></div>
           </div>
         );

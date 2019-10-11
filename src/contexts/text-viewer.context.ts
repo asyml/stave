@@ -162,10 +162,6 @@ export type Action =
       annotationId: string;
     }
   | {
-      type: 'start-create-link-two-step';
-      annotationId: string;
-    }
-  | {
       type: 'set-create-link-target';
       annotationId: string | null;
     }
@@ -177,6 +173,7 @@ export type Action =
     }
   | {
       type: 'stop-create-link-dragging';
+      hasMoved: boolean;
     };
 
 /**
@@ -486,17 +483,8 @@ function textViewerReducer(state: State, action: Action): State {
       return {
         ...state,
         linkEditFromEntryId: action.annotationId,
+        linkEditIsCreating: true,
         linkEditIsDragging: true,
-        linkEditIsCreating: true,
-      };
-
-    case 'start-create-link-two-step':
-      return {
-        ...state,
-        selectedAnnotationId: null,
-        selectedLinkId: null,
-        linkEditFromEntryId: action.annotationId,
-        linkEditIsCreating: true,
       };
 
     case 'cancel-create-link':
@@ -509,20 +497,27 @@ function textViewerReducer(state: State, action: Action): State {
       };
 
     case 'stop-create-link-dragging':
+      if (!action.hasMoved) {
+        return {
+          ...state,
+          linkEditIsDragging: false,
+        };
+      }
+
       if (state.linkEditToEntryId) {
         return {
           ...state,
           linkEditIsDragging: false,
         };
-      } else {
-        return {
-          ...state,
-          linkEditIsDragging: false,
-          linkEditIsCreating: false,
-          linkEditFromEntryId: null,
-          linkEditToEntryId: null,
-        };
       }
+
+      return {
+        ...state,
+        linkEditIsDragging: false,
+        linkEditIsCreating: false,
+        linkEditFromEntryId: null,
+        linkEditToEntryId: null,
+      };
 
     case 'end-create-link':
       if (state.linkEditToEntryId && state.linkEditFromEntryId) {
