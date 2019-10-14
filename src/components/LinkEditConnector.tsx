@@ -4,8 +4,8 @@ import {
   IAnnotation,
   ITextNodeDimension,
 } from '../lib/interfaces';
-import style from '../styles/LinkEditConnector.module.css';
 import { useTextViewerDispatch } from '../contexts/text-viewer.context';
+import LineWithArrow from './LineWithArrow';
 
 export interface LinkEditConnectorProp {
   annotationsWithPosition: {
@@ -58,38 +58,15 @@ export default function LinkEditConnector({
     startAnnotaion.position.rects[0].x + startAnnotaion.position.rects[0].width;
   let y = startAnnotaion.position.rects[0].y;
 
-  let width = pos.x - x - textNodeDimension.clientX;
-  let height = pos.y - y - textNodeDimension.clientY;
+  const fromPos = {
+    x,
+    y,
+  };
 
-  let rotate = (Math.atan(height / width) * 180) / Math.PI;
-  if (width === 0) {
-    if (height > 0) {
-      rotate = -90;
-    } else {
-      rotate = 90;
-    }
-  } else if (width < 0) {
-    if (height > 0) {
-      rotate += 180;
-    } else {
-      rotate -= 180;
-    }
-  }
+  const toPos = {
+    x: pos.x - textNodeDimension.clientX,
+    y: pos.y - textNodeDimension.clientY,
+  };
 
-  return (
-    <div
-      className={style.link_edit_connector}
-      style={{
-        position: 'absolute',
-        top: y,
-        left: x,
-        transformOrigin: `0 0`,
-        transform: `rotate(${rotate}deg)`,
-        width: Math.sqrt(width * width + height * height) - 2,
-        height: 1,
-      }}
-    >
-      <span className={style.link_drag_arrow}></span>
-    </div>
-  );
+  return <LineWithArrow fromPos={fromPos} toPos={toPos} />;
 }

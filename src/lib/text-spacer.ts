@@ -7,6 +7,7 @@ import {
   ILink,
 } from './interfaces';
 import { notNullOrUndefined, attributeId } from './utils';
+import { ll } from './log';
 
 export const fontWidth = 6;
 
@@ -135,10 +136,10 @@ export function spaceOutText(
   const lineStartX = textAreaDimensionStep1.x;
   const lineWidth = textAreaDimensionStep1.width;
 
-  const linesLevels =
-    linksWithPos.length > 0
-      ? calcuateLinesLevels(linksWithPos, lineStartX, lineWidth)
-      : getLevelsFromJustAnnotations(annotationWithPosition);
+  const linesLevels = {
+    ...getLevelsFromJustAnnotations(annotationWithPosition),
+    ...calcuateLinesLevels(linksWithPos, lineStartX, lineWidth),
+  };
 
   const spaceMap: ISpaceMap = {};
   Object.keys(linesLevels).forEach((lineHeight, i) => {
@@ -169,7 +170,6 @@ export function spaceOutText(
           : 0) + (i === 0 ? 1 : 3),
     };
   });
-
   const updatedTextPack = {
     ...textPack,
     text: caculcatedSpacedTextStep1,
@@ -507,7 +507,7 @@ export function calcuateLinesLevels(
   Object.keys(lineMap).forEach(key => {
     lineMap[key] = calculateLevelForSingleLine(lineMap[key]);
   });
-
+  ll('lineMap', lineMap);
   return lineMap;
 
   /**

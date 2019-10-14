@@ -56,5 +56,17 @@ export const ontology: IOntology = {
         },
       ],
     },
+    {
+      entryName: 'forte.data.ontology.stanfordnlp_ontology.Dependency2',
+      parentEntryName: 'forte.data.ontology.top.Link',
+      parentType: 'forte.data.ontology.stanfordnlp_ontology.Token',
+      childType: 'forte.data.ontology.stanfordnlp_ontology.Token',
+      attributes: [
+        {
+          attributeName: 'rel_type_3',
+          attributeType: 'str',
+        },
+      ],
+    },
   ],
 };

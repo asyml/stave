@@ -71,6 +71,7 @@ function TextViewer({ textPack, ontology }: TextViewerProp) {
               <LinkCreateBox
                 fromEntryId={linkEditFromEntryId}
                 toEntryId={linkEditToEntryId}
+                ontology={ontology}
               />
             </div>
           )}

@@ -26,6 +26,7 @@ import {
   useTextViewerDispatch,
 } from '../contexts/text-viewer.context';
 import { throttle } from 'lodash-es';
+import LineWithArrow from './LineWithArrow';
 
 export interface TextAreaProp {
   textPack: ISinglePack;
@@ -71,6 +72,7 @@ function TextArea({ textPack }: TextAreaProp) {
     halfSelectedLinkIds,
 
     linkEditFromEntryId,
+    linkEditToEntryId,
     linkEditIsCreating,
     linkEditIsDragging,
   } = useTextViewerState();
@@ -196,6 +198,47 @@ function TextArea({ textPack }: TextAreaProp) {
   const textAreaClass = `${style.text_area_container} ${
     spacedText ? style.text_area_container_visible : ''
   }`;
+
+  function renderLineWithArrow() {
+    if (
+      linkEditIsCreating &&
+      !linkEditIsDragging &&
+      linkEditFromEntryId &&
+      linkEditToEntryId
+    ) {
+      const startAnnotaion = annotationsWithPosition.find(
+        link => link.annotation.id === linkEditFromEntryId
+      );
+
+      const endAnnotaion = annotationsWithPosition.find(
+        link => link.annotation.id === linkEditToEntryId
+      );
+
+      if (!startAnnotaion || !endAnnotaion) return null;
+
+      const fromPos = {
+        x:
+          startAnnotaion.position.rects[0].x +
+          startAnnotaion.position.rects[0].width,
+        y: startAnnotaion.position.rects[0].y,
+      };
+
+      const toPos = {
+        x:
+          endAnnotaion.position.rects[0].x +
+          endAnnotaion.position.rects[0].width / 2,
+        y: endAnnotaion.position.rects[0].y,
+      };
+
+      return (
+        <div className={style.link_edit_container}>
+          <LineWithArrow fromPos={fromPos} toPos={toPos} />
+        </div>
+      );
+    } else {
+      return null;
+    }
+  }
 
   return (
     <div
@@ -329,6 +372,8 @@ function TextArea({ textPack }: TextAreaProp) {
           />
         </div>
       )}
+
+      {renderLineWithArrow()}
     </div>
   );
 }

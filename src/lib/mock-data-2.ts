@@ -1175,8 +1175,7 @@ export const singlePack: ISinglePack = {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
-        rel_type: 'nsubj',
-        rel_type_2: 'nsubj_2',
+        rel_type_3: 'nsubj_2',
       },
     },
     {
@@ -1240,8 +1239,7 @@ export const singlePack: ISinglePack = {
         component:
           'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
         'py/object': 'forte.data.ontology.stanfordnlp_ontology.Dependency',
-        rel_type: 'punct',
-        rel_type_2: 'punct_2',
+        rel_type_3: 'punct_2',
       },
     },
   ],
