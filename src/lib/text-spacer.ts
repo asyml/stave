@@ -19,6 +19,7 @@ export interface SpacedText {
       end: number;
     };
   };
+  charMoveMap: Map<number, number>;
 }
 
 export function spaceOutText(
@@ -95,6 +96,7 @@ export function spaceOutText(
     selectedLegendAttributeIds
   );
 
+  ll('spaceMapStep1', spaceMapStep1);
   const [
     caculcatedSpacedTextStep1,
     caculcatedSpacedAnnotationSpanStep1,
@@ -164,12 +166,14 @@ export function spaceOutText(
           },
         },
       },
-      spaceToMove:
-        (collpasedLinesIndex.indexOf(i) === -1
-          ? Math.ceil(levelNum / 1.5)
-          : 0) + (i === 0 ? 1 : 3),
+      spaceToMove: calcuateLineToMoveByLevelNum(
+        collpasedLinesIndex,
+        i,
+        levelNum
+      ),
     };
   });
+  ll('spaceMap', spaceMap);
   const updatedTextPack = {
     ...textPack,
     text: caculcatedSpacedTextStep1,
@@ -193,9 +197,28 @@ export function spaceOutText(
 
   dom.textContent = textWithNewLine;
 
+  const charMoveMap = new Map<number, number>();
+  Object.keys(spaceMapStep1).forEach(annId => {
+    const annotation = textPack.annotations.find(ann => ann.id === annId);
+    if (annotation) {
+      charMoveMap.set(annotation.span.end, spaceMapStep1[annId].spaceToMove);
+    }
+  });
+  Object.keys(spaceMap).forEach(annId => {
+    const annotation = textPack.annotations.find(ann => ann.id === annId);
+    if (annotation) {
+      charMoveMap.set(
+        annotation.span.begin - 1,
+        spaceMap[annId].spaceToMove +
+          (charMoveMap.get(annotation.span.begin - 1) || 0)
+      );
+    }
+  });
+
   return {
     text: textWithNewLine,
     annotationSpanMap,
+    charMoveMap,
   };
 }
 
@@ -507,7 +530,7 @@ export function calcuateLinesLevels(
   Object.keys(lineMap).forEach(key => {
     lineMap[key] = calculateLevelForSingleLine(lineMap[key]);
   });
-  ll('lineMap', lineMap);
+
   return lineMap;
 
   /**
@@ -691,4 +714,15 @@ function getLevelsFromJustAnnotations(
   }
 
   return levels;
+}
+
+function calcuateLineToMoveByLevelNum(
+  collpasedLinesIndex: number[],
+  i: number,
+  levelNum: number
+) {
+  return (
+    (collpasedLinesIndex.indexOf(i) === -1 ? Math.ceil(levelNum / 4) : 0) +
+    (i === 0 ? 1 : 3)
+  );
 }

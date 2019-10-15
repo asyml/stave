@@ -37,6 +37,7 @@ export type State = {
   spacingCalcuated: boolean;
   spacedAnnotationSpan: ISpacedAnnotationSpan;
   spacedText: string | null;
+  charMoveMap: Map<number, number>;
   collpasedLineIndexes: number[];
 
   linkEditFromEntryId: string | null;
@@ -45,21 +46,27 @@ export type State = {
   linkEditIsCreating: boolean;
   linkEditSelectedLegendId: string | null;
   linkEditSelectedAttributes: IAttributes;
+
+  annoEditIsCreating: boolean;
 };
 
 const defaultSpacingState = {
   spacingCalcuated: false,
   spacedText: null,
   spacedAnnotationSpan: {},
+  charMoveMap: new Map(),
 };
 
-const defaultLinkSelecgtState = {
+const defaultLinkEditState = {
   linkEditFromEntryId: null,
   linkEditToEntryId: null,
   linkEditIsDragging: false,
   linkEditIsCreating: false,
   linkEditSelectedLegendId: null,
   linkEditSelectedAttributes: {},
+};
+const defaultAnnoEditState = {
+  annoEditIsCreating: false,
 };
 
 const initialState: State = {
@@ -77,8 +84,9 @@ const initialState: State = {
   highlightedLinkIds: [],
 
   collpasedLineIndexes: [],
-  ...defaultLinkSelecgtState,
+  ...defaultLinkEditState,
   ...defaultSpacingState,
+  ...defaultAnnoEditState,
 };
 
 /**
@@ -138,6 +146,7 @@ export type Action =
       type: 'set-spaced-annotation-span';
       spacedAnnotationSpan: ISpacedAnnotationSpan;
       spacedText: string;
+      charMoveMap: Map<number, number>;
     }
   | {
       type: 'deselect-legend-attribute';
@@ -188,6 +197,17 @@ export type Action =
   | {
       type: 'link-edit-select-legend-type';
       legendId: string;
+    }
+  | {
+      type: 'start-annotation-edit';
+    }
+  | {
+      type: 'end-annotation-edit';
+    }
+  | {
+      type: 'annotation-edit-select-text';
+      begin: number;
+      end: number;
     };
 
 /**
@@ -210,11 +230,12 @@ function textViewerReducer(state: State, action: Action): State {
 
         // TODO: remove the following test code
         selectedLegendIds: [
-          action.textPack.legends.annotations[0].id,
+          'forte.data.ontology.stanfordnlp_ontology.Token',
+          'forte.data.ontology.stanfordnlp_ontology.Foo',
           action.textPack.legends.links[0].id,
         ],
         selectedLegendAttributeIds: [
-          attributeId(action.textPack.legends.annotations[0].id, 'lemma'),
+          attributeId(action.textPack.legends.annotations[0].id, 'pos_tag'),
           attributeId(action.textPack.legends.links[0].id, 'rel_type'),
         ],
         // selectedAnnotationId:
@@ -222,10 +243,12 @@ function textViewerReducer(state: State, action: Action): State {
         collpasedLineIndexes: [],
 
         // test linkEditIsCreating
-        linkEditFromEntryId:
-          'forte.data.ontology.stanfordnlp_ontology.Token.19',
-        linkEditToEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.11',
-        linkEditIsCreating: true,
+        // linkEditFromEntryId:
+        //   'forte.data.ontology.stanfordnlp_ontology.Token.19',
+        // linkEditToEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.11',
+        // linkEditIsCreating: true,
+
+        // annoEditIsCreating: true,
       };
 
     case 'set-ontology':
@@ -415,6 +438,7 @@ function textViewerReducer(state: State, action: Action): State {
         spacingCalcuated: true,
         spacedAnnotationSpan: action.spacedAnnotationSpan,
         spacedText: action.spacedText,
+        charMoveMap: action.charMoveMap,
       };
 
     case 'collapse-line':
@@ -510,7 +534,7 @@ function textViewerReducer(state: State, action: Action): State {
     case 'cancel-create-link':
       return {
         ...state,
-        ...defaultLinkSelecgtState,
+        ...defaultLinkEditState,
       };
 
     case 'stop-create-link-dragging':
@@ -566,7 +590,7 @@ function textViewerReducer(state: State, action: Action): State {
       } else {
         return {
           ...state,
-          ...defaultLinkSelecgtState,
+          ...defaultLinkEditState,
           linkEditSelectedLegendId: state.linkEditSelectedLegendId,
         };
       }
@@ -591,6 +615,86 @@ function textViewerReducer(state: State, action: Action): State {
         ...state,
         linkEditSelectedLegendId: action.legendId,
       };
+
+    case 'start-annotation-edit':
+      return {
+        ...state,
+        annoEditIsCreating: true,
+      };
+
+    case 'end-annotation-edit':
+      return {
+        ...state,
+        annoEditIsCreating: false,
+      };
+
+    case 'annotation-edit-select-text': {
+      let actualBegin = -1;
+      let actualEnd = -1;
+
+      let accumulatedMove = 0;
+
+      const entries = Array.from(state.charMoveMap.entries()).sort(
+        (a, b) => a[0] - b[0]
+      );
+
+      let lastAnnoEnd = -1;
+      for (let [annoEnd, annoMove] of entries) {
+        if (annoEnd + accumulatedMove >= action.begin && actualBegin === -1) {
+          if (
+            lastAnnoEnd !== -1 &&
+            lastAnnoEnd + accumulatedMove >= action.begin
+          ) {
+            actualBegin = lastAnnoEnd + 1;
+          } else {
+            actualBegin = action.begin - accumulatedMove;
+          }
+        }
+
+        if (annoEnd + accumulatedMove >= action.end && actualEnd === -1) {
+          if (
+            lastAnnoEnd !== -1 &&
+            lastAnnoEnd + accumulatedMove >= action.end
+          ) {
+            actualEnd = lastAnnoEnd;
+          } else {
+            actualEnd = action.end - accumulatedMove;
+          }
+        }
+        accumulatedMove += annoMove;
+        lastAnnoEnd = annoEnd;
+      }
+
+      const newAnno = {
+        span: {
+          begin: actualBegin,
+          end: actualEnd,
+        },
+        id: 'forte.data.ontology.stanfordnlp_ontology.Foo.' + Math.random(),
+        legendId: 'forte.data.ontology.stanfordnlp_ontology.Foo',
+        attributes: {
+          component:
+            'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
+          dependency_relation: 'det',
+          governor: 5,
+          lemma: 'the',
+          pos_tag: 'DT',
+          'py/object': 'forte.data.ontology.stanfordnlp_ontology.Foo',
+          upos: 'DET',
+          xpos: 'DT',
+        },
+      };
+
+      const textPack = state.textPack as ISinglePack;
+      return {
+        ...state,
+        textPack: {
+          ...textPack,
+          annotations: [...textPack.annotations, newAnno],
+        },
+        ...defaultSpacingState,
+      };
+    }
   }
 }
 

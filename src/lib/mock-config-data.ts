@@ -37,6 +37,16 @@ export const ontology: IOntology = {
       ],
     },
     {
+      entryName: 'forte.data.ontology.stanfordnlp_ontology.Foo',
+      parentEntryName: 'forte.data.ontology.top.Annotation',
+      attributes: [
+        {
+          attributeName: 'name',
+          attributeType: 'str',
+        },
+      ],
+    },
+    {
       entryName: 'forte.data.ontology.stanfordnlp_ontology.Document',
       parentEntryName: 'forte.data.ontology.top.Annotation',
     },
