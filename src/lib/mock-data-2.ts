@@ -1268,6 +1268,10 @@ export const singlePack: ISinglePack = {
         id: 'forte.data.ontology.base_ontology.Document',
         name: 'Document',
       },
+      {
+        id: 'forte.data.ontology.stanfordnlp_ontology.Foo',
+        name: 'Foo',
+      },
     ],
     links: [
       {

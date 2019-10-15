@@ -75,6 +75,8 @@ function TextArea({ textPack }: TextAreaProp) {
     linkEditToEntryId,
     linkEditIsCreating,
     linkEditIsDragging,
+
+    annoEditIsCreating,
   } = useTextViewerState();
 
   useEffect(() => {
@@ -87,7 +89,7 @@ function TextArea({ textPack }: TextAreaProp) {
       collpasedLinesIndex: number[]
     ) {
       if (!spacingCalcuated) {
-        const { text, annotationSpanMap } = spaceOutText(
+        const { text, annotationSpanMap, charMoveMap } = spaceOutText(
           textPack,
           selectedLegendIds,
           selectedLegendAttributeIds,
@@ -98,6 +100,7 @@ function TextArea({ textPack }: TextAreaProp) {
           type: 'set-spaced-annotation-span',
           spacedAnnotationSpan: annotationSpanMap,
           spacedText: text,
+          charMoveMap,
         });
       }
 
@@ -240,19 +243,59 @@ function TextArea({ textPack }: TextAreaProp) {
     }
   }
 
+  useEffect(() => {
+    function handleTextMouseUp() {
+      if (annoEditIsCreating) {
+        const selection = window.getSelection();
+        if (selection && selection.type === 'Range') {
+          const begin = Math.min(selection.anchorOffset, selection.focusOffset);
+          const end = Math.max(selection.anchorOffset, selection.focusOffset);
+          dispatch({
+            type: 'annotation-edit-select-text',
+            begin,
+            end,
+          });
+        }
+      }
+    }
+
+    window.addEventListener('mouseup', handleTextMouseUp);
+    return () => {
+      window.removeEventListener('mouseup', handleTextMouseUp);
+    };
+  }, [dispatch, annoEditIsCreating]);
+
   return (
     <div
       className={textAreaClass}
       style={{
         userSelect: linkEditIsCreating ? 'none' : 'auto',
+        cursor: annoEditIsCreating ? 'text' : 'initial',
       }}
       ref={textAreaEl}
     >
+      <button
+        onClick={() => {
+          dispatch({
+            type: annoEditIsCreating
+              ? 'end-annotation-edit'
+              : 'start-annotation-edit',
+          });
+        }}
+      >
+        {annoEditIsCreating ? `cancel annotation` : `add annotation`}
+      </button>
+
       <div className={style.text_node_container} ref={textNodeEl}>
         {spacedText || text}
       </div>
 
-      <div className={style.annotation_container}>
+      <div
+        className={style.annotation_container}
+        style={{
+          pointerEvents: annoEditIsCreating ? 'none' : 'initial',
+        }}
+      >
         {annotationsWithPosition.map((ann, i) => {
           const legend = annotaionLegendsWithColor.find(
             legend => legend.id === ann.annotation.legendId
@@ -277,7 +320,12 @@ function TextArea({ textPack }: TextAreaProp) {
         })}
       </div>
 
-      <div className="annotation_line_toggles_container">
+      <div
+        className="annotation_line_toggles_container"
+        style={{
+          pointerEvents: annoEditIsCreating ? 'none' : 'initial',
+        }}
+      >
         {lineHeights.map((lineHeight, i) => {
           function collapse() {
             dispatch({
@@ -306,7 +354,12 @@ function TextArea({ textPack }: TextAreaProp) {
         })}
       </div>
 
-      <div className="annotation_label_container">
+      <div
+        className="annotation_label_container"
+        style={{
+          pointerEvents: annoEditIsCreating ? 'none' : 'initial',
+        }}
+      >
         {annotationsWithPosition.map(ann => {
           const isSelected = ann.annotation.id === selectedAnnotationId;
 
@@ -321,7 +374,12 @@ function TextArea({ textPack }: TextAreaProp) {
         })}
       </div>
 
-      <div className="links_container">
+      <div
+        className="links_container"
+        style={{
+          pointerEvents: annoEditIsCreating ? 'none' : 'initial',
+        }}
+      >
         {linksWithPos.map(linkPos => {
           const isLinkSelected = selectedLinkId === linkPos.link.id;
           const isLinkHightlighted =
