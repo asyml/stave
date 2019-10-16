@@ -263,7 +263,7 @@ function textViewerReducer(state: State, action: Action): State {
         // linkEditToEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.11',
         // linkEditIsCreating: true,
 
-        annoEditIsCreating: true,
+        annoEditIsCreating: false,
       };
 
     case 'set-ontology':

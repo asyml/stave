@@ -45,6 +45,10 @@ function Annotaion({
         if (isHighlighted) opacity = 0.4;
         if (isSelected) opacity = 0.66;
 
+        const isConnectPointActive =
+          (linkEditIsDragging || linkEditIsCreating) &&
+          linkEditFromEntryId === annotation.id;
+
         return (
           <div
             key={i}
@@ -94,15 +98,11 @@ function Annotaion({
               }}
             ></div>
             <div
-              className={style.connect_point}
+              className={`${style.connect_point} ${isConnectPointActive &&
+                style.connect_point_active}`}
               style={{
                 display:
                   linkEditFromEntryId === annotation.id ? 'block' : 'none',
-                background:
-                  (linkEditIsDragging || linkEditIsCreating) &&
-                  linkEditFromEntryId === annotation.id
-                    ? '#555'
-                    : undefined,
               }}
               onMouseDown={() => {
                 dispatch({ type: 'deselect-link' });
@@ -112,7 +112,9 @@ function Annotaion({
                   annotationId: annotation.id,
                 });
               }}
-            ></div>
+            >
+              <span className={style.add_icon}></span>
+            </div>
           </div>
         );
       })}
