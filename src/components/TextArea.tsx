@@ -27,6 +27,7 @@ import {
 } from '../contexts/text-viewer.context';
 import { throttle } from 'lodash-es';
 import LineWithArrow from './LineWithArrow';
+import { ll } from '../lib/log';
 
 export interface TextAreaProp {
   textPack: ISinglePack;
@@ -77,6 +78,7 @@ function TextArea({ textPack }: TextAreaProp) {
     linkEditIsDragging,
 
     annoEditIsCreating,
+    annoEditCursorBegin,
   } = useTextViewerState();
 
   useEffect(() => {
@@ -247,14 +249,32 @@ function TextArea({ textPack }: TextAreaProp) {
     function handleTextMouseUp() {
       if (annoEditIsCreating) {
         const selection = window.getSelection();
-        if (selection && selection.type === 'Range') {
-          const begin = Math.min(selection.anchorOffset, selection.focusOffset);
-          const end = Math.max(selection.anchorOffset, selection.focusOffset);
-          dispatch({
-            type: 'annotation-edit-select-text',
-            begin,
-            end,
-          });
+        // ll('selection', selection);
+        if (selection) {
+          if (selection.type === 'Range') {
+            const begin = Math.min(
+              selection.anchorOffset,
+              selection.focusOffset
+            );
+            const end = Math.max(selection.anchorOffset, selection.focusOffset);
+            dispatch({
+              type: 'annotation-edit-select-text',
+              begin,
+              end,
+            });
+          } else if (selection.type === 'Caret') {
+            if (annoEditCursorBegin === null) {
+              dispatch({
+                type: 'annotation-edit-set-begin',
+                begin: selection.anchorOffset,
+              });
+            } else {
+              dispatch({
+                type: 'annotation-edit-set-end',
+                end: selection.anchorOffset,
+              });
+            }
+          }
         }
       }
     }
@@ -263,7 +283,7 @@ function TextArea({ textPack }: TextAreaProp) {
     return () => {
       window.removeEventListener('mouseup', handleTextMouseUp);
     };
-  }, [dispatch, annoEditIsCreating]);
+  }, [dispatch, annoEditIsCreating, annoEditCursorBegin]);
 
   return (
     <div

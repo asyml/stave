@@ -48,6 +48,8 @@ export type State = {
   linkEditSelectedAttributes: IAttributes;
 
   annoEditIsCreating: boolean;
+  annoEditCursorBegin: number | null;
+  annoEditCursorEnd: number | null;
 };
 
 const defaultSpacingState = {
@@ -67,6 +69,8 @@ const defaultLinkEditState = {
 };
 const defaultAnnoEditState = {
   annoEditIsCreating: false,
+  annoEditCursorBegin: null,
+  annoEditCursorEnd: null,
 };
 
 const initialState: State = {
@@ -205,9 +209,20 @@ export type Action =
       type: 'end-annotation-edit';
     }
   | {
+      type: 'annotation-edit-set-begin';
+      begin: number;
+    }
+  | {
+      type: 'annotation-edit-set-end';
+      end: number;
+    }
+  | {
       type: 'annotation-edit-select-text';
       begin: number;
       end: number;
+    }
+  | {
+      type: 'annotation-edit-submit';
     };
 
 /**
@@ -248,7 +263,7 @@ function textViewerReducer(state: State, action: Action): State {
         // linkEditToEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.11',
         // linkEditIsCreating: true,
 
-        // annoEditIsCreating: true,
+        annoEditIsCreating: true,
       };
 
     case 'set-ontology':
@@ -628,7 +643,37 @@ function textViewerReducer(state: State, action: Action): State {
         annoEditIsCreating: false,
       };
 
+    case 'annotation-edit-set-begin':
+      return {
+        ...state,
+        annoEditCursorBegin: action.begin,
+      };
+
+    case 'annotation-edit-set-end': {
+      return {
+        ...state,
+        annoEditCursorEnd: action.end,
+      };
+    }
+
     case 'annotation-edit-select-text': {
+      return {
+        ...state,
+        annoEditCursorBegin: action.begin,
+        annoEditCursorEnd: action.end,
+      };
+    }
+
+    case 'annotation-edit-submit': {
+      if (
+        state.annoEditCursorBegin === null ||
+        state.annoEditCursorEnd === null
+      ) {
+        throw new Error(
+          'cannot create annotation with no begin or end cursor selected'
+        );
+      }
+
       let actualBegin = -1;
       let actualEnd = -1;
 
@@ -640,25 +685,31 @@ function textViewerReducer(state: State, action: Action): State {
 
       let lastAnnoEnd = -1;
       for (let [annoEnd, annoMove] of entries) {
-        if (annoEnd + accumulatedMove >= action.begin && actualBegin === -1) {
+        if (
+          annoEnd + accumulatedMove >= state.annoEditCursorBegin &&
+          actualBegin === -1
+        ) {
           if (
             lastAnnoEnd !== -1 &&
-            lastAnnoEnd + accumulatedMove >= action.begin
+            lastAnnoEnd + accumulatedMove >= state.annoEditCursorBegin
           ) {
             actualBegin = lastAnnoEnd + 1;
           } else {
-            actualBegin = action.begin - accumulatedMove;
+            actualBegin = state.annoEditCursorBegin - accumulatedMove;
           }
         }
 
-        if (annoEnd + accumulatedMove >= action.end && actualEnd === -1) {
+        if (
+          annoEnd + accumulatedMove >= state.annoEditCursorEnd &&
+          actualEnd === -1
+        ) {
           if (
             lastAnnoEnd !== -1 &&
-            lastAnnoEnd + accumulatedMove >= action.end
+            lastAnnoEnd + accumulatedMove >= state.annoEditCursorEnd
           ) {
             actualEnd = lastAnnoEnd;
           } else {
-            actualEnd = action.end - accumulatedMove;
+            actualEnd = state.annoEditCursorEnd - accumulatedMove;
           }
         }
         accumulatedMove += annoMove;
@@ -688,6 +739,8 @@ function textViewerReducer(state: State, action: Action): State {
       const textPack = state.textPack as ISinglePack;
       return {
         ...state,
+        annoEditCursorBegin: null,
+        annoEditCursorEnd: null,
         textPack: {
           ...textPack,
           annotations: [...textPack.annotations, newAnno],
