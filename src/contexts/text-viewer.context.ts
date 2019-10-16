@@ -45,11 +45,11 @@ export type State = {
   linkEditIsDragging: boolean;
   linkEditIsCreating: boolean;
   linkEditSelectedLegendId: string | null;
-  linkEditSelectedAttributes: IAttributes;
 
   annoEditIsCreating: boolean;
   annoEditCursorBegin: number | null;
   annoEditCursorEnd: number | null;
+  annoEditSelectedLegendId: string | null;
 };
 
 const defaultSpacingState = {
@@ -65,12 +65,12 @@ const defaultLinkEditState = {
   linkEditIsDragging: false,
   linkEditIsCreating: false,
   linkEditSelectedLegendId: null,
-  linkEditSelectedAttributes: {},
 };
 const defaultAnnoEditState = {
   annoEditIsCreating: false,
   annoEditCursorBegin: null,
   annoEditCursorEnd: null,
+  annoEditSelectedLegendId: null,
 };
 
 const initialState: State = {
@@ -206,7 +206,7 @@ export type Action =
       type: 'start-annotation-edit';
     }
   | {
-      type: 'end-annotation-edit';
+      type: 'exit-annotation-edit';
     }
   | {
       type: 'annotation-edit-set-begin';
@@ -217,12 +217,20 @@ export type Action =
       end: number;
     }
   | {
+      type: 'annotation-edit-cancel';
+    }
+  | {
+      type: 'annotation-edit-select-legend-type';
+      legendId: string;
+    }
+  | {
       type: 'annotation-edit-select-text';
       begin: number;
       end: number;
     }
   | {
       type: 'annotation-edit-submit';
+      enteredAttributes?: Record<number, any>;
     };
 
 /**
@@ -250,7 +258,11 @@ function textViewerReducer(state: State, action: Action): State {
           action.textPack.legends.links[0].id,
         ],
         selectedLegendAttributeIds: [
-          attributeId(action.textPack.legends.annotations[0].id, 'pos_tag'),
+          attributeId(
+            'forte.data.ontology.stanfordnlp_ontology.Token',
+            'pos_tag'
+          ),
+          attributeId('forte.data.ontology.stanfordnlp_ontology.Foo', 'name'),
           attributeId(action.textPack.legends.links[0].id, 'rel_type'),
         ],
         // selectedAnnotationId:
@@ -263,7 +275,7 @@ function textViewerReducer(state: State, action: Action): State {
         // linkEditToEntryId: 'forte.data.ontology.stanfordnlp_ontology.Token.11',
         // linkEditIsCreating: true,
 
-        annoEditIsCreating: false,
+        // annoEditIsCreating: true,
       };
 
     case 'set-ontology':
@@ -634,13 +646,21 @@ function textViewerReducer(state: State, action: Action): State {
     case 'start-annotation-edit':
       return {
         ...state,
+        ...defaultLinkEditState,
         annoEditIsCreating: true,
+        selectedAnnotationId: null,
+        halfSelectedAnnotationIds: [],
+        highlightedAnnotationIds: [],
+
+        selectedLinkId: null,
+        halfSelectedLinkIds: [],
+        highlightedLinkIds: [],
       };
 
-    case 'end-annotation-edit':
+    case 'exit-annotation-edit':
       return {
         ...state,
-        annoEditIsCreating: false,
+        ...defaultAnnoEditState,
       };
 
     case 'annotation-edit-set-begin':
@@ -650,9 +670,26 @@ function textViewerReducer(state: State, action: Action): State {
       };
 
     case 'annotation-edit-set-end': {
+      if (
+        state.annoEditCursorBegin !== null &&
+        state.annoEditCursorBegin > action.end
+      ) {
+        return {
+          ...state,
+          annoEditCursorBegin: action.end,
+        };
+      } else {
+        return {
+          ...state,
+          annoEditCursorEnd: action.end,
+        };
+      }
+    }
+    case 'annotation-edit-cancel': {
       return {
         ...state,
-        annoEditCursorEnd: action.end,
+        ...defaultAnnoEditState,
+        annoEditIsCreating: true,
       };
     }
 
@@ -664,10 +701,17 @@ function textViewerReducer(state: State, action: Action): State {
       };
     }
 
+    case 'annotation-edit-select-legend-type':
+      return {
+        ...state,
+        annoEditSelectedLegendId: action.legendId,
+      };
+
     case 'annotation-edit-submit': {
       if (
         state.annoEditCursorBegin === null ||
-        state.annoEditCursorEnd === null
+        state.annoEditCursorEnd === null ||
+        state.annoEditSelectedLegendId === null
       ) {
         throw new Error(
           'cannot create annotation with no begin or end cursor selected'
@@ -716,25 +760,12 @@ function textViewerReducer(state: State, action: Action): State {
         lastAnnoEnd = annoEnd;
       }
 
-      const newAnno = {
-        span: {
-          begin: actualBegin,
-          end: actualEnd,
-        },
-        id: 'forte.data.ontology.stanfordnlp_ontology.Foo.' + Math.random(),
-        legendId: 'forte.data.ontology.stanfordnlp_ontology.Foo',
-        attributes: {
-          component:
-            'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
-          dependency_relation: 'det',
-          governor: 5,
-          lemma: 'the',
-          pos_tag: 'DT',
-          'py/object': 'forte.data.ontology.stanfordnlp_ontology.Foo',
-          upos: 'DET',
-          xpos: 'DT',
-        },
-      };
+      const newAnno = newAnnotaion(
+        actualBegin,
+        actualEnd,
+        state.annoEditSelectedLegendId,
+        action.enteredAttributes
+      );
 
       const textPack = state.textPack as ISinglePack;
       return {
@@ -771,7 +802,26 @@ function newLink(
     fromEntryId: fromEntryId,
     toEntryId: toEntryId,
     attributes: {
-      component: 'forte.processors.StanfordNLP_processor.StandfordNLPProcessor',
+      'py/object': legendId,
+      ...attributes,
+    },
+  };
+}
+
+function newAnnotaion(
+  begin: number,
+  end: number,
+  legendId: string,
+  attributes: Record<string, any> = {}
+) {
+  return {
+    span: {
+      begin: begin,
+      end: end,
+    },
+    id: legendId + '.' + Math.random(),
+    legendId: legendId,
+    attributes: {
       'py/object': legendId,
       ...attributes,
     },

@@ -1,4 +1,4 @@
-.link_create_box {
+.create_box {
   transform: translateX(-30px);
   opacity: 0;
   background: rgba(9, 154, 235, 0.2);
@@ -22,20 +22,20 @@
   background: rgba(255, 0, 0, 0);
 }
 
-.link_create_title {
+.create_title {
   font-weight: bold;
   width: 40px;
   font-size: 11px;
   margin-right: 4px;
 }
 
-.link_create_entry_container {
+.create_entry_container {
   margin-bottom: 8px;
   display: flex;
   align-items: center;
 }
 
-.link_create_id {
+.create_id {
   width: 100%;
   flex: 1;
   text-overflow: ellipsis;
@@ -49,7 +49,7 @@
   margin-right: 8px;
 }
 
-.link_to_be_select {
+.to_be_select {
   color: #999;
 }
 

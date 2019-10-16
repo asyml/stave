@@ -32,8 +32,23 @@
   min-height: calc(100vh - 50px);
   flex: 1;
   position: relative;
+  transition: background 0.2s;
 }
 
 .attributes_side_container h2 {
   font-size: 16px;
+}
+
+.is_adding_annotation {
+  background: rgba(9, 154, 235, 0.05);
+}
+
+.add_annotation_button {
+  margin-right: 8px;
+}
+
+.add_annotation_button_desc {
+  font-size: 12px;
+  color: #999;
+  user-select: none;
 }

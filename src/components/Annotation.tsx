@@ -52,8 +52,8 @@ function Annotaion({
         return (
           <div
             key={i}
-            className={`${style.annotaion_container} ${isLinkTarget &&
-              style.annotaion_container_to_be_link}`}
+            className={`${style.annotation_container} ${isLinkTarget &&
+              style.annotation_container_to_be_link}`}
             style={{
               transform: `translate(${rect.x}px,${rect.y}px)`,
             }}

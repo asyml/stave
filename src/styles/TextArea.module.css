@@ -30,3 +30,35 @@
   left: 0;
   z-index: 10;
 }
+
+.ann_edit_rect {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.annotation_text_selection_cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 7;
+}
+
+.cursor {
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-top: 8px solid black;
+  transform: translate(-50%, 0);
+  display: block;
+  margin-top: -8px;
+  animation: floating 0.36s ease-in 0s infinite alternate;
+}
+
+@keyframes floating {
+  from {
+    transform: translate(-50%, -5px);
+  }
+  to {
+    transform: translate(-50%, 0);
+  }
+}

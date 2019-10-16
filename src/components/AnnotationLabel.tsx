@@ -72,7 +72,7 @@ export default function AnnotationLabel({
                   </span>
                 </>
               ) : (
-                annotationWithPosition.annotation.attributes[attrKey]
+                (annotationWithPosition.annotation.attributes[attrKey] || '')
                   .substring(0, 3)
                   .toUpperCase()
               )}
