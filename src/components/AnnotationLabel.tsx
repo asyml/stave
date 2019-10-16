@@ -1,11 +1,11 @@
 import React from 'react';
-import { AnnotationPosition, IAnnotation } from '../lib/interfaces';
+import { IAnnotationPosition, IAnnotation } from '../lib/interfaces';
 import style from '../styles/AnnotationLabel.module.css';
 import { attributeId } from '../lib/utils';
 
 export interface AnnotationLabelProp {
   annotationWithPosition: {
-    position: AnnotationPosition;
+    position: IAnnotationPosition;
     annotation: IAnnotation;
   };
   isSelected: boolean;
@@ -72,7 +72,7 @@ export default function AnnotationLabel({
                   </span>
                 </>
               ) : (
-                annotationWithPosition.annotation.attributes[attrKey]
+                (annotationWithPosition.annotation.attributes[attrKey] || '')
                   .substring(0, 3)
                   .toUpperCase()
               )}

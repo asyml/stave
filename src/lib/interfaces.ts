@@ -50,16 +50,18 @@ export interface IColoredLegend extends ILegend {
   color: string;
 }
 
-export interface AnnotationPosition {
-  rects: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  }[];
+export interface IRect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 }
 
-export interface LinkWithPos {
+export interface IAnnotationPosition {
+  rects: IRect[];
+}
+
+export interface ILinkWithPos {
   link: ILink;
   fromEntryWithPos: IAnnotationWithPos;
   toEntryWithPos: IAnnotationWithPos;
@@ -70,7 +72,7 @@ export interface LinkWithPos {
 }
 
 export interface IAnnotationWithPos {
-  position: AnnotationPosition;
+  position: IAnnotationPosition;
   annotation: IAnnotation;
 }
 

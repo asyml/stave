@@ -2,9 +2,10 @@ import React, { useRef, useEffect, useState } from 'react';
 import style from '../styles/TextArea.module.css';
 import {
   ISinglePack,
-  AnnotationPosition,
+  IAnnotationPosition, // TODO: rename
   ISpacedAnnotationSpan,
   ITextNodeDimension,
+  IRect,
 } from '../lib/interfaces';
 import {
   applyColorToLegend,
@@ -37,7 +38,7 @@ function TextArea({ textPack }: TextAreaProp) {
   const textNodeEl = useRef<HTMLDivElement>(null);
   const textAreaEl = useRef<HTMLDivElement>(null);
   const [annotationPositions, setAnnotationPositions] = useState<
-    AnnotationPosition[]
+    IAnnotationPosition[]
   >([]);
 
   const [textNodeDimension, setTextNodeDimension] = useState<
@@ -77,6 +78,8 @@ function TextArea({ textPack }: TextAreaProp) {
     linkEditIsDragging,
 
     annoEditIsCreating,
+    annoEditCursorBegin,
+    annoEditCursorEnd,
   } = useTextViewerState();
 
   useEffect(() => {
@@ -244,17 +247,39 @@ function TextArea({ textPack }: TextAreaProp) {
   }
 
   useEffect(() => {
-    function handleTextMouseUp() {
+    function handleTextMouseUp(e: MouseEvent) {
       if (annoEditIsCreating) {
         const selection = window.getSelection();
-        if (selection && selection.type === 'Range') {
-          const begin = Math.min(selection.anchorOffset, selection.focusOffset);
-          const end = Math.max(selection.anchorOffset, selection.focusOffset);
-          dispatch({
-            type: 'annotation-edit-select-text',
-            begin,
-            end,
-          });
+
+        if (selection) {
+          if (selection.type === 'Range') {
+            const begin = Math.min(
+              selection.anchorOffset,
+              selection.focusOffset
+            );
+            const end = Math.max(selection.anchorOffset, selection.focusOffset);
+            dispatch({
+              type: 'annotation-edit-select-text',
+              begin,
+              end,
+            });
+            selection.empty();
+          } else if (
+            selection.type === 'Caret' &&
+            e.target === textAreaEl.current
+          ) {
+            if (annoEditCursorBegin === null) {
+              dispatch({
+                type: 'annotation-edit-set-begin',
+                begin: selection.anchorOffset,
+              });
+            } else {
+              dispatch({
+                type: 'annotation-edit-set-end',
+                end: selection.anchorOffset,
+              });
+            }
+          }
         }
       }
     }
@@ -263,7 +288,27 @@ function TextArea({ textPack }: TextAreaProp) {
     return () => {
       window.removeEventListener('mouseup', handleTextMouseUp);
     };
-  }, [dispatch, annoEditIsCreating]);
+  }, [dispatch, annoEditIsCreating, annoEditCursorBegin, textAreaEl]);
+
+  let annoEditRangeRects: IRect[] = [];
+  let annoEditBeginRect: IRect | null = null;
+  let annoEditEndRect: IRect | null = null;
+  if (
+    annoEditCursorBegin !== null &&
+    textNodeEl.current &&
+    textAreaEl.current
+  ) {
+    const selectionIndicators = getTextSelectionIndicators(
+      annoEditCursorBegin,
+      annoEditCursorEnd,
+      textNodeEl.current,
+      textAreaEl.current
+    );
+
+    annoEditRangeRects = selectionIndicators.rangeRects;
+    annoEditBeginRect = selectionIndicators.beginRect;
+    annoEditEndRect = selectionIndicators.endRect;
+  }
 
   return (
     <div
@@ -274,24 +319,11 @@ function TextArea({ textPack }: TextAreaProp) {
       }}
       ref={textAreaEl}
     >
-      <button
-        onClick={() => {
-          dispatch({
-            type: annoEditIsCreating
-              ? 'end-annotation-edit'
-              : 'start-annotation-edit',
-          });
-        }}
-      >
-        {annoEditIsCreating ? `cancel annotation` : `add annotation`}
-      </button>
-
       <div className={style.text_node_container} ref={textNodeEl}>
         {spacedText || text}
       </div>
 
       <div
-        className={style.annotation_container}
         style={{
           pointerEvents: annoEditIsCreating ? 'none' : 'initial',
         }}
@@ -318,6 +350,52 @@ function TextArea({ textPack }: TextAreaProp) {
             />
           );
         })}
+      </div>
+
+      <div className="ann_edit_rects_container">
+        {annoEditRangeRects.map((rect, i) => {
+          return (
+            <div
+              key={i}
+              className={style.ann_edit_rect}
+              style={{
+                transform: `translate(${rect.x}px,${rect.y}px)`,
+                pointerEvents: 'none',
+                background: '#555',
+                opacity: 0.3,
+                height: rect.height,
+                width: rect.width,
+              }}
+            ></div>
+          );
+        })}
+
+        {annoEditBeginRect && (
+          <div
+            className={style.annotation_text_selection_cursor}
+            style={{
+              transform: `translate(${annoEditBeginRect.x}px,${annoEditBeginRect.y}px)`,
+              pointerEvents: 'none',
+              height: annoEditBeginRect.height,
+              width: annoEditBeginRect.width,
+            }}
+          >
+            <span className={style.cursor}></span>
+          </div>
+        )}
+        {annoEditEndRect && (
+          <div
+            className={style.annotation_text_selection_cursor}
+            style={{
+              transform: `translate(${annoEditEndRect.x}px,${annoEditEndRect.y}px)`,
+              pointerEvents: 'none',
+              height: annoEditEndRect.height,
+              width: annoEditEndRect.width,
+            }}
+          >
+            <span className={style.cursor}></span>
+          </div>
+        )}
       </div>
 
       <div
@@ -434,6 +512,80 @@ function TextArea({ textPack }: TextAreaProp) {
       {renderLineWithArrow()}
     </div>
   );
+}
+
+function getTextSelectionIndicators(
+  begin: number,
+  end: number | null,
+  textNodeEl: HTMLDivElement,
+  textAreaEl: HTMLDivElement
+): {
+  rangeRects: IRect[];
+  beginRect: IRect;
+  endRect: IRect | null;
+} {
+  if (end !== null) {
+    const textNode = textNodeEl && textNodeEl.childNodes[0];
+    const textAreaRect = textAreaEl.getBoundingClientRect();
+
+    const range = document.createRange();
+    const beginRange = document.createRange();
+    const endRange = document.createRange();
+
+    range.setStart(textNode, begin);
+    range.setEnd(textNode, end);
+    const rects = Array.from(range.getClientRects() as DOMRectList);
+    const annoEditTextSelectionRect = rects.map(rect => ({
+      x: rect.x - textAreaRect.left,
+      y: rect.y - textAreaRect.top,
+      width: rect.width,
+      height: rect.height,
+    }));
+
+    beginRange.setStart(textNode, begin);
+    beginRange.setEnd(textNode, begin);
+    const beginRect = Array.from(beginRange.getClientRects() as DOMRectList)[0];
+
+    endRange.setStart(textNode, end);
+    endRange.setEnd(textNode, end);
+    const endRect = Array.from(endRange.getClientRects() as DOMRectList)[0];
+
+    return {
+      rangeRects: annoEditTextSelectionRect,
+      beginRect: {
+        x: beginRect.x - textAreaRect.left,
+        y: beginRect.y - textAreaRect.top,
+        width: beginRect.width,
+        height: beginRect.height,
+      },
+      endRect: {
+        x: endRect.x - textAreaRect.left,
+        y: endRect.y - textAreaRect.top,
+        width: endRect.width,
+        height: endRect.height,
+      },
+    };
+  } else {
+    const textNode = textNodeEl && textNodeEl.childNodes[0];
+    const textAreaRect = textAreaEl.getBoundingClientRect();
+
+    const beginRange = document.createRange();
+
+    beginRange.setStart(textNode, begin);
+    beginRange.setEnd(textNode, begin);
+    const beginRect = Array.from(beginRange.getClientRects() as DOMRectList)[0];
+
+    return {
+      rangeRects: [],
+      beginRect: {
+        x: beginRect.x - textAreaRect.left,
+        y: beginRect.y - textAreaRect.top,
+        width: beginRect.width,
+        height: beginRect.height,
+      },
+      endRect: null,
+    };
+  }
 }
 
 export default TextArea;

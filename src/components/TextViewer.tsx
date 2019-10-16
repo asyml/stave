@@ -6,8 +6,12 @@ import AnnotationDetail from './AnnotationDetail';
 import LinkDetail from './LinkDetail';
 import TextDetail from './TextDetail';
 import TextArea from './TextArea';
-import { useTextViewerState } from '../contexts/text-viewer.context';
+import {
+  useTextViewerState,
+  useTextViewerDispatch,
+} from '../contexts/text-viewer.context';
 import LinkCreateBox from './LinkCreateBox';
+import AnnotationCreateBox from './AnnotationCreateBox';
 
 export interface TextViewerProp {
   textPack: ISinglePack;
@@ -25,7 +29,12 @@ function TextViewer({ textPack, ontology }: TextViewerProp) {
     linkEditFromEntryId,
     linkEditToEntryId,
     linkEditIsCreating,
+
+    annoEditIsCreating,
+    annoEditCursorBegin,
+    annoEditCursorEnd,
   } = useTextViewerState();
+  const dispatch = useTextViewerDispatch();
 
   const selectedAnnotation =
     annotations.find(ann => ann.id === selectedAnnotationId) || null;
@@ -60,7 +69,30 @@ function TextViewer({ textPack, ontology }: TextViewerProp) {
           />
         </div>
 
-        <div className={style.text_area_container}>
+        <div
+          className={`${style.text_area_container} 
+            ${annoEditIsCreating && style.is_adding_annotation}`}
+        >
+          <div className={style.add_annotation_button_container}>
+            <button
+              className={style.add_annotation_button}
+              onClick={() => {
+                dispatch({
+                  type: annoEditIsCreating
+                    ? 'exit-annotation-edit'
+                    : 'start-annotation-edit',
+                });
+              }}
+            >
+              {annoEditIsCreating ? `Exit annotate` : `Start annotate`}
+            </button>
+
+            {annoEditIsCreating && (
+              <span className={style.add_annotation_button_desc}>
+                select text to add annotation
+              </span>
+            )}
+          </div>
           <TextArea textPack={textPack} />
         </div>
 
@@ -71,6 +103,16 @@ function TextViewer({ textPack, ontology }: TextViewerProp) {
               <LinkCreateBox
                 fromEntryId={linkEditFromEntryId}
                 toEntryId={linkEditToEntryId}
+                ontology={ontology}
+              />
+            </div>
+          )}
+
+          {annoEditIsCreating && annoEditCursorBegin !== null && (
+            <div className={style.link_edit_container}>
+              <AnnotationCreateBox
+                cursorBegin={annoEditCursorBegin}
+                cursorEnd={annoEditCursorEnd}
                 ontology={ontology}
               />
             </div>

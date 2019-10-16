@@ -1,7 +1,7 @@
 import {
   ILegend,
   IColoredLegend,
-  LinkWithPos,
+  ILinkWithPos,
   ISinglePack,
   ISpaceMap,
 } from './interfaces';
@@ -34,10 +34,10 @@ export function notNullOrUndefined<T>(x: T | null | undefined): x is T {
 
  */
 export function calcuateLinesLevels(
-  linksWithPos: LinkWithPos[],
+  linksWithPos: ILinkWithPos[],
   lineStartX: number,
   lineWidth: number
-): Record<string, LinkWithPos[][]> {
+): Record<string, ILinkWithPos[][]> {
   const lineMap: any = {};
   linksWithPos.forEach(link => {
     if (link.fromLinkY === link.toLinkY) {
@@ -79,8 +79,10 @@ export function calcuateLinesLevels(
    * - project each link down into lower levels
    *
    */
-  function calculateLevelForSingleLine(links: LinkWithPos[]): LinkWithPos[][] {
-    const levels: LinkWithPos[][] = [];
+  function calculateLevelForSingleLine(
+    links: ILinkWithPos[]
+  ): ILinkWithPos[][] {
+    const levels: ILinkWithPos[][] = [];
     links.forEach(link => {
       let insertLevel = -1;
       let pushLevel = -1;
@@ -121,7 +123,7 @@ export function calcuateLinesLevels(
   // go through each level from bottom to top
   // - if the link can be push down, move the link to the lower level, until it cann't
   //   - to check if the link can be push down, check lower level has intersetps
-  function projectDownLinksInLevels(levels: LinkWithPos[][]) {
+  function projectDownLinksInLevels(levels: ILinkWithPos[][]) {
     for (let i = levels.length - 2; i >= 0; i--) {
       const level = levels[i];
       const linkstoProject: number[][] = [];
@@ -151,8 +153,8 @@ export function calcuateLinesLevels(
   }
 
   function checkLevelOverlap(
-    link: LinkWithPos,
-    linkGroup: LinkWithPos[]
+    link: ILinkWithPos,
+    linkGroup: ILinkWithPos[]
   ): 'intersect' | 'superset' | 'subset' | 'no-overlap' {
     let hasSuperset = false;
     for (let i = 0; i < linkGroup.length; i++) {
@@ -177,8 +179,8 @@ export function calcuateLinesLevels(
   }
 
   function checkLinkOverlap(
-    link1: LinkWithPos,
-    link2: LinkWithPos
+    link1: ILinkWithPos,
+    link2: ILinkWithPos
   ): 'intersect' | 'superset' | 'subset' | 'no-overlap' {
     const [line1Left, line1Right] = [
       Math.min(link1.fromLinkX, link1.toLinkX),
@@ -206,7 +208,7 @@ export function calcuateLinesLevels(
 }
 
 export function calcuateLinkHeight(
-  linkLevels: Record<string, LinkWithPos[][]>,
+  linkLevels: Record<string, ILinkWithPos[][]>,
   gap: number
 ) {
   const linksHeightMap: Record<string, Record<string, number>> = {};
@@ -224,7 +226,7 @@ export function calcuateLinkHeight(
 }
 
 export function shouldMultiLineGoLeft(
-  link: LinkWithPos,
+  link: ILinkWithPos,
   lineStartX: number,
   lineWidth: number
 ) {

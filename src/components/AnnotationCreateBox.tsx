@@ -8,9 +8,9 @@ import style from '../styles/CreateBox.module.css';
 import { IOntology } from '../lib/interfaces';
 import { shortId } from '../lib/utils';
 
-export interface LinkCreateBoxProp {
-  fromEntryId: string | null;
-  toEntryId: string | null;
+export interface AnnotationCreateBoxProp {
+  cursorBegin: number | null;
+  cursorEnd: number | null;
   ontology: IOntology;
 }
 
@@ -19,13 +19,13 @@ interface SelectOption {
   label: string;
 }
 
-export default function LinkCreateBox({
-  fromEntryId,
-  toEntryId,
+export default function AnnotationCreateBox({
+  cursorBegin,
+  cursorEnd,
   ontology,
-}: LinkCreateBoxProp) {
+}: AnnotationCreateBoxProp) {
   const dispatch = useTextViewerDispatch();
-  const { linkEditSelectedLegendId } = useTextViewerState();
+  const { annoEditSelectedLegendId } = useTextViewerState();
   const [slideInAnimated, setSlideInAnimated] = useState(false);
   const [flashAnimated, setFlashAnimated] = useState(false);
   const [enteredAttribute, setEnteredAttribute] = useState<any>({});
@@ -41,7 +41,7 @@ export default function LinkCreateBox({
     return () => {
       setFlashAnimated(false);
     };
-  }, [toEntryId]);
+  }, [cursorEnd]);
 
   const legendTypeOptions = ontology.entryDefinitions.map(def => {
     return {
@@ -51,14 +51,15 @@ export default function LinkCreateBox({
   });
 
   const selectedLegendDefinition = ontology.entryDefinitions.find(def => {
-    return def.entryName === linkEditSelectedLegendId;
+    return def.entryName === annoEditSelectedLegendId;
   });
 
   const selectedLegendTypeOption = legendTypeOptions.find(legendType => {
-    return linkEditSelectedLegendId === legendType.value;
+    return annoEditSelectedLegendId === legendType.value;
   });
 
-  const isAddEnabled = fromEntryId && toEntryId && linkEditSelectedLegendId;
+  const isAddEnabled =
+    cursorBegin !== null && cursorEnd !== null && annoEditSelectedLegendId;
 
   return (
     <div
@@ -66,20 +67,9 @@ export default function LinkCreateBox({
       ${slideInAnimated && style.slide_in_animated}`}
     >
       <div className={style.create_entry_container}>
-        <div className={style.create_title}>Parent</div>
-        <div
-          className={style.create_id}
-          onClick={() => {
-            // only allow to select when link is select is created
-            if (fromEntryId && toEntryId) {
-              dispatch({
-                type: 'select-annotation',
-                annotationId: fromEntryId,
-              });
-            }
-          }}
-        >
-          {fromEntryId ? shortId(fromEntryId) : ''}
+        <div className={style.create_title}>Begin</div>
+        <div className={style.create_id}>
+          {cursorBegin !== null ? cursorBegin : ''}
         </div>
       </div>
 
@@ -89,20 +79,12 @@ export default function LinkCreateBox({
             flashAnimated ? style.flash_animated_on : style.flash_animated_off
           }`}
       >
-        <div className={style.create_title}>Child</div>
+        <div className={style.create_title}>End</div>
         <div
           className={`${style.create_id}
-          ${!toEntryId && style.to_be_select}`}
-          onClick={() => {
-            if (fromEntryId && toEntryId) {
-              dispatch({
-                type: 'select-annotation',
-                annotationId: toEntryId,
-              });
-            }
-          }}
+          ${cursorEnd === null && style.to_be_select}`}
         >
-          {toEntryId ? shortId(toEntryId) : '[Click annotaion to select]'}
+          {cursorEnd !== null ? cursorEnd : '[Click text to select end]'}
         </div>
       </div>
 
@@ -113,7 +95,7 @@ export default function LinkCreateBox({
           onChange={item => {
             const selectedItem = item as SelectOption;
             dispatch({
-              type: 'link-edit-select-legend-type',
+              type: 'annotation-edit-select-legend-type',
               legendId: selectedItem.value,
             });
           }}
@@ -156,7 +138,7 @@ export default function LinkCreateBox({
         <button
           onClick={() => {
             dispatch({
-              type: 'cancel-create-link',
+              type: 'annotation-edit-cancel',
             });
           }}
         >
@@ -165,7 +147,7 @@ export default function LinkCreateBox({
         <button
           onClick={() => {
             dispatch({
-              type: 'end-create-link',
+              type: 'annotation-edit-submit',
               enteredAttributes: enteredAttribute,
             });
           }}

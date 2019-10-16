@@ -2,7 +2,7 @@ import React from 'react';
 import {
   IAnnotation,
   IColoredLegend,
-  AnnotationPosition,
+  IAnnotationPosition,
 } from '../lib/interfaces';
 import {
   useTextViewerDispatch,
@@ -15,7 +15,7 @@ export interface AnnotaionProp {
   isSelected: boolean;
   isHighlighted: boolean;
   legend: IColoredLegend;
-  position: AnnotationPosition;
+  position: IAnnotationPosition;
 }
 
 function Annotaion({
@@ -45,11 +45,15 @@ function Annotaion({
         if (isHighlighted) opacity = 0.4;
         if (isSelected) opacity = 0.66;
 
+        const isConnectPointActive =
+          (linkEditIsDragging || linkEditIsCreating) &&
+          linkEditFromEntryId === annotation.id;
+
         return (
           <div
             key={i}
-            className={`${style.annotaion_container} ${isLinkTarget &&
-              style.annotaion_container_to_be_link}`}
+            className={`${style.annotation_container} ${isLinkTarget &&
+              style.annotation_container_to_be_link}`}
             style={{
               transform: `translate(${rect.x}px,${rect.y}px)`,
             }}
@@ -94,15 +98,11 @@ function Annotaion({
               }}
             ></div>
             <div
-              className={style.connect_point}
+              className={`${style.connect_point} ${isConnectPointActive &&
+                style.connect_point_active}`}
               style={{
                 display:
                   linkEditFromEntryId === annotation.id ? 'block' : 'none',
-                background:
-                  (linkEditIsDragging || linkEditIsCreating) &&
-                  linkEditFromEntryId === annotation.id
-                    ? '#555'
-                    : undefined,
               }}
               onMouseDown={() => {
                 dispatch({ type: 'deselect-link' });
@@ -112,7 +112,9 @@ function Annotaion({
                   annotationId: annotation.id,
                 });
               }}
-            ></div>
+            >
+              <span className={style.add_icon}></span>
+            </div>
           </div>
         );
       })}

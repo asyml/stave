@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  AnnotationPosition,
+  IAnnotationPosition,
   IAnnotation,
   ITextNodeDimension,
 } from '../lib/interfaces';
@@ -9,7 +9,7 @@ import LineWithArrow from './LineWithArrow';
 
 export interface LinkEditConnectorProp {
   annotationsWithPosition: {
-    position: AnnotationPosition;
+    position: IAnnotationPosition;
     annotation: IAnnotation;
   }[];
   fromEntryId: string | null;
