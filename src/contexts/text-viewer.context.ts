@@ -2,7 +2,6 @@ import {
   ISinglePack,
   IOntology,
   ISpacedAnnotationSpan,
-  IAttributes,
 } from '../lib/interfaces';
 import { createContextProvider } from '../lib/create-context-provider';
 import { attributeId } from '../lib/utils';

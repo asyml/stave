@@ -1,5 +1,5 @@
 import React from 'react';
-import { ILink, IAnnotation, AnnotationPosition } from '../lib/interfaces';
+import { ILink, IAnnotation, IAnnotationPosition } from '../lib/interfaces';
 import { attributeId } from '../lib/utils';
 import { useTextViewerDispatch } from '../contexts/text-viewer.context';
 import style from '../styles/Link.module.css';
@@ -8,11 +8,11 @@ export interface LinkSingleLineProp {
   linkWithPosition: {
     link: ILink;
     fromEntryWithPos: {
-      position: AnnotationPosition;
+      position: IAnnotationPosition;
       annotation: IAnnotation;
     };
     toEntryWithPos: {
-      position: AnnotationPosition;
+      position: IAnnotationPosition;
       annotation: IAnnotation;
     };
     fromLinkX: number;

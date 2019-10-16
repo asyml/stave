@@ -2,7 +2,7 @@ import React from 'react';
 import {
   IAnnotation,
   IColoredLegend,
-  AnnotationPosition,
+  IAnnotationPosition,
 } from '../lib/interfaces';
 import {
   useTextViewerDispatch,
@@ -15,7 +15,7 @@ export interface AnnotaionProp {
   isSelected: boolean;
   isHighlighted: boolean;
   legend: IColoredLegend;
-  position: AnnotationPosition;
+  position: IAnnotationPosition;
 }
 
 function Annotaion({

@@ -57,11 +57,11 @@ export interface IRect {
   height: number;
 }
 
-export interface AnnotationPosition {
+export interface IAnnotationPosition {
   rects: IRect[];
 }
 
-export interface LinkWithPos {
+export interface ILinkWithPos {
   link: ILink;
   fromEntryWithPos: IAnnotationWithPos;
   toEntryWithPos: IAnnotationWithPos;
@@ -72,7 +72,7 @@ export interface LinkWithPos {
 }
 
 export interface IAnnotationWithPos {
-  position: AnnotationPosition;
+  position: IAnnotationPosition;
   annotation: IAnnotation;
 }
 

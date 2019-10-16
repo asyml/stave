@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import style from '../styles/TextArea.module.css';
 import {
   ISinglePack,
-  AnnotationPosition, // TODO: rename
+  IAnnotationPosition, // TODO: rename
   ISpacedAnnotationSpan,
   ITextNodeDimension,
   IRect,
@@ -29,8 +29,6 @@ import {
 import { throttle } from 'lodash-es';
 import LineWithArrow from './LineWithArrow';
 
-import { ll } from '../lib/log';
-
 export interface TextAreaProp {
   textPack: ISinglePack;
 }
@@ -40,7 +38,7 @@ function TextArea({ textPack }: TextAreaProp) {
   const textNodeEl = useRef<HTMLDivElement>(null);
   const textAreaEl = useRef<HTMLDivElement>(null);
   const [annotationPositions, setAnnotationPositions] = useState<
-    AnnotationPosition[]
+    IAnnotationPosition[]
   >([]);
 
   const [textNodeDimension, setTextNodeDimension] = useState<
@@ -310,21 +308,6 @@ function TextArea({ textPack }: TextAreaProp) {
     annoEditRangeRects = selectionIndicators.rangeRects;
     annoEditBeginRect = selectionIndicators.beginRect;
     annoEditEndRect = selectionIndicators.endRect;
-
-    // const textNode = textNodeEl.current && textNodeEl.current.childNodes[0];
-    // const textAreaRect = textAreaEl.current.getBoundingClientRect();
-
-    // const range = document.createRange();
-
-    // range.setStart(textNode, annoEditCursorBegin);
-    // range.setEnd(textNode, annoEditCursorEnd);
-    // const rects = Array.from(range.getClientRects() as DOMRectList);
-    // annoEditTextSelectionRect = rects.map(rect => ({
-    //   x: rect.x - textAreaRect.left,
-    //   y: rect.y - textAreaRect.top,
-    //   width: rect.width,
-    //   height: rect.height,
-    // }));
   }
 
   return (
