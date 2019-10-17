@@ -11,7 +11,7 @@
 .text_node_container {
   white-space: pre-wrap;
   position: relative;
-  z-index: 5;
+  z-index: 20;
   pointer-events: none;
   line-height: 20px;
 }
@@ -61,4 +61,18 @@
   to {
     transform: translate(-50%, 0);
   }
+}
+
+.annotations_container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+}
+
+.links_container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
 }

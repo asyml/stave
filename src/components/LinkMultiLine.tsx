@@ -22,6 +22,7 @@ export interface LinkMultiLineProp {
   };
   isSelected: boolean;
   isHightlighted: boolean;
+  isInGroup: boolean;
   linkHeight: Record<string, Record<string, number>>;
   selectedLegendAttributeIds: string[];
   lineHeights: number[];
@@ -39,6 +40,7 @@ export default function LinkMultiLine({
   linkWithPosition,
   isSelected,
   isHightlighted,
+  isInGroup,
   linkHeight,
   lineHeights,
   selectedLegendAttributeIds,
@@ -48,8 +50,23 @@ export default function LinkMultiLine({
 }: LinkMultiLineProp) {
   const dispatch = useTextViewerDispatch();
 
-  const borderWidth = '1px';
-  const borderColor = isSelected || isHightlighted ? '#555' : '#bbb';
+  let borderColor = '#bbb';
+  if (isSelected || isHightlighted) {
+    borderColor = '#555';
+  }
+  if (isInGroup) {
+    borderColor = 'red';
+  }
+
+  let labelColor = '#999';
+  if (isSelected || isHightlighted) {
+    labelColor = '#555';
+  }
+  if (isInGroup) {
+    labelColor = 'red';
+  }
+
+  const borderWidth = isSelected || isHightlighted ? '2px' : '1px';
   const zIndex = isSelected || isHightlighted ? 1 : 0;
   const fromLineIndex = lineHeights.indexOf(linkWithPosition.fromLinkY);
   const fromLineCollapsed = collpasedLineIndexes.indexOf(fromLineIndex) !== -1;
@@ -331,7 +348,7 @@ export default function LinkMultiLine({
             textAlign: goLeft ? 'left' : 'right',
             top: `${fromLinkLabelPosition.y}px`,
             left: `${fromLinkLabelPosition.x}px`,
-            color: isSelected || isHightlighted ? '#555' : '#999',
+            color: labelColor,
           }}
         >
           {linkLabel}
@@ -346,7 +363,7 @@ export default function LinkMultiLine({
             textAlign: goLeft ? 'left' : 'right',
             top: `${toLinkLabelPosition.y}px`,
             left: `${toLinkLabelPosition.x}px`,
-            color: isSelected || isHightlighted ? '#555' : '#999',
+            color: labelColor,
           }}
         >
           {linkLabel}

@@ -1243,7 +1243,38 @@ export const singlePack: ISinglePack = {
       },
     },
   ],
-  groups: [],
+  groups: [
+    {
+      id: 'group_1',
+      attributes: {},
+      linkIds: [
+        'forte.data.ontology.stanfordnlp_ontology.Dependency.0',
+        'forte.data.ontology.stanfordnlp_ontology.Dependency.4',
+        'forte.data.ontology.stanfordnlp_ontology.Dependency.11',
+      ],
+      annotationIds: [
+        'forte.data.ontology.stanfordnlp_ontology.Token.0',
+        'forte.data.ontology.stanfordnlp_ontology.Token.4',
+        'forte.data.ontology.stanfordnlp_ontology.Token.6',
+        'forte.data.ontology.stanfordnlp_ontology.Token.11',
+      ],
+    },
+    {
+      id: 'group_2',
+      attributes: {},
+      linkIds: [
+        'forte.data.ontology.stanfordnlp_ontology.Dependency.25',
+        'forte.data.ontology.stanfordnlp_ontology.Dependency.26',
+        'forte.data.ontology.stanfordnlp_ontology.Dependency.14',
+      ],
+      annotationIds: [
+        'forte.data.ontology.stanfordnlp_ontology.Token.14',
+        'forte.data.ontology.stanfordnlp_ontology.Token.15',
+        'forte.data.ontology.stanfordnlp_ontology.Token.16',
+        'forte.data.ontology.stanfordnlp_ontology.Token.17',
+      ],
+    },
+  ],
   attributes: {
     cache_state: '',
     doc_id: null,

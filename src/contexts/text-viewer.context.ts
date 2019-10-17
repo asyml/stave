@@ -22,6 +22,7 @@ export type State = {
   ontology: IOntology | null;
   selectedLegendIds: string[];
   selectedLegendAttributeIds: string[];
+  selectedGroupId: string | null;
 
   selectedAnnotationId: string | null;
   // indicate a state that annotation is keep highlighted when link is selected
@@ -77,6 +78,7 @@ const initialState: State = {
   ontology: null,
   selectedLegendIds: [],
   selectedLegendAttributeIds: [],
+  selectedGroupId: null,
 
   selectedAnnotationId: null,
   halfSelectedAnnotationIds: [],
@@ -230,6 +232,13 @@ export type Action =
   | {
       type: 'annotation-edit-submit';
       enteredAttributes?: Record<number, any>;
+    }
+  | {
+      type: 'select-group';
+      groupId: string;
+    }
+  | {
+      type: 'deselect-group';
     };
 
 /**
@@ -275,6 +284,7 @@ function textViewerReducer(state: State, action: Action): State {
         // linkEditIsCreating: true,
 
         // annoEditIsCreating: true,
+        // selectedGroupId: 'group_1',
       };
 
     case 'set-ontology':
@@ -778,6 +788,18 @@ function textViewerReducer(state: State, action: Action): State {
         ...defaultSpacingState,
       };
     }
+
+    case 'select-group':
+      return {
+        ...state,
+        selectedGroupId: action.groupId,
+      };
+
+    case 'deselect-group':
+      return {
+        ...state,
+        selectedGroupId: null,
+      };
   }
 }
 

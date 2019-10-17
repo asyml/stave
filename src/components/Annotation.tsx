@@ -14,6 +14,7 @@ export interface AnnotaionProp {
   annotation: IAnnotation;
   isSelected: boolean;
   isHighlighted: boolean;
+  isInGroup: boolean;
   legend: IColoredLegend;
   position: IAnnotationPosition;
 }
@@ -22,6 +23,7 @@ function Annotaion({
   annotation,
   isSelected,
   isHighlighted,
+  isInGroup,
   legend,
   position,
 }: AnnotaionProp) {
@@ -52,8 +54,10 @@ function Annotaion({
         return (
           <div
             key={i}
-            className={`${style.annotation_container} ${isLinkTarget &&
-              style.annotation_container_to_be_link}`}
+            className={`${style.annotation_container}
+            ${isLinkTarget && style.annotation_container_to_be_link}
+            ${isInGroup && style.annotation_container_in_group}
+            ${isSelected && style.annotation_container_selected}`}
             style={{
               transform: `translate(${rect.x}px,${rect.y}px)`,
             }}
@@ -82,7 +86,6 @@ function Annotaion({
               style={{
                 opacity,
                 background: legend.color,
-                borderBottom: isSelected ? `2px solid #333` : 'none',
                 height: rect.height,
                 width: rect.width,
               }}
@@ -98,8 +101,8 @@ function Annotaion({
               }}
             ></div>
             <div
-              className={`${style.connect_point} ${isConnectPointActive &&
-                style.connect_point_active}`}
+              className={`${style.connect_point}
+              ${isConnectPointActive && style.connect_point_active}`}
               style={{
                 display:
                   linkEditFromEntryId === annotation.id ? 'block' : 'none',

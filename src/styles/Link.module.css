@@ -20,3 +20,8 @@
   pointer-events: none;
   z-index: 5;
 }
+
+.line_in_group {
+  position: relative;
+  z-index: 10;
+}
