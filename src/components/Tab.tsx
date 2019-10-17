@@ -10,10 +10,11 @@ export interface ITabItem {
 
 export interface TabProp {
   tabs: ITabItem[];
+  activeTabIndex?: number;
 }
 
-export default function Tab({ tabs }: TabProp) {
-  const [state, setState] = useState(0);
+export default function Tab({ tabs, activeTabIndex }: TabProp) {
+  const [state, setState] = useState(activeTabIndex || 0);
 
   return (
     <div className={style.tab_container}>

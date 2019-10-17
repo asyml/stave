@@ -171,7 +171,7 @@ export default function LinkCreateBox({
           }}
           disabled={!isAddEnabled}
         >
-          Add
+          Confirm
         </button>
       </div>
     </div>

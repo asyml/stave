@@ -33,3 +33,9 @@
   border-radius: 3px;
   margin-right: 4px;
 }
+
+.group_edit_description {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #999;
+}

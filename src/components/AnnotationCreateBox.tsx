@@ -153,7 +153,7 @@ export default function AnnotationCreateBox({
           }}
           disabled={!isAddEnabled}
         >
-          Add
+          Confirm
         </button>
       </div>
     </div>
