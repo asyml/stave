@@ -12,6 +12,7 @@ import {
 } from '../contexts/text-viewer.context';
 import LinkCreateBox from './LinkCreateBox';
 import AnnotationCreateBox from './AnnotationCreateBox';
+import GroupCreateBox from './GroupCreateBox';
 
 export interface TextViewerProp {
   textPack: ISinglePack;
@@ -33,6 +34,10 @@ function TextViewer({ textPack, ontology }: TextViewerProp) {
     annoEditIsCreating,
     annoEditCursorBegin,
     annoEditCursorEnd,
+
+    groupEditIsCreating,
+    groupEditAnnotationIds,
+    groupEditLinkIds,
   } = useTextViewerState();
   const dispatch = useTextViewerDispatch();
 
@@ -72,7 +77,9 @@ function TextViewer({ textPack, ontology }: TextViewerProp) {
 
         <div
           className={`${style.text_area_container} 
-            ${annoEditIsCreating && style.is_adding_annotation}`}
+            ${annoEditIsCreating && style.is_adding_annotation}
+            ${groupEditIsCreating && style.is_grouping_annotation}
+            `}
         >
           <div className={style.add_annotation_button_container}>
             <button
@@ -98,6 +105,12 @@ function TextViewer({ textPack, ontology }: TextViewerProp) {
         </div>
 
         <div className={style.attributes_side_container}>
+          {groupEditIsCreating && (
+            <GroupCreateBox
+              groupEditAnnotationIds={groupEditAnnotationIds}
+              groupEditLinkIds={groupEditLinkIds}
+            />
+          )}
           {linkEditIsCreating && (
             <div>
               <h2>Create Link</h2>

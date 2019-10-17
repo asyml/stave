@@ -2,6 +2,7 @@ import {
   ISinglePack,
   IOntology,
   ISpacedAnnotationSpan,
+  IGroup,
 } from '../lib/interfaces';
 import { createContextProvider } from '../lib/create-context-provider';
 import { attributeId } from '../lib/utils';
@@ -50,27 +51,48 @@ export type State = {
   annoEditCursorBegin: number | null;
   annoEditCursorEnd: number | null;
   annoEditSelectedLegendId: string | null;
+
+  groupEditIsCreating: boolean;
+  groupEditAnnotationIds: string[];
+  groupEditLinkIds: string[];
 };
 
-const defaultSpacingState = {
+const initialSpacingState = {
   spacingCalcuated: false,
   spacedText: null,
   spacedAnnotationSpan: {},
   charMoveMap: new Map(),
 };
 
-const defaultLinkEditState = {
+const initialLinkEditState = {
   linkEditFromEntryId: null,
   linkEditToEntryId: null,
   linkEditIsDragging: false,
   linkEditIsCreating: false,
   linkEditSelectedLegendId: null,
 };
-const defaultAnnoEditState = {
+
+const initialAnnoEditState = {
   annoEditIsCreating: false,
   annoEditCursorBegin: null,
   annoEditCursorEnd: null,
   annoEditSelectedLegendId: null,
+};
+
+const initialGroupEditState = {
+  groupEditIsCreating: false,
+  groupEditAnnotationIds: [],
+  groupEditLinkIds: [],
+};
+
+const initialUserSelectState = {
+  selectedAnnotationId: null,
+  halfSelectedAnnotationIds: [],
+  highlightedAnnotationIds: [],
+
+  selectedLinkId: null,
+  halfSelectedLinkIds: [],
+  highlightedLinkIds: [],
 };
 
 const initialState: State = {
@@ -80,18 +102,13 @@ const initialState: State = {
   selectedLegendAttributeIds: [],
   selectedGroupId: null,
 
-  selectedAnnotationId: null,
-  halfSelectedAnnotationIds: [],
-  highlightedAnnotationIds: [],
-
-  selectedLinkId: null,
-  halfSelectedLinkIds: [],
-  highlightedLinkIds: [],
-
   collpasedLineIndexes: [],
-  ...defaultLinkEditState,
-  ...defaultSpacingState,
-  ...defaultAnnoEditState,
+
+  ...initialUserSelectState,
+  ...initialLinkEditState,
+  ...initialSpacingState,
+  ...initialAnnoEditState,
+  ...initialGroupEditState,
 };
 
 /**
@@ -239,6 +256,15 @@ export type Action =
     }
   | {
       type: 'deselect-group';
+    }
+  | {
+      type: 'start-add-group';
+    }
+  | {
+      type: 'cancel-add-group';
+    }
+  | {
+      type: 'submit-add-group';
     };
 
 /**
@@ -256,7 +282,7 @@ function textViewerReducer(state: State, action: Action): State {
     case 'set-text-pack':
       return {
         ...state,
-        ...defaultSpacingState,
+        ...initialSpacingState,
         textPack: action.textPack,
 
         // TODO: remove the following test code
@@ -290,7 +316,7 @@ function textViewerReducer(state: State, action: Action): State {
     case 'set-ontology':
       return {
         ...state,
-        ...defaultSpacingState,
+        ...initialSpacingState,
         ontology: action.ontology,
       };
 
@@ -298,13 +324,13 @@ function textViewerReducer(state: State, action: Action): State {
       if (state.selectedLegendIds.indexOf(action.legendId) === -1) {
         return {
           ...state,
-          ...defaultSpacingState,
+          ...initialSpacingState,
           selectedLegendIds: [...state.selectedLegendIds, action.legendId],
         };
       } else {
         return {
           ...state,
-          ...defaultSpacingState,
+          ...initialSpacingState,
           selectedLegendIds: [...state.selectedLegendIds],
         };
       }
@@ -313,13 +339,13 @@ function textViewerReducer(state: State, action: Action): State {
       if (state.selectedLegendIds.indexOf(action.legendId) === -1) {
         return {
           ...state,
-          ...defaultSpacingState,
+          ...initialSpacingState,
           selectedLegendIds: [...state.selectedLegendIds],
         };
       } else {
         return {
           ...state,
-          ...defaultSpacingState,
+          ...initialSpacingState,
           selectedLegendIds: state.selectedLegendIds.filter(
             id => id !== action.legendId
           ),
@@ -333,14 +359,14 @@ function textViewerReducer(state: State, action: Action): State {
 
       return {
         ...state,
-        ...defaultSpacingState,
+        ...initialSpacingState,
         selectedLegendIds: state.textPack.legends.annotations.map(l => l.id),
       };
 
     case 'deselect-all-legend':
       return {
         ...state,
-        ...defaultSpacingState,
+        ...initialSpacingState,
         selectedLegendIds: [],
       };
 
@@ -350,6 +376,26 @@ function textViewerReducer(state: State, action: Action): State {
           ...state,
           linkEditToEntryId: action.annotationId,
         };
+      }
+
+      if (state.groupEditIsCreating) {
+        const groupEditAnnotationIds = [...state.groupEditAnnotationIds];
+
+        if (groupEditAnnotationIds.includes(action.annotationId)) {
+          return {
+            ...state,
+            groupEditAnnotationIds: state.groupEditAnnotationIds.filter(
+              id => id !== action.annotationId
+            ),
+          };
+        } else {
+          groupEditAnnotationIds.push(action.annotationId);
+
+          return {
+            ...state,
+            groupEditAnnotationIds,
+          };
+        }
       }
 
       let halfSelectedAnnotationIds: string[] = [];
@@ -443,7 +489,7 @@ function textViewerReducer(state: State, action: Action): State {
 
       return {
         ...state,
-        ...defaultSpacingState,
+        ...initialSpacingState,
         selectedLegendAttributeIds,
       };
     }
@@ -457,7 +503,7 @@ function textViewerReducer(state: State, action: Action): State {
 
       return {
         ...state,
-        ...defaultSpacingState,
+        ...initialSpacingState,
         selectedLegendAttributeIds,
       };
     }
@@ -465,7 +511,7 @@ function textViewerReducer(state: State, action: Action): State {
     case 'reset-calculated-text-space':
       return {
         ...state,
-        ...defaultSpacingState,
+        ...initialSpacingState,
       };
 
     case 'set-spaced-annotation-span':
@@ -483,7 +529,7 @@ function textViewerReducer(state: State, action: Action): State {
       }
       return {
         ...state,
-        ...defaultSpacingState,
+        ...initialSpacingState,
         collpasedLineIndexes: [...state.collpasedLineIndexes, action.lineIndex],
       };
 
@@ -493,7 +539,7 @@ function textViewerReducer(state: State, action: Action): State {
       }
       return {
         ...state,
-        ...defaultSpacingState,
+        ...initialSpacingState,
         collpasedLineIndexes: state.collpasedLineIndexes.filter(
           i => i !== action.lineIndex
         ),
@@ -502,6 +548,25 @@ function textViewerReducer(state: State, action: Action): State {
     case 'select-link': {
       if (state.linkEditIsCreating && !state.linkEditToEntryId) {
         return state;
+      }
+
+      if (state.groupEditIsCreating) {
+        const groupEditLinkIds = [...state.groupEditLinkIds];
+
+        if (groupEditLinkIds.includes(action.linkId)) {
+          return {
+            ...state,
+            groupEditLinkIds: state.groupEditLinkIds.filter(
+              id => id !== action.linkId
+            ),
+          };
+        } else {
+          groupEditLinkIds.push(action.linkId);
+          return {
+            ...state,
+            groupEditLinkIds,
+          };
+        }
       }
 
       let halfSelectedAnnotationIds: string[] = [];
@@ -556,7 +621,7 @@ function textViewerReducer(state: State, action: Action): State {
       };
 
     case 'start-create-link':
-      if (state.linkEditIsCreating) {
+      if (state.linkEditIsCreating || state.groupEditIsCreating) {
         return state;
       }
 
@@ -570,7 +635,7 @@ function textViewerReducer(state: State, action: Action): State {
     case 'cancel-create-link':
       return {
         ...state,
-        ...defaultLinkEditState,
+        ...initialLinkEditState,
       };
 
     case 'stop-create-link-dragging':
@@ -621,12 +686,12 @@ function textViewerReducer(state: State, action: Action): State {
             ...textPack,
             links: [...textPack.links, linkToAdd],
           },
-          ...defaultSpacingState,
+          ...initialSpacingState,
         };
       } else {
         return {
           ...state,
-          ...defaultLinkEditState,
+          ...initialLinkEditState,
           linkEditSelectedLegendId: state.linkEditSelectedLegendId,
         };
       }
@@ -655,21 +720,16 @@ function textViewerReducer(state: State, action: Action): State {
     case 'start-annotation-edit':
       return {
         ...state,
-        ...defaultLinkEditState,
+        ...initialLinkEditState,
+        ...initialUserSelectState,
+        ...initialGroupEditState,
         annoEditIsCreating: true,
-        selectedAnnotationId: null,
-        halfSelectedAnnotationIds: [],
-        highlightedAnnotationIds: [],
-
-        selectedLinkId: null,
-        halfSelectedLinkIds: [],
-        highlightedLinkIds: [],
       };
 
     case 'exit-annotation-edit':
       return {
         ...state,
-        ...defaultAnnoEditState,
+        ...initialAnnoEditState,
       };
 
     case 'annotation-edit-set-begin':
@@ -697,7 +757,7 @@ function textViewerReducer(state: State, action: Action): State {
     case 'annotation-edit-cancel': {
       return {
         ...state,
-        ...defaultAnnoEditState,
+        ...initialAnnoEditState,
         annoEditIsCreating: true,
       };
     }
@@ -785,7 +845,7 @@ function textViewerReducer(state: State, action: Action): State {
           ...textPack,
           annotations: [...textPack.annotations, newAnno],
         },
-        ...defaultSpacingState,
+        ...initialSpacingState,
       };
     }
 
@@ -799,6 +859,42 @@ function textViewerReducer(state: State, action: Action): State {
       return {
         ...state,
         selectedGroupId: null,
+      };
+
+    case 'start-add-group':
+      return {
+        ...state,
+        ...initialUserSelectState,
+        ...initialAnnoEditState,
+        ...initialLinkEditState,
+        selectedGroupId: null,
+        groupEditIsCreating: true,
+      };
+
+    case 'cancel-add-group':
+      return {
+        ...state,
+        ...initialGroupEditState,
+      };
+
+    case 'submit-add-group':
+      const newGroup: IGroup = {
+        id: 'group_' + Math.random(),
+        attributes: {},
+        annotationIds: state.groupEditAnnotationIds,
+        linkIds: state.groupEditLinkIds,
+      };
+
+      const textPack = state.textPack as ISinglePack;
+
+      return {
+        ...state,
+        ...initialGroupEditState,
+        selectedGroupId: newGroup.id,
+        textPack: {
+          ...textPack,
+          groups: [...textPack.groups, newGroup],
+        },
       };
   }
 }

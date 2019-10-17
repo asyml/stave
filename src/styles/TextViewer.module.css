@@ -43,6 +43,10 @@
   background: rgba(9, 154, 235, 0.05);
 }
 
+.is_grouping_annotation {
+  background: rgba(235, 9, 9, 0.05);
+}
+
 .add_annotation_button {
   margin-right: 8px;
 }

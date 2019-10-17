@@ -3,6 +3,7 @@ import { IAnnotation } from '../lib/interfaces';
 import Attributes from './Attributes';
 import style from '../styles/AnnotationDetail.module.css';
 import { useTextViewerDispatch } from '../contexts/text-viewer.context';
+import { shortId } from '../lib/utils';
 
 export interface AnnotationDetailProp {
   annotation: IAnnotation;
@@ -40,7 +41,7 @@ export default function AnnotationDetail({
                     });
                   }}
                 >
-                  {ann.id}
+                  {shortId(ann.id)}
                 </li>
               );
             })}

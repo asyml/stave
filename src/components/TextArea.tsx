@@ -83,6 +83,10 @@ function TextArea({ textPack }: TextAreaProp) {
     annoEditIsCreating,
     annoEditCursorBegin,
     annoEditCursorEnd,
+
+    groupEditIsCreating,
+    groupEditAnnotationIds,
+    groupEditLinkIds,
   } = useTextViewerState();
 
   useEffect(() => {
@@ -337,13 +341,17 @@ function TextArea({ textPack }: TextAreaProp) {
             legend => legend.id === ann.annotation.legendId
           );
 
-          const isInGroup = selectedGroupId
+          const isInExistingGroup = selectedGroupId
             ? checkAnnotationInGroup(
                 selectedGroupId,
                 textPack,
                 ann.annotation.id
               )
             : false;
+
+          const isInCreatingGroup =
+            groupEditIsCreating &&
+            groupEditAnnotationIds.includes(ann.annotation.id);
 
           if (!legend) {
             return null;
@@ -354,7 +362,7 @@ function TextArea({ textPack }: TextAreaProp) {
               key={i}
               annotation={ann.annotation}
               isSelected={ann.annotation.id === selectedAnnotationId}
-              isInGroup={isInGroup}
+              isInGroup={isInExistingGroup || isInCreatingGroup}
               isHighlighted={
                 highlightedAnnotationIds.indexOf(ann.annotation.id) > -1 ||
                 halfSelectedAnnotationIds.indexOf(ann.annotation.id) > -1
@@ -482,6 +490,9 @@ function TextArea({ textPack }: TextAreaProp) {
             ? checkLinkInGroup(selectedGroupId, textPack, linkPos.link.id)
             : false;
 
+          const isInCreatingGroup =
+            groupEditIsCreating && groupEditLinkIds.includes(linkPos.link.id);
+
           if (linkPos.fromLinkY === linkPos.toLinkY) {
             const lineIndex = lineHeights.indexOf(linkPos.fromLinkY);
             const isLineCollapsed =
@@ -494,7 +505,7 @@ function TextArea({ textPack }: TextAreaProp) {
                 isSelected={isLinkSelected}
                 isHightlighted={isLinkHightlighted}
                 isCollapsed={isLineCollapsed}
-                isInGroup={isInGroup}
+                isInGroup={isInGroup || isInCreatingGroup}
                 linkHeight={linkHeight}
                 selectedLegendAttributeIds={selectedLegendAttributeIds}
               />
@@ -506,7 +517,7 @@ function TextArea({ textPack }: TextAreaProp) {
                 linkWithPosition={linkPos}
                 isSelected={isLinkSelected}
                 isHightlighted={isLinkHightlighted}
-                isInGroup={isInGroup}
+                isInGroup={isInGroup || isInCreatingGroup}
                 linkHeight={linkHeight}
                 selectedLegendAttributeIds={selectedLegendAttributeIds}
                 collpasedLineIndexes={collpasedLineIndexes}

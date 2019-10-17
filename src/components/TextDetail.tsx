@@ -33,6 +33,7 @@ export default function TextDetail({
     selectedLegendIds,
     selectedLegendAttributeIds,
     selectedGroupId,
+    groupEditIsCreating,
   } = useTextViewerState();
   const dispatch = useTextViewerDispatch();
 
@@ -101,6 +102,29 @@ export default function TextDetail({
             </div>
           );
         })}
+        <div style={{ marginTop: 8 }}>
+          <button
+            onClick={() => {
+              if (groupEditIsCreating) {
+                dispatch({
+                  type: 'cancel-add-group',
+                });
+              } else {
+                dispatch({
+                  type: 'start-add-group',
+                });
+              }
+            }}
+          >
+            {groupEditIsCreating ? 'Cancel add group' : 'Add group'}
+          </button>
+
+          {groupEditIsCreating && (
+            <div className={style.group_edit_description}>
+              click annotation and link to add to group
+            </div>
+          )}
+        </div>
       </div>
     ),
   };
@@ -114,5 +138,10 @@ export default function TextDetail({
     ),
   };
 
-  return <Tab tabs={[legendTabItem, groupList, metadataTabItem]}></Tab>;
+  return (
+    <Tab
+      tabs={[legendTabItem, groupList, metadataTabItem]}
+      activeTabIndex={1}
+    ></Tab>
+  );
 }
