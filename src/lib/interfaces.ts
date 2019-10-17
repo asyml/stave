@@ -26,7 +26,8 @@ export interface ILink extends IEntry {
 }
 
 export interface IGroup extends IEntry {
-  annotations: IAnnotation[];
+  annotationIds: string[];
+  linkIds: string[];
 }
 
 export interface ISinglePack {

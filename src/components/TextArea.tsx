@@ -11,6 +11,8 @@ import {
   applyColorToLegend,
   calcuateLinesLevels,
   calcuateLinkHeight,
+  checkAnnotationInGroup,
+  checkLinkInGroup,
 } from '../lib/utils';
 import {
   spaceOutText,
@@ -58,6 +60,7 @@ function TextArea({ textPack }: TextAreaProp) {
   const {
     selectedLegendIds,
     selectedLegendAttributeIds,
+    selectedGroupId,
 
     spacingCalcuated,
     spacedAnnotationSpan,
@@ -324,6 +327,7 @@ function TextArea({ textPack }: TextAreaProp) {
       </div>
 
       <div
+        className={style.annotations_container}
         style={{
           pointerEvents: annoEditIsCreating ? 'none' : 'initial',
         }}
@@ -333,14 +337,24 @@ function TextArea({ textPack }: TextAreaProp) {
             legend => legend.id === ann.annotation.legendId
           );
 
+          const isInGroup = selectedGroupId
+            ? checkAnnotationInGroup(
+                selectedGroupId,
+                textPack,
+                ann.annotation.id
+              )
+            : false;
+
           if (!legend) {
             return null;
           }
+
           return (
             <Annotation
               key={i}
               annotation={ann.annotation}
               isSelected={ann.annotation.id === selectedAnnotationId}
+              isInGroup={isInGroup}
               isHighlighted={
                 highlightedAnnotationIds.indexOf(ann.annotation.id) > -1 ||
                 halfSelectedAnnotationIds.indexOf(ann.annotation.id) > -1
@@ -453,7 +467,7 @@ function TextArea({ textPack }: TextAreaProp) {
       </div>
 
       <div
-        className="links_container"
+        className={style.links_container}
         style={{
           pointerEvents: annoEditIsCreating ? 'none' : 'initial',
         }}
@@ -463,6 +477,10 @@ function TextArea({ textPack }: TextAreaProp) {
           const isLinkHightlighted =
             highlightedLinkIds.includes(linkPos.link.id) ||
             halfSelectedLinkIds.includes(linkPos.link.id);
+
+          const isInGroup = selectedGroupId
+            ? checkLinkInGroup(selectedGroupId, textPack, linkPos.link.id)
+            : false;
 
           if (linkPos.fromLinkY === linkPos.toLinkY) {
             const lineIndex = lineHeights.indexOf(linkPos.fromLinkY);
@@ -476,6 +494,7 @@ function TextArea({ textPack }: TextAreaProp) {
                 isSelected={isLinkSelected}
                 isHightlighted={isLinkHightlighted}
                 isCollapsed={isLineCollapsed}
+                isInGroup={isInGroup}
                 linkHeight={linkHeight}
                 selectedLegendAttributeIds={selectedLegendAttributeIds}
               />
@@ -487,6 +506,7 @@ function TextArea({ textPack }: TextAreaProp) {
                 linkWithPosition={linkPos}
                 isSelected={isLinkSelected}
                 isHightlighted={isLinkHightlighted}
+                isInGroup={isInGroup}
                 linkHeight={linkHeight}
                 selectedLegendAttributeIds={selectedLegendAttributeIds}
                 collpasedLineIndexes={collpasedLineIndexes}

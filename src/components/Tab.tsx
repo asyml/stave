@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import style from '../styles/Tab.module.css';
 
+type RenderFn = () => JSX.Element;
+
 export interface ITabItem {
-  title: string;
-  body: () => JSX.Element;
+  title: string | RenderFn;
+  body: RenderFn;
 }
 
 export interface TabProp {
@@ -28,7 +30,7 @@ export default function Tab({ tabs }: TabProp) {
                 setState(i);
               }}
             >
-              {tab.title}
+              {typeof tab.title === 'string' ? tab.title : tab.title()}
             </div>
           );
         })}

@@ -37,7 +37,7 @@ export default function AnnotationLabel({
       className={isSelected ? style.annotation_attr_container_selected : ''}
       style={{
         position: 'absolute',
-        zIndex: isSelected ? 10 : 0,
+        zIndex: isSelected ? 30 : 0,
         transform: `translate(-50%, 0)`,
         top: annotationWithPosition.position.rects[0].y + 20,
         left:

@@ -19,7 +19,7 @@ export interface TextViewerProp {
 }
 
 function TextViewer({ textPack, ontology }: TextViewerProp) {
-  const { annotations, legends, links, attributes } = textPack;
+  const { annotations, legends, links, attributes, groups } = textPack;
 
   const annotationLegendsWithColor = applyColorToLegend(legends.annotations);
   const linksLegendsWithColor = applyColorToLegend(legends.links);
@@ -66,6 +66,7 @@ function TextViewer({ textPack, ontology }: TextViewerProp) {
             linkLegends={linksLegendsWithColor}
             attributes={attributes}
             ontology={ontology}
+            groups={groups}
           />
         </div>
 

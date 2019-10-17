@@ -3,7 +3,6 @@
   top: 0;
   left: 0;
   transition: box-shadow 0.36s;
-  z-index: 7;
 }
 
 .annotaion {
@@ -36,11 +35,11 @@
 .connect_point:hover .add_icon::after {
   border-color: white;
 }
-
 .annotation_container_to_be_link {
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
 }
 
+.annotation_container_to_be_link:hover,
 .annotation_container_to_be_link:active {
   box-shadow: none;
 }
@@ -69,4 +68,12 @@
   left: 3px;
   top: 1px;
   border-left: 1px solid #555;
+}
+
+.annotation_container_selected {
+  border-bottom: 2px solid #333;
+}
+
+.annotation_container_in_group {
+  border: 1px solid red;
 }

@@ -315,3 +315,29 @@ export function attributeId(legendId: string, attributeId: string) {
 export function shortId(id: string) {
   return id.replace('forte.data.ontology.stanfordnlp_ontology.', '');
 }
+
+export function checkAnnotationInGroup(
+  groupId: string,
+  textPack: ISinglePack,
+  annotationId: string
+) {
+  const group = textPack.groups.find(g => g.id === groupId);
+  if (group) {
+    return group.annotationIds.includes(annotationId);
+  } else {
+    return false;
+  }
+}
+
+export function checkLinkInGroup(
+  groupId: string,
+  textPack: ISinglePack,
+  linkId: string
+) {
+  const group = textPack.groups.find(g => g.id === groupId);
+  if (group) {
+    return group.linkIds.includes(linkId);
+  } else {
+    return false;
+  }
+}

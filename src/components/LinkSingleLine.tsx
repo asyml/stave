@@ -23,6 +23,7 @@ export interface LinkSingleLineProp {
   isSelected: boolean;
   isHightlighted: boolean;
   isCollapsed: boolean;
+  isInGroup: boolean;
   linkHeight: Record<string, Record<string, number>>;
   selectedLegendAttributeIds: string[];
 }
@@ -37,13 +38,29 @@ export default function LinkSingleLine({
   isSelected,
   isHightlighted,
   isCollapsed,
+  isInGroup,
   linkHeight,
   selectedLegendAttributeIds,
 }: LinkSingleLineProp) {
   const dispatch = useTextViewerDispatch();
 
-  const borderWidth = '1px';
-  const borderColor = isSelected || isHightlighted ? '#555' : '#bbb';
+  let borderColor = '#bbb';
+  if (isSelected || isHightlighted) {
+    borderColor = '#555';
+  }
+  if (isInGroup) {
+    borderColor = 'red';
+  }
+
+  let labelColor = '#999';
+  if (isSelected || isHightlighted) {
+    labelColor = '#555';
+  }
+  if (isInGroup) {
+    labelColor = 'red';
+  }
+
+  const borderWidth = isSelected || isHightlighted ? '2px' : '1px';
   const zIndex = isSelected || isHightlighted ? 1 : 0;
   const height = isCollapsed
     ? textLinkDistance
@@ -77,7 +94,8 @@ export default function LinkSingleLine({
 
   return (
     <div
-      className="single-line-container"
+      className={`single-line-container
+        ${isInGroup && style.line_in_group}`}
       data-from-id={linkWithPosition.link.fromEntryId}
       data-to-id={linkWithPosition.link.toEntryId}
     >
@@ -205,7 +223,7 @@ export default function LinkSingleLine({
             textAlign: goLeft ? 'left' : 'right',
             top: `${linkLabelPosition.y}px`,
             left: `${linkLabelPosition.x}px`,
-            color: isSelected || isHightlighted ? '#555' : '#999',
+            color: labelColor,
           }}
         >
           {linkLabel}
