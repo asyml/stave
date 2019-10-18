@@ -79,6 +79,7 @@ export interface IAnnotationWithPos {
 
 export interface IOntology {
   ontologyName: string;
+  imports: string[];
   entryDefinitions: IEntryDefinition[];
 }
 
@@ -87,6 +88,7 @@ export interface IEntryDefinition {
   parentEntryName: string;
   parentType?: string;
   childType?: string;
+  memberType?: string;
   attributes?: IEntryAttributeDefinition[];
 }
 

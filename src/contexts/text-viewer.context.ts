@@ -287,22 +287,22 @@ function textViewerReducer(state: State, action: Action): State {
         textPack: action.textPack,
 
         // TODO: remove the following test code
-        selectedLegendIds: [
-          'forte.data.ontology.stanfordnlp_ontology.Token',
-          'forte.data.ontology.stanfordnlp_ontology.Foo',
-          action.textPack.legends.links[0].id,
-        ],
-        selectedLegendAttributeIds: [
-          attributeId(
-            'forte.data.ontology.stanfordnlp_ontology.Token',
-            'pos_tag'
-          ),
-          attributeId('forte.data.ontology.stanfordnlp_ontology.Foo', 'name'),
-          attributeId(action.textPack.legends.links[0].id, 'rel_type'),
-        ],
-        // selectedAnnotationId:
-        //   'forte.data.ontology.stanfordnlp_ontology.Token.6',
-        collpasedLineIndexes: [],
+        // selectedLegendIds: [
+        //   'forte.data.ontology.stanfordnlp_ontology.Token',
+        //   'forte.data.ontology.stanfordnlp_ontology.Foo',
+        //   action.textPack.legends.links[0].id,
+        // ],
+        // selectedLegendAttributeIds: [
+        //   attributeId(
+        //     'forte.data.ontology.stanfordnlp_ontology.Token',
+        //     'pos_tag'
+        //   ),
+        //   attributeId('forte.data.ontology.stanfordnlp_ontology.Foo', 'name'),
+        //   attributeId(action.textPack.legends.links[0].id, 'rel_type'),
+        // ],
+        // // selectedAnnotationId:
+        // //   'forte.data.ontology.stanfordnlp_ontology.Token.6',
+        // collpasedLineIndexes: [],
 
         // test linkEditIsCreating
         // linkEditFromEntryId:

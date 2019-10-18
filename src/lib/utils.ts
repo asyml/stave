@@ -313,7 +313,9 @@ export function attributeId(legendId: string, attributeId: string) {
 }
 
 export function shortId(id: string) {
-  return id.replace('forte.data.ontology.stanfordnlp_ontology.', '');
+  return id
+    .replace('forte.data.ontology.stanfordnlp_ontology.', '')
+    .replace('forte.data.ontology.base_ontology.', '');
 }
 
 export function checkAnnotationInGroup(
