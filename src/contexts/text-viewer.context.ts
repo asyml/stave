@@ -7,6 +7,7 @@ import {
 import { createContextProvider } from '../lib/create-context-provider';
 import { attributeId } from '../lib/utils';
 import { ll } from '../lib/log';
+import { restorePos } from '../lib/text-spacer';
 
 export type Dispatch = (action: Action) => void;
 
@@ -787,47 +788,11 @@ function textViewerReducer(state: State, action: Action): State {
         );
       }
 
-      let actualBegin = -1;
-      let actualEnd = -1;
-
-      let accumulatedMove = 0;
-
-      const entries = Array.from(state.charMoveMap.entries()).sort(
-        (a, b) => a[0] - b[0]
+      const [actualBegin, actualEnd] = restorePos(
+        state.charMoveMap,
+        state.annoEditCursorBegin,
+        state.annoEditCursorEnd
       );
-
-      let lastAnnoEnd = -1;
-      for (let [annoEnd, annoMove] of entries) {
-        if (
-          annoEnd + accumulatedMove >= state.annoEditCursorBegin &&
-          actualBegin === -1
-        ) {
-          if (
-            lastAnnoEnd !== -1 &&
-            lastAnnoEnd + accumulatedMove >= state.annoEditCursorBegin
-          ) {
-            actualBegin = lastAnnoEnd + 1;
-          } else {
-            actualBegin = state.annoEditCursorBegin - accumulatedMove;
-          }
-        }
-
-        if (
-          annoEnd + accumulatedMove >= state.annoEditCursorEnd &&
-          actualEnd === -1
-        ) {
-          if (
-            lastAnnoEnd !== -1 &&
-            lastAnnoEnd + accumulatedMove >= state.annoEditCursorEnd
-          ) {
-            actualEnd = lastAnnoEnd;
-          } else {
-            actualEnd = state.annoEditCursorEnd - accumulatedMove;
-          }
-        }
-        accumulatedMove += annoMove;
-        lastAnnoEnd = annoEnd;
-      }
 
       const newAnno = newAnnotaion(
         actualBegin,
