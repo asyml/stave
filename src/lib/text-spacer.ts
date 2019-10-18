@@ -671,6 +671,48 @@ export function shouldMultiLineGoLeft(
 
 /**
  *
+ * restore new annotation position to original position based
+ * on a map of [end ot original annotation position ] to
+ * [number of charactors to move]
+ *
+ */
+export function restorePos(
+  charMoveMap: Map<number, number>,
+  begin: number,
+  end: number
+) {
+  let actualBegin = -1;
+  let actualEnd = -1;
+  let accumulatedMove = 0;
+
+  const entries = Array.from(charMoveMap.entries()).sort((a, b) => a[0] - b[0]);
+  let lastAnnoEnd = -1;
+
+  for (let [annoEnd, annoMove] of entries) {
+    if (annoEnd + accumulatedMove >= begin && actualBegin === -1) {
+      if (lastAnnoEnd !== -1 && lastAnnoEnd + accumulatedMove >= begin) {
+        actualBegin = lastAnnoEnd + 1;
+      } else {
+        actualBegin = begin - accumulatedMove;
+      }
+    }
+
+    if (annoEnd + accumulatedMove >= end && actualEnd === -1) {
+      if (lastAnnoEnd !== -1 && lastAnnoEnd + accumulatedMove >= end) {
+        actualEnd = lastAnnoEnd;
+      } else {
+        actualEnd = end - accumulatedMove;
+      }
+    }
+    accumulatedMove += annoMove;
+    lastAnnoEnd = annoEnd;
+  }
+
+  return [actualBegin, actualEnd];
+}
+
+/**
+ *
  * calcuate how many empty space need to insert for
  * each annotation, so that there is enough space
  * to show the annoataion label and link label.
