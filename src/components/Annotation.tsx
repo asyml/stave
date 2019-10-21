@@ -33,6 +33,7 @@ function Annotaion({
     linkEditToEntryId,
     linkEditIsDragging,
     linkEditIsCreating,
+    highlightedAnnotationIds,
   } = useTextViewerState();
 
   const isLinkTarget =
@@ -62,16 +63,22 @@ function Annotaion({
               transform: `translate(${rect.x}px,${rect.y}px)`,
             }}
             onMouseEnter={() => {
-              dispatch({
-                type: 'highlight-annotation',
-                annotationId: annotation.id,
-              });
-              dispatch({
-                type: 'set-create-link-target',
-                annotationId: annotation.id,
-              });
+              if (!highlightedAnnotationIds.includes(annotation.id)) {
+                dispatch({
+                  type: 'highlight-annotation',
+                  annotationId: annotation.id,
+                });
+              }
+
+              if (linkEditToEntryId !== annotation.id) {
+                dispatch({
+                  type: 'set-create-link-target',
+                  annotationId: annotation.id,
+                });
+              }
             }}
             onMouseLeave={() => {
+              ll('on mouse leave');
               dispatch({
                 type: 'unhighlight-annotation',
               });

@@ -3,7 +3,6 @@ import { ILink, IAnnotation, IAnnotationPosition } from '../lib/interfaces';
 import { attributeId, shouldMultiLineGoLeft } from '../lib/utils';
 import { useTextViewerDispatch } from '../contexts/text-viewer.context';
 import style from '../styles/Link.module.css';
-// import { ll } from '../lib/log';
 
 export interface LinkMultiLineProp {
   linkWithPosition: {
@@ -155,6 +154,7 @@ export default function LinkMultiLine({
           zIndex,
         }}
       ></div>
+
       <div
         className={style.link_line}
         style={{
@@ -341,6 +341,7 @@ export default function LinkMultiLine({
           left: arrowPosition.x,
         }}
       ></div>
+
       {fromLineCollapsed ? null : (
         <div
           className={style.link_label}
@@ -356,6 +357,7 @@ export default function LinkMultiLine({
           {linkLabel}
         </div>
       )}
+
       {toLineCollapsed ? null : (
         <div
           className={style.link_label}

@@ -1,6 +1,7 @@
 .link_edit_connector {
   background: #555;
   box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
 }
 
 .link_drag_arrow {

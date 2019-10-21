@@ -13,13 +13,15 @@ export interface LinkEditConnectorProp {
     annotation: IAnnotation;
   }[];
   fromEntryId: string | null;
-  textNodeDimension: ITextNodeDimension;
+  offsetX: number;
+  offsetY: number;
 }
 
 export default function LinkEditConnector({
   annotationsWithPosition,
   fromEntryId,
-  textNodeDimension,
+  offsetX,
+  offsetY,
 }: LinkEditConnectorProp) {
   const dispatch = useTextViewerDispatch();
   const [pos, setPos] = useState({
@@ -64,8 +66,8 @@ export default function LinkEditConnector({
   };
 
   const toPos = {
-    x: pos.x - textNodeDimension.clientX,
-    y: pos.y - textNodeDimension.clientY,
+    x: pos.x - offsetX,
+    y: pos.y - offsetY,
   };
 
   return <LineWithArrow fromPos={fromPos} toPos={toPos} />;

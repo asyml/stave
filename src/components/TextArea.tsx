@@ -192,6 +192,29 @@ function TextArea({ textPack }: TextAreaProp) {
     }
   }
 
+  function renderConnector() {
+    if (!linkEditIsDragging) {
+      return null;
+    }
+
+    if (!textNodeEl.current) {
+      return null;
+    }
+
+    const textNodeRect = textNodeEl.current.getBoundingClientRect();
+
+    return (
+      <div className={style.link_edit_container}>
+        <LinkEditConnector
+          annotationsWithPosition={annotationsWithPosition}
+          fromEntryId={linkEditFromEntryId}
+          offsetX={textNodeRect.left}
+          offsetY={textNodeRect.top}
+        />
+      </div>
+    );
+  }
+
   useEffect(() => {
     function handleTextMouseUp(e: MouseEvent) {
       if (annoEditIsCreating) {
@@ -469,23 +492,7 @@ function TextArea({ textPack }: TextAreaProp) {
         })}
       </div>
 
-      {linkEditIsDragging && (
-        <div className={style.link_edit_container}>
-          <LinkEditConnector
-            annotationsWithPosition={annotationsWithPosition}
-            fromEntryId={linkEditFromEntryId}
-            textNodeDimension={{
-              width: 0,
-              height: 0,
-              x: 0,
-              y: 0,
-              clientX: 0,
-              clientY: 0,
-            }}
-          />
-        </div>
-      )}
-
+      {renderConnector()}
       {renderLineWithArrow()}
     </div>
   );
