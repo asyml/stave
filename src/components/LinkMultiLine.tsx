@@ -331,7 +331,8 @@ export default function LinkMultiLine({
       ></div>
 
       <div
-        className={style.arrow}
+        className={`${style.arrow}
+          ${(isSelected || isHightlighted) && style.arrow_large}`}
         style={{
           transformOrigin: 'center bottom',
           transform: `

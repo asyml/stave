@@ -160,6 +160,10 @@ export type Action =
       type: 'unhighlight-annotation';
     }
   | {
+      type: 'delete-anntation';
+      annotationId: string;
+    }
+  | {
       type: 'reset-calculated-text-space';
     }
   | {
@@ -200,6 +204,10 @@ export type Action =
     }
   | {
       type: 'unhighlight-link';
+    }
+  | {
+      type: 'delete-link';
+      linkId: string;
     }
   | {
       type: 'start-create-link';
@@ -307,8 +315,7 @@ function textViewerReducer(state: State, action: Action): State {
             'arg_type'
           ),
         ],
-        // // selectedAnnotationId:
-        // //   'forte.data.ontology.stanfordnlp_ontology.Token.6',
+        selectedAnnotationId: '5',
         // collpasedLineIndexes: [],
 
         // test linkEditIsCreating
@@ -485,6 +492,56 @@ function textViewerReducer(state: State, action: Action): State {
         highlightedLinkIds: [],
       };
 
+    case 'delete-anntation': {
+      if (!state.textPack) {
+        return state;
+      }
+
+      const annotations = state.textPack.annotations.filter(
+        ann => ann.id !== action.annotationId
+      );
+
+      const links = state.textPack.links.filter(
+        link =>
+          link.fromEntryId !== action.annotationId &&
+          link.toEntryId !== action.annotationId
+      );
+
+      const removedLinkIds = state.textPack.links
+        .filter(
+          link =>
+            link.fromEntryId === action.annotationId ||
+            link.toEntryId === action.annotationId
+        )
+        .map(l => l.id);
+
+      const groups = state.textPack.groups.map(group => {
+        const filteredAnnotationIds = group.annotationIds.filter(
+          annId => annId !== action.annotationId
+        );
+        const filteredLinkIds = group.linkIds.filter(
+          linkId => !removedLinkIds.includes(linkId)
+        );
+
+        return {
+          ...group,
+          annotationIds: filteredAnnotationIds,
+          linkIds: filteredLinkIds,
+        };
+      });
+
+      return {
+        ...state,
+        ...initialSpacingState,
+        textPack: {
+          ...state.textPack,
+          annotations,
+          links,
+          groups,
+        },
+      };
+    }
+
     case 'select-legend-attribute': {
       const selectedLegendAttributeIds = state.selectedLegendAttributeIds.filter(
         id => {
@@ -629,9 +686,46 @@ function textViewerReducer(state: State, action: Action): State {
         highlightedAnnotationIds: [],
       };
 
+    case 'delete-link': {
+      if (!state.textPack) {
+        return state;
+      }
+
+      const links = state.textPack.links.filter(
+        link => link.id !== action.linkId
+      );
+
+      const groups = state.textPack.groups.map(group => {
+        const filteredLinkIds = group.linkIds.filter(
+          linkId => action.linkId !== linkId
+        );
+        return {
+          ...group,
+          linkIds: filteredLinkIds,
+        };
+      });
+
+      return {
+        ...state,
+        ...initialSpacingState,
+        textPack: {
+          ...state.textPack,
+          links,
+          groups,
+        },
+      };
+    }
+
     case 'start-create-link':
       if (state.linkEditIsCreating || state.groupEditIsCreating) {
-        return state;
+        if (state.linkEditFromEntryId === action.annotationId) {
+          return {
+            ...state,
+            ...initialLinkEditState,
+          };
+        } else {
+          return state;
+        }
       }
 
       return {
