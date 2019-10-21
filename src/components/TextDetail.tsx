@@ -141,7 +141,7 @@ export default function TextDetail({
   return (
     <Tab
       tabs={[legendTabItem, groupList, metadataTabItem]}
-      activeTabIndex={1}
+      activeTabIndex={0}
     ></Tab>
   );
 }

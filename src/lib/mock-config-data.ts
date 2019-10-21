@@ -2,6 +2,7 @@ import { IOntology } from './interfaces';
 
 export const ontology: IOntology = {
   ontologyName: 'forte.data.ontology.stanfordnlp_ontology',
+  imports: [],
   entryDefinitions: [
     {
       entryName: 'forte.data.ontology.stanfordnlp_ontology.Token',
