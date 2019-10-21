@@ -63,6 +63,19 @@ export default function AnnotationDetail({
           />
         </div>
       </div>
+
+      <div>
+        <button
+          onClick={() => {
+            dispatch({
+              type: 'delete-anntation',
+              annotationId: annotation.id,
+            });
+          }}
+        >
+          remove
+        </button>
+      </div>
     </div>
   );
 }
