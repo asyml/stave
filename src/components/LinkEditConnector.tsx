@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  IAnnotationPosition,
-  IAnnotation,
-  ITextNodeDimension,
-} from '../lib/interfaces';
+import { IAnnotationPosition, IAnnotation } from '../lib/interfaces';
 import { useTextViewerDispatch } from '../contexts/text-viewer.context';
 import LineWithArrow from './LineWithArrow';
 
