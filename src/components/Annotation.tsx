@@ -56,9 +56,9 @@ function Annotaion({
           <div
             key={i}
             className={`${style.annotation_container}
-            ${isLinkTarget && style.annotation_container_to_be_link}
-            ${isInGroup && style.annotation_container_in_group}
-            ${isSelected && style.annotation_container_selected}`}
+              ${isLinkTarget && style.annotation_container_to_be_link}
+              ${isInGroup && style.annotation_container_in_group}
+              ${isSelected && style.annotation_container_selected}`}
             style={{
               transform: `translate(${rect.x}px,${rect.y}px)`,
             }}

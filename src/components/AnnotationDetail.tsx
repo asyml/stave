@@ -24,37 +24,33 @@ export default function AnnotationDetail({
     }
 
     return (
-      <div className={style.annotaition_detail_section}>
-        <h2>{title}</h2>
-        <div className={style.annotaition_detail_section_body}>
-          <ul className={style.linked_annotation_list}>
-            {annotations.map(ann => {
-              return (
-                <li
-                  key={ann.id}
-                  title={ann.id}
-                  className={style.linked_annotation}
-                  onClick={() => {
-                    dispatch({
-                      type: 'select-annotation',
-                      annotationId: ann.id,
-                    });
-                  }}
-                >
-                  {shortId(ann.id)}
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+      <div className={style.linked_annotation_container}>
+        <strong>{title}</strong>
+        {annotations.map(ann => {
+          return (
+            <span
+              key={ann.id}
+              title={ann.id}
+              className={style.linked_annotation}
+              onClick={() => {
+                dispatch({
+                  type: 'select-annotation',
+                  annotationId: ann.id,
+                });
+              }}
+            >
+              {shortId(ann.id)}
+            </span>
+          );
+        })}
       </div>
     );
   }
 
   return (
     <div className={style.annotaition_detail}>
-      {renderLinkedAnnotations(parentAnnotations, 'Parent Annotations')}
-      {renderLinkedAnnotations(childAnnotations, 'Child Annotations')}
+      {renderLinkedAnnotations(parentAnnotations, '↘ parents')}
+      {renderLinkedAnnotations(childAnnotations, '↗ children')}
 
       <div className={style.annotaition_detail_section}>
         <h2>Attributes</h2>

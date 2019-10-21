@@ -307,8 +307,7 @@ function textViewerReducer(state: State, action: Action): State {
             'arg_type'
           ),
         ],
-        // // selectedAnnotationId:
-        // //   'forte.data.ontology.stanfordnlp_ontology.Token.6',
+        // selectedAnnotationId: '5',
         // collpasedLineIndexes: [],
 
         // test linkEditIsCreating
@@ -631,7 +630,14 @@ function textViewerReducer(state: State, action: Action): State {
 
     case 'start-create-link':
       if (state.linkEditIsCreating || state.groupEditIsCreating) {
-        return state;
+        if (state.linkEditFromEntryId === action.annotationId) {
+          return {
+            ...state,
+            ...initialLinkEditState,
+          };
+        } else {
+          return state;
+        }
       }
 
       return {
