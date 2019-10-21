@@ -19,6 +19,7 @@
   color: #555;
   pointer-events: none;
   z-index: 5;
+  white-space: nowrap;
 }
 
 .line_in_group {

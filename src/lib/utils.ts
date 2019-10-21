@@ -3,7 +3,6 @@ import {
   IColoredLegend,
   ILinkWithPos,
   ISinglePack,
-  ISpaceMap,
 } from './interfaces';
 import { colorPalettes } from './color';
 
@@ -232,78 +231,8 @@ export function shouldMultiLineGoLeft(
 ) {
   const topLineX =
     link.fromLinkY < link.toLinkY ? link.fromLinkX : link.toLinkX;
+
   return topLineX < lineStartX + lineWidth / 2;
-}
-
-export function calculateSpacedText(
-  textPack: ISinglePack,
-  spaceMap: ISpaceMap,
-  fill: string,
-  insertDirection: 'before' | 'after' = 'after'
-) {
-  const textSplit = textPack.text.split('');
-  const sortedSpaceMap = Object.keys(spaceMap)
-    .filter(annId => spaceMap[annId].spaceToMove > 0)
-    .map(annId => spaceMap[annId])
-    .sort((annA, annB) => {
-      return (
-        annA.annotationWithPos.annotation.span.end -
-        annB.annotationWithPos.annotation.span.end
-      );
-    });
-
-  const spacedAnnotationSpan: {
-    [key: string]: { begin: number; end: number };
-  } = {};
-
-  textPack.annotations.forEach(ann => {
-    spacedAnnotationSpan[ann.id] = {
-      begin: ann.span.begin,
-      end: ann.span.end,
-    };
-  });
-
-  for (let i = 0; i < sortedSpaceMap.length; i++) {
-    const space = sortedSpaceMap[i];
-    const spaceFromLast = sortedSpaceMap[sortedSpaceMap.length - i - 1];
-    const emptySpaces = Array(spaceFromLast.spaceToMove)
-      .fill(fill)
-      .join('');
-
-    textSplit.splice(
-      insertDirection === 'before'
-        ? spaceFromLast.annotationWithPos.annotation.span.begin
-        : spaceFromLast.annotationWithPos.annotation.span.end,
-      0,
-      emptySpaces
-    );
-
-    const end = spacedAnnotationSpan[space.annotationWithPos.annotation.id].end;
-
-    Object.keys(spacedAnnotationSpan).forEach(annId => {
-      if (spacedAnnotationSpan[annId].begin >= end) {
-        spacedAnnotationSpan[annId].begin =
-          spacedAnnotationSpan[annId].begin + space.spaceToMove;
-        spacedAnnotationSpan[annId].end =
-          spacedAnnotationSpan[annId].end + space.spaceToMove;
-      } else if (
-        spacedAnnotationSpan[annId].begin < end &&
-        spacedAnnotationSpan[annId].end > end
-      ) {
-        spacedAnnotationSpan[annId].end =
-          spacedAnnotationSpan[annId].end + space.spaceToMove;
-      } else {
-        // don't change
-      }
-    });
-  }
-
-  const spacedText = textSplit.join('');
-
-  return [spacedText, spacedAnnotationSpan] as [
-    typeof spacedText,
-    typeof spacedAnnotationSpan
-  ];
 }
 
 export const fontWidth = 6;

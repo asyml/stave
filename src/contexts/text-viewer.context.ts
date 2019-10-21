@@ -1,12 +1,11 @@
 import {
   ISinglePack,
   IOntology,
-  ISpacedAnnotationSpan,
   IGroup,
+  IAnnotationPosition,
 } from '../lib/interfaces';
 import { createContextProvider } from '../lib/create-context-provider';
 import { attributeId } from '../lib/utils';
-import { ll } from '../lib/log';
 import { restorePos } from '../lib/text-spacer';
 
 export type Dispatch = (action: Action) => void;
@@ -37,10 +36,11 @@ export type State = {
   highlightedLinkIds: string[];
 
   spacingCalcuated: boolean;
-  spacedAnnotationSpan: ISpacedAnnotationSpan;
   spacedText: string | null;
   charMoveMap: Map<number, number>;
   collpasedLineIndexes: number[];
+  annotationPositions: IAnnotationPosition[];
+  textNodeWidth: number;
 
   linkEditFromEntryId: string | null;
   linkEditToEntryId: string | null;
@@ -63,6 +63,8 @@ const initialSpacingState = {
   spacedText: null,
   spacedAnnotationSpan: {},
   charMoveMap: new Map(),
+  annotationPositions: [],
+  textNodeWidth: 0,
 };
 
 const initialLinkEditState = {
@@ -167,9 +169,10 @@ export type Action =
     }
   | {
       type: 'set-spaced-annotation-span';
-      spacedAnnotationSpan: ISpacedAnnotationSpan;
       spacedText: string;
       charMoveMap: Map<number, number>;
+      annotationPositions: IAnnotationPosition[];
+      textNodeWidth: number;
     }
   | {
       type: 'deselect-legend-attribute';
@@ -277,7 +280,7 @@ export type Action =
  */
 
 function textViewerReducer(state: State, action: Action): State {
-  ll('reducer', action);
+  // ll('reducer', action);
 
   switch (action.type) {
     case 'set-text-pack':
@@ -287,19 +290,23 @@ function textViewerReducer(state: State, action: Action): State {
         textPack: action.textPack,
 
         // TODO: remove the following test code
-        // selectedLegendIds: [
-        //   'forte.data.ontology.stanfordnlp_ontology.Token',
-        //   'forte.data.ontology.stanfordnlp_ontology.Foo',
-        //   action.textPack.legends.links[0].id,
-        // ],
-        // selectedLegendAttributeIds: [
-        //   attributeId(
-        //     'forte.data.ontology.stanfordnlp_ontology.Token',
-        //     'pos_tag'
-        //   ),
-        //   attributeId('forte.data.ontology.stanfordnlp_ontology.Foo', 'name'),
-        //   attributeId(action.textPack.legends.links[0].id, 'rel_type'),
-        // ],
+        selectedLegendIds: [
+          'forte.data.ontology.ontonotes_ontology.PredicateMention',
+          'forte.data.ontology.base_ontology.PredicateArgument',
+          action.textPack.legends.links[0].id,
+        ],
+        selectedLegendAttributeIds: [
+          // attributeId(
+          //   'forte.data.ontology.stanfordnlp_ontology.Token',
+          //   'pos_tag'
+          // ),
+          // attributeId('forte.data.ontology.stanfordnlp_ontology.Foo', 'name'),
+          // attributeId(action.textPack.legends.links[0].id, 'rel_type'),
+          attributeId(
+            'forte.data.ontology.base_ontology.PredicateLink',
+            'arg_type'
+          ),
+        ],
         // // selectedAnnotationId:
         // //   'forte.data.ontology.stanfordnlp_ontology.Token.6',
         // collpasedLineIndexes: [],
@@ -519,9 +526,10 @@ function textViewerReducer(state: State, action: Action): State {
       return {
         ...state,
         spacingCalcuated: true,
-        spacedAnnotationSpan: action.spacedAnnotationSpan,
         spacedText: action.spacedText,
         charMoveMap: action.charMoveMap,
+        annotationPositions: action.annotationPositions,
+        textNodeWidth: action.textNodeWidth,
       };
 
     case 'collapse-line':

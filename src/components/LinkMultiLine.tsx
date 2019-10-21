@@ -3,6 +3,7 @@ import { ILink, IAnnotation, IAnnotationPosition } from '../lib/interfaces';
 import { attributeId, shouldMultiLineGoLeft } from '../lib/utils';
 import { useTextViewerDispatch } from '../contexts/text-viewer.context';
 import style from '../styles/Link.module.css';
+// import { ll } from '../lib/log';
 
 export interface LinkMultiLineProp {
   linkWithPosition: {
@@ -83,6 +84,7 @@ export default function LinkMultiLine({
       linkHeight[linkWithPosition.link.id][linkWithPosition.toLinkY];
 
   const goLeft = shouldMultiLineGoLeft(linkWithPosition, lineStartX, lineWidth);
+
   const sideGap = 5;
   const arrowRadiusAdjust = Math.max(borderRadius - toLineHeight, 0) / 2;
 
