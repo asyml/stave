@@ -3,6 +3,7 @@ import { colorPalettes } from './color';
 const labels: any = {};
 const colorIterator = createColorIterator();
 
+(window as any).ll = ll;
 export function ll(label: string, ...values: any[]) {
   let e = new Error();
   let stack = e.stack || '';

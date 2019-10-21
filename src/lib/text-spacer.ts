@@ -12,13 +12,9 @@ export const fontWidth = 6;
 
 export interface SpacedText {
   text: string;
-  annotationSpanMap: {
-    [annotationId: string]: {
-      begin: number;
-      end: number;
-    };
-  };
   charMoveMap: Map<number, number>;
+  annotationPositions: IAnnotationPosition[];
+  textNodeWidth: number;
 }
 
 /**
@@ -30,10 +26,10 @@ export interface SpacedText {
  *
  * calcuate
  *  - new text that inserted empty space and new lines
- *  - a map of [annotaion id] to their new position in the new text
- *    - used to draw annotaions
  *  - a map of [annotation original end position] to number of charactor to insert after
  *    - used to restore the orignal position when new annotation is added to new text
+ *  - every annotation's new position
+ *  - dimention of the text node
  *
  * the calcuation has two steps, first it find and insert empty space, then based on
  * the result, decide how many new line to insert between each line.
@@ -51,85 +47,92 @@ export function spaceOutText(
   }
 
   const root = document.getElementById('root') as HTMLElement;
-  const domContainer = document.createElement('div');
-  domContainer.id = 'text-spacer';
+  const textNodeEl = document.createElement('div');
 
-  root.appendChild(domContainer);
-  domContainer.style.width = 'calc(100% - 500px)';
-  domContainer.style.margin = '50px auto';
-  domContainer.style.padding = '16px';
-  domContainer.style.border = '1px solid red';
-  domContainer.style.position = 'fixed';
-  domContainer.style.left = '-9999px';
+  textNodeEl.id = 'text-spacer';
+  textNodeEl.style.width = 'calc(100% - 534px)';
+  textNodeEl.style.margin = '50px auto';
+  textNodeEl.style.whiteSpace = 'pre-wrap';
+  textNodeEl.style.lineHeight = '20px';
+  textNodeEl.style.border = '1px solid red';
+  textNodeEl.style.position = 'fixed';
+  textNodeEl.style.left = '-9999px';
+  textNodeEl.textContent = textPack.text;
 
-  const dom = document.createElement('div');
-  domContainer.appendChild(dom);
-  dom.style.whiteSpace = 'pre-wrap';
+  root.appendChild(textNodeEl);
 
-  dom.textContent = textPack.text;
+  // domContainer.style.top = '0';
+  // domContainer.style.left = '0';
+  // domContainer.style.background = 'white';
+  // domContainer.style.zIndex = '100';
+
+  // const dom = document.createElement('div');
+  // textNodeEl.appendChild(dom);
+  // dom.style.whiteSpace = 'pre-wrap';
+
   const { annotations } = textPack;
-  const textNodeWithEmptySpace = dom && (dom.childNodes[0] as HTMLElement);
+  const textNode = textNodeEl && (textNodeEl.childNodes[0] as HTMLElement);
 
-  const textAreaRectWithEmptySpace = domContainer.getBoundingClientRect();
-  const textNodeRectWithEmptySpace = dom.getBoundingClientRect();
+  const textAreaRect = textNodeEl.getBoundingClientRect();
 
   const textAreaDimensionWithEmptySpace = {
-    width: textNodeRectWithEmptySpace.width,
-    height: textNodeRectWithEmptySpace.height,
-    x: textNodeRectWithEmptySpace.left - textAreaRectWithEmptySpace.left,
-    y: textNodeRectWithEmptySpace.top - textAreaRectWithEmptySpace.top,
+    width: textAreaRect.width,
+    height: textAreaRect.height,
   };
 
-  const annotationPositionsWithEmptySpace = annotations.map(anno => {
+  const annotationsPos = annotations.map(anno => {
     const range = document.createRange();
 
-    range.setStart(textNodeWithEmptySpace, anno.span.begin);
-    range.setEnd(textNodeWithEmptySpace, anno.span.end);
+    range.setStart(textNode, anno.span.begin);
+    range.setEnd(textNode, anno.span.end);
     const rects = Array.from(range.getClientRects() as DOMRectList);
 
     return {
       rects: rects.map(rect => ({
-        x: rect.x - textAreaRectWithEmptySpace.left,
-        y: rect.y - textAreaRectWithEmptySpace.top,
+        x: rect.x - textAreaRect.left,
+        y: rect.y - textAreaRect.top,
         width: rect.width,
         height: rect.height,
       })),
     };
   });
 
-  const annotationWithPositionWithEmptySpace = mergeAnnotationWithPosition(
-    annotationPositionsWithEmptySpace,
+  const annotationsWithPos = mergeAnnotationWithPosition(
+    annotationsPos,
     annotations
   ).filter(ann => selectedLegendIds.indexOf(ann.annotation.legendId) > -1);
 
-  const linksWithPosWithEmptySpace = mergeLinkWithPosition(
+  const linksWithPos = mergeLinkWithPosition(
     textPack.links,
-    annotationWithPositionWithEmptySpace
+    annotationsWithPos
   ).filter(link => selectedLegendIds.indexOf(link.link.legendId) > -1);
 
-  const spaceMapWithEmptySpace: ISpaceMap = calcuateSpaceMap(
-    annotationWithPositionWithEmptySpace,
-    linksWithPosWithEmptySpace,
+  const spaceMap: ISpaceMap = calcuateSpaceMap(
+    annotationsWithPos,
+    linksWithPos,
     selectedLegendAttributeIds
   );
 
   const [
     caculcatedSpacedTextWithEmptySpace,
     caculcatedSpacedAnnotationSpanWithEmptySpace,
-  ] = calculateNewText(textPack, spaceMapWithEmptySpace, ' ');
+  ] = calculateNewText(textPack, spaceMap, ' ');
 
-  dom.textContent = caculcatedSpacedTextWithEmptySpace;
+  textNodeEl.textContent = caculcatedSpacedTextWithEmptySpace;
 
-  const textNodeWithNewline = dom && (dom.childNodes[0] as HTMLElement);
-  const annotationPositionsWithNewline = annotations.map(anno => {
+  const textAreaRectWithEmptySpace = textNodeEl.getBoundingClientRect();
+  const textNodeWithEmptySpace =
+    textNodeEl && (textNodeEl.childNodes[0] as HTMLElement);
+
+  const annotationsPosWithEmptySpaces = annotations.map(anno => {
     const range = document.createRange();
 
     range.setStart(
-      textNodeWithNewline,
+      textNodeWithEmptySpace,
       caculcatedSpacedAnnotationSpanWithEmptySpace[anno.id].begin
     );
     range.setEnd(
-      textNodeWithNewline,
+      textNodeWithEmptySpace,
       caculcatedSpacedAnnotationSpanWithEmptySpace[anno.id].end
     );
     const rects = Array.from(range.getClientRects() as DOMRectList);
@@ -144,25 +147,25 @@ export function spaceOutText(
     };
   });
 
-  const annotationWithPositionWithNewline = mergeAnnotationWithPosition(
-    annotationPositionsWithNewline,
+  const annotationsWithPosWithEmptySpaces = mergeAnnotationWithPosition(
+    annotationsPosWithEmptySpaces,
     annotations
   ).filter(ann => selectedLegendIds.indexOf(ann.annotation.legendId) > -1);
 
-  const linksWithPosWithNewline = mergeLinkWithPosition(
+  const linksWithPosWithEmptySpaces = mergeLinkWithPosition(
     textPack.links,
-    annotationWithPositionWithNewline
+    annotationsWithPosWithEmptySpaces
   ).filter(link => selectedLegendIds.indexOf(link.link.legendId) > -1);
 
-  const lineStartXWithNewline = textAreaDimensionWithEmptySpace.x;
-  const lineWidthWithNewline = textAreaDimensionWithEmptySpace.width;
+  const lineStartXWithEmptySpace = 0; //textAreaDimensionWithEmptySpace.x;
+  const lineWidthWithEmptySpace = textAreaDimensionWithEmptySpace.width;
 
   const linesLevelsWithNewline = {
-    ...getLevelsFromJustAnnotations(annotationWithPositionWithNewline),
+    ...getLevelsFromJustAnnotations(annotationsWithPosWithEmptySpaces),
     ...calcuateLinesLevels(
-      linksWithPosWithNewline,
-      lineStartXWithNewline,
-      lineWidthWithNewline
+      linksWithPosWithEmptySpaces,
+      lineStartXWithEmptySpace,
+      lineWidthWithEmptySpace
     ),
   };
 
@@ -171,7 +174,7 @@ export function spaceOutText(
   Object.keys(linesLevelsWithNewline).forEach((lineHeight, i) => {
     const levelNum = linesLevelsWithNewline[lineHeight].length;
     const firstAnnotation = getFirstAnnotationOfLine(
-      annotationWithPositionWithNewline,
+      annotationsWithPosWithEmptySpaces,
       +lineHeight
     );
 
@@ -221,18 +224,43 @@ export function spaceOutText(
     'before'
   );
 
-  dom.textContent = textWithNewLine;
+  textNodeEl.textContent = textWithNewLine;
+
+  const textNodeWithNewline =
+    textNodeEl && (textNodeEl.childNodes[0] as HTMLElement);
+  const textAreaRectWithNewLine = textNodeEl.getBoundingClientRect() as DOMRect;
+  const lineWidthWithNewLine = textAreaRectWithNewLine.width;
+
+  const annotationPositionsWithNewLine = annotations.map(anno => {
+    const range = document.createRange();
+
+    range.setStart(textNodeWithNewline, annotationSpanMap[anno.id].begin);
+    range.setEnd(textNodeWithNewline, annotationSpanMap[anno.id].end);
+
+    let rects = Array.from(range.getClientRects() as DOMRectList);
+
+    if (rects.length > 1) {
+      rects = rects.filter(rect => rect.width > 5);
+    }
+
+    return {
+      rects: rects.map(rect => ({
+        x: rect.x - textAreaRectWithNewLine.left,
+        y: rect.y - textAreaRectWithNewLine.top,
+        width: rect.width,
+        height: rect.height,
+      })),
+    };
+  });
 
   const charMoveMap = new Map<number, number>();
-  Object.keys(spaceMapWithEmptySpace).forEach(annId => {
+  Object.keys(spaceMap).forEach(annId => {
     const annotation = textPack.annotations.find(ann => ann.id === annId);
     if (annotation) {
-      charMoveMap.set(
-        annotation.span.end,
-        spaceMapWithEmptySpace[annId].spaceToMove
-      );
+      charMoveMap.set(annotation.span.end, spaceMap[annId].spaceToMove);
     }
   });
+
   Object.keys(spaceMapWithNewline).forEach(annId => {
     const annotation = textPack.annotations.find(ann => ann.id === annId);
     if (annotation) {
@@ -246,8 +274,9 @@ export function spaceOutText(
 
   return {
     text: textWithNewLine,
-    annotationSpanMap,
     charMoveMap,
+    annotationPositions: annotationPositionsWithNewLine,
+    textNodeWidth: lineWidthWithNewLine,
   };
 }
 
@@ -756,16 +785,16 @@ function calcuateSpaceMap(
       .map(attrKey => linkPos.link.attributes[attrKey])
       .join(',');
 
-    const spaceNeedForLabel = label.length * fontWidth + 15;
+    const pixelNeedForLinkLabel = getTextWidth(label, fontWidth);
     const distance = Math.abs(linkPos.fromLinkX - linkPos.toLinkX);
     const annotationWithPos =
       linkPos.fromLinkX < linkPos.toLinkX
         ? linkPos.fromEntryWithPos
         : linkPos.toEntryWithPos;
     const spaceToMove =
-      distance > spaceNeedForLabel
+      distance > pixelNeedForLinkLabel
         ? 0
-        : Math.ceil((spaceNeedForLabel - distance) / fontWidth);
+        : Math.ceil((pixelNeedForLinkLabel - distance) / fontWidth);
 
     if (spaceMap[annotationWithPos.annotation.id] === undefined) {
       spaceMap[annotationWithPos.annotation.id] = {
@@ -782,7 +811,7 @@ function calcuateSpaceMap(
     }
   });
 
-  const pixelNeededForLabel = 35;
+  const pixelNeededForAnnoLabel = 35; // we only show 3 char
   annotationWithPosition
     .slice(0)
     .sort((a, b) => a.annotation.span.end - b.annotation.span.end)
@@ -807,9 +836,9 @@ function calcuateSpaceMap(
           distance = midAnnXToEnd + nextMidAnnXToStart + 4;
         }
 
-        if (distance < pixelNeededForLabel && distance > 0) {
+        if (distance < pixelNeededForAnnoLabel && distance > 0) {
           const spaceToMove = Math.ceil(
-            (pixelNeededForLabel - distance) / fontWidth
+            (pixelNeededForAnnoLabel - distance) / fontWidth
           );
           if (spaceMap[annPos.annotation.id] === undefined) {
             spaceMap[annPos.annotation.id] = {
@@ -882,6 +911,12 @@ function calcuateLinesToInsertByLevelNum(
  *
  * get first annotation from left to right in a line.
  *
+ * TODO: there is a bug. When the first rect of the line is
+ * the also a part of annotation in last line. This function
+ * returns the second rect. However there seems no good way
+ * to resolve this, because we don't know the exact cursor
+ * to insert.
+ *
  */
 function getFirstAnnotationOfLine(
   annotationWithPosition: {
@@ -895,4 +930,12 @@ function getFirstAnnotationOfLine(
     .sort((annA, annB) => {
       return annA.position.rects[0].x - annB.position.rects[0].x;
     })[0];
+}
+
+function getTextWidth(text: string, fontWidth: number) {
+  const textUpperLen = text.split('').filter(c => c === c.toUpperCase()).length;
+  const textOtherLen = text.length - textUpperLen;
+  const padding = fontWidth * 2;
+
+  return textUpperLen * (fontWidth + 3) + textOtherLen * fontWidth + padding;
 }

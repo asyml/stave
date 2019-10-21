@@ -83,6 +83,7 @@ export default function LinkMultiLine({
       linkHeight[linkWithPosition.link.id][linkWithPosition.toLinkY];
 
   const goLeft = shouldMultiLineGoLeft(linkWithPosition, lineStartX, lineWidth);
+
   const sideGap = 5;
   const arrowRadiusAdjust = Math.max(borderRadius - toLineHeight, 0) / 2;
 
@@ -153,6 +154,7 @@ export default function LinkMultiLine({
           zIndex,
         }}
       ></div>
+
       <div
         className={style.link_line}
         style={{
@@ -339,6 +341,7 @@ export default function LinkMultiLine({
           left: arrowPosition.x,
         }}
       ></div>
+
       {fromLineCollapsed ? null : (
         <div
           className={style.link_label}
@@ -354,6 +357,7 @@ export default function LinkMultiLine({
           {linkLabel}
         </div>
       )}
+
       {toLineCollapsed ? null : (
         <div
           className={style.link_label}

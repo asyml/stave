@@ -105,10 +105,6 @@ export interface ISpaceMap {
   };
 }
 
-export interface ISpacedAnnotationSpan {
-  [annotationId: string]: { begin: number; end: number };
-}
-
 export interface IPos {
   x: number;
   y: number;

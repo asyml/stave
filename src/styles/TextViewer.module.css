@@ -11,6 +11,7 @@
 
 .layout_container {
   display: flex;
+  height: calc(100vh - 35px);
 }
 
 .metadata_side_container {
@@ -33,6 +34,9 @@
   flex: 1;
   position: relative;
   transition: background 0.2s;
+  height: 100%;
+  overflow: scroll;
+  padding-bottom: 50px;
 }
 
 .attributes_side_container h2 {

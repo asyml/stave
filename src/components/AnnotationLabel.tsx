@@ -31,6 +31,10 @@ export default function AnnotationLabel({
     }
   });
 
+  if (!attrKeys.length) {
+    return null;
+  }
+
   return (
     <div
       key={annotationWithPosition.annotation.id}

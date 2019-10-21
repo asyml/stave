@@ -1,12 +1,6 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import style from '../styles/TextArea.module.css';
-import {
-  ISinglePack,
-  IAnnotationPosition, // TODO: rename
-  ISpacedAnnotationSpan,
-  ITextNodeDimension,
-  IRect,
-} from '../lib/interfaces';
+import { ISinglePack, IRect } from '../lib/interfaces';
 import {
   applyColorToLegend,
   calcuateLinesLevels,
@@ -39,20 +33,6 @@ function TextArea({ textPack }: TextAreaProp) {
   const { annotations, legends, text, links } = textPack;
   const textNodeEl = useRef<HTMLDivElement>(null);
   const textAreaEl = useRef<HTMLDivElement>(null);
-  const [annotationPositions, setAnnotationPositions] = useState<
-    IAnnotationPosition[]
-  >([]);
-
-  const [textNodeDimension, setTextNodeDimension] = useState<
-    ITextNodeDimension
-  >({
-    width: 0,
-    height: 0,
-    x: 0,
-    y: 0,
-    clientX: 0,
-    clientY: 0,
-  });
 
   const annotaionLegendsWithColor = applyColorToLegend(legends.annotations);
 
@@ -63,9 +43,10 @@ function TextArea({ textPack }: TextAreaProp) {
     selectedGroupId,
 
     spacingCalcuated,
-    spacedAnnotationSpan,
     spacedText,
     collpasedLineIndexes,
+    annotationPositions,
+    textNodeWidth,
 
     selectedAnnotationId,
     highlightedAnnotationIds,
@@ -95,11 +76,15 @@ function TextArea({ textPack }: TextAreaProp) {
       selectedLegendIds: string[],
       selectedLegendAttributeIds: string[],
       spacingCalcuated: boolean,
-      spacedAnnotationSpan: ISpacedAnnotationSpan,
       collpasedLinesIndex: number[]
     ) {
       if (!spacingCalcuated) {
-        const { text, annotationSpanMap, charMoveMap } = spaceOutText(
+        const {
+          text,
+          charMoveMap,
+          annotationPositions,
+          textNodeWidth,
+        } = spaceOutText(
           textPack,
           selectedLegendIds,
           selectedLegendAttributeIds,
@@ -108,55 +93,11 @@ function TextArea({ textPack }: TextAreaProp) {
 
         dispatch({
           type: 'set-spaced-annotation-span',
-          spacedAnnotationSpan: annotationSpanMap,
           spacedText: text,
           charMoveMap,
+          annotationPositions,
+          textNodeWidth,
         });
-      }
-
-      if (textNodeEl.current && textAreaEl.current) {
-        const textNode = textNodeEl.current && textNodeEl.current.childNodes[0];
-        const textAreaRect = textAreaEl.current.getBoundingClientRect();
-        const textNodeRect = textNodeEl.current.getBoundingClientRect();
-
-        const textAreaDimension = {
-          width: textNodeRect.width,
-          height: textNodeRect.height,
-          x: textNodeRect.left - textAreaRect.left,
-          y: textNodeRect.top - textAreaRect.top,
-          clientX: textAreaRect.left,
-          clientY: textAreaRect.top,
-        };
-
-        const annotationPositions = textPack.annotations.map(anno => {
-          const range = document.createRange();
-
-          range.setStart(
-            textNode,
-            spacedAnnotationSpan[anno.id]
-              ? spacedAnnotationSpan[anno.id].begin
-              : anno.span.begin
-          );
-          range.setEnd(
-            textNode,
-            spacedAnnotationSpan[anno.id]
-              ? spacedAnnotationSpan[anno.id].end
-              : anno.span.end
-          );
-          const rects = Array.from(range.getClientRects() as DOMRectList);
-
-          return {
-            rects: rects.map(rect => ({
-              x: rect.x - textAreaRect.left,
-              y: rect.y - textAreaRect.top,
-              width: rect.width,
-              height: rect.height,
-            })),
-          };
-        });
-
-        setAnnotationPositions(annotationPositions);
-        setTextNodeDimension(textAreaDimension);
       }
     }
 
@@ -164,14 +105,13 @@ function TextArea({ textPack }: TextAreaProp) {
       dispatch({
         type: 'reset-calculated-text-space',
       });
-    }, 100);
+    }, 500);
 
     calculateTextSpace(
       textPack,
       selectedLegendIds,
       selectedLegendAttributeIds,
       spacingCalcuated,
-      spacedAnnotationSpan,
       collpasedLineIndexes
     );
 
@@ -185,7 +125,6 @@ function TextArea({ textPack }: TextAreaProp) {
     selectedLegendIds,
     selectedLegendAttributeIds,
     spacingCalcuated,
-    spacedAnnotationSpan,
     dispatch,
     collpasedLineIndexes,
   ]);
@@ -200,8 +139,8 @@ function TextArea({ textPack }: TextAreaProp) {
     annotationsWithPosition
   ).filter(link => selectedLegendIds.indexOf(link.link.legendId) > -1);
 
-  const lineStartX = textNodeDimension.x;
-  const lineWidth = textNodeDimension.width;
+  const lineStartX = 0; // textNodeDimension.x;
+  const lineWidth = textNodeWidth; // textNodeDimension.width;
   const linkGap = 8;
 
   const linesLevels = calcuateLinesLevels(linksWithPos, lineStartX, lineWidth);
@@ -251,6 +190,29 @@ function TextArea({ textPack }: TextAreaProp) {
     } else {
       return null;
     }
+  }
+
+  function renderConnector() {
+    if (!linkEditIsDragging) {
+      return null;
+    }
+
+    if (!textNodeEl.current) {
+      return null;
+    }
+
+    const textNodeRect = textNodeEl.current.getBoundingClientRect();
+
+    return (
+      <div className={style.link_edit_container}>
+        <LinkEditConnector
+          annotationsWithPosition={annotationsWithPosition}
+          fromEntryId={linkEditFromEntryId}
+          offsetX={textNodeRect.left}
+          offsetY={textNodeRect.top}
+        />
+      </div>
+    );
   }
 
   useEffect(() => {
@@ -530,16 +492,7 @@ function TextArea({ textPack }: TextAreaProp) {
         })}
       </div>
 
-      {linkEditIsDragging && (
-        <div className={style.link_edit_container}>
-          <LinkEditConnector
-            annotationsWithPosition={annotationsWithPosition}
-            fromEntryId={linkEditFromEntryId}
-            textNodeDimension={textNodeDimension}
-          />
-        </div>
-      )}
-
+      {renderConnector()}
       {renderLineWithArrow()}
     </div>
   );
