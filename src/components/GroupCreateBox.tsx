@@ -1,19 +1,46 @@
 import React, { useEffect, useState } from 'react';
+import Select from 'react-select';
 import style from '../styles/CreateBox.module.css';
 import { shortId } from '../lib/utils';
-import { useTextViewerDispatch } from '../contexts/text-viewer.context';
+import {
+  useTextViewerDispatch,
+  useTextViewerState,
+} from '../contexts/text-viewer.context';
+import { IOntology, ISelectOption } from '../lib/interfaces';
 
 interface GroupCreateBoxProp {
   groupEditAnnotationIds: string[];
   groupEditLinkIds: string[];
+  ontology: IOntology;
 }
 
 export default function GroupCreateBox({
   groupEditAnnotationIds,
   groupEditLinkIds,
+  ontology,
 }: GroupCreateBoxProp) {
   const dispatch = useTextViewerDispatch();
+  const { groupEditSelectedLegendId } = useTextViewerState();
   const [slideInAnimated, setSlideInAnimated] = useState(false);
+
+  const legendTypeOptions = ontology.entryDefinitions
+    .filter(entry => {
+      return !!entry.memberType;
+    })
+    .map(def => {
+      return {
+        value: def.entryName,
+        label: shortId(def.entryName),
+      };
+    });
+
+  // const selectedLegendDefinition = ontology.entryDefinitions.find(def => {
+  //   return def.entryName === linkEditSelectedLegendId;
+  // });
+
+  const selectedLegendTypeOption = legendTypeOptions.find(legendType => {
+    return groupEditSelectedLegendId === legendType.value;
+  });
 
   const hasSelectedAnnotation = groupEditAnnotationIds.length > 0;
   const hasSelectedLink = groupEditLinkIds.length > 0;
@@ -85,12 +112,27 @@ export default function GroupCreateBox({
         </div>
       )}
 
+      <div className={style.legend_type_container}>
+        <div className={style.legend_type_title}>Legend Type</div>
+        <Select
+          value={selectedLegendTypeOption}
+          onChange={item => {
+            const selectedItem = item as ISelectOption;
+            dispatch({
+              type: 'group-edit-select-legend-type',
+              legendId: selectedItem.value,
+            });
+          }}
+          options={legendTypeOptions}
+        />
+      </div>
+
       <div className={style.buttons}>
         <button onClick={() => dispatch({ type: 'cancel-add-group' })}>
           Cancel
         </button>
         <button
-          disabled={!hasSelectedAny}
+          disabled={!(hasSelectedAny && groupEditSelectedLegendId)}
           onClick={() => dispatch({ type: 'submit-add-group' })}
         >
           Confirm

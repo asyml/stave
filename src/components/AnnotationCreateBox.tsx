@@ -5,18 +5,13 @@ import {
   useTextViewerState,
 } from '../contexts/text-viewer.context';
 import style from '../styles/CreateBox.module.css';
-import { IOntology } from '../lib/interfaces';
-import { shortId } from '../lib/utils';
+import { IOntology, ISelectOption } from '../lib/interfaces';
+import { shortId, isEntryAnnotation } from '../lib/utils';
 
 export interface AnnotationCreateBoxProp {
   cursorBegin: number | null;
   cursorEnd: number | null;
   ontology: IOntology;
-}
-
-interface SelectOption {
-  value: string;
-  label: string;
 }
 
 export default function AnnotationCreateBox({
@@ -43,12 +38,16 @@ export default function AnnotationCreateBox({
     };
   }, [cursorEnd]);
 
-  const legendTypeOptions = ontology.entryDefinitions.map(def => {
-    return {
-      value: def.entryName,
-      label: shortId(def.entryName),
-    };
-  });
+  const legendTypeOptions = ontology.entryDefinitions
+    .filter(entry => {
+      return isEntryAnnotation(ontology, entry.entryName);
+    })
+    .map(def => {
+      return {
+        value: def.entryName,
+        label: shortId(def.entryName),
+      };
+    });
 
   const selectedLegendDefinition = ontology.entryDefinitions.find(def => {
     return def.entryName === annoEditSelectedLegendId;
@@ -93,7 +92,7 @@ export default function AnnotationCreateBox({
         <Select
           value={selectedLegendTypeOption}
           onChange={item => {
-            const selectedItem = item as SelectOption;
+            const selectedItem = item as ISelectOption;
             dispatch({
               type: 'annotation-edit-select-legend-type',
               legendId: selectedItem.value,

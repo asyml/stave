@@ -41,6 +41,21 @@ function main() {
     };
   });
 
+  const groupLegendNames = [];
+  packData.groups.forEach(group => {
+    const legendName = getLegendName(group);
+    if (groupLegendNames.indexOf(legendName) === -1) {
+      groupLegendNames.push(legendName);
+    }
+  });
+
+  const groupLegends = groupLegendNames.map((l, i) => {
+    return {
+      id: l,
+      name: l.split('.').pop(),
+    };
+  });
+
   const annotations = packData.annotations.map(a => {
     const legendName = getLegendName(a);
     const existedLegend = annotationLegends.find(l => l.id === legendName);
@@ -67,15 +82,28 @@ function main() {
     };
   });
 
+  const groups = packData.groups.map(group => {
+    const legendName = getLegendName(group);
+    const existedLegend = groupLegends.find(l => l.id === legendName);
+    return {
+      id: group['py/state']._tid + '',
+      members: group['py/state']['_members']['py/set'].map(i => i + ''),
+      memberType: getGroupType(existedLegend.id, config),
+      legendId: existedLegend.id,
+      attributes: getAttrs(group),
+    };
+  });
+
   const pack = {
     text: packData._text,
     annotations: annotations,
     links: links,
-    groups: [],
+    groups: groups,
     attributes: packData.meta,
     legends: {
       annotations: annotationLegends,
       links: linkLegends,
+      groups: groupLegends,
     },
   };
 
@@ -154,4 +182,54 @@ function getAttrs(a) {
   });
 
   return attrs;
+}
+
+function getGroupType(groupEntryName, config) {
+  const entry = config.entry_definitions.find(
+    ent => ent.entry_name === groupEntryName
+  );
+
+  if (isEntryAnnotation(config, entry.member_type)) {
+    return 'annotation';
+  } else if (isEntryLink(config, entry.member_type)) {
+    return 'link';
+  } else {
+    throw new Error('unknow group entry ' + groupEntryName);
+  }
+}
+
+function isEntryAnnotation(config, entryName) {
+  return findEntryNameMatchDeep(
+    config,
+    entryName,
+    'forte.data.ontology.top.Annotation'
+  );
+}
+
+function isEntryLink(config, entryName) {
+  return findEntryNameMatchDeep(
+    config,
+    entryName,
+    'forte.data.ontology.top.Link'
+  );
+}
+
+function findEntryNameMatchDeep(config, entryName, matchName) {
+  if (entryName === matchName) {
+    return true;
+  }
+
+  const entry = config.entry_definitions.find(
+    ent => ent.entry_name === entryName
+  );
+
+  if (!entry) {
+    throw new Error('unknow entry name ' + entryName);
+  }
+
+  if (entry.parent_entry) {
+    return findEntryNameMatchDeep(config, entry.parent_entry, matchName);
+  } else {
+    return false;
+  }
 }

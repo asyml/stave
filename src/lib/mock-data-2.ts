@@ -14029,7 +14029,188 @@ export const singlePack: ISinglePack = {
       }
     }
   ],
-  "groups": [],
+  "groups": [
+    {
+      "id": "910",
+      "members": [
+        "539",
+        "6"
+      ],
+      "memberType": "annotation",
+      "legendId": "forte.data.ontology.base_ontology.CoreferenceGroup",
+      "attributes": {}
+    },
+    {
+      "id": "911",
+      "members": [
+        "470",
+        "14",
+        "503"
+      ],
+      "memberType": "annotation",
+      "legendId": "forte.data.ontology.base_ontology.CoreferenceGroup",
+      "attributes": {}
+    },
+    {
+      "id": "912",
+      "members": [
+        "43",
+        "20"
+      ],
+      "memberType": "annotation",
+      "legendId": "forte.data.ontology.base_ontology.CoreferenceGroup",
+      "attributes": {}
+    },
+    {
+      "id": "913",
+      "members": [
+        "618",
+        "463",
+        "655",
+        "751",
+        "594",
+        "21",
+        "759",
+        "443",
+        "413",
+        "735"
+      ],
+      "memberType": "annotation",
+      "legendId": "forte.data.ontology.base_ontology.CoreferenceGroup",
+      "attributes": {}
+    },
+    {
+      "id": "914",
+      "members": [
+        "73",
+        "116",
+        "119"
+      ],
+      "memberType": "annotation",
+      "legendId": "forte.data.ontology.base_ontology.CoreferenceGroup",
+      "attributes": {}
+    },
+    {
+      "id": "915",
+      "members": [
+        "80",
+        "667",
+        "397"
+      ],
+      "memberType": "annotation",
+      "legendId": "forte.data.ontology.base_ontology.CoreferenceGroup",
+      "attributes": {}
+    },
+    {
+      "id": "916",
+      "members": [
+        "827",
+        "842",
+        "91"
+      ],
+      "memberType": "annotation",
+      "legendId": "forte.data.ontology.base_ontology.CoreferenceGroup",
+      "attributes": {}
+    },
+    {
+      "id": "917",
+      "members": [
+        "192",
+        "158"
+      ],
+      "memberType": "annotation",
+      "legendId": "forte.data.ontology.base_ontology.CoreferenceGroup",
+      "attributes": {}
+    },
+    {
+      "id": "918",
+      "members": [
+        "632",
+        "172",
+        "215"
+      ],
+      "memberType": "annotation",
+      "legendId": "forte.data.ontology.base_ontology.CoreferenceGroup",
+      "attributes": {}
+    },
+    {
+      "id": "919",
+      "members": [
+        "330",
+        "310"
+      ],
+      "memberType": "annotation",
+      "legendId": "forte.data.ontology.base_ontology.CoreferenceGroup",
+      "attributes": {}
+    },
+    {
+      "id": "920",
+      "members": [
+        "323",
+        "340"
+      ],
+      "memberType": "annotation",
+      "legendId": "forte.data.ontology.base_ontology.CoreferenceGroup",
+      "attributes": {}
+    },
+    {
+      "id": "921",
+      "members": [
+        "546",
+        "493",
+        "359"
+      ],
+      "memberType": "annotation",
+      "legendId": "forte.data.ontology.base_ontology.CoreferenceGroup",
+      "attributes": {}
+    },
+    {
+      "id": "922",
+      "members": [
+        "480",
+        "490",
+        "525",
+        "560",
+        "370",
+        "499",
+        "698"
+      ],
+      "memberType": "annotation",
+      "legendId": "forte.data.ontology.base_ontology.CoreferenceGroup",
+      "attributes": {}
+    },
+    {
+      "id": "923",
+      "members": [
+        "420",
+        "405"
+      ],
+      "memberType": "annotation",
+      "legendId": "forte.data.ontology.base_ontology.CoreferenceGroup",
+      "attributes": {}
+    },
+    {
+      "id": "924",
+      "members": [
+        "642",
+        "627"
+      ],
+      "memberType": "annotation",
+      "legendId": "forte.data.ontology.base_ontology.CoreferenceGroup",
+      "attributes": {}
+    },
+    {
+      "id": "925",
+      "members": [
+        "699",
+        "791",
+        "775"
+      ],
+      "memberType": "annotation",
+      "legendId": "forte.data.ontology.base_ontology.CoreferenceGroup2",
+      "attributes": {}
+    } 
+  ],
   "attributes": {
     "doc_id": "bn/abc/00/abc_0009",
     "language": "eng",
@@ -14079,6 +14260,16 @@ export const singlePack: ISinglePack = {
       {
         "id": "forte.data.ontology.base_ontology.PredicateLink",
         "name": "PredicateLink"
+      }
+    ],
+    "groups": [
+      {
+        "id": "forte.data.ontology.base_ontology.CoreferenceGroup",
+        "name": "CoreferenceGroup"
+      },
+      {
+        "id": "forte.data.ontology.base_ontology.CoreferenceGroup2",
+        "name": "CoreferenceGroup2"
       }
     ]
   }

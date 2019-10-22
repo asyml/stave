@@ -5,7 +5,7 @@
 
 .layout_header {
   padding: 10px;
-  background: #eee;
+  font-weight: bold;
   border-bottom: 1px solid #ccc;
 }
 
@@ -26,8 +26,7 @@
   overflow: hidden;
 }
 
-.text_area_container {
-  padding: 16px;
+.center_area_container {
   border: 1px solid #ccc;
   border-top: none;
   min-height: calc(100vh - 50px);
@@ -35,12 +34,18 @@
   position: relative;
   transition: background 0.2s;
   height: 100%;
-  overflow: scroll;
-  padding-bottom: 50px;
+  display: flex;
+  flex-direction: column;
 }
 
 .attributes_side_container h2 {
   font-size: 16px;
+}
+
+.tool_bar_container {
+  border-bottom: 1px solid #ccc;
+  padding: 8px;
+  background: #f8f8fa;
 }
 
 .is_adding_annotation {
@@ -55,8 +60,49 @@
   margin-right: 8px;
 }
 
-.add_annotation_button_desc {
+.text_area_container {
+  padding: 16px;
+  height: 100%;
+  overflow: scroll;
+}
+
+.group_name_container {
+  border-top: 1px solid #ccc;
+  padding: 8px;
+  background: #f8f8fa;
+}
+
+.group_legend_toggle_button,
+.group_legend_label {
+  margin-right: 4px;
+  margin-bottom: 4px;
+  display: inline-block;
+}
+
+.group_name {
+  display: inline-block;
+  background: #999;
+  color: white;
+  margin-right: 8px;
+  margin-bottom: 4px;
+  padding: 4px;
+  font-size: 12px;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.group_name:hover {
+  opacity: 0.66;
+}
+.group_name_selected {
+  opacity: 1;
+}
+.group_name_selected:hover {
+  opacity: 1;
+}
+
+.button_action_description {
+  margin-top: 4px;
   font-size: 12px;
   color: #999;
-  user-select: none;
 }

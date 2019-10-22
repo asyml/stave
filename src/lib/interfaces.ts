@@ -26,8 +26,10 @@ export interface ILink extends IEntry {
 }
 
 export interface IGroup extends IEntry {
-  annotationIds: string[];
-  linkIds: string[];
+  id: string;
+  legendId: string;
+  memberType: 'link' | 'annotation';
+  members: string[];
 }
 
 export interface ISinglePack {
@@ -38,6 +40,7 @@ export interface ISinglePack {
   legends: {
     annotations: ILegend[];
     links: ILegend[];
+    groups: ILegend[];
   };
   attributes: IAttributes;
 }
@@ -117,4 +120,9 @@ export interface ITextNodeDimension {
   y: number;
   clientX: number;
   clientY: number;
+}
+
+export interface ISelectOption {
+  value: string;
+  label: string;
 }
