@@ -22,8 +22,8 @@ export default function LegendList({
   dispatch,
 }: LegendListProp) {
   return (
-    <div className="annotation-legend-container">
-      <h3>{title}</h3>
+    <div className={style.annotation_legend_container}>
+      <h2>{title}</h2>
       <ul className={style.list}>
         {legends.map(legend => {
           const isSelected = selectedLegendIds.indexOf(legend.id) > -1;

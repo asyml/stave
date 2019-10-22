@@ -35,7 +35,7 @@ export default function TextDetail({
     body: () => (
       <>
         <LegendList
-          title="Annotations"
+          title="Annotation Legends"
           legends={annotationLegends}
           selectedLegendIds={selectedLegendIds}
           selectedLegendAttributeIds={selectedLegendAttributeIds}
@@ -44,7 +44,7 @@ export default function TextDetail({
         />
 
         <LegendList
-          title="Links"
+          title="Link Legends"
           legends={linkLegends}
           selectedLegendIds={selectedLegendIds}
           selectedLegendAttributeIds={selectedLegendAttributeIds}
@@ -53,7 +53,7 @@ export default function TextDetail({
         />
 
         <LegendList
-          title="Groups"
+          title="Group Legends"
           legends={groupLegends}
           selectedLegendIds={selectedLegendIds}
           selectedLegendAttributeIds={selectedLegendAttributeIds}
