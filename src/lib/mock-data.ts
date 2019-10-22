@@ -779,5 +779,6 @@ export const singlePack: ISinglePack = {
       { id: 'l6', name: 'CoreferenceMention' },
     ],
     links: [],
+    groups: [],
   },
 };

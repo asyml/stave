@@ -2,6 +2,7 @@
   list-style: none;
   padding-left: 0;
   margin: 0;
+  padding: 8px;
 }
 
 .list li {
@@ -56,4 +57,17 @@
 .attribute_name:hover {
   cursor: pointer;
   background: #f8f8f8;
+}
+
+.annotation_legend_container {
+  border: 1px solid #ccc;
+  margin-bottom: 8px;
+}
+
+.annotation_legend_container h2 {
+  font-size: 12px;
+  padding: 8px;
+  margin: 0;
+  border-bottom: 1px solid #ccc;
+  background: #f8f8fa;
 }

@@ -3,6 +3,7 @@ import {
   IAnnotation,
   IColoredLegend,
   IAnnotationPosition,
+  IGroup,
 } from '../lib/interfaces';
 import {
   useTextViewerDispatch,
@@ -15,6 +16,8 @@ export interface AnnotaionProp {
   isSelected: boolean;
   isHighlighted: boolean;
   isInGroup: boolean;
+  groupBlongs: IGroup | null;
+  groupLegendColor: string | undefined;
   legend: IColoredLegend;
   position: IAnnotationPosition;
 }
@@ -24,6 +27,8 @@ function Annotaion({
   isSelected,
   isHighlighted,
   isInGroup,
+  groupBlongs,
+  groupLegendColor,
   legend,
   position,
 }: AnnotaionProp) {
@@ -61,6 +66,7 @@ function Annotaion({
               ${isSelected && style.annotation_container_selected}`}
             style={{
               transform: `translate(${rect.x}px,${rect.y}px)`,
+              borderColor: groupLegendColor,
             }}
             onMouseEnter={() => {
               if (!highlightedAnnotationIds.includes(annotation.id)) {
@@ -125,6 +131,17 @@ function Annotaion({
             >
               <span className={style.add_icon}></span>
             </div>
+
+            {groupBlongs && (
+              <span
+                style={{
+                  backgroundColor: groupLegendColor,
+                }}
+                className={style.group_id}
+              >
+                {groupBlongs.id}
+              </span>
+            )}
           </div>
         );
       })}

@@ -5,18 +5,13 @@ import {
   useTextViewerState,
 } from '../contexts/text-viewer.context';
 import style from '../styles/CreateBox.module.css';
-import { IOntology } from '../lib/interfaces';
-import { shortId } from '../lib/utils';
+import { IOntology, ISelectOption } from '../lib/interfaces';
+import { shortId, isEntryLink } from '../lib/utils';
 
 export interface LinkCreateBoxProp {
   fromEntryId: string | null;
   toEntryId: string | null;
   ontology: IOntology;
-}
-
-interface SelectOption {
-  value: string;
-  label: string;
 }
 
 export default function LinkCreateBox({
@@ -43,12 +38,16 @@ export default function LinkCreateBox({
     };
   }, [toEntryId]);
 
-  const legendTypeOptions = ontology.entryDefinitions.map(def => {
-    return {
-      value: def.entryName,
-      label: shortId(def.entryName),
-    };
-  });
+  const legendTypeOptions = ontology.entryDefinitions
+    .filter(entry => {
+      return isEntryLink(ontology, entry.entryName);
+    })
+    .map(def => {
+      return {
+        value: def.entryName,
+        label: shortId(def.entryName),
+      };
+    });
 
   const selectedLegendDefinition = ontology.entryDefinitions.find(def => {
     return def.entryName === linkEditSelectedLegendId;
@@ -111,7 +110,7 @@ export default function LinkCreateBox({
         <Select
           value={selectedLegendTypeOption}
           onChange={item => {
-            const selectedItem = item as SelectOption;
+            const selectedItem = item as ISelectOption;
             dispatch({
               type: 'link-edit-select-legend-type',
               legendId: selectedItem.value,

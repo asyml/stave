@@ -1,12 +1,10 @@
 import React, { useRef, useEffect } from 'react';
 import style from '../styles/TextArea.module.css';
-import { ISinglePack, IRect } from '../lib/interfaces';
+import { ISinglePack, IRect, IColoredLegend, IGroup } from '../lib/interfaces';
 import {
-  applyColorToLegend,
   calcuateLinesLevels,
   calcuateLinkHeight,
-  checkAnnotationInGroup,
-  checkLinkInGroup,
+  getGroupByAnnotation,
 } from '../lib/utils';
 import {
   spaceOutText,
@@ -27,20 +25,24 @@ import LineWithArrow from './LineWithArrow';
 
 export interface TextAreaProp {
   textPack: ISinglePack;
+  annotationLegendsColored: IColoredLegend[];
+  groupLegendsColored: IColoredLegend[];
 }
 
-function TextArea({ textPack }: TextAreaProp) {
-  const { annotations, legends, text, links } = textPack;
+function TextArea({
+  textPack,
+  annotationLegendsColored,
+  groupLegendsColored,
+}: TextAreaProp) {
+  const { annotations, text, links } = textPack;
   const textNodeEl = useRef<HTMLDivElement>(null);
   const textAreaEl = useRef<HTMLDivElement>(null);
-
-  const annotaionLegendsWithColor = applyColorToLegend(legends.annotations);
 
   const dispatch = useTextViewerDispatch();
   const {
     selectedLegendIds,
     selectedLegendAttributeIds,
-    selectedGroupId,
+    selectedGroupIds,
 
     spacingCalcuated,
     spacedText,
@@ -299,21 +301,32 @@ function TextArea({ textPack }: TextAreaProp) {
         }}
       >
         {annotationsWithPosition.map((ann, i) => {
-          const legend = annotaionLegendsWithColor.find(
+          const legend = annotationLegendsColored.find(
             legend => legend.id === ann.annotation.legendId
           );
-
-          const isInExistingGroup = selectedGroupId
-            ? checkAnnotationInGroup(
-                selectedGroupId,
-                textPack,
-                ann.annotation.id
-              )
-            : false;
 
           const isInCreatingGroup =
             groupEditIsCreating &&
             groupEditAnnotationIds.includes(ann.annotation.id);
+
+          const visibleSelectedGroupIds = selectedGroupIds.filter(gId => {
+            const group = textPack.groups.find(g => g.id === gId) as IGroup;
+            return selectedLegendIds.includes(group.legendId);
+          });
+
+          const groupOfAnnotation = getGroupByAnnotation(
+            visibleSelectedGroupIds,
+            textPack,
+            ann.annotation.id
+          );
+
+          let groupLegendColor = undefined;
+          if (groupOfAnnotation) {
+            let groupLegendColored = groupLegendsColored.find(
+              g => g.id === groupOfAnnotation.legendId
+            );
+            groupLegendColor = groupLegendColored && groupLegendColored.color;
+          }
 
           if (!legend) {
             return null;
@@ -324,7 +337,9 @@ function TextArea({ textPack }: TextAreaProp) {
               key={i}
               annotation={ann.annotation}
               isSelected={ann.annotation.id === selectedAnnotationId}
-              isInGroup={isInExistingGroup || isInCreatingGroup}
+              isInGroup={!!groupOfAnnotation || isInCreatingGroup}
+              groupBlongs={groupOfAnnotation}
+              groupLegendColor={groupLegendColor}
               isHighlighted={
                 highlightedAnnotationIds.indexOf(ann.annotation.id) > -1 ||
                 halfSelectedAnnotationIds.indexOf(ann.annotation.id) > -1
@@ -448,9 +463,24 @@ function TextArea({ textPack }: TextAreaProp) {
             highlightedLinkIds.includes(linkPos.link.id) ||
             halfSelectedLinkIds.includes(linkPos.link.id);
 
-          const isInGroup = selectedGroupId
-            ? checkLinkInGroup(selectedGroupId, textPack, linkPos.link.id)
-            : false;
+          const visibleSelectedGroupIds = selectedGroupIds.filter(gId => {
+            const group = textPack.groups.find(g => g.id === gId) as IGroup;
+            return selectedLegendIds.includes(group.legendId);
+          });
+
+          const groupOfLink = getGroupByAnnotation(
+            visibleSelectedGroupIds,
+            textPack,
+            linkPos.link.id
+          );
+
+          let groupLegendColor = undefined;
+          if (groupOfLink) {
+            let groupLegendColored = groupLegendsColored.find(
+              g => g.id === groupOfLink.legendId
+            );
+            groupLegendColor = groupLegendColored && groupLegendColored.color;
+          }
 
           const isInCreatingGroup =
             groupEditIsCreating && groupEditLinkIds.includes(linkPos.link.id);
@@ -467,7 +497,8 @@ function TextArea({ textPack }: TextAreaProp) {
                 isSelected={isLinkSelected}
                 isHightlighted={isLinkHightlighted}
                 isCollapsed={isLineCollapsed}
-                isInGroup={isInGroup || isInCreatingGroup}
+                isInGroup={!!groupOfLink || isInCreatingGroup}
+                groupLegendColor={groupLegendColor}
                 linkHeight={linkHeight}
                 selectedLegendAttributeIds={selectedLegendAttributeIds}
               />
@@ -479,7 +510,8 @@ function TextArea({ textPack }: TextAreaProp) {
                 linkWithPosition={linkPos}
                 isSelected={isLinkSelected}
                 isHightlighted={isLinkHightlighted}
-                isInGroup={isInGroup || isInCreatingGroup}
+                isInGroup={!!groupOfLink || isInCreatingGroup}
+                groupLegendColor={groupLegendColor}
                 linkHeight={linkHeight}
                 selectedLegendAttributeIds={selectedLegendAttributeIds}
                 collpasedLineIndexes={collpasedLineIndexes}

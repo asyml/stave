@@ -3,6 +3,7 @@ import {
   IColoredLegend,
   ILinkWithPos,
   ISinglePack,
+  IOntology,
 } from './interfaces';
 import { colorPalettes } from './color';
 
@@ -247,28 +248,132 @@ export function shortId(id: string) {
     .replace('forte.data.ontology.base_ontology.', '');
 }
 
-export function checkAnnotationInGroup(
-  groupId: string,
+// export function checkAnnotationInGroup(
+//   groupIds: string[],
+//   textPack: ISinglePack,
+//   annotationId: string
+// ) {
+//   return checkMemberInGroup(groupIds, 'annotation', textPack, annotationId);
+// }
+
+export function getGroupByAnnotation(
+  groupIds: string[],
   textPack: ISinglePack,
   annotationId: string
 ) {
-  const group = textPack.groups.find(g => g.id === groupId);
-  if (group) {
-    return group.annotationIds.includes(annotationId);
+  return getMemberInGroup(groupIds, 'annotation', textPack, annotationId);
+}
+
+export function getGroupByLink(
+  groupIds: string[],
+  textPack: ISinglePack,
+  linkId: string
+) {
+  return getMemberInGroup(groupIds, 'link', textPack, linkId);
+}
+
+// export function checkLinkInGroup(
+//   groupIds: string[],
+//   textPack: ISinglePack,
+//   linkId: string
+// ) {
+//   return checkMemberInGroup(groupIds, 'link', textPack, linkId);
+// }
+
+export function getMemberInGroup(
+  groupIds: string[],
+  memberType: 'link' | 'annotation',
+  textPack: ISinglePack,
+  memberId: string
+) {
+  if (!groupIds.length) {
+    return null;
+  }
+
+  const groups = textPack.groups.filter(
+    g => groupIds.includes(g.id) && g.memberType === memberType
+  );
+
+  if (groups.length) {
+    return groups.find(group => group.members.includes(memberId)) || null;
+  } else {
+    return null;
+  }
+}
+// export function checkMemberInGroup(
+//   groupIds: string[],
+//   memberType: 'link' | 'annotation',
+//   textPack: ISinglePack,
+//   memberId: string
+// ) {
+//   if (!groupIds.length) {
+//     return false;
+//   }
+
+//   const groups = textPack.groups.filter(
+//     g => groupIds.includes(g.id) && g.memberType === memberType
+//   );
+//   if (groups.length) {
+//     return groups.some(group => group.members.includes(memberId));
+//   } else {
+//     return false;
+//   }
+// }
+
+export function isEntryAnnotation(config: IOntology, entryName: string) {
+  return findEntryNameMatchDeep(
+    config,
+    entryName,
+    'forte.data.ontology.top.Annotation'
+  );
+}
+
+export function isEntryLink(config: IOntology, entryName: string) {
+  return findEntryNameMatchDeep(
+    config,
+    entryName,
+    'forte.data.ontology.top.Link'
+  );
+}
+
+function findEntryNameMatchDeep(
+  config: IOntology,
+  entryName: string,
+  matchName: string
+): boolean {
+  if (entryName === matchName) {
+    return true;
+  }
+
+  const entry = config.entryDefinitions.find(
+    ent => ent.entryName === entryName
+  );
+
+  if (!entry) {
+    return false;
+  }
+
+  if (entry.parentEntryName) {
+    return findEntryNameMatchDeep(config, entry.parentEntryName, matchName);
   } else {
     return false;
   }
 }
 
-export function checkLinkInGroup(
-  groupId: string,
-  textPack: ISinglePack,
-  linkId: string
-) {
-  const group = textPack.groups.find(g => g.id === groupId);
-  if (group) {
-    return group.linkIds.includes(linkId);
+export function getGroupType(groupEntryName: string, config: IOntology) {
+  const entry = config.entryDefinitions.find(
+    ent => ent.entryName === groupEntryName
+  );
+
+  if (!entry) {
+    throw new Error('unknow group entry ' + groupEntryName);
+  }
+
+  if (entry.memberType && isEntryAnnotation(config, entry.memberType)) {
+    return 'annotation';
+  } else if (entry.memberType && isEntryLink(config, entry.memberType)) {
+    return 'link';
   } else {
-    return false;
+    throw new Error('unknow group entry ' + groupEntryName);
   }
 }

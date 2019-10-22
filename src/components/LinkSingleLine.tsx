@@ -24,6 +24,7 @@ export interface LinkSingleLineProp {
   isHightlighted: boolean;
   isCollapsed: boolean;
   isInGroup: boolean;
+  groupLegendColor: string | undefined;
   linkHeight: Record<string, Record<string, number>>;
   selectedLegendAttributeIds: string[];
 }
@@ -39,6 +40,7 @@ export default function LinkSingleLine({
   isHightlighted,
   isCollapsed,
   isInGroup,
+  groupLegendColor,
   linkHeight,
   selectedLegendAttributeIds,
 }: LinkSingleLineProp) {
@@ -56,8 +58,10 @@ export default function LinkSingleLine({
   if (isSelected || isHightlighted) {
     labelColor = '#555';
   }
-  if (isInGroup) {
-    labelColor = 'red';
+
+  if (isInGroup && groupLegendColor) {
+    labelColor = groupLegendColor;
+    borderColor = groupLegendColor;
   }
 
   const borderWidth = isSelected || isHightlighted ? '2px' : '1px';
