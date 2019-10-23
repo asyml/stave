@@ -199,7 +199,9 @@ export const singlePack: ISinglePack = {
       },
       "id": "10",
       "legendId": "forte.data.ontology.ontonotes_ontology.PredicateMention",
-      "attributes": {}
+      "attributes": {
+        "pred_type": "pt1"
+      }
     },
     {
       "span": {

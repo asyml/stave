@@ -5,7 +5,12 @@ import {
   useTextViewerState,
 } from '../contexts/text-viewer.context';
 import style from '../styles/CreateBox.module.css';
-import { IOntology, ISelectOption } from '../lib/interfaces';
+import {
+  IOntology,
+  ISelectOption,
+  IAnnotation,
+  IConstraint,
+} from '../lib/interfaces';
 import { shortId, isEntryLink } from '../lib/utils';
 
 export interface LinkCreateBoxProp {
@@ -20,7 +25,7 @@ export default function LinkCreateBox({
   ontology,
 }: LinkCreateBoxProp) {
   const dispatch = useTextViewerDispatch();
-  const { linkEditSelectedLegendId } = useTextViewerState();
+  const { linkEditSelectedLegendId, textPack } = useTextViewerState();
   const [slideInAnimated, setSlideInAnimated] = useState(false);
   const [flashAnimated, setFlashAnimated] = useState(false);
   const [enteredAttribute, setEnteredAttribute] = useState<any>({});
@@ -33,31 +38,75 @@ export default function LinkCreateBox({
     setTimeout(() => {
       setFlashAnimated(true);
     }, 100);
+
     return () => {
       setFlashAnimated(false);
     };
   }, [toEntryId]);
 
-  const legendTypeOptions = ontology.entryDefinitions
-    .filter(entry => {
-      return isEntryLink(ontology, entry.entryName);
-    })
-    .map(def => {
-      return {
-        value: def.entryName,
-        label: shortId(def.entryName),
-      };
-    });
-
   const selectedLegendDefinition = ontology.entryDefinitions.find(def => {
     return def.entryName === linkEditSelectedLegendId;
   });
 
-  const selectedLegendTypeOption = legendTypeOptions.find(legendType => {
-    return linkEditSelectedLegendId === legendType.value;
-  });
-
   const isAddEnabled = fromEntryId && toEntryId && linkEditSelectedLegendId;
+
+  function renderLegendSelect() {
+    if (!fromEntryId || !toEntryId || !textPack) {
+      return null;
+    }
+    const fromEntry = textPack.annotations.find(
+      ann => ann.id === fromEntryId
+    ) as IAnnotation;
+    const toEntry = textPack.annotations.find(
+      ann => ann.id === toEntryId
+    ) as IAnnotation;
+
+    const legendTypeOptions = ontology.entryDefinitions
+      .filter(entry => {
+        return isEntryLink(ontology, entry.entryName);
+      })
+      // filter by constraint
+      .filter(entry => {
+        const constraints = ontology.constraints[entry.entryName];
+        const matchedConstraint = constraints.find(constraint =>
+          matchLinkConstraint(constraint, fromEntry, toEntry)
+        );
+
+        return !!matchedConstraint;
+      })
+      .map(def => {
+        return {
+          value: def.entryName,
+          label: shortId(def.entryName),
+        };
+      });
+
+    const selectedLegendTypeOption = legendTypeOptions.find(legendType => {
+      return linkEditSelectedLegendId === legendType.value;
+    });
+
+    return (
+      <div className={style.legend_type_container}>
+        <div className={style.legend_type_title}>Legend Type</div>
+
+        {legendTypeOptions.length ? (
+          <Select
+            value={selectedLegendTypeOption}
+            onChange={item => {
+              const selectedItem = item as ISelectOption;
+              dispatch({
+                type: 'link-edit-select-legend-type',
+                legendId: selectedItem.value,
+              });
+            }}
+            options={legendTypeOptions}
+          />
+        ) : (
+          'No options'
+        )}
+      </div>
+    );
+  }
 
   return (
     <div
@@ -105,20 +154,7 @@ export default function LinkCreateBox({
         </div>
       </div>
 
-      <div className={style.legend_type_container}>
-        <div className={style.legend_type_title}>Legend Type</div>
-        <Select
-          value={selectedLegendTypeOption}
-          onChange={item => {
-            const selectedItem = item as ISelectOption;
-            dispatch({
-              type: 'link-edit-select-legend-type',
-              legendId: selectedItem.value,
-            });
-          }}
-          options={legendTypeOptions}
-        />
-      </div>
+      {renderLegendSelect()}
 
       {selectedLegendDefinition &&
         selectedLegendDefinition.attributes &&
@@ -175,4 +211,37 @@ export default function LinkCreateBox({
       </div>
     </div>
   );
+}
+
+function matchLinkConstraint(
+  constraint: {
+    [propertyName: string]: IConstraint;
+  },
+  fromEntry: IAnnotation,
+  toEntry: IAnnotation
+) {
+  return (
+    matchLinkConstraintEntry(constraint.parentType, fromEntry) &&
+    matchLinkConstraintEntry(constraint.childType, toEntry)
+  );
+}
+
+function matchLinkConstraintEntry(entryConstraint: IConstraint, entry: any) {
+  let isMatch = true;
+
+  Object.keys(entryConstraint).forEach(propKey => {
+    const propValues = entryConstraint[propKey];
+
+    if (Array.isArray(propValues)) {
+      if (!propValues.includes(entry[propKey])) {
+        isMatch = false;
+      }
+    } else {
+      if (!matchLinkConstraintEntry(propValues, entry[propKey])) {
+        isMatch = false;
+      }
+    }
+  });
+
+  return isMatch;
 }

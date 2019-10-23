@@ -5,13 +5,21 @@ import {
   useTextViewerState,
 } from '../contexts/text-viewer.context';
 import style from '../styles/CreateBox.module.css';
-import { IOntology, ISelectOption } from '../lib/interfaces';
+import {
+  IOntology,
+  ISelectOption,
+  IEntryAttributeDefinition,
+} from '../lib/interfaces';
 import { shortId, isEntryAnnotation } from '../lib/utils';
 
 export interface AnnotationCreateBoxProp {
   cursorBegin: number | null;
   cursorEnd: number | null;
   ontology: IOntology;
+}
+
+interface AttrConstraint {
+  [attrName: string]: Set<string>;
 }
 
 export default function AnnotationCreateBox({
@@ -60,6 +68,95 @@ export default function AnnotationCreateBox({
   const isAddEnabled =
     cursorBegin !== null && cursorEnd !== null && annoEditSelectedLegendId;
 
+  function renderAttributeSelect() {
+    if (
+      !selectedLegendDefinition ||
+      !selectedLegendDefinition.attributes ||
+      !selectedLegendDefinition.attributes.length
+    ) {
+      return null;
+    }
+
+    const legendConstraint =
+      ontology.constraints[selectedLegendDefinition.entryName] || [];
+    const attrConstraint: AttrConstraint = {};
+
+    legendConstraint.forEach(cons => {
+      Object.keys(cons.attributes || {}).forEach(attrName => {
+        const attrValues = cons.attributes[attrName] as any[];
+        attrConstraint[attrName] = attrConstraint[attrName] || new Set<any>();
+        attrValues.forEach((v: any) => attrConstraint[attrName].add(v));
+      });
+    });
+
+    return (
+      <div className={style.legend_attributes}>
+        {(selectedLegendDefinition.attributes || []).map(attr => {
+          return (
+            <div
+              className={style.legend_attribute_item}
+              key={attr.attributeName}
+            >
+              <div className={style.legend_attribute_item_title}>
+                {attr.attributeName}
+              </div>
+
+              {renderAttributeInput(attr, attrConstraint)}
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  function renderAttributeInput(
+    attr: IEntryAttributeDefinition,
+    attrConstraint: AttrConstraint
+  ) {
+    if (attrConstraint[attr.attributeName]) {
+      const options = Array.from(attrConstraint[attr.attributeName]).map(v => ({
+        value: v,
+        label: v,
+      }));
+
+      const selectedOption = options.find(
+        o => o.value === enteredAttribute[attr.attributeName]
+      );
+
+      return (
+        <div>
+          <Select
+            className={style.input}
+            value={selectedOption}
+            onChange={item => {
+              setEnteredAttribute({
+                ...enteredAttribute,
+                [attr.attributeName]: (item as ISelectOption).value,
+              });
+            }}
+            options={options}
+          />
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <input
+            type="text"
+            className={style.input}
+            value={enteredAttribute[attr.attributeName] || ''}
+            onChange={e =>
+              setEnteredAttribute({
+                ...enteredAttribute,
+                [attr.attributeName]: e.target.value,
+              })
+            }
+          />
+        </div>
+      );
+    }
+  }
+
   return (
     <div
       className={`${style.create_box}
@@ -102,36 +199,7 @@ export default function AnnotationCreateBox({
         />
       </div>
 
-      {selectedLegendDefinition &&
-        selectedLegendDefinition.attributes &&
-        selectedLegendDefinition.attributes.length && (
-          <div className={style.legend_attributes}>
-            {(selectedLegendDefinition.attributes || []).map(attr => {
-              return (
-                <div
-                  className={style.legend_attribute_item}
-                  key={attr.attributeName}
-                >
-                  <div className={style.legend_attribute_item_title}>
-                    {attr.attributeName}
-                  </div>
-                  <div>
-                    <input
-                      type="text"
-                      value={enteredAttribute[attr.attributeName] || ''}
-                      onChange={e =>
-                        setEnteredAttribute({
-                          ...enteredAttribute,
-                          [attr.attributeName]: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
+      {renderAttributeSelect()}
 
       <div className={style.buttons}>
         <button
