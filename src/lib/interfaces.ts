@@ -84,7 +84,73 @@ export interface IOntology {
   ontologyName: string;
   imports: string[];
   entryDefinitions: IEntryDefinition[];
+  constraints: IConstraints;
 }
+
+export interface IConstraints {
+  [entryName: string]: {
+    [propertyName: string]: IConstraint;
+  }[];
+}
+
+export interface IConstraint {
+  [propertyName: string]: IConstraint | any[];
+}
+
+// const constraints = {
+//   ann1: [
+//     {
+//       attributes: {
+//         att1: ['a1', 'b1', 'c1', 'd1'],
+//       },
+//     },
+//   ],
+//   ann2: [
+//     {
+//       attributes: {
+//         att2: ['a2', 'b2', 'c2', 'd2'],
+//       },
+//     },
+//   ],
+//   lin1: [
+//     {
+//       attributes: {
+//         att3: ['e', 'f'],
+//       },
+//       parentType: {
+//         entryName: ['ann1'],
+//         attributes: {
+//           att1: ['a1', 'b1'],
+//         },
+//       },
+//       childType: {
+//         entryName: ['ann2'],
+//         attributes: {
+//           att2: ['a2', 'c2'],
+//         },
+//       },
+//     },
+//     {
+//       attributes: {
+//         att3: ['e', 'f'],
+//       },
+//       parentType: {
+//         entryName: ['ann1'],
+//         attributes: {
+//           att1: ['a1', 'b1'],
+//         },
+//       },
+//       childType: {
+//         entryName: ['ann2'],
+//         attributes: {
+//           att2: ['a2', 'c2'],
+//         },
+//       },
+//     },
+//   ],
+// };
+
+// const a: IConstraint = constraints;
 
 export interface IEntryDefinition {
   entryName: string;

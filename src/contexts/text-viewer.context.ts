@@ -922,6 +922,7 @@ function textViewerReducer(state: State, action: Action): State {
       );
 
       const textPack = state.textPack as ISinglePack;
+      ll('newAnno', newAnno);
       return {
         ...state,
         annoEditCursorBegin: null,

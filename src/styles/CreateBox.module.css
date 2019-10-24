@@ -72,6 +72,10 @@
   height: 30px;
 }
 
+.legend_attribute_item .input {
+  margin-bottom: 4px;
+}
+
 .legend_type_container {
   margin-top: 16px;
 }

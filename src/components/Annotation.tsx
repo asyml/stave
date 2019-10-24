@@ -84,7 +84,6 @@ function Annotaion({
               }
             }}
             onMouseLeave={() => {
-              ll('on mouse leave');
               dispatch({
                 type: 'unhighlight-annotation',
               });
