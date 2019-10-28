@@ -26,13 +26,11 @@ export type State = {
   selectedGroupIds: string[];
 
   selectedAnnotationId: string | null;
-  // indicate a state that annotation is keep highlighted when link is selected
-  halfSelectedAnnotationIds: string[];
+  halfSelectedAnnotationIds: string[]; // indicate a state that annotation is keep highlighted when link is selected
   highlightedAnnotationIds: string[];
 
   selectedLinkId: string | null;
-  // indicate a state that link is keep highlighted when annotation is selected
-  halfSelectedLinkIds: string[];
+  halfSelectedLinkIds: string[]; // indicate a state that link is keep highlighted when annotation is selected
   highlightedLinkIds: string[];
 
   spacingCalcuated: boolean;
@@ -312,6 +310,7 @@ function textViewerReducer(state: State, action: Action): State {
           'forte.data.ontology.ontonotes_ontology.PredicateMention',
           'forte.data.ontology.base_ontology.PredicateArgument',
           'forte.data.ontology.base_ontology.CoreferenceGroup',
+          'forte.data.ontology.base_ontology.Token',
           'forte.data.ontology.base_ontology.CoreferenceMention',
           'forte.data.ontology.base_ontology.CoreferenceGroup2',
           action.textPack.legends.links[0].id,
@@ -327,6 +326,7 @@ function textViewerReducer(state: State, action: Action): State {
             'forte.data.ontology.base_ontology.PredicateLink',
             'arg_type'
           ),
+          attributeId('forte.data.ontology.base_ontology.Token', 'pos_tag'),
         ],
         // selectedAnnotationId: '5',
         selectedGroupIds: action.textPack.groups.map(g => g.id),
