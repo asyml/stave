@@ -192,3 +192,9 @@ export interface ISelectOption {
   value: string;
   label: string;
 }
+
+export interface IPlugin {
+  name: string;
+  component: (props: any) => JSX.Element | null;
+  enabled: (props: any) => boolean;
+}
