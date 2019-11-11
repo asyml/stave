@@ -18,6 +18,8 @@ A simple backend server application that manage documents and persist data.
 
 - GET `/documents`
   - return `{ id: string, name: string }[]`
+- GET `/documents/[document_id]`
+  - return `{ id: string, name: string }`
 - POST `/documents/[document_id]`
   - params `{ name: string, textPack: string }`
   - return `{ id: string, name: string, textPack: string }`
@@ -30,6 +32,8 @@ A simple backend server application that manage documents and persist data.
 
 - GET `/users`
   - return `{ id: string, name: string }[]`
+- GET `/users/[user_id]`
+  - return `{ id: string, name: string }`
 - POST `/users/[user_id]`
   - params `{ name: string }`
   - return `{ id: string, name: string }`
