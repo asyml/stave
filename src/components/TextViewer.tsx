@@ -1,6 +1,11 @@
 import React from 'react';
 import style from '../styles/TextViewer.module.css';
-import { ISinglePack, IOntology, IAnnotation } from '../lib/interfaces';
+import {
+  ISinglePack,
+  IOntology,
+  IAnnotation,
+  IPlugin,
+} from '../lib/interfaces';
 import { applyColorToLegend } from '../lib/utils';
 import AnnotationDetail from './AnnotationDetail';
 import LinkDetail from './LinkDetail';
@@ -17,17 +22,18 @@ import GroupCreateBox from './GroupCreateBox';
 export interface TextViewerProp {
   textPack: ISinglePack;
   ontology: IOntology;
+  plugins: IPlugin[];
 }
 
-function TextViewer({ textPack, ontology }: TextViewerProp) {
-  const { annotations, legends, links, attributes, groups } = textPack;
+function TextViewer({ textPack, ontology, plugins }: TextViewerProp) {
+  const { annotations, legends, links, attributes } = textPack;
 
   const annotationLegendsWithColor = applyColorToLegend(legends.annotations);
   const linksLegendsWithColor = applyColorToLegend(legends.links);
   const groupsLegendsWithColor = applyColorToLegend(legends.groups);
+  const appState = useTextViewerState();
+  const dispatch = useTextViewerDispatch();
   const {
-    selectedLegendIds,
-
     selectedAnnotationId,
     selectedLinkId,
 
@@ -42,10 +48,7 @@ function TextViewer({ textPack, ontology }: TextViewerProp) {
     groupEditIsCreating,
     groupEditAnnotationIds,
     groupEditLinkIds,
-
-    selectedGroupIds,
-  } = useTextViewerState();
-  const dispatch = useTextViewerDispatch();
+  } = appState;
 
   const selectedAnnotation =
     annotations.find(ann => ann.id === selectedAnnotationId) || null;
@@ -54,78 +57,17 @@ function TextViewer({ textPack, ontology }: TextViewerProp) {
 
   links.forEach(link => {
     if (link.fromEntryId === selectedAnnotationId) {
-      selectedAnnotaionChildren.push(annotations.find(
-        ann => ann.id === link.toEntryId
-      ) as IAnnotation);
+      selectedAnnotaionChildren.push(
+        annotations.find(ann => ann.id === link.toEntryId) as IAnnotation
+      );
     } else if (link.toEntryId === selectedAnnotationId) {
-      selectedAnnotaionParents.push(annotations.find(
-        ann => ann.id === link.fromEntryId
-      ) as IAnnotation);
+      selectedAnnotaionParents.push(
+        annotations.find(ann => ann.id === link.fromEntryId) as IAnnotation
+      );
     }
   });
 
   const selectedLink = links.find(link => link.id === selectedLinkId) || null;
-
-  function renderGroups() {
-    const visibleGroups = groups.filter(group =>
-      selectedLegendIds.includes(group.legendId)
-    );
-
-    if (!visibleGroups.length) {
-      return null;
-    }
-
-    return (
-      <div className={style.group_name_container}>
-        <button
-          onClick={() => {
-            dispatch({ type: 'toggle-all-group' });
-          }}
-          className={style.group_legend_toggle_button}
-        >
-          ✓
-        </button>
-        <span className={style.group_legend_label}>Groups:</span>
-
-        {visibleGroups.map(group => {
-          const isSelected = selectedGroupIds.includes(group.id);
-          const groupLegendsWithColor = groupsLegendsWithColor.find(
-            g => g.id === group.legendId
-          );
-          const color = groupLegendsWithColor
-            ? groupLegendsWithColor.color
-            : undefined;
-
-          return (
-            <span
-              key={group.id}
-              style={{
-                background: color,
-              }}
-              className={`${style.group_name}
-                  ${isSelected && style.group_name_selected}`}
-              onClick={() => {
-                if (isSelected) {
-                  dispatch({
-                    type: 'deselect-group',
-                    groupId: group.id,
-                  });
-                } else {
-                  dispatch({
-                    type: 'select-group',
-                    groupId: group.id,
-                  });
-                }
-              }}
-            >
-              {group.id}
-              <span>({group.members.length})</span>
-            </span>
-          );
-        })}
-      </div>
-    );
-  }
 
   return (
     <div className={style.text_viewer}>
@@ -199,7 +141,14 @@ function TextViewer({ textPack, ontology }: TextViewerProp) {
             />
           </div>
 
-          {renderGroups()}
+          {plugins
+            .filter(p => p.enabled(appState))
+            .map(p =>
+              p.component({
+                dispatch,
+                appState,
+              })
+            )}
         </div>
 
         <div className={style.attributes_side_container}>
