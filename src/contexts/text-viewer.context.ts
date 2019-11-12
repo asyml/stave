@@ -51,6 +51,8 @@ export type State = {
   annoEditCursorEnd: number | null;
   annoEditSelectedLegendId: string | null;
 
+  jumpToAnnotation: string | null;
+
   // groupEditIsCreating: boolean;
   // groupEditAnnotationIds: string[];
   // groupEditLinkIds: string[];
@@ -64,6 +66,7 @@ const initialSpacingState = {
   charMoveMap: new Map(),
   annotationPositions: [],
   textNodeWidth: 0,
+  jumpToAnnotation: null,
 };
 
 const initialLinkEditState = {
@@ -261,6 +264,13 @@ export type Action =
   | {
       type: 'annotation-edit-submit';
       enteredAttributes?: Record<number, any>;
+    }
+  | {
+      type: 'jump-to-annotation';
+      annotationId: string;
+    }
+  | {
+      type: 'jump-to-annotation-done';
     };
 // | {
 //     type: 'select-group';
@@ -933,6 +943,20 @@ function textViewerReducer(state: State, action: Action): State {
           annotations: [...textPack.annotations, newAnno],
         },
         ...initialSpacingState,
+      };
+    }
+
+    case 'jump-to-annotation': {
+      return {
+        ...state,
+        jumpToAnnotation: action.annotationId,
+      };
+    }
+
+    case 'jump-to-annotation-done': {
+      return {
+        ...state,
+        jumpToAnnotation: null,
       };
     }
 

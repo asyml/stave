@@ -25,7 +25,7 @@ function Group(props: PluginComponenProp) {
   //   }
 
   return (
-    <div className={style.group_name_container}>
+    <div key={'plugin-group'} className={style.group_name_container}>
       {groups.map(group => {
         // const isSelected = selectedGroupIds.includes(group.id);
 
@@ -50,7 +50,24 @@ function Group(props: PluginComponenProp) {
             {/* {group.id} */}
             {/* <span>({group.members.length})</span> */}
             {group.members.map((member, i) => (
-              <span key={i} className={style.member_item}>
+              <span
+                key={i}
+                className={style.member_item}
+                onClick={() => {
+                  if (group.memberType === 'annotation') {
+                    dispatch({
+                      type: 'jump-to-annotation',
+                      annotationId: member,
+                    });
+                    dispatch({
+                      type: 'select-annotation',
+                      annotationId: member,
+                    });
+                  } else {
+                    alert('TODO: select member of type other than annotation');
+                  }
+                }}
+              >
                 {getMemberDetail(group, member, textPack)}
               </span>
             ))}
