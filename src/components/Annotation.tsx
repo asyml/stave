@@ -66,6 +66,7 @@ function Annotaion({
             style={{
               transform: `translate(${rect.x}px,${rect.y}px)`,
             }}
+            data-annotaion-id={annotation.id}
             onMouseEnter={() => {
               if (!highlightedAnnotationIds.includes(annotation.id)) {
                 dispatch({

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, DOMElement } from 'react';
 import style from '../styles/TextArea.module.css';
 import { ISinglePack, IRect, IColoredLegend, IGroup } from '../lib/interfaces';
 import {
@@ -67,6 +67,8 @@ TextAreaProp) {
     annoEditCursorBegin,
     annoEditCursorEnd,
 
+    jumpToAnnotation,
+
     // groupEditIsCreating,
     // groupEditAnnotationIds,
     // groupEditLinkIds,
@@ -117,6 +119,20 @@ TextAreaProp) {
       collpasedLineIndexes
     );
 
+    if (spacingCalcuated && jumpToAnnotation !== null) {
+      const el = document.querySelector(
+        `[data-annotaion-id="${jumpToAnnotation}"]`
+      );
+
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      dispatch({
+        type: 'jump-to-annotation-done',
+      });
+    }
+
     window.addEventListener('resize', handleWindowResize);
 
     return () => {
@@ -129,6 +145,7 @@ TextAreaProp) {
     spacingCalcuated,
     dispatch,
     collpasedLineIndexes,
+    jumpToAnnotation,
   ]);
 
   const annotationsWithPosition = mergeAnnotationWithPosition(
@@ -149,7 +166,7 @@ TextAreaProp) {
   const linkHeight = calcuateLinkHeight(linesLevels, linkGap);
   const lineHeights = Object.keys(linesLevels).map(l => +l);
 
-  const textAreaClass = `${style.text_area_container} ${
+  const textAreaClass = `text_area_container ${style.text_area_container} ${
     spacedText ? style.text_area_container_visible : ''
   }`;
 
