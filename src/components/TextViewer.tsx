@@ -68,6 +68,7 @@ function TextViewer({ textPack, ontology, plugins }: TextViewerProp) {
   });
 
   const selectedLink = links.find(link => link.id === selectedLinkId) || null;
+  const enabledPlugins = plugins.filter(p => p.enabled(appState));
 
   return (
     <div className={style.text_viewer}>
@@ -139,14 +140,16 @@ function TextViewer({ textPack, ontology, plugins }: TextViewerProp) {
             />
           </div>
 
-          {plugins
-            .filter(p => p.enabled(appState))
-            .map(p =>
-              p.component({
-                dispatch,
-                appState,
-              })
-            )}
+          {enabledPlugins.length ? (
+            <div className={style.plugins_container}>
+              {enabledPlugins.map(p =>
+                p.component({
+                  dispatch,
+                  appState,
+                })
+              )}
+            </div>
+          ) : null}
         </div>
 
         <div className={style.attributes_side_container}>
