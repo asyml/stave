@@ -17,7 +17,7 @@ import {
 } from '../contexts/text-viewer.context';
 import LinkCreateBox from './LinkCreateBox';
 import AnnotationCreateBox from './AnnotationCreateBox';
-import GroupCreateBox from './GroupCreateBox';
+// import GroupCreateBox from './GroupCreateBox';
 
 export interface TextViewerProp {
   textPack: ISinglePack;
@@ -30,7 +30,7 @@ function TextViewer({ textPack, ontology, plugins }: TextViewerProp) {
 
   const annotationLegendsWithColor = applyColorToLegend(legends.annotations);
   const linksLegendsWithColor = applyColorToLegend(legends.links);
-  const groupsLegendsWithColor = applyColorToLegend(legends.groups);
+  // const groupsLegendsWithColor = applyColorToLegend(legends.groups);
   const appState = useTextViewerState();
   const dispatch = useTextViewerDispatch();
   const {
@@ -45,9 +45,9 @@ function TextViewer({ textPack, ontology, plugins }: TextViewerProp) {
     annoEditCursorBegin,
     annoEditCursorEnd,
 
-    groupEditIsCreating,
-    groupEditAnnotationIds,
-    groupEditLinkIds,
+    // groupEditIsCreating,
+    // groupEditAnnotationIds,
+    // groupEditLinkIds,
   } = appState;
 
   const selectedAnnotation =
@@ -78,7 +78,7 @@ function TextViewer({ textPack, ontology, plugins }: TextViewerProp) {
           <TextDetail
             annotationLegends={annotationLegendsWithColor}
             linkLegends={linksLegendsWithColor}
-            groupLegends={groupsLegendsWithColor}
+            // groupLegends={groupsLegendsWithColor}
             attributes={attributes}
             ontology={ontology}
           />
@@ -86,9 +86,7 @@ function TextViewer({ textPack, ontology, plugins }: TextViewerProp) {
 
         <div
           className={`${style.center_area_container} 
-            ${annoEditIsCreating && style.is_adding_annotation}
-            ${groupEditIsCreating && style.is_grouping_annotation}
-            `}
+            ${annoEditIsCreating && style.is_adding_annotation}`}
         >
           <div className={style.tool_bar_container}>
             <button
@@ -104,7 +102,7 @@ function TextViewer({ textPack, ontology, plugins }: TextViewerProp) {
               {annoEditIsCreating ? `Cancel add annotation` : `Add annotation`}
             </button>
 
-            <button
+            {/* <button
               onClick={() => {
                 if (groupEditIsCreating) {
                   dispatch({
@@ -118,7 +116,7 @@ function TextViewer({ textPack, ontology, plugins }: TextViewerProp) {
               }}
             >
               {groupEditIsCreating ? 'Cancel add group' : 'Add group'}
-            </button>
+            </button> */}
 
             {annoEditIsCreating && (
               <div className={style.button_action_description}>
@@ -126,18 +124,18 @@ function TextViewer({ textPack, ontology, plugins }: TextViewerProp) {
               </div>
             )}
 
-            {groupEditIsCreating && (
+            {/* {groupEditIsCreating && (
               <div className={style.button_action_description}>
                 click annotation or link to add to group
               </div>
-            )}
+            )} */}
           </div>
 
           <div className={`${style.text_area_container}`}>
             <TextArea
               textPack={textPack}
               annotationLegendsColored={annotationLegendsWithColor}
-              groupLegendsColored={groupsLegendsWithColor}
+              // groupLegendsColored={groupsLegendsWithColor}
             />
           </div>
 
@@ -152,13 +150,13 @@ function TextViewer({ textPack, ontology, plugins }: TextViewerProp) {
         </div>
 
         <div className={style.attributes_side_container}>
-          {groupEditIsCreating && (
+          {/* {groupEditIsCreating && (
             <GroupCreateBox
               groupEditAnnotationIds={groupEditAnnotationIds}
               groupEditLinkIds={groupEditLinkIds}
               ontology={ontology}
             />
-          )}
+          )} */}
           {linkEditIsCreating && (
             <div>
               <h2>Create Link</h2>

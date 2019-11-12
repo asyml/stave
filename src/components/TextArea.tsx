@@ -26,14 +26,14 @@ import LineWithArrow from './LineWithArrow';
 export interface TextAreaProp {
   textPack: ISinglePack;
   annotationLegendsColored: IColoredLegend[];
-  groupLegendsColored: IColoredLegend[];
+  // groupLegendsColored: IColoredLegend[];
 }
 
 function TextArea({
   textPack,
   annotationLegendsColored,
-  groupLegendsColored,
-}: TextAreaProp) {
+}: // groupLegendsColored,
+TextAreaProp) {
   const { annotations, text, links } = textPack;
   const textNodeEl = useRef<HTMLDivElement>(null);
   const textAreaEl = useRef<HTMLDivElement>(null);
@@ -42,7 +42,7 @@ function TextArea({
   const {
     selectedLegendIds,
     selectedLegendAttributeIds,
-    selectedGroupIds,
+    // selectedGroupIds,
 
     spacingCalcuated,
     spacedText,
@@ -67,9 +67,9 @@ function TextArea({
     annoEditCursorBegin,
     annoEditCursorEnd,
 
-    groupEditIsCreating,
-    groupEditAnnotationIds,
-    groupEditLinkIds,
+    // groupEditIsCreating,
+    // groupEditAnnotationIds,
+    // groupEditLinkIds,
   } = useTextViewerState();
 
   useEffect(() => {
@@ -305,28 +305,28 @@ function TextArea({
             legend => legend.id === ann.annotation.legendId
           );
 
-          const isInCreatingGroup =
-            groupEditIsCreating &&
-            groupEditAnnotationIds.includes(ann.annotation.id);
+          // const isInCreatingGroup =
+          //   groupEditIsCreating &&
+          //   groupEditAnnotationIds.includes(ann.annotation.id);
 
-          const visibleSelectedGroupIds = selectedGroupIds.filter(gId => {
-            const group = textPack.groups.find(g => g.id === gId) as IGroup;
-            return selectedLegendIds.includes(group.legendId);
-          });
+          // const visibleSelectedGroupIds = selectedGroupIds.filter(gId => {
+          //   const group = textPack.groups.find(g => g.id === gId) as IGroup;
+          //   return selectedLegendIds.includes(group.legendId);
+          // });
 
-          const groupOfAnnotation = getGroupByAnnotation(
-            visibleSelectedGroupIds,
-            textPack,
-            ann.annotation.id
-          );
+          // const groupOfAnnotation = getGroupByAnnotation(
+          //   visibleSelectedGroupIds,
+          //   textPack,
+          //   ann.annotation.id
+          // );
 
-          let groupLegendColor = undefined;
-          if (groupOfAnnotation) {
-            let groupLegendColored = groupLegendsColored.find(
-              g => g.id === groupOfAnnotation.legendId
-            );
-            groupLegendColor = groupLegendColored && groupLegendColored.color;
-          }
+          // let groupLegendColor = undefined;
+          // if (groupOfAnnotation) {
+          //   let groupLegendColored = groupLegendsColored.find(
+          //     g => g.id === groupOfAnnotation.legendId
+          //   );
+          //   groupLegendColor = groupLegendColored && groupLegendColored.color;
+          // }
 
           if (!legend) {
             return null;
@@ -337,9 +337,9 @@ function TextArea({
               key={i}
               annotation={ann.annotation}
               isSelected={ann.annotation.id === selectedAnnotationId}
-              isInGroup={!!groupOfAnnotation || isInCreatingGroup}
-              groupBlongs={groupOfAnnotation}
-              groupLegendColor={groupLegendColor}
+              // isInGroup={!!groupOfAnnotation || isInCreatingGroup}
+              // groupBlongs={groupOfAnnotation}
+              // groupLegendColor={groupLegendColor}
               isHighlighted={
                 highlightedAnnotationIds.indexOf(ann.annotation.id) > -1 ||
                 halfSelectedAnnotationIds.indexOf(ann.annotation.id) > -1
@@ -463,27 +463,27 @@ function TextArea({
             highlightedLinkIds.includes(linkPos.link.id) ||
             halfSelectedLinkIds.includes(linkPos.link.id);
 
-          const visibleSelectedGroupIds = selectedGroupIds.filter(gId => {
-            const group = textPack.groups.find(g => g.id === gId) as IGroup;
-            return selectedLegendIds.includes(group.legendId);
-          });
+          // const visibleSelectedGroupIds = selectedGroupIds.filter(gId => {
+          //   const group = textPack.groups.find(g => g.id === gId) as IGroup;
+          //   return selectedLegendIds.includes(group.legendId);
+          // });
 
-          const groupOfLink = getGroupByAnnotation(
-            visibleSelectedGroupIds,
-            textPack,
-            linkPos.link.id
-          );
+          // const groupOfLink = getGroupByAnnotation(
+          //   visibleSelectedGroupIds,
+          //   textPack,
+          //   linkPos.link.id
+          // );
 
-          let groupLegendColor = undefined;
-          if (groupOfLink) {
-            let groupLegendColored = groupLegendsColored.find(
-              g => g.id === groupOfLink.legendId
-            );
-            groupLegendColor = groupLegendColored && groupLegendColored.color;
-          }
+          // let groupLegendColor = undefined;
+          // if (groupOfLink) {
+          //   let groupLegendColored = groupLegendsColored.find(
+          //     g => g.id === groupOfLink.legendId
+          //   );
+          //   groupLegendColor = groupLegendColored && groupLegendColored.color;
+          // }
 
-          const isInCreatingGroup =
-            groupEditIsCreating && groupEditLinkIds.includes(linkPos.link.id);
+          // const isInCreatingGroup =
+          //   groupEditIsCreating && groupEditLinkIds.includes(linkPos.link.id);
 
           if (linkPos.fromLinkY === linkPos.toLinkY) {
             const lineIndex = lineHeights.indexOf(linkPos.fromLinkY);
@@ -497,8 +497,8 @@ function TextArea({
                 isSelected={isLinkSelected}
                 isHightlighted={isLinkHightlighted}
                 isCollapsed={isLineCollapsed}
-                isInGroup={!!groupOfLink || isInCreatingGroup}
-                groupLegendColor={groupLegendColor}
+                // isInGroup={!!groupOfLink || isInCreatingGroup}
+                // groupLegendColor={groupLegendColor}
                 linkHeight={linkHeight}
                 selectedLegendAttributeIds={selectedLegendAttributeIds}
               />
@@ -510,8 +510,8 @@ function TextArea({
                 linkWithPosition={linkPos}
                 isSelected={isLinkSelected}
                 isHightlighted={isLinkHightlighted}
-                isInGroup={!!groupOfLink || isInCreatingGroup}
-                groupLegendColor={groupLegendColor}
+                // isInGroup={!!groupOfLink || isInCreatingGroup}
+                // groupLegendColor={groupLegendColor}
                 linkHeight={linkHeight}
                 selectedLegendAttributeIds={selectedLegendAttributeIds}
                 collpasedLineIndexes={collpasedLineIndexes}

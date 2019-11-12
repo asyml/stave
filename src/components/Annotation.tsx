@@ -15,9 +15,9 @@ export interface AnnotaionProp {
   annotation: IAnnotation;
   isSelected: boolean;
   isHighlighted: boolean;
-  isInGroup: boolean;
-  groupBlongs: IGroup | null;
-  groupLegendColor: string | undefined;
+  // isInGroup: boolean;
+  // groupBlongs: IGroup | null;
+  // groupLegendColor: string | undefined;
   legend: IColoredLegend;
   position: IAnnotationPosition;
 }
@@ -26,9 +26,9 @@ function Annotaion({
   annotation,
   isSelected,
   isHighlighted,
-  isInGroup,
-  groupBlongs,
-  groupLegendColor,
+  // isInGroup,
+  // groupBlongs,
+  // groupLegendColor,
   legend,
   position,
 }: AnnotaionProp) {
@@ -62,11 +62,9 @@ function Annotaion({
             key={i}
             className={`${style.annotation_container}
               ${isLinkTarget && style.annotation_container_to_be_link}
-              ${isInGroup && style.annotation_container_in_group}
               ${isSelected && style.annotation_container_selected}`}
             style={{
               transform: `translate(${rect.x}px,${rect.y}px)`,
-              borderColor: groupLegendColor,
             }}
             onMouseEnter={() => {
               if (!highlightedAnnotationIds.includes(annotation.id)) {
@@ -130,17 +128,6 @@ function Annotaion({
             >
               <span className={style.add_icon}></span>
             </div>
-
-            {groupBlongs && (
-              <span
-                style={{
-                  backgroundColor: groupLegendColor,
-                }}
-                className={style.group_id}
-              >
-                {groupBlongs.id}
-              </span>
-            )}
           </div>
         );
       })}
