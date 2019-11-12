@@ -1,6 +1,7 @@
 import React from 'react';
 import { Dispatch, State } from '../contexts/text-viewer.context';
 import style from './Group.module.css';
+import { IGroup, ISinglePack } from '../lib/interfaces';
 
 interface PluginComponenProp {
   dispatch: Dispatch;
@@ -15,36 +16,23 @@ function Group(props: PluginComponenProp) {
   const dispatch = props.dispatch;
   const { textPack, selectedLegendIds } = props.appState;
   const { groups } = textPack;
-  const visibleGroups = groups.filter(group =>
-    selectedLegendIds.includes(group.legendId)
-  );
+  //   const visibleGroups = groups.filter(group =>
+  //     selectedLegendIds.includes(group.legendId)
+  //   );
 
-  if (!visibleGroups.length) {
-    return null;
-  }
+  //   if (!visibleGroups.length) {
+  //     return null;
+  //   }
 
   return (
     <div className={style.group_name_container}>
-      <button
-        onClick={() => {
-          //   dispatch({ type: 'toggle-all-group' });
-        }}
-        className={style.group_legend_toggle_button}
-      >
-        ✓
-      </button>
-      <span className={style.group_legend_label}>Groups:</span>
-
-      {visibleGroups.map(group => {
+      {groups.map(group => {
         // const isSelected = selectedGroupIds.includes(group.id);
 
         return (
-          <span
+          <div
             key={group.id}
-            style={{
-              background: 'red',
-            }}
-            className={`${style.group_name}`}
+            className={`${style.group}`}
             onClick={() => {
               //   if (isSelected) {
               //     dispatch({
@@ -59,13 +47,31 @@ function Group(props: PluginComponenProp) {
               //   }
             }}
           >
-            {group.id}
-            <span>({group.members.length})</span>
-          </span>
+            {/* {group.id} */}
+            {/* <span>({group.members.length})</span> */}
+            {group.members.map((member, i) => (
+              <span key={i} className={style.member_item}>
+                {getMemberDetail(group, member, textPack)}
+              </span>
+            ))}
+          </div>
         );
       })}
     </div>
   );
+}
+
+function getMemberDetail(group: IGroup, member: string, textPack: ISinglePack) {
+  if (group.memberType === 'annotation') {
+    const annotaion = textPack.annotations.find(ann => ann.id === member);
+    if (annotaion) {
+      return textPack.text.substring(annotaion.span.begin, annotaion.span.end);
+    } else {
+      return '';
+    }
+  } else {
+    return 'link';
+  }
 }
 
 function enabled(state: State) {

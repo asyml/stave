@@ -71,3 +71,9 @@
   font-size: 12px;
   color: #999;
 }
+
+.plugins_container {
+  max-height: 300px;
+  overflow: scroll;
+  border-top: 1px solid #ccc;
+}

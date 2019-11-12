@@ -1,7 +1,6 @@
 .group_name_container {
-  border-top: 1px solid #ccc;
-  padding: 8px;
-  background: #f8f8fa;
+  padding-top: 8px;
+  padding-left: 8px;
 }
 
 .group_legend_toggle_button,
@@ -11,24 +10,22 @@
   display: inline-block;
 }
 
-.group_name {
+.group {
   display: inline-block;
-  background: #999;
-  color: white;
-  margin-right: 8px;
-  margin-bottom: 4px;
-  padding: 4px;
-  font-size: 12px;
-  opacity: 0.5;
-  cursor: pointer;
+  padding-top: 8px;
+  padding-left: 8px;
+  border: 1px solid #ccc;
+  background: rgba(9, 154, 235, 0.2);
+  margin: 0 16px 16px 0;
+  border-radius: 10px;
 }
 
-.group_name:hover {
-  opacity: 0.66;
-}
-.group_name_selected {
-  opacity: 1;
-}
-.group_name_selected:hover {
-  opacity: 1;
+.member_item {
+  display: inline-block;
+  /* border: 1px solid #555; */
+  color: white;
+  background: rgba(9, 154, 235, 1);
+  padding: 2px 4px;
+  border-radius: 3px;
+  margin: 0 8px 8px 0;
 }
