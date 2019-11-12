@@ -13,7 +13,7 @@ function Group(props: PluginComponenProp) {
   }
 
   const dispatch = props.dispatch;
-  const { textPack, selectedLegendIds, selectedGroupIds } = props.appState;
+  const { textPack, selectedLegendIds } = props.appState;
   const { groups } = textPack;
   const visibleGroups = groups.filter(group =>
     selectedLegendIds.includes(group.legendId)
@@ -27,7 +27,7 @@ function Group(props: PluginComponenProp) {
     <div className={style.group_name_container}>
       <button
         onClick={() => {
-          dispatch({ type: 'toggle-all-group' });
+          //   dispatch({ type: 'toggle-all-group' });
         }}
         className={style.group_legend_toggle_button}
       >
@@ -36,7 +36,7 @@ function Group(props: PluginComponenProp) {
       <span className={style.group_legend_label}>Groups:</span>
 
       {visibleGroups.map(group => {
-        const isSelected = selectedGroupIds.includes(group.id);
+        // const isSelected = selectedGroupIds.includes(group.id);
 
         return (
           <span
@@ -44,20 +44,19 @@ function Group(props: PluginComponenProp) {
             style={{
               background: 'red',
             }}
-            className={`${style.group_name}
-                    ${isSelected && style.group_name_selected}`}
+            className={`${style.group_name}`}
             onClick={() => {
-              if (isSelected) {
-                dispatch({
-                  type: 'deselect-group',
-                  groupId: group.id,
-                });
-              } else {
-                dispatch({
-                  type: 'select-group',
-                  groupId: group.id,
-                });
-              }
+              //   if (isSelected) {
+              //     dispatch({
+              //       type: 'deselect-group',
+              //       groupId: group.id,
+              //     });
+              //   } else {
+              //     dispatch({
+              //       type: 'select-group',
+              //       groupId: group.id,
+              //     });
+              //   }
             }}
           >
             {group.id}

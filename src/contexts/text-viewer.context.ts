@@ -23,7 +23,7 @@ export type State = {
   ontology: IOntology | null;
   selectedLegendIds: string[];
   selectedLegendAttributeIds: string[];
-  selectedGroupIds: string[];
+  // selectedGroupIds: string[];
 
   selectedAnnotationId: string | null;
   halfSelectedAnnotationIds: string[]; // indicate a state that annotation is keep highlighted when link is selected
@@ -51,10 +51,10 @@ export type State = {
   annoEditCursorEnd: number | null;
   annoEditSelectedLegendId: string | null;
 
-  groupEditIsCreating: boolean;
-  groupEditAnnotationIds: string[];
-  groupEditLinkIds: string[];
-  groupEditSelectedLegendId: string | null;
+  // groupEditIsCreating: boolean;
+  // groupEditAnnotationIds: string[];
+  // groupEditLinkIds: string[];
+  // groupEditSelectedLegendId: string | null;
 };
 
 const initialSpacingState = {
@@ -81,12 +81,12 @@ const initialAnnoEditState = {
   annoEditSelectedLegendId: null,
 };
 
-const initialGroupEditState = {
-  groupEditIsCreating: false,
-  groupEditAnnotationIds: [],
-  groupEditLinkIds: [],
-  groupEditSelectedLegendId: null,
-};
+// const initialGroupEditState = {
+//   groupEditIsCreating: false,
+//   groupEditAnnotationIds: [],
+//   groupEditLinkIds: [],
+//   groupEditSelectedLegendId: null,
+// };
 
 const initialUserSelectState = {
   selectedAnnotationId: null,
@@ -103,7 +103,7 @@ const initialState: State = {
   ontology: null,
   selectedLegendIds: [],
   selectedLegendAttributeIds: [],
-  selectedGroupIds: [],
+  // selectedGroupIds: [],
 
   collpasedLineIndexes: [],
 
@@ -111,7 +111,7 @@ const initialState: State = {
   ...initialLinkEditState,
   ...initialSpacingState,
   ...initialAnnoEditState,
-  ...initialGroupEditState,
+  // ...initialGroupEditState,
 };
 
 /**
@@ -261,31 +261,31 @@ export type Action =
   | {
       type: 'annotation-edit-submit';
       enteredAttributes?: Record<number, any>;
-    }
-  | {
-      type: 'select-group';
-      groupId: string;
-    }
-  | {
-      type: 'deselect-group';
-      groupId: string;
-    }
-  | {
-      type: 'toggle-all-group';
-    }
-  | {
-      type: 'start-add-group';
-    }
-  | {
-      type: 'cancel-add-group';
-    }
-  | {
-      type: 'submit-add-group';
-    }
-  | {
-      type: 'group-edit-select-legend-type';
-      legendId: string;
     };
+// | {
+//     type: 'select-group';
+//     groupId: string;
+//   }
+// | {
+//     type: 'deselect-group';
+//     groupId: string;
+//   }
+// | {
+//     type: 'toggle-all-group';
+//   }
+// | {
+//     type: 'start-add-group';
+//   }
+// | {
+//     type: 'cancel-add-group';
+//   }
+// | {
+//     type: 'submit-add-group';
+//   }
+// | {
+//     type: 'group-edit-select-legend-type';
+//     legendId: string;
+//   };
 
 /**
  *
@@ -329,7 +329,7 @@ function textViewerReducer(state: State, action: Action): State {
           attributeId('forte.data.ontology.base_ontology.Token', 'pos_tag'),
         ],
         // selectedAnnotationId: '5',
-        selectedGroupIds: action.textPack.groups.map(g => g.id),
+        // selectedGroupIds: action.textPack.groups.map(g => g.id),
         // collpasedLineIndexes: [],
 
         // test linkEditIsCreating
@@ -407,25 +407,25 @@ function textViewerReducer(state: State, action: Action): State {
         };
       }
 
-      if (state.groupEditIsCreating) {
-        const groupEditAnnotationIds = [...state.groupEditAnnotationIds];
+      // if (state.groupEditIsCreating) {
+      //   const groupEditAnnotationIds = [...state.groupEditAnnotationIds];
 
-        if (groupEditAnnotationIds.includes(action.annotationId)) {
-          return {
-            ...state,
-            groupEditAnnotationIds: state.groupEditAnnotationIds.filter(
-              id => id !== action.annotationId
-            ),
-          };
-        } else {
-          groupEditAnnotationIds.push(action.annotationId);
+      //   if (groupEditAnnotationIds.includes(action.annotationId)) {
+      //     return {
+      //       ...state,
+      //       groupEditAnnotationIds: state.groupEditAnnotationIds.filter(
+      //         id => id !== action.annotationId
+      //       ),
+      //     };
+      //   } else {
+      //     groupEditAnnotationIds.push(action.annotationId);
 
-          return {
-            ...state,
-            groupEditAnnotationIds,
-          };
-        }
-      }
+      //     return {
+      //       ...state,
+      //       groupEditAnnotationIds,
+      //     };
+      //   }
+      // }
 
       let halfSelectedAnnotationIds: string[] = [];
       let halfSelectedLinkIds: string[] = [];
@@ -632,24 +632,24 @@ function textViewerReducer(state: State, action: Action): State {
         return state;
       }
 
-      if (state.groupEditIsCreating) {
-        const groupEditLinkIds = [...state.groupEditLinkIds];
+      // if (state.groupEditIsCreating) {
+      //   const groupEditLinkIds = [...state.groupEditLinkIds];
 
-        if (groupEditLinkIds.includes(action.linkId)) {
-          return {
-            ...state,
-            groupEditLinkIds: state.groupEditLinkIds.filter(
-              id => id !== action.linkId
-            ),
-          };
-        } else {
-          groupEditLinkIds.push(action.linkId);
-          return {
-            ...state,
-            groupEditLinkIds,
-          };
-        }
-      }
+      //   if (groupEditLinkIds.includes(action.linkId)) {
+      //     return {
+      //       ...state,
+      //       groupEditLinkIds: state.groupEditLinkIds.filter(
+      //         id => id !== action.linkId
+      //       ),
+      //     };
+      //   } else {
+      //     groupEditLinkIds.push(action.linkId);
+      //     return {
+      //       ...state,
+      //       groupEditLinkIds,
+      //     };
+      //   }
+      // }
 
       let halfSelectedAnnotationIds: string[] = [];
       if (state.textPack) {
@@ -735,7 +735,8 @@ function textViewerReducer(state: State, action: Action): State {
     }
 
     case 'start-create-link':
-      if (state.linkEditIsCreating || state.groupEditIsCreating) {
+      // if (state.linkEditIsCreating || state.groupEditIsCreating) {
+      if (state.linkEditIsCreating) {
         if (state.linkEditFromEntryId === action.annotationId) {
           return {
             ...state,
@@ -843,7 +844,7 @@ function textViewerReducer(state: State, action: Action): State {
         ...state,
         ...initialLinkEditState,
         ...initialUserSelectState,
-        ...initialGroupEditState,
+        // ...initialGroupEditState,
         annoEditIsCreating: true,
       };
 
@@ -922,7 +923,7 @@ function textViewerReducer(state: State, action: Action): State {
       );
 
       const textPack = state.textPack as ISinglePack;
-      ll('newAnno', newAnno);
+
       return {
         ...state,
         annoEditCursorBegin: null,
@@ -935,110 +936,110 @@ function textViewerReducer(state: State, action: Action): State {
       };
     }
 
-    case 'select-group':
-      if (state.selectedGroupIds.includes(action.groupId)) {
-        return state;
-      } else {
-        return {
-          ...state,
-          selectedGroupIds: [...state.selectedGroupIds, action.groupId],
-        };
-      }
+    // case 'select-group':
+    //   if (state.selectedGroupIds.includes(action.groupId)) {
+    //     return state;
+    //   } else {
+    //     return {
+    //       ...state,
+    //       selectedGroupIds: [...state.selectedGroupIds, action.groupId],
+    //     };
+    //   }
 
-    case 'deselect-group':
-      if (state.selectedGroupIds.includes(action.groupId)) {
-        return {
-          ...state,
-          selectedGroupIds: state.selectedGroupIds.filter(
-            groupId => groupId !== action.groupId
-          ),
-        };
-      } else {
-        return state;
-      }
+    // case 'deselect-group':
+    //   if (state.selectedGroupIds.includes(action.groupId)) {
+    //     return {
+    //       ...state,
+    //       selectedGroupIds: state.selectedGroupIds.filter(
+    //         groupId => groupId !== action.groupId
+    //       ),
+    //     };
+    //   } else {
+    //     return state;
+    //   }
 
-    case 'toggle-all-group': {
-      if (!state.textPack) {
-        return state;
-      }
+    // case 'toggle-all-group': {
+    //   if (!state.textPack) {
+    //     return state;
+    //   }
 
-      const groupIdToSelect = state.textPack.groups
-        .filter(g => state.selectedLegendIds.includes(g.legendId))
-        .map(g => g.id);
+    //   const groupIdToSelect = state.textPack.groups
+    //     .filter(g => state.selectedLegendIds.includes(g.legendId))
+    //     .map(g => g.id);
 
-      if (groupIdToSelect.length === state.selectedGroupIds.length) {
-        // if every group are already selected, deselect all
-        return {
-          ...state,
-          selectedGroupIds: [],
-        };
-      } else {
-        return {
-          ...state,
-          selectedGroupIds: state.textPack.groups
-            .filter(g => state.selectedLegendIds.includes(g.legendId))
-            .map(g => g.id),
-        };
-      }
-    }
+    //   if (groupIdToSelect.length === state.selectedGroupIds.length) {
+    //     // if every group are already selected, deselect all
+    //     return {
+    //       ...state,
+    //       selectedGroupIds: [],
+    //     };
+    //   } else {
+    //     return {
+    //       ...state,
+    //       selectedGroupIds: state.textPack.groups
+    //         .filter(g => state.selectedLegendIds.includes(g.legendId))
+    //         .map(g => g.id),
+    //     };
+    //   }
+    // }
 
-    case 'start-add-group':
-      return {
-        ...state,
-        ...initialUserSelectState,
-        ...initialAnnoEditState,
-        ...initialLinkEditState,
-        selectedGroupIds: [],
-        groupEditIsCreating: true,
-      };
+    // case 'start-add-group':
+    //   return {
+    //     ...state,
+    //     ...initialUserSelectState,
+    //     ...initialAnnoEditState,
+    //     ...initialLinkEditState,
+    //     selectedGroupIds: [],
+    //     groupEditIsCreating: true,
+    //   };
 
-    case 'cancel-add-group':
-      return {
-        ...state,
-        ...initialGroupEditState,
-      };
+    // case 'cancel-add-group':
+    //   return {
+    //     ...state,
+    //     ...initialGroupEditState,
+    //   };
 
-    case 'group-edit-select-legend-type':
-      return {
-        ...state,
-        groupEditSelectedLegendId: action.legendId,
-      };
+    // case 'group-edit-select-legend-type':
+    //   return {
+    //     ...state,
+    //     groupEditSelectedLegendId: action.legendId,
+    //   };
 
-    case 'submit-add-group': {
-      if (!state.groupEditSelectedLegendId) {
-        throw new Error('groupEditSelectedLegendId is required');
-      }
-      if (!state.ontology) {
-        throw new Error('ontology is required');
-      }
+    // case 'submit-add-group': {
+    //   if (!state.groupEditSelectedLegendId) {
+    //     throw new Error('groupEditSelectedLegendId is required');
+    //   }
+    //   if (!state.ontology) {
+    //     throw new Error('ontology is required');
+    //   }
 
-      const memberType = getGroupType(
-        state.groupEditSelectedLegendId,
-        state.ontology
-      );
-      const newGroup: IGroup = {
-        id: 'group_' + Math.random(),
-        attributes: {},
-        legendId: state.groupEditSelectedLegendId,
-        memberType,
-        members:
-          memberType === 'annotation'
-            ? state.groupEditAnnotationIds
-            : state.groupEditLinkIds,
-      };
+    //   const memberType = getGroupType(
+    //     state.groupEditSelectedLegendId,
+    //     state.ontology
+    //   );
+    //   const newGroup: IGroup = {
+    //     id: 'group_' + Math.random(),
+    //     attributes: {},
+    //     legendId: state.groupEditSelectedLegendId,
+    //     memberType,
+    //     members:
+    //       memberType === 'annotation'
+    //         ? state.groupEditAnnotationIds
+    //         : state.groupEditLinkIds,
+    //   };
 
-      const textPack = state.textPack as ISinglePack;
+    //   const textPack = state.textPack as ISinglePack;
 
-      return {
-        ...state,
-        ...initialGroupEditState,
-        selectedGroupIds: [...state.selectedGroupIds, newGroup.id],
-        textPack: {
-          ...textPack,
-          groups: [...textPack.groups, newGroup],
-        },
-      };
-    }
+    //   return {
+    //     ...state,
+    //     ...initialGroupEditState,
+    //     selectedGroupIds: [...state.selectedGroupIds, newGroup.id],
+    //     textPack: {
+    //       ...textPack,
+    //       groups: [...textPack.groups, newGroup],
+    //     },
+    //   };
+    // }
   }
 }
 

@@ -12,7 +12,7 @@ export interface TextDetailProp {
   attributes: IAttributes;
   annotationLegends: IColoredLegend[];
   linkLegends: IColoredLegend[];
-  groupLegends: IColoredLegend[];
+  // groupLegends: IColoredLegend[];
   ontology: IOntology;
 }
 
@@ -20,7 +20,7 @@ export default function TextDetail({
   attributes,
   annotationLegends,
   linkLegends,
-  groupLegends,
+  // groupLegends,
   ontology,
 }: TextDetailProp) {
   const {
@@ -52,14 +52,14 @@ export default function TextDetail({
           dispatch={dispatch}
         />
 
-        <LegendList
+        {/* <LegendList
           title="Group Legends"
           legends={groupLegends}
           selectedLegendIds={selectedLegendIds}
           selectedLegendAttributeIds={selectedLegendAttributeIds}
           ontology={ontology}
           dispatch={dispatch}
-        />
+        /> */}
       </>
     ),
   };
