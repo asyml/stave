@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { IColoredLegend, IAttributes, IOntology } from '../lib/interfaces';
 import {
   useTextViewerState,
