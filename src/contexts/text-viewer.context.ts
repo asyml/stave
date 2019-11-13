@@ -271,6 +271,11 @@ export type Action =
     }
   | {
       type: 'jump-to-annotation-done';
+    }
+  | {
+      type: 'add-member-to-group';
+      groupId: string;
+      memberId: string;
     };
 // | {
 //     type: 'select-group';
@@ -1064,6 +1069,27 @@ function textViewerReducer(state: State, action: Action): State {
     //     },
     //   };
     // }
+    case 'add-member-to-group': {
+      const textPack = state.textPack as ISinglePack;
+      const groups = textPack.groups.map(g => {
+        if (g.id === action.groupId) {
+          return {
+            ...g,
+            members: [...g.members, action.memberId],
+          };
+        } else {
+          return g;
+        }
+      });
+
+      return {
+        ...state,
+        textPack: {
+          ...textPack,
+          groups,
+        },
+      };
+    }
   }
 }
 

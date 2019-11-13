@@ -100,6 +100,17 @@ function Annotaion({
                 height: rect.height,
                 width: rect.width,
               }}
+              draggable={true}
+              onDragStart={e => {
+                e.dataTransfer.dropEffect = 'move';
+                e.dataTransfer.setData(
+                  'text/plain',
+                  JSON.stringify({
+                    type: 'drag-annotation',
+                    annotationId: annotation.id,
+                  })
+                );
+              }}
               onClick={() => {
                 isSelected
                   ? dispatch({

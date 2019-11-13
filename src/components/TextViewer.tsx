@@ -26,6 +26,8 @@ export interface TextViewerProp {
 }
 
 function TextViewer({ textPack, ontology, plugins }: TextViewerProp) {
+  // console.log('TextViewer rerender');
+
   const { annotations, legends, links, attributes } = textPack;
 
   const annotationLegendsWithColor = applyColorToLegend(legends.annotations);

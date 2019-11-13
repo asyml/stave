@@ -30,7 +30,9 @@ export default function LinkEditConnector({
 
     function updatePos(e: MouseEvent) {
       moved = true;
-      setPos({ x: e.clientX, y: e.clientY });
+      requestAnimationFrame(() => {
+        setPos({ x: e.clientX, y: e.clientY });
+      });
     }
 
     function endMove() {

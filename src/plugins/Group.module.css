@@ -22,6 +22,7 @@
   max-width: 200px;
   min-height: 100px;
   vertical-align: top;
+  position: relative;
 }
 
 .member_item {
@@ -37,4 +38,12 @@
 
 .member_item:hover {
   background: rgba(9, 154, 235, 0.87);
+}
+
+.group_dropped {
+  background: rgba(9, 154, 235, 0.5);
+}
+
+.group_dropped .member_item {
+  pointer-events: none;
 }
