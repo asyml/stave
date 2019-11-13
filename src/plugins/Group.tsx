@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Dispatch, State } from '../contexts/text-viewer.context';
 import style from './Group.module.css';
 import { IGroup, ISinglePack } from '../lib/interfaces';
@@ -9,6 +9,8 @@ interface PluginComponenProp {
 }
 
 function Group(props: PluginComponenProp) {
+  const [dropGroupId, setDropGroupId] = useState<string | null>(null);
+
   if (!props.appState.textPack) {
     return null;
   }
@@ -32,7 +34,36 @@ function Group(props: PluginComponenProp) {
         return (
           <div
             key={group.id}
-            className={`${style.group}`}
+            onDragEnter={event => {
+              event.preventDefault();
+
+              if (dropGroupId !== group.id) {
+                setDropGroupId(group.id);
+              }
+            }}
+            onDragOver={event => {
+              event.preventDefault();
+            }}
+            onDragLeave={() => {
+              setDropGroupId(null);
+            }}
+            onDrop={event => {
+              event.preventDefault();
+
+              const data = JSON.parse(event.dataTransfer.getData('text/plain'));
+
+              if (data.type === 'drag-annotation') {
+                dispatch({
+                  type: 'add-member-to-group',
+                  groupId: group.id,
+                  memberId: data.annotationId,
+                });
+              }
+
+              setDropGroupId(null);
+            }}
+            className={`${style.group}
+                ${dropGroupId === group.id ? style.group_dropped : ''}`}
             onClick={() => {
               //   if (isSelected) {
               //     dispatch({
