@@ -1,6 +1,11 @@
 import React from 'react';
 import style from '../styles/TextViewer.module.css';
-import { ISinglePack, IOntology, IAnnotation } from '../lib/interfaces';
+import {
+  ISinglePack,
+  IOntology,
+  IAnnotation,
+  IPlugin,
+} from '../lib/interfaces';
 import { applyColorToLegend } from '../lib/utils';
 import AnnotationDetail from './AnnotationDetail';
 import LinkDetail from './LinkDetail';
@@ -12,22 +17,23 @@ import {
 } from '../contexts/text-viewer.context';
 import LinkCreateBox from './LinkCreateBox';
 import AnnotationCreateBox from './AnnotationCreateBox';
-import GroupCreateBox from './GroupCreateBox';
 
 export interface TextViewerProp {
   textPack: ISinglePack;
   ontology: IOntology;
+  plugins: IPlugin[];
 }
 
-function TextViewer({ textPack, ontology }: TextViewerProp) {
-  const { annotations, legends, links, attributes, groups } = textPack;
+function TextViewer({ textPack, ontology, plugins }: TextViewerProp) {
+  console.log('TextViewer rerender' + Math.random());
+
+  const { annotations, legends, links, attributes } = textPack;
 
   const annotationLegendsWithColor = applyColorToLegend(legends.annotations);
   const linksLegendsWithColor = applyColorToLegend(legends.links);
-  const groupsLegendsWithColor = applyColorToLegend(legends.groups);
+  const appState = useTextViewerState();
+  const dispatch = useTextViewerDispatch();
   const {
-    selectedLegendIds,
-
     selectedAnnotationId,
     selectedLinkId,
 
@@ -38,14 +44,7 @@ function TextViewer({ textPack, ontology }: TextViewerProp) {
     annoEditIsCreating,
     annoEditCursorBegin,
     annoEditCursorEnd,
-
-    groupEditIsCreating,
-    groupEditAnnotationIds,
-    groupEditLinkIds,
-
-    selectedGroupIds,
-  } = useTextViewerState();
-  const dispatch = useTextViewerDispatch();
+  } = appState;
 
   const selectedAnnotation =
     annotations.find(ann => ann.id === selectedAnnotationId) || null;
@@ -54,78 +53,18 @@ function TextViewer({ textPack, ontology }: TextViewerProp) {
 
   links.forEach(link => {
     if (link.fromEntryId === selectedAnnotationId) {
-      selectedAnnotaionChildren.push(annotations.find(
-        ann => ann.id === link.toEntryId
-      ) as IAnnotation);
+      selectedAnnotaionChildren.push(
+        annotations.find(ann => ann.id === link.toEntryId) as IAnnotation
+      );
     } else if (link.toEntryId === selectedAnnotationId) {
-      selectedAnnotaionParents.push(annotations.find(
-        ann => ann.id === link.fromEntryId
-      ) as IAnnotation);
+      selectedAnnotaionParents.push(
+        annotations.find(ann => ann.id === link.fromEntryId) as IAnnotation
+      );
     }
   });
 
   const selectedLink = links.find(link => link.id === selectedLinkId) || null;
-
-  function renderGroups() {
-    const visibleGroups = groups.filter(group =>
-      selectedLegendIds.includes(group.legendId)
-    );
-
-    if (!visibleGroups.length) {
-      return null;
-    }
-
-    return (
-      <div className={style.group_name_container}>
-        <button
-          onClick={() => {
-            dispatch({ type: 'toggle-all-group' });
-          }}
-          className={style.group_legend_toggle_button}
-        >
-          ✓
-        </button>
-        <span className={style.group_legend_label}>Groups:</span>
-
-        {visibleGroups.map(group => {
-          const isSelected = selectedGroupIds.includes(group.id);
-          const groupLegendsWithColor = groupsLegendsWithColor.find(
-            g => g.id === group.legendId
-          );
-          const color = groupLegendsWithColor
-            ? groupLegendsWithColor.color
-            : undefined;
-
-          return (
-            <span
-              key={group.id}
-              style={{
-                background: color,
-              }}
-              className={`${style.group_name}
-                  ${isSelected && style.group_name_selected}`}
-              onClick={() => {
-                if (isSelected) {
-                  dispatch({
-                    type: 'deselect-group',
-                    groupId: group.id,
-                  });
-                } else {
-                  dispatch({
-                    type: 'select-group',
-                    groupId: group.id,
-                  });
-                }
-              }}
-            >
-              {group.id}
-              <span>({group.members.length})</span>
-            </span>
-          );
-        })}
-      </div>
-    );
-  }
+  const enabledPlugins = plugins.filter(p => p.enabled(appState));
 
   return (
     <div className={style.text_viewer}>
@@ -136,7 +75,6 @@ function TextViewer({ textPack, ontology }: TextViewerProp) {
           <TextDetail
             annotationLegends={annotationLegendsWithColor}
             linkLegends={linksLegendsWithColor}
-            groupLegends={groupsLegendsWithColor}
             attributes={attributes}
             ontology={ontology}
           />
@@ -144,9 +82,7 @@ function TextViewer({ textPack, ontology }: TextViewerProp) {
 
         <div
           className={`${style.center_area_container} 
-            ${annoEditIsCreating && style.is_adding_annotation}
-            ${groupEditIsCreating && style.is_grouping_annotation}
-            `}
+            ${annoEditIsCreating && style.is_adding_annotation}`}
         >
           <div className={style.tool_bar_container}>
             <button
@@ -162,31 +98,9 @@ function TextViewer({ textPack, ontology }: TextViewerProp) {
               {annoEditIsCreating ? `Cancel add annotation` : `Add annotation`}
             </button>
 
-            <button
-              onClick={() => {
-                if (groupEditIsCreating) {
-                  dispatch({
-                    type: 'cancel-add-group',
-                  });
-                } else {
-                  dispatch({
-                    type: 'start-add-group',
-                  });
-                }
-              }}
-            >
-              {groupEditIsCreating ? 'Cancel add group' : 'Add group'}
-            </button>
-
             {annoEditIsCreating && (
               <div className={style.button_action_description}>
                 select text to add annotation
-              </div>
-            )}
-
-            {groupEditIsCreating && (
-              <div className={style.button_action_description}>
-                click annotation or link to add to group
               </div>
             )}
           </div>
@@ -195,21 +109,20 @@ function TextViewer({ textPack, ontology }: TextViewerProp) {
             <TextArea
               textPack={textPack}
               annotationLegendsColored={annotationLegendsWithColor}
-              groupLegendsColored={groupsLegendsWithColor}
             />
           </div>
 
-          {renderGroups()}
+          {enabledPlugins.length ? (
+            <div className={style.plugins_container}>
+              {enabledPlugins.map((p, i) => {
+                const Comp = p.component;
+                return <Comp key={i} dispatch={dispatch} appState={appState} />;
+              })}
+            </div>
+          ) : null}
         </div>
 
         <div className={style.attributes_side_container}>
-          {groupEditIsCreating && (
-            <GroupCreateBox
-              groupEditAnnotationIds={groupEditAnnotationIds}
-              groupEditLinkIds={groupEditLinkIds}
-              ontology={ontology}
-            />
-          )}
           {linkEditIsCreating && (
             <div>
               <h2>Create Link</h2>

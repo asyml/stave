@@ -3,7 +3,6 @@ import {
   IAnnotation,
   IColoredLegend,
   IAnnotationPosition,
-  IGroup,
 } from '../lib/interfaces';
 import {
   useTextViewerDispatch,
@@ -15,9 +14,6 @@ export interface AnnotaionProp {
   annotation: IAnnotation;
   isSelected: boolean;
   isHighlighted: boolean;
-  isInGroup: boolean;
-  groupBlongs: IGroup | null;
-  groupLegendColor: string | undefined;
   legend: IColoredLegend;
   position: IAnnotationPosition;
 }
@@ -26,9 +22,6 @@ function Annotaion({
   annotation,
   isSelected,
   isHighlighted,
-  isInGroup,
-  groupBlongs,
-  groupLegendColor,
   legend,
   position,
 }: AnnotaionProp) {
@@ -62,12 +55,11 @@ function Annotaion({
             key={i}
             className={`${style.annotation_container}
               ${isLinkTarget && style.annotation_container_to_be_link}
-              ${isInGroup && style.annotation_container_in_group}
               ${isSelected && style.annotation_container_selected}`}
             style={{
               transform: `translate(${rect.x}px,${rect.y}px)`,
-              borderColor: groupLegendColor,
             }}
+            data-annotaion-id={annotation.id}
             onMouseEnter={() => {
               if (!highlightedAnnotationIds.includes(annotation.id)) {
                 dispatch({
@@ -101,6 +93,17 @@ function Annotaion({
                 height: rect.height,
                 width: rect.width,
               }}
+              draggable={true}
+              onDragStart={e => {
+                e.dataTransfer.dropEffect = 'move';
+                e.dataTransfer.setData(
+                  'text/plain',
+                  JSON.stringify({
+                    type: 'drag-annotation',
+                    annotationId: annotation.id,
+                  })
+                );
+              }}
               onClick={() => {
                 isSelected
                   ? dispatch({
@@ -130,17 +133,6 @@ function Annotaion({
             >
               <span className={style.add_icon}></span>
             </div>
-
-            {groupBlongs && (
-              <span
-                style={{
-                  backgroundColor: groupLegendColor,
-                }}
-                className={style.group_id}
-              >
-                {groupBlongs.id}
-              </span>
-            )}
           </div>
         );
       })}

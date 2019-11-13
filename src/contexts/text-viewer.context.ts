@@ -1,11 +1,6 @@
-import {
-  ISinglePack,
-  IOntology,
-  IGroup,
-  IAnnotationPosition,
-} from '../lib/interfaces';
+import { ISinglePack, IOntology, IAnnotationPosition } from '../lib/interfaces';
 import { createContextProvider } from '../lib/create-context-provider';
-import { attributeId, getGroupType } from '../lib/utils';
+import { attributeId } from '../lib/utils';
 import { restorePos } from '../lib/text-spacer';
 
 export type Dispatch = (action: Action) => void;
@@ -23,7 +18,6 @@ export type State = {
   ontology: IOntology | null;
   selectedLegendIds: string[];
   selectedLegendAttributeIds: string[];
-  selectedGroupIds: string[];
 
   selectedAnnotationId: string | null;
   halfSelectedAnnotationIds: string[]; // indicate a state that annotation is keep highlighted when link is selected
@@ -51,10 +45,7 @@ export type State = {
   annoEditCursorEnd: number | null;
   annoEditSelectedLegendId: string | null;
 
-  groupEditIsCreating: boolean;
-  groupEditAnnotationIds: string[];
-  groupEditLinkIds: string[];
-  groupEditSelectedLegendId: string | null;
+  jumpToAnnotation: string | null;
 };
 
 const initialSpacingState = {
@@ -64,6 +55,7 @@ const initialSpacingState = {
   charMoveMap: new Map(),
   annotationPositions: [],
   textNodeWidth: 0,
+  jumpToAnnotation: null,
 };
 
 const initialLinkEditState = {
@@ -81,13 +73,6 @@ const initialAnnoEditState = {
   annoEditSelectedLegendId: null,
 };
 
-const initialGroupEditState = {
-  groupEditIsCreating: false,
-  groupEditAnnotationIds: [],
-  groupEditLinkIds: [],
-  groupEditSelectedLegendId: null,
-};
-
 const initialUserSelectState = {
   selectedAnnotationId: null,
   halfSelectedAnnotationIds: [],
@@ -103,7 +88,6 @@ const initialState: State = {
   ontology: null,
   selectedLegendIds: [],
   selectedLegendAttributeIds: [],
-  selectedGroupIds: [],
 
   collpasedLineIndexes: [],
 
@@ -111,7 +95,6 @@ const initialState: State = {
   ...initialLinkEditState,
   ...initialSpacingState,
   ...initialAnnoEditState,
-  ...initialGroupEditState,
 };
 
 /**
@@ -263,28 +246,16 @@ export type Action =
       enteredAttributes?: Record<number, any>;
     }
   | {
-      type: 'select-group';
+      type: 'jump-to-annotation';
+      annotationId: string;
+    }
+  | {
+      type: 'jump-to-annotation-done';
+    }
+  | {
+      type: 'add-member-to-group';
       groupId: string;
-    }
-  | {
-      type: 'deselect-group';
-      groupId: string;
-    }
-  | {
-      type: 'toggle-all-group';
-    }
-  | {
-      type: 'start-add-group';
-    }
-  | {
-      type: 'cancel-add-group';
-    }
-  | {
-      type: 'submit-add-group';
-    }
-  | {
-      type: 'group-edit-select-legend-type';
-      legendId: string;
+      memberId: string;
     };
 
 /**
@@ -329,7 +300,7 @@ function textViewerReducer(state: State, action: Action): State {
           attributeId('forte.data.ontology.base_ontology.Token', 'pos_tag'),
         ],
         // selectedAnnotationId: '5',
-        selectedGroupIds: action.textPack.groups.map(g => g.id),
+        // selectedGroupIds: action.textPack.groups.map(g => g.id),
         // collpasedLineIndexes: [],
 
         // test linkEditIsCreating
@@ -407,25 +378,25 @@ function textViewerReducer(state: State, action: Action): State {
         };
       }
 
-      if (state.groupEditIsCreating) {
-        const groupEditAnnotationIds = [...state.groupEditAnnotationIds];
+      // if (state.groupEditIsCreating) {
+      //   const groupEditAnnotationIds = [...state.groupEditAnnotationIds];
 
-        if (groupEditAnnotationIds.includes(action.annotationId)) {
-          return {
-            ...state,
-            groupEditAnnotationIds: state.groupEditAnnotationIds.filter(
-              id => id !== action.annotationId
-            ),
-          };
-        } else {
-          groupEditAnnotationIds.push(action.annotationId);
+      //   if (groupEditAnnotationIds.includes(action.annotationId)) {
+      //     return {
+      //       ...state,
+      //       groupEditAnnotationIds: state.groupEditAnnotationIds.filter(
+      //         id => id !== action.annotationId
+      //       ),
+      //     };
+      //   } else {
+      //     groupEditAnnotationIds.push(action.annotationId);
 
-          return {
-            ...state,
-            groupEditAnnotationIds,
-          };
-        }
-      }
+      //     return {
+      //       ...state,
+      //       groupEditAnnotationIds,
+      //     };
+      //   }
+      // }
 
       let halfSelectedAnnotationIds: string[] = [];
       let halfSelectedLinkIds: string[] = [];
@@ -632,25 +603,6 @@ function textViewerReducer(state: State, action: Action): State {
         return state;
       }
 
-      if (state.groupEditIsCreating) {
-        const groupEditLinkIds = [...state.groupEditLinkIds];
-
-        if (groupEditLinkIds.includes(action.linkId)) {
-          return {
-            ...state,
-            groupEditLinkIds: state.groupEditLinkIds.filter(
-              id => id !== action.linkId
-            ),
-          };
-        } else {
-          groupEditLinkIds.push(action.linkId);
-          return {
-            ...state,
-            groupEditLinkIds,
-          };
-        }
-      }
-
       let halfSelectedAnnotationIds: string[] = [];
       if (state.textPack) {
         const link = state.textPack.links.find(l => l.id === action.linkId);
@@ -735,7 +687,7 @@ function textViewerReducer(state: State, action: Action): State {
     }
 
     case 'start-create-link':
-      if (state.linkEditIsCreating || state.groupEditIsCreating) {
+      if (state.linkEditIsCreating) {
         if (state.linkEditFromEntryId === action.annotationId) {
           return {
             ...state,
@@ -843,7 +795,7 @@ function textViewerReducer(state: State, action: Action): State {
         ...state,
         ...initialLinkEditState,
         ...initialUserSelectState,
-        ...initialGroupEditState,
+        // ...initialGroupEditState,
         annoEditIsCreating: true,
       };
 
@@ -922,7 +874,7 @@ function textViewerReducer(state: State, action: Action): State {
       );
 
       const textPack = state.textPack as ISinglePack;
-      ll('newAnno', newAnno);
+
       return {
         ...state,
         annoEditCursorBegin: null,
@@ -935,107 +887,38 @@ function textViewerReducer(state: State, action: Action): State {
       };
     }
 
-    case 'select-group':
-      if (state.selectedGroupIds.includes(action.groupId)) {
-        return state;
-      } else {
-        return {
-          ...state,
-          selectedGroupIds: [...state.selectedGroupIds, action.groupId],
-        };
-      }
-
-    case 'deselect-group':
-      if (state.selectedGroupIds.includes(action.groupId)) {
-        return {
-          ...state,
-          selectedGroupIds: state.selectedGroupIds.filter(
-            groupId => groupId !== action.groupId
-          ),
-        };
-      } else {
-        return state;
-      }
-
-    case 'toggle-all-group': {
-      if (!state.textPack) {
-        return state;
-      }
-
-      const groupIdToSelect = state.textPack.groups
-        .filter(g => state.selectedLegendIds.includes(g.legendId))
-        .map(g => g.id);
-
-      if (groupIdToSelect.length === state.selectedGroupIds.length) {
-        // if every group are already selected, deselect all
-        return {
-          ...state,
-          selectedGroupIds: [],
-        };
-      } else {
-        return {
-          ...state,
-          selectedGroupIds: state.textPack.groups
-            .filter(g => state.selectedLegendIds.includes(g.legendId))
-            .map(g => g.id),
-        };
-      }
+    case 'jump-to-annotation': {
+      return {
+        ...state,
+        jumpToAnnotation: action.annotationId,
+      };
     }
 
-    case 'start-add-group':
+    case 'jump-to-annotation-done': {
       return {
         ...state,
-        ...initialUserSelectState,
-        ...initialAnnoEditState,
-        ...initialLinkEditState,
-        selectedGroupIds: [],
-        groupEditIsCreating: true,
+        jumpToAnnotation: null,
       };
+    }
 
-    case 'cancel-add-group':
-      return {
-        ...state,
-        ...initialGroupEditState,
-      };
-
-    case 'group-edit-select-legend-type':
-      return {
-        ...state,
-        groupEditSelectedLegendId: action.legendId,
-      };
-
-    case 'submit-add-group': {
-      if (!state.groupEditSelectedLegendId) {
-        throw new Error('groupEditSelectedLegendId is required');
-      }
-      if (!state.ontology) {
-        throw new Error('ontology is required');
-      }
-
-      const memberType = getGroupType(
-        state.groupEditSelectedLegendId,
-        state.ontology
-      );
-      const newGroup: IGroup = {
-        id: 'group_' + Math.random(),
-        attributes: {},
-        legendId: state.groupEditSelectedLegendId,
-        memberType,
-        members:
-          memberType === 'annotation'
-            ? state.groupEditAnnotationIds
-            : state.groupEditLinkIds,
-      };
-
+    case 'add-member-to-group': {
       const textPack = state.textPack as ISinglePack;
+      const groups = textPack.groups.map(g => {
+        if (g.id === action.groupId) {
+          return {
+            ...g,
+            members: [...g.members, action.memberId],
+          };
+        } else {
+          return g;
+        }
+      });
 
       return {
         ...state,
-        ...initialGroupEditState,
-        selectedGroupIds: [...state.selectedGroupIds, newGroup.id],
         textPack: {
           ...textPack,
-          groups: [...textPack.groups, newGroup],
+          groups,
         },
       };
     }
