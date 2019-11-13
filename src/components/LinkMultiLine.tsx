@@ -22,8 +22,6 @@ export interface LinkMultiLineProp {
   };
   isSelected: boolean;
   isHightlighted: boolean;
-  // isInGroup: boolean;
-  // groupLegendColor: string | undefined;
   linkHeight: Record<string, Record<string, number>>;
   selectedLegendAttributeIds: string[];
   lineHeights: number[];
@@ -41,8 +39,6 @@ export default function LinkMultiLine({
   linkWithPosition,
   isSelected,
   isHightlighted,
-  // isInGroup,
-  // groupLegendColor,
   linkHeight,
   lineHeights,
   selectedLegendAttributeIds,
@@ -56,18 +52,11 @@ export default function LinkMultiLine({
   if (isSelected || isHightlighted) {
     borderColor = '#555';
   }
-  // if (isInGroup) {
-  //   borderColor = 'red';
-  // }
 
   let labelColor = '#999';
   if (isSelected || isHightlighted) {
     labelColor = '#555';
   }
-  // if (isInGroup && groupLegendColor) {
-  //   labelColor = groupLegendColor;
-  //   borderColor = groupLegendColor;
-  // }
 
   const borderWidth = isSelected || isHightlighted ? '2px' : '1px';
   const zIndex = isSelected || isHightlighted ? 1 : 0;

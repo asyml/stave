@@ -15,9 +15,6 @@ export interface AnnotaionProp {
   annotation: IAnnotation;
   isSelected: boolean;
   isHighlighted: boolean;
-  // isInGroup: boolean;
-  // groupBlongs: IGroup | null;
-  // groupLegendColor: string | undefined;
   legend: IColoredLegend;
   position: IAnnotationPosition;
 }
@@ -26,9 +23,6 @@ function Annotaion({
   annotation,
   isSelected,
   isHighlighted,
-  // isInGroup,
-  // groupBlongs,
-  // groupLegendColor,
   legend,
   position,
 }: AnnotaionProp) {
