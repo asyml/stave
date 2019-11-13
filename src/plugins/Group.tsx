@@ -8,17 +8,6 @@ interface PluginComponenProp {
   appState: State;
 }
 
-// function Foo(props: any) {
-//   console.log('render foo');
-//   const [num, setNum] = useState(0);
-//   return (
-//     <div className="App">
-//       <h1>{num}</h1>
-//       <button onClick={() => setNum(num + 1)}>+</button>
-//     </div>
-//   );
-// }
-
 function Group(props: PluginComponenProp) {
   const [dropGroupId, setDropGroupId] = useState<string | null>(null);
 
@@ -27,21 +16,12 @@ function Group(props: PluginComponenProp) {
   }
 
   const dispatch = props.dispatch;
-  const { textPack, selectedLegendIds } = props.appState;
+  const { textPack } = props.appState;
   const { groups } = textPack;
-  //   const visibleGroups = groups.filter(group =>
-  //     selectedLegendIds.includes(group.legendId)
-  //   );
-
-  //   if (!visibleGroups.length) {
-  //     return null;
-  //   }
 
   return (
     <div key={'plugin-group'} className={style.group_name_container}>
       {groups.map(group => {
-        // const isSelected = selectedGroupIds.includes(group.id);
-
         return (
           <div
             key={group.id}
@@ -75,22 +55,7 @@ function Group(props: PluginComponenProp) {
             }}
             className={`${style.group}
                 ${dropGroupId === group.id ? style.group_dropped : ''}`}
-            onClick={() => {
-              //   if (isSelected) {
-              //     dispatch({
-              //       type: 'deselect-group',
-              //       groupId: group.id,
-              //     });
-              //   } else {
-              //     dispatch({
-              //       type: 'select-group',
-              //       groupId: group.id,
-              //     });
-              //   }
-            }}
           >
-            {/* {group.id} */}
-            {/* <span>({group.members.length})</span> */}
             {group.members.map((member, i) => (
               <span
                 key={i}
