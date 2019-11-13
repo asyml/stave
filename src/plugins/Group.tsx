@@ -8,6 +8,17 @@ interface PluginComponenProp {
   appState: State;
 }
 
+// function Foo(props: any) {
+//   console.log('render foo');
+//   const [num, setNum] = useState(0);
+//   return (
+//     <div className="App">
+//       <h1>{num}</h1>
+//       <button onClick={() => setNum(num + 1)}>+</button>
+//     </div>
+//   );
+// }
+
 function Group(props: PluginComponenProp) {
   const [dropGroupId, setDropGroupId] = useState<string | null>(null);
 

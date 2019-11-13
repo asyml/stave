@@ -26,7 +26,7 @@ export interface TextViewerProp {
 }
 
 function TextViewer({ textPack, ontology, plugins }: TextViewerProp) {
-  // console.log('TextViewer rerender');
+  console.log('TextViewer rerender' + Math.random());
 
   const { annotations, legends, links, attributes } = textPack;
 
@@ -144,12 +144,10 @@ function TextViewer({ textPack, ontology, plugins }: TextViewerProp) {
 
           {enabledPlugins.length ? (
             <div className={style.plugins_container}>
-              {enabledPlugins.map(p =>
-                p.component({
-                  dispatch,
-                  appState,
-                })
-              )}
+              {enabledPlugins.map((p, i) => {
+                const Comp = p.component;
+                return <Comp key={i} dispatch={dispatch} appState={appState} />;
+              })}
             </div>
           ) : null}
         </div>
