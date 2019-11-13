@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import style from '../styles/TextArea.module.css';
-import { ISinglePack, IRect, IColoredLegend, IGroup } from '../lib/interfaces';
+import { ISinglePack, IRect, IColoredLegend } from '../lib/interfaces';
 import { calcuateLinesLevels, calcuateLinkHeight } from '../lib/utils';
 import {
   spaceOutText,

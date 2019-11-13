@@ -3,7 +3,6 @@ import {
   IAnnotation,
   IColoredLegend,
   IAnnotationPosition,
-  IGroup,
 } from '../lib/interfaces';
 import {
   useTextViewerDispatch,

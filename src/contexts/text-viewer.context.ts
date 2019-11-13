@@ -1,9 +1,4 @@
-import {
-  ISinglePack,
-  IOntology,
-  IGroup,
-  IAnnotationPosition,
-} from '../lib/interfaces';
+import { ISinglePack, IOntology, IAnnotationPosition } from '../lib/interfaces';
 import { createContextProvider } from '../lib/create-context-provider';
 import { attributeId } from '../lib/utils';
 import { restorePos } from '../lib/text-spacer';
