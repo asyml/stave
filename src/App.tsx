@@ -10,16 +10,21 @@ import {
 } from './contexts/text-viewer.context';
 import { singlePack } from './lib/mock-data-2';
 import { ontology } from './lib/mock-config-data';
+import { IPlugin } from './lib/interfaces';
 
-function App() {
+interface AppProp {
+  plugins: IPlugin[];
+}
+
+function App(props: AppProp) {
   return (
     <TextViewerProvider>
-      <TextViewerFetchContainer />
+      <TextViewerFetchContainer {...props} />
     </TextViewerProvider>
   );
 }
 
-function TextViewerFetchContainer() {
+function TextViewerFetchContainer(props: AppProp) {
   const dispatch = useTextViewerDispatch();
   const state = useTextViewerState();
 
@@ -40,7 +45,13 @@ function TextViewerFetchContainer() {
     return <div>loading...</div>;
   }
 
-  return <TextViewer textPack={state.textPack} ontology={state.ontology} />;
+  return (
+    <TextViewer
+      textPack={state.textPack}
+      ontology={state.ontology}
+      plugins={props.plugins}
+    />
+  );
 }
 
 export default App;

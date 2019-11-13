@@ -66,43 +66,14 @@
   overflow: scroll;
 }
 
-.group_name_container {
-  border-top: 1px solid #ccc;
-  padding: 8px;
-  background: #f8f8fa;
-}
-
-.group_legend_toggle_button,
-.group_legend_label {
-  margin-right: 4px;
-  margin-bottom: 4px;
-  display: inline-block;
-}
-
-.group_name {
-  display: inline-block;
-  background: #999;
-  color: white;
-  margin-right: 8px;
-  margin-bottom: 4px;
-  padding: 4px;
-  font-size: 12px;
-  opacity: 0.5;
-  cursor: pointer;
-}
-
-.group_name:hover {
-  opacity: 0.66;
-}
-.group_name_selected {
-  opacity: 1;
-}
-.group_name_selected:hover {
-  opacity: 1;
-}
-
 .button_action_description {
   margin-top: 4px;
   font-size: 12px;
   color: #999;
+}
+
+.plugins_container {
+  max-height: 300px;
+  overflow: scroll;
+  border-top: 1px solid #ccc;
 }

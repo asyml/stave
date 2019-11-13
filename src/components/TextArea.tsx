@@ -1,11 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import style from '../styles/TextArea.module.css';
-import { ISinglePack, IRect, IColoredLegend, IGroup } from '../lib/interfaces';
-import {
-  calcuateLinesLevels,
-  calcuateLinkHeight,
-  getGroupByAnnotation,
-} from '../lib/utils';
+import { ISinglePack, IRect, IColoredLegend } from '../lib/interfaces';
+import { calcuateLinesLevels, calcuateLinkHeight } from '../lib/utils';
 import {
   spaceOutText,
   mergeLinkWithPosition,
@@ -26,14 +22,9 @@ import LineWithArrow from './LineWithArrow';
 export interface TextAreaProp {
   textPack: ISinglePack;
   annotationLegendsColored: IColoredLegend[];
-  groupLegendsColored: IColoredLegend[];
 }
 
-function TextArea({
-  textPack,
-  annotationLegendsColored,
-  groupLegendsColored,
-}: TextAreaProp) {
+function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
   const { annotations, text, links } = textPack;
   const textNodeEl = useRef<HTMLDivElement>(null);
   const textAreaEl = useRef<HTMLDivElement>(null);
@@ -42,7 +33,6 @@ function TextArea({
   const {
     selectedLegendIds,
     selectedLegendAttributeIds,
-    selectedGroupIds,
 
     spacingCalcuated,
     spacedText,
@@ -67,9 +57,7 @@ function TextArea({
     annoEditCursorBegin,
     annoEditCursorEnd,
 
-    groupEditIsCreating,
-    groupEditAnnotationIds,
-    groupEditLinkIds,
+    jumpToAnnotation,
   } = useTextViewerState();
 
   useEffect(() => {
@@ -117,6 +105,20 @@ function TextArea({
       collpasedLineIndexes
     );
 
+    if (spacingCalcuated && jumpToAnnotation !== null) {
+      const el = document.querySelector(
+        `[data-annotaion-id="${jumpToAnnotation}"]`
+      );
+
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      dispatch({
+        type: 'jump-to-annotation-done',
+      });
+    }
+
     window.addEventListener('resize', handleWindowResize);
 
     return () => {
@@ -129,6 +131,7 @@ function TextArea({
     spacingCalcuated,
     dispatch,
     collpasedLineIndexes,
+    jumpToAnnotation,
   ]);
 
   const annotationsWithPosition = mergeAnnotationWithPosition(
@@ -149,7 +152,7 @@ function TextArea({
   const linkHeight = calcuateLinkHeight(linesLevels, linkGap);
   const lineHeights = Object.keys(linesLevels).map(l => +l);
 
-  const textAreaClass = `${style.text_area_container} ${
+  const textAreaClass = `text_area_container ${style.text_area_container} ${
     spacedText ? style.text_area_container_visible : ''
   }`;
 
@@ -305,29 +308,6 @@ function TextArea({
             legend => legend.id === ann.annotation.legendId
           );
 
-          const isInCreatingGroup =
-            groupEditIsCreating &&
-            groupEditAnnotationIds.includes(ann.annotation.id);
-
-          const visibleSelectedGroupIds = selectedGroupIds.filter(gId => {
-            const group = textPack.groups.find(g => g.id === gId) as IGroup;
-            return selectedLegendIds.includes(group.legendId);
-          });
-
-          const groupOfAnnotation = getGroupByAnnotation(
-            visibleSelectedGroupIds,
-            textPack,
-            ann.annotation.id
-          );
-
-          let groupLegendColor = undefined;
-          if (groupOfAnnotation) {
-            let groupLegendColored = groupLegendsColored.find(
-              g => g.id === groupOfAnnotation.legendId
-            );
-            groupLegendColor = groupLegendColored && groupLegendColored.color;
-          }
-
           if (!legend) {
             return null;
           }
@@ -337,9 +317,6 @@ function TextArea({
               key={i}
               annotation={ann.annotation}
               isSelected={ann.annotation.id === selectedAnnotationId}
-              isInGroup={!!groupOfAnnotation || isInCreatingGroup}
-              groupBlongs={groupOfAnnotation}
-              groupLegendColor={groupLegendColor}
               isHighlighted={
                 highlightedAnnotationIds.indexOf(ann.annotation.id) > -1 ||
                 halfSelectedAnnotationIds.indexOf(ann.annotation.id) > -1
@@ -463,28 +440,6 @@ function TextArea({
             highlightedLinkIds.includes(linkPos.link.id) ||
             halfSelectedLinkIds.includes(linkPos.link.id);
 
-          const visibleSelectedGroupIds = selectedGroupIds.filter(gId => {
-            const group = textPack.groups.find(g => g.id === gId) as IGroup;
-            return selectedLegendIds.includes(group.legendId);
-          });
-
-          const groupOfLink = getGroupByAnnotation(
-            visibleSelectedGroupIds,
-            textPack,
-            linkPos.link.id
-          );
-
-          let groupLegendColor = undefined;
-          if (groupOfLink) {
-            let groupLegendColored = groupLegendsColored.find(
-              g => g.id === groupOfLink.legendId
-            );
-            groupLegendColor = groupLegendColored && groupLegendColored.color;
-          }
-
-          const isInCreatingGroup =
-            groupEditIsCreating && groupEditLinkIds.includes(linkPos.link.id);
-
           if (linkPos.fromLinkY === linkPos.toLinkY) {
             const lineIndex = lineHeights.indexOf(linkPos.fromLinkY);
             const isLineCollapsed =
@@ -497,8 +452,6 @@ function TextArea({
                 isSelected={isLinkSelected}
                 isHightlighted={isLinkHightlighted}
                 isCollapsed={isLineCollapsed}
-                isInGroup={!!groupOfLink || isInCreatingGroup}
-                groupLegendColor={groupLegendColor}
                 linkHeight={linkHeight}
                 selectedLegendAttributeIds={selectedLegendAttributeIds}
               />
@@ -510,8 +463,6 @@ function TextArea({
                 linkWithPosition={linkPos}
                 isSelected={isLinkSelected}
                 isHightlighted={isLinkHightlighted}
-                isInGroup={!!groupOfLink || isInCreatingGroup}
-                groupLegendColor={groupLegendColor}
                 linkHeight={linkHeight}
                 selectedLegendAttributeIds={selectedLegendAttributeIds}
                 collpasedLineIndexes={collpasedLineIndexes}
