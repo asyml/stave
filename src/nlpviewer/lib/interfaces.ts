@@ -1,5 +1,3 @@
-import { isJSXIdentifier } from '@babel/types';
-
 export interface IAttributes {
   [key: string]: any;
 }
