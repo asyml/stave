@@ -1,4 +1,4 @@
-import { IOntology } from './interfaces';
+import { IOntology } from '../nlpviewer';
 
 export const ontology: IOntology = {
   ontologyName: 'forte.data.ontology.ontonotes_ontology',
