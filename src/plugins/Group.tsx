@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Dispatch, State } from '../contexts/text-viewer.context';
+import { Dispatch, State } from '../nlpviewer';
 import style from './Group.module.css';
-import { IGroup, ISinglePack } from '../lib/interfaces';
+import { IGroup, ISinglePack } from '../nlpviewer';
 
 interface PluginComponenProp {
   dispatch: Dispatch;

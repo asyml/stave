@@ -1,4 +1,4 @@
-import { ISinglePack } from './interfaces';
+import { ISinglePack } from '../nlpviewer';
 
 export const singlePack: ISinglePack = {
   text: `The Indonesian billionaire James Riady has agreed to pay $ 8.5 million and plead guilty to illegally donating money for Bill Clinton 's 1992 presidential campaign . He admits he was trying to influence American policy on China .`,
