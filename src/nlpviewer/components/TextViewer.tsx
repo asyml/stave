@@ -67,8 +67,6 @@ function TextViewer({ textPack, ontology, plugins }: TextViewerProp) {
 
   return (
     <div className={style.text_viewer}>
-      <header className={style.layout_header}>NLP Viewer</header>
-
       <main className={style.layout_container}>
         <div className={style.metadata_side_container}>
           <TextDetail
