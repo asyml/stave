@@ -46,3 +46,12 @@ def query(request, document_id):
     docJson = model_to_dict(
         Document.objects.get(pk=document_id))
     return JsonResponse(docJson, safe=False)
+
+
+@require_login
+def delete(request, document_id):
+    doc = Document.objects.get(pk=document_id)
+    doc.delete()
+
+    return HttpResponse('ok')
+ 

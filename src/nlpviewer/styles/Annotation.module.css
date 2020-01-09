@@ -36,12 +36,12 @@
   border-color: white;
 }
 .annotation_container_to_be_link {
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+  border: 1px solid blue;
 }
 
 .annotation_container_to_be_link:hover,
 .annotation_container_to_be_link:active {
-  box-shadow: none;
+  border: 2px solid red;
 }
 
 .add_icon {

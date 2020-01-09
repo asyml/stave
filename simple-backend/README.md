@@ -30,10 +30,10 @@ A simple backend server application that manage documents and persist data.
 - POST `/documents/new`
   - params `{ name: string, textPack: string }`
   - return `{ id: string, name: string, textPack: string }`
-- PUT `/documents/[document_id]/edit`
+- POST `/documents/[document_id]/edit`
   - params `{ name?: string, textPack?: string }`
   - return `{ name: string, textPack: string }`
-- DELETE `/documents/[document_id]`
+- POST `/documents/[document_id]/delete`
 
 ### User route
 
@@ -44,13 +44,13 @@ A simple backend server application that manage documents and persist data.
 - POST `/users/new`
   - params `{ name: string, password: string }`
   - return `{ id: string, name: string }`
-- PUT `/users/[user_id]/edit`
+- POST `/users/[user_id]/edit`
   - params `{ name: string, password: string }`
   - return `{ id: string, name: string }`
-- DELETE `/users/[user_id]`
+- POST `/users/[user_id]/delete`
 
 ### Session route
 
 - POST `/login`
   - params `{ name: string, password: string}`
-- POST `/logout`
+- GET `/logout`
