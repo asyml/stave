@@ -1,21 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { IAnnotationPosition, IAnnotation } from '../lib/interfaces';
+import React, { useState, useEffect, memo } from 'react';
+import { IAnnotationPosition } from '../lib/interfaces';
 import { useTextViewerDispatch } from '../contexts/text-viewer.context';
 import LineWithArrow from './LineWithArrow';
 
 export interface LinkEditConnectorProp {
-  annotationsWithPosition: {
-    position: IAnnotationPosition;
-    annotation: IAnnotation;
-  }[];
-  fromEntryId: string | null;
+  position: IAnnotationPosition;
   offsetX: number;
   offsetY: number;
 }
 
-export default function LinkEditConnector({
-  annotationsWithPosition,
-  fromEntryId,
+function LinkEditConnector({
+  position,
   offsetX,
   offsetY,
 }: LinkEditConnectorProp) {
@@ -48,15 +43,11 @@ export default function LinkEditConnector({
     };
   }, [dispatch]);
 
-  const startAnnotaion = annotationsWithPosition.find(
-    link => link.annotation.id === fromEntryId
-  );
   const isMoved = pos.x !== 0 || pos.y !== 0;
-  if (!startAnnotaion || !fromEntryId || !isMoved) return null;
+  if (!isMoved) return null;
 
-  let x =
-    startAnnotaion.position.rects[0].x + startAnnotaion.position.rects[0].width;
-  let y = startAnnotaion.position.rects[0].y;
+  let x = position.rects[0].x + position.rects[0].width;
+  let y = position.rects[0].y;
 
   const fromPos = {
     x,
@@ -70,3 +61,5 @@ export default function LinkEditConnector({
 
   return <LineWithArrow fromPos={fromPos} toPos={toPos} />;
 }
+
+export default memo(LinkEditConnector);

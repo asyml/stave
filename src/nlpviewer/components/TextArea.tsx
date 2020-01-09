@@ -1,6 +1,12 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import style from '../styles/TextArea.module.css';
-import { ISinglePack, IRect, IColoredLegend } from '../lib/interfaces';
+import {
+  ISinglePack,
+  IRect,
+  IColoredLegend,
+  IAnnotationPosition,
+  IAnnotation,
+} from '../lib/interfaces';
 import { calcuateLinesLevels, calcuateLinkHeight } from '../lib/utils';
 import {
   spaceOutText,
@@ -134,91 +140,35 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
     jumpToAnnotation,
   ]);
 
-  const annotationsWithPosition = mergeAnnotationWithPosition(
-    annotationPositions,
-    annotations
-  ).filter(ann => selectedLegendIds.indexOf(ann.annotation.legendId) > -1);
+  const annotationsWithPosition = useMemo(() => {
+    return mergeAnnotationWithPosition(annotationPositions, annotations).filter(
+      ann => selectedLegendIds.indexOf(ann.annotation.legendId) > -1
+    );
+  }, [annotationPositions, annotations, selectedLegendIds]);
 
-  const linksWithPos = mergeLinkWithPosition(
-    links,
-    annotationsWithPosition
-  ).filter(link => selectedLegendIds.indexOf(link.link.legendId) > -1);
+  const linksWithPos = useMemo(() => {
+    return mergeLinkWithPosition(links, annotationsWithPosition).filter(
+      link => selectedLegendIds.indexOf(link.link.legendId) > -1
+    );
+  }, [links, annotationsWithPosition, selectedLegendIds]);
 
   const lineStartX = 0; // textNodeDimension.x;
   const lineWidth = textNodeWidth; // textNodeDimension.width;
   const linkGap = 8;
 
-  const linesLevels = calcuateLinesLevels(linksWithPos, lineStartX, lineWidth);
-  const linkHeight = calcuateLinkHeight(linesLevels, linkGap);
+  const linesLevels = useMemo(() => {
+    return calcuateLinesLevels(linksWithPos, lineStartX, lineWidth);
+  }, [linksWithPos, lineStartX, lineWidth]);
+
+  const linkHeight = useMemo(() => {
+    return calcuateLinkHeight(linesLevels, linkGap);
+  }, [linesLevels, linkGap]);
+
   const lineHeights = Object.keys(linesLevels).map(l => +l);
 
   const textAreaClass = `text_area_container ${style.text_area_container} ${
     spacedText ? style.text_area_container_visible : ''
   }`;
-
-  function renderLineWithArrow() {
-    if (
-      linkEditIsCreating &&
-      !linkEditIsDragging &&
-      linkEditFromEntryId &&
-      linkEditToEntryId
-    ) {
-      const startAnnotaion = annotationsWithPosition.find(
-        link => link.annotation.id === linkEditFromEntryId
-      );
-
-      const endAnnotaion = annotationsWithPosition.find(
-        link => link.annotation.id === linkEditToEntryId
-      );
-
-      if (!startAnnotaion || !endAnnotaion) return null;
-
-      const fromPos = {
-        x:
-          startAnnotaion.position.rects[0].x +
-          startAnnotaion.position.rects[0].width,
-        y: startAnnotaion.position.rects[0].y,
-      };
-
-      const toPos = {
-        x:
-          endAnnotaion.position.rects[0].x +
-          endAnnotaion.position.rects[0].width / 2,
-        y: endAnnotaion.position.rects[0].y,
-      };
-
-      return (
-        <div className={style.link_edit_container}>
-          <LineWithArrow fromPos={fromPos} toPos={toPos} />
-        </div>
-      );
-    } else {
-      return null;
-    }
-  }
-
-  function renderConnector() {
-    if (!linkEditIsDragging) {
-      return null;
-    }
-
-    if (!textNodeEl.current) {
-      return null;
-    }
-
-    const textNodeRect = textNodeEl.current.getBoundingClientRect();
-
-    return (
-      <div className={style.link_edit_container}>
-        <LinkEditConnector
-          annotationsWithPosition={annotationsWithPosition}
-          fromEntryId={linkEditFromEntryId}
-          offsetX={textNodeRect.left}
-          offsetY={textNodeRect.top}
-        />
-      </div>
-    );
-  }
 
   useEffect(() => {
     function handleTextMouseUp(e: MouseEvent) {
@@ -321,8 +271,12 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
                 highlightedAnnotationIds.indexOf(ann.annotation.id) > -1 ||
                 halfSelectedAnnotationIds.indexOf(ann.annotation.id) > -1
               }
-              legend={legend}
+              legendColor={legend.color}
               position={ann.position}
+              linkEditIsCreating={linkEditIsCreating}
+              linkEditIsDragging={linkEditIsDragging}
+              linkEditFromEntryId={linkEditFromEntryId}
+              linkEditToEntryId={linkEditToEntryId}
             />
           );
         })}
@@ -420,7 +374,8 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
           return (
             <AnnotationLabel
               key={ann.annotation.id}
-              annotationWithPosition={ann}
+              position={ann.position}
+              annotation={ann.annotation}
               isSelected={isSelected}
               selectedLegendAttributeIds={selectedLegendAttributeIds}
             />
@@ -475,8 +430,117 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
         })}
       </div>
 
-      {renderConnector()}
-      {renderLineWithArrow()}
+      <ConnectorContainer
+        linkEditIsDragging={linkEditIsDragging}
+        textNodeEl={textNodeEl.current}
+        annotationsWithPosition={annotationsWithPosition}
+        linkEditFromEntryId={linkEditFromEntryId}
+      />
+      <LineWithArrowContainer
+        linkEditIsCreating={linkEditIsCreating}
+        linkEditIsDragging={linkEditIsDragging}
+        linkEditFromEntryId={linkEditFromEntryId}
+        linkEditToEntryId={linkEditToEntryId}
+        annotationsWithPosition={annotationsWithPosition}
+      />
+    </div>
+  );
+}
+
+function LineWithArrowContainer({
+  linkEditIsCreating,
+  linkEditIsDragging,
+  linkEditFromEntryId,
+  linkEditToEntryId,
+  annotationsWithPosition,
+}: {
+  linkEditIsCreating: boolean;
+  linkEditIsDragging: boolean;
+  linkEditFromEntryId: string | null;
+  linkEditToEntryId: string | null;
+  annotationsWithPosition: {
+    position: IAnnotationPosition;
+    annotation: IAnnotation;
+  }[];
+}) {
+  if (
+    linkEditIsCreating &&
+    !linkEditIsDragging &&
+    linkEditFromEntryId &&
+    linkEditToEntryId
+  ) {
+    const startAnnotaion = annotationsWithPosition.find(
+      link => link.annotation.id === linkEditFromEntryId
+    );
+
+    const endAnnotaion = annotationsWithPosition.find(
+      link => link.annotation.id === linkEditToEntryId
+    );
+
+    if (!startAnnotaion || !endAnnotaion) return null;
+
+    const fromPos = {
+      x:
+        startAnnotaion.position.rects[0].x +
+        startAnnotaion.position.rects[0].width,
+      y: startAnnotaion.position.rects[0].y,
+    };
+
+    const toPos = {
+      x:
+        endAnnotaion.position.rects[0].x +
+        endAnnotaion.position.rects[0].width / 2,
+      y: endAnnotaion.position.rects[0].y,
+    };
+
+    return (
+      <div className={style.link_edit_container}>
+        <LineWithArrow fromPos={fromPos} toPos={toPos} />
+      </div>
+    );
+  } else {
+    return null;
+  }
+}
+
+function ConnectorContainer({
+  linkEditIsDragging,
+  textNodeEl,
+  annotationsWithPosition,
+  linkEditFromEntryId,
+}: {
+  linkEditIsDragging: boolean;
+  textNodeEl: HTMLDivElement | null;
+  linkEditFromEntryId: string | null;
+  annotationsWithPosition: {
+    position: IAnnotationPosition;
+    annotation: IAnnotation;
+  }[];
+}) {
+  if (!linkEditIsDragging) {
+    return null;
+  }
+
+  if (!textNodeEl) {
+    return null;
+  }
+
+  const textNodeRect = textNodeEl.getBoundingClientRect();
+  const startAnnotaion = annotationsWithPosition.find(
+    link => link.annotation.id === linkEditFromEntryId
+  );
+
+  if (!startAnnotaion) return null;
+
+  return (
+    <div className={style.link_edit_container}>
+      <LinkEditConnector
+        // annotation={startAnnotaion}
+        position={startAnnotaion.position}
+        // fromEntryId={linkEditFromEntryId}
+        offsetX={textNodeRect.left}
+        offsetY={textNodeRect.top}
+      />
     </div>
   );
 }

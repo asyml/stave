@@ -1,38 +1,32 @@
-import React from 'react';
-import {
-  IAnnotation,
-  IColoredLegend,
-  IAnnotationPosition,
-} from '../lib/interfaces';
-import {
-  useTextViewerDispatch,
-  useTextViewerState,
-} from '../contexts/text-viewer.context';
+import React, { memo } from 'react';
+import { IAnnotation, IAnnotationPosition } from '../lib/interfaces';
+import { useTextViewerDispatch } from '../contexts/text-viewer.context';
 import style from '../styles/Annotation.module.css';
 
 export interface AnnotaionProp {
   annotation: IAnnotation;
   isSelected: boolean;
   isHighlighted: boolean;
-  legend: IColoredLegend;
+  legendColor: string;
   position: IAnnotationPosition;
+  linkEditIsCreating: boolean;
+  linkEditIsDragging: boolean;
+  linkEditToEntryId: string | null;
+  linkEditFromEntryId: string | null;
 }
 
 function Annotaion({
   annotation,
   isSelected,
   isHighlighted,
-  legend,
+  legendColor,
   position,
+  linkEditIsCreating,
+  linkEditIsDragging,
+  linkEditFromEntryId,
+  linkEditToEntryId,
 }: AnnotaionProp) {
   const dispatch = useTextViewerDispatch();
-  const {
-    linkEditFromEntryId,
-    linkEditToEntryId,
-    linkEditIsDragging,
-    linkEditIsCreating,
-    highlightedAnnotationIds,
-  } = useTextViewerState();
 
   const isLinkTarget =
     linkEditIsCreating &&
@@ -61,7 +55,7 @@ function Annotaion({
             }}
             data-annotaion-id={annotation.id}
             onMouseEnter={() => {
-              if (!highlightedAnnotationIds.includes(annotation.id)) {
+              if (!isHighlighted) {
                 dispatch({
                   type: 'highlight-annotation',
                   annotationId: annotation.id,
@@ -89,7 +83,7 @@ function Annotaion({
               className={style.annotaion}
               style={{
                 opacity,
-                background: legend.color,
+                background: legendColor,
                 height: rect.height,
                 width: rect.width,
               }}
@@ -140,4 +134,4 @@ function Annotaion({
   );
 }
 
-export default Annotaion;
+export default memo(Annotaion);
