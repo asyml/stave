@@ -3,12 +3,6 @@
   min-width: 800px;
 }
 
-.layout_header {
-  padding: 10px;
-  font-weight: bold;
-  border-bottom: 1px solid #ccc;
-}
-
 .layout_container {
   display: flex;
   height: calc(100vh - 35px);

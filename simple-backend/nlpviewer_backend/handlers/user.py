@@ -41,6 +41,14 @@ def edit(request, user_id):
 
 
 @require_login
+def delete(request, user_id):
+    user = User.objects.get(pk=user_id)
+    user.delete()
+
+    return HttpResponse('ok')
+
+
+@require_login
 def query(request, user_id):
     userJson = model_to_dict(
         User.objects.get(pk=user_id))
