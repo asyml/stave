@@ -68,4 +68,10 @@ function Logout() {
   return <button onClick={() => handleLogout()}>logout</button>;
 }
 
-export default App;
+let EntryComponent = App;
+
+if (process.env.REACT_APP_IS_DEMO === ('true' as any)) {
+  EntryComponent = Viewer;
+}
+
+export default EntryComponent;
