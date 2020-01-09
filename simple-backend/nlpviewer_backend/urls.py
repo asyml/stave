@@ -25,11 +25,13 @@ urlpatterns = [
     path('users/new', user.create),
     path('users/<int:user_id>', user.query),
     path('users/<int:user_id>/edit', user.edit),
+    path('users/<int:user_id>/delete', user.delete),
 
     path('documents', document.listAll),
     path('documents/new', document.create),
     path('documents/<int:document_id>', document.query),
     path('documents/<int:document_id>/edit', document.edit),
+    path('documents/<int:document_id>/delete', document.delete),
 
     path('admin/', admin.site.urls),
 ]

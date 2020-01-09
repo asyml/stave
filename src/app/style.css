@@ -1,0 +1,33 @@
+.layout_header {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+}
+
+.layout_header span {
+  font-weight: bold;
+}
+
+.layout_header nav {
+  margin-left: 15px;
+}
+
+.layout_header nav ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  display: flex;
+}
+
+.layout_header nav ul li {
+  margin-right: 5px;
+}
+
+.content {
+  display: flex;
+  padding: 5px 20px;
+}
+
+.content .content_left {
+  margin-right: 20px;
+}
