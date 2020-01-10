@@ -41,7 +41,7 @@ function Documents() {
         {docs.map(d => (
           <ul key={d.id}>
             <li>
-              <Link to={`/documents/${d.id}`}>{d.name}</Link> {d.textPack}{' '}
+              <Link to={`/documents/${d.id}`}>{d.name}</Link>{' '}
               <button onClick={() => handleDelete(d.id)}>X</button>
             </li>
           </ul>

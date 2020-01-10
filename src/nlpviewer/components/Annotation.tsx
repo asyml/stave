@@ -28,18 +28,9 @@ function Annotaion({
 }: AnnotaionProp) {
   const dispatch = useTextViewerDispatch();
 
-  const isLinkTarget =
-    linkEditIsCreating &&
-    linkEditFromEntryId !== annotation.id &&
-    (!linkEditToEntryId || linkEditIsDragging);
-
   return (
     <>
       {position.rects.map((rect, i) => {
-        let opacity = 0.2;
-        if (isHighlighted) opacity = 0.4;
-        if (isSelected) opacity = 0.66;
-
         const isConnectPointActive =
           (linkEditIsDragging || linkEditIsCreating) &&
           linkEditFromEntryId === annotation.id;
@@ -48,8 +39,9 @@ function Annotaion({
           <div
             key={i}
             className={`${style.annotation_container}
-              ${isLinkTarget && style.annotation_container_to_be_link}
-              ${isSelected && style.annotation_container_selected}`}
+              ${(isHighlighted || isSelected) &&
+                style.annotation_container_selected}
+              `}
             style={{
               transform: `translate(${rect.x}px,${rect.y}px)`,
             }}
@@ -80,12 +72,18 @@ function Annotaion({
             }}
           >
             <div
-              className={style.annotaion}
+              className={`${style.annotaion}`}
               style={{
-                opacity,
-                background: legendColor,
+                marginTop: -2,
                 height: rect.height,
                 width: rect.width,
+                borderTopColor: legendColor,
+                borderTopWidth: 5,
+                borderTopStyle: 'solid',
+                background:
+                  isHighlighted || isSelected || isConnectPointActive
+                    ? legendColor
+                    : undefined,
               }}
               draggable={true}
               onDragStart={e => {
@@ -108,7 +106,16 @@ function Annotaion({
                       annotationId: annotation.id,
                     });
               }}
-            ></div>
+            >
+              <div
+                className={`${style.annotaion_inner_left}`}
+                style={{ borderRightColor: legendColor }}
+              ></div>
+              <div
+                className={`${style.annotaion_inner_right}`}
+                style={{ borderLeftColor: legendColor }}
+              ></div>
+            </div>
             <div
               className={`${style.connect_point}
               ${isConnectPointActive && style.connect_point_active}`}

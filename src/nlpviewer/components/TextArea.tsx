@@ -22,7 +22,7 @@ import {
   useTextViewerState,
   useTextViewerDispatch,
 } from '../contexts/text-viewer.context';
-import { throttle } from 'lodash-es';
+import { debounce } from 'lodash-es';
 import LineWithArrow from './LineWithArrow';
 
 export interface TextAreaProp {
@@ -97,7 +97,7 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
       }
     }
 
-    const handleWindowResize = throttle(() => {
+    const handleWindowResize = debounce(() => {
       dispatch({
         type: 'reset-calculated-text-space',
       });

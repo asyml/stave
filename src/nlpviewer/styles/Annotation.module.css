@@ -8,6 +8,32 @@
 .annotaion {
   cursor: pointer;
   transition: opacity 0.36s;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.annotaion_inner_left {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 0;
+  height: 0;
+  border-right: 3px solid red;
+  border-top: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+  transform: rotate(45deg);
+}
+
+.annotaion_inner_right {
+  position: absolute;
+  top: -0;
+  right: 0px;
+  width: 0;
+  height: 0;
+  border-left: 3px solid red;
+  border-top: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+  transform: rotate(-45deg);
 }
 
 .connect_point {
@@ -35,14 +61,6 @@
 .connect_point:hover .add_icon::after {
   border-color: white;
 }
-.annotation_container_to_be_link {
-  border: 1px solid blue;
-}
-
-.annotation_container_to_be_link:hover,
-.annotation_container_to_be_link:active {
-  border: 2px solid red;
-}
 
 .add_icon {
   width: 5px;
@@ -68,10 +86,6 @@
   left: 3px;
   top: 1px;
   border-left: 1px solid #555;
-}
-
-.annotation_container_selected {
-  border-bottom: 2px solid #333;
 }
 
 .annotation_container_in_group {
