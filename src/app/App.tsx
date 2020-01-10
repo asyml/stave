@@ -14,6 +14,11 @@ import Documents from './pages/Documents';
 import Users from './pages/Users';
 import { logout } from './lib/api';
 
+import { singlePack } from './mock-data-2';
+import { ontology } from './mock-config-data';
+import NLPViewer from '../nlpviewer';
+import groupPlugin from '../plugins/Group';
+
 function App() {
   return (
     <Router>
@@ -57,6 +62,16 @@ function App() {
   );
 }
 
+function ViewWithDemoData() {
+  return (
+    <NLPViewer
+      textPack={singlePack}
+      ontology={ontology}
+      plugins={[groupPlugin]}
+    />
+  );
+}
+
 function Logout() {
   const history = useHistory();
 
@@ -71,7 +86,7 @@ function Logout() {
 let EntryComponent = App;
 
 if (process.env.REACT_APP_IS_DEMO === ('true' as any)) {
-  EntryComponent = Viewer;
+  EntryComponent = ViewWithDemoData;
 }
 
 export default EntryComponent;
