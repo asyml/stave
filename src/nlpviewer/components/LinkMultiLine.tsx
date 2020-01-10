@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { ILink, IAnnotation, IAnnotationPosition } from '../lib/interfaces';
 import { attributeId, shouldMultiLineGoLeft } from '../lib/utils';
 import { useTextViewerDispatch } from '../contexts/text-viewer.context';
@@ -35,7 +35,7 @@ const lineMaskColor = 'none';
 const textLinkDistance = 8;
 const borderRadius = 8;
 
-export default function LinkMultiLine({
+function LinkMultiLine({
   linkWithPosition,
   isSelected,
   isHightlighted,
@@ -369,3 +369,5 @@ export default function LinkMultiLine({
     </div>
   );
 }
+
+export default memo(LinkMultiLine);

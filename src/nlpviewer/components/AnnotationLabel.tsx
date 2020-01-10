@@ -1,31 +1,28 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { IAnnotationPosition, IAnnotation } from '../lib/interfaces';
 import style from '../styles/AnnotationLabel.module.css';
 import { attributeId } from '../lib/utils';
 
 export interface AnnotationLabelProp {
-  annotationWithPosition: {
-    position: IAnnotationPosition;
-    annotation: IAnnotation;
-  };
+  position: IAnnotationPosition;
+  annotation: IAnnotation;
   isSelected: boolean;
   selectedLegendAttributeIds: string[];
 }
 
-export default function AnnotationLabel({
-  annotationWithPosition,
+function AnnotationLabel({
+  position,
+  annotation,
   isSelected,
   selectedLegendAttributeIds,
 }: AnnotationLabelProp) {
-  const attrKeys = Object.keys(
-    annotationWithPosition.annotation.attributes
-  ).filter(attrKey => {
+  const attrKeys = Object.keys(annotation.attributes).filter(attrKey => {
     if (isSelected) {
       return true;
     } else {
       return (
         selectedLegendAttributeIds.indexOf(
-          attributeId(annotationWithPosition.annotation.legendId, attrKey)
+          attributeId(annotation.legendId, attrKey)
         ) > -1
       );
     }
@@ -37,21 +34,19 @@ export default function AnnotationLabel({
 
   return (
     <div
-      key={annotationWithPosition.annotation.id}
+      key={annotation.id}
       className={isSelected ? style.annotation_attr_container_selected : ''}
       style={{
         position: 'absolute',
         zIndex: isSelected ? 30 : 0,
         transform: `translate(-50%, 0)`,
-        top: annotationWithPosition.position.rects[0].y + 20,
-        left:
-          annotationWithPosition.position.rects[0].x +
-          annotationWithPosition.position.rects[0].width / 2,
+        top: position.rects[0].y + 20,
+        left: position.rects[0].x + position.rects[0].width / 2,
         fontSize: 10,
         backgroundColor: 'white',
       }}
     >
-      {annotationWithPosition.position.rects.map((rect, i) => {
+      {position.rects.map((rect, i) => {
         return attrKeys.map((attrKey, j) => {
           return (
             <div
@@ -72,11 +67,11 @@ export default function AnnotationLabel({
                 <>
                   <span className={style.annotation_attr_label}>{attrKey}</span>
                   <span className={style.annotation_attr_value}>
-                    {annotationWithPosition.annotation.attributes[attrKey]}
+                    {annotation.attributes[attrKey]}
                   </span>
                 </>
               ) : (
-                (annotationWithPosition.annotation.attributes[attrKey] || '')
+                (annotation.attributes[attrKey] || '')
                   .substring(0, 3)
                   .toUpperCase()
               )}
@@ -87,3 +82,5 @@ export default function AnnotationLabel({
     </div>
   );
 }
+
+export default memo(AnnotationLabel);
