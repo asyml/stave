@@ -48,14 +48,14 @@ function LinkMultiLine({
 }: LinkMultiLineProp) {
   const dispatch = useTextViewerDispatch();
 
-  let borderColor = '#bbb';
+  let borderColor = '#888';
   if (isSelected || isHightlighted) {
     borderColor = '#555';
   }
 
-  let labelColor = '#999';
+  let labelColor = '#666';
   if (isSelected || isHightlighted) {
-    labelColor = '#555';
+    labelColor = '#333';
   }
 
   const borderWidth = isSelected || isHightlighted ? '2px' : '1px';
