@@ -39,11 +39,14 @@ function Annotaion({
           <div
             key={i}
             className={`${style.annotation_container}
-              ${(isHighlighted || isSelected) &&
-                style.annotation_container_selected}
+              ${
+                isHighlighted || isSelected
+                  ? style.annotation_container_selected
+                  : ''
+              }
               `}
             style={{
-              transform: `translate(${rect.x}px,${rect.y}px)`,
+              transform: `translate(${rect.x - 1}px,${rect.y}px)`,
             }}
             data-annotaion-id={annotation.id}
             onMouseEnter={() => {
@@ -76,7 +79,7 @@ function Annotaion({
               style={{
                 marginTop: -2,
                 height: rect.height,
-                width: rect.width,
+                width: rect.width + 2,
                 borderTopColor: legendColor,
                 borderTopWidth: 5,
                 borderTopStyle: 'solid',

@@ -10,13 +10,13 @@
 
 .metadata_side_container {
   flex: 0 0 250px;
-  padding-top: 8px;
+  padding: 8px 0;
   overflow: hidden;
 }
 
 .attributes_side_container {
   flex: 0 0 250px;
-  padding-top: 8px;
+  padding: 8px;
   overflow: hidden;
 }
 
