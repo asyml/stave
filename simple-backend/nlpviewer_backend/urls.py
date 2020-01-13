@@ -33,5 +33,21 @@ urlpatterns = [
     path('documents/<int:document_id>/edit', document.edit),
     path('documents/<int:document_id>/delete', document.delete),
 
+    path('documents', document.listAll),
+    path('documents/new', document.create),
+    path('documents/<int:document_id>', document.query),
+    path('documents/<int:document_id>/edit', document.edit),
+    path('documents/<int:document_id>/delete', document.delete),
+
+    path('documents/:document_id/annotations/new', document.new_annotation),
+    path('documents/:document_id/annotations/:annotation_id/edit',
+         document.edit_annotation),
+    path('documents/:document_id/annotations/:annotation_id/delete',
+         document.delete_annotation),
+
+    path('documents/:document_id/link/new', document.new_link),
+    path('documents/:document_id/link/:link_id/edit', document.edit_link),
+    path('documents/:document_id/link/:link_id/delete', document.delete_link),
+
     path('admin/', admin.site.urls),
 ]

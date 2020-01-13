@@ -25,5 +25,4 @@ yarn-error.log*
 .vscode/settings.json
 *.pyc
 venv
-simple-backend/nlpviewer_backend/migrations
 simple-backend/db.sqlite3
