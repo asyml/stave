@@ -92,3 +92,7 @@ async function postData(url = '', data = {}) {
     return response;
   }
 }
+
+let w: any = window;
+
+w.postData = postData;
