@@ -6,6 +6,7 @@ function Documents() {
   const [docs, setDocs] = useState<any[]>([]);
   const [name, setName] = useState<string>('');
   const [pack, setPack] = useState<string>('');
+  const [ontology, setOntology] = useState<string>('');
   const history = useHistory();
 
   useEffect(() => {
@@ -21,7 +22,7 @@ function Documents() {
   }
 
   function handleAdd() {
-    createDocument(name, pack).then(() => {
+    createDocument(name, pack, ontology).then(() => {
       updateDocs();
     });
   }
@@ -64,6 +65,17 @@ function Documents() {
             value={pack}
             onChange={e => setPack(e.target.value)}
             name="textpack"
+            id=""
+            cols={30}
+            rows={10}
+          ></textarea>
+        </div>
+        <div>
+          <textarea
+            placeholder="ontology body"
+            value={ontology}
+            onChange={e => setOntology(e.target.value)}
+            name="ontology"
             id=""
             cols={30}
             rows={10}

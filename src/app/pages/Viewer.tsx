@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { singlePack } from '../mock-data-2';
-import { ontology } from '../mock-config-data';
-import NLPViewer, { ISinglePack, IOntology } from '../../nlpviewer';
+import NLPViewer, {
+  ISinglePack,
+  IOntology,
+  transformPack,
+} from '../../nlpviewer';
 import groupPlugin from '../../plugins/Group';
 import { useParams } from 'react-router-dom';
 import { fetchDocument } from '../lib/api';
@@ -18,10 +20,14 @@ function Viewer() {
   useEffect(() => {
     if (id) {
       fetchDocument(id).then(data => {
-        console.log(data);
+        const [singlePackFromAPI, ontologyFromAPI] = transformPack(
+          data.textPack,
+          data.ontology
+        );
+
         setPack({
-          pack: singlePack,
-          ontology: ontology,
+          pack: singlePackFromAPI,
+          ontology: ontologyFromAPI,
         });
       });
     }

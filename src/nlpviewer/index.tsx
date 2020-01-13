@@ -9,6 +9,7 @@ import './lib/log';
 import './styles/normalize.css';
 import './styles/global.css';
 
+export * from './lib/transform';
 export * from './lib/interfaces';
 export * from './contexts/text-viewer.context';
 
