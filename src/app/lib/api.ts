@@ -1,8 +1,14 @@
+interface APIDocument {
+  id: string;
+  textPack: string;
+  ontology: string;
+}
+
 export function fetchDocuments(): Promise<any> {
   return fetch(`/api/documents`).then(r => r.json());
 }
 
-export function fetchDocument(id: string) {
+export function fetchDocument(id: string): Promise<APIDocument> {
   return fetch(`/api/documents/${id}`).then(r => r.json());
 }
 
@@ -13,10 +19,15 @@ export function updateDocument(id: string, name: string, textPack: string) {
   }).then(r => r.json());
 }
 
-export function createDocument(name: string, textPack: string) {
+export function createDocument(
+  name: string,
+  textPack: string,
+  ontology: string
+) {
   return postData(`/api/documents/new`, {
     name: name,
     textPack: textPack,
+    ontology: ontology,
   }).then(r => r.json());
 }
 

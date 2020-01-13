@@ -25,29 +25,56 @@ A simple backend server application that manage documents and persist data.
 
 - GET `/documents`
   - return `{ id: string, name: string }[]`
-- GET `/documents/[document_id]`
-  - return `{ id: string, name: string }`
+- GET `/documents/:document_id`
+  - return `{ id: string, name: string, textPack: string, ontology: string }`
 - POST `/documents/new`
-  - params `{ name: string, textPack: string }`
-  - return `{ id: string, name: string, textPack: string }`
-- POST `/documents/[document_id]/edit`
-  - params `{ name?: string, textPack?: string }`
-  - return `{ name: string, textPack: string }`
-- POST `/documents/[document_id]/delete`
+  - params `{ name: string, textPack: string, ontology: string }`
+  - return `{ id: string }`
+- POST `/documents/:document_id/edit/name`
+  - params `{ name: string }`
+  - return `OK`
+- POST `/documents/:document_id/edit/textpack`
+  - params `{ textPack: string }`
+  - return `OK`
+- POST `/documents/:document_id/edit/ontology`
+  - params `{ ontology: string }`
+  - return `OK`
+- POST `/documents/:document_id/delete`
+  - return `OK`
+
+### Annotation and link route
+
+- POST `/documents/:document_id/annotations/new`
+  - params `{ data: string (json) }`
+  - return `{ id: string }`
+- POST `/documents/:document_id/annotations/:annotation_id/edit`
+  - params `{ data: string (json) }`
+  - return `OK`
+- POST `/documents/:document_id/annotations/:annotation_id/delete`
+  - return `OK`
+- POST `/documents/:document_id/link/new`
+  - params `{ data: string (json) }`
+  - return `{ id: string }`
+- POST `/documents/:document_id/link/:annotation_id/edit`
+  - params `{ data: string (json) }`
+  - return `OK`
+- POST `/documents/:document_id/link/:annotation_id/delete`
+  - return `OK`
 
 ### User route
 
 - GET `/users`
   - return `{ id: string, name: string }[]`
-- GET `/users/[user_id]`
+- GET `/users/:user_id`
   - return `{ id: string, name: string }`
 - POST `/users/new`
   - params `{ name: string, password: string }`
-  - return `{ id: string, name: string }`
-- POST `/users/[user_id]/edit`
+  - return `OK`
+- POST `/users/:user_id/edit`
   - params `{ name: string, password: string }`
-  - return `{ id: string, name: string }`
-- POST `/users/[user_id]/delete`
+  - return `OK`
+- POST `/users/:user_id/delete`
+  - return `OK`
 
 ### Session route
 
