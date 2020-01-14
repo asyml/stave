@@ -4,17 +4,20 @@ import Attributes from './Attributes';
 import style from '../styles/AnnotationDetail.module.css';
 import { useTextViewerDispatch } from '../contexts/text-viewer.context';
 import { shortId } from '../lib/utils';
+import { OnEventType } from './TextViewer';
 
 export interface AnnotationDetailProp {
   annotation: IAnnotation;
   parentAnnotations: IAnnotation[];
   childAnnotations: IAnnotation[];
+  onEvent?: OnEventType;
 }
 
 export default function AnnotationDetail({
   annotation,
   parentAnnotations,
   childAnnotations,
+  onEvent,
 }: AnnotationDetailProp) {
   const dispatch = useTextViewerDispatch();
 
@@ -67,6 +70,13 @@ export default function AnnotationDetail({
       <div>
         <button
           onClick={() => {
+            if (onEvent) {
+              onEvent({
+                type: 'annotation-delete',
+                annotationId: annotation.id,
+              });
+            }
+
             dispatch({
               type: 'delete-anntation',
               annotationId: annotation.id,

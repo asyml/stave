@@ -52,13 +52,13 @@ A simple backend server application that manage documents and persist data.
   - return `OK`
 - POST `/documents/:document_id/annotations/:annotation_id/delete`
   - return `OK`
-- POST `/documents/:document_id/link/new`
+- POST `/documents/:document_id/links/new`
   - params `{ data: string (json) }`
   - return `{ id: string }`
-- POST `/documents/:document_id/link/:annotation_id/edit`
+- POST `/documents/:document_id/links/:link_id/edit`
   - params `{ data: string (json) }`
   - return `OK`
-- POST `/documents/:document_id/link/:annotation_id/delete`
+- POST `/documents/:document_id/links/:link_id/delete`
   - return `OK`
 
 ### User route
