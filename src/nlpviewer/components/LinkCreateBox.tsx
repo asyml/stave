@@ -3,6 +3,7 @@ import Select from 'react-select';
 import {
   useTextViewerDispatch,
   useTextViewerState,
+  getState,
 } from '../contexts/text-viewer.context';
 import style from '../styles/CreateBox.module.css';
 import {
@@ -12,17 +13,20 @@ import {
   IConstraint,
 } from '../lib/interfaces';
 import { shortId, isEntryLink } from '../lib/utils';
+import { OnEventType } from './TextViewer';
 
 export interface LinkCreateBoxProp {
   fromEntryId: string | null;
   toEntryId: string | null;
   ontology: IOntology;
+  onEvent?: OnEventType;
 }
 
 export default function LinkCreateBox({
   fromEntryId,
   toEntryId,
   ontology,
+  onEvent,
 }: LinkCreateBoxProp) {
   const dispatch = useTextViewerDispatch();
   const { linkEditSelectedLegendId, textPack } = useTextViewerState();
@@ -68,6 +72,8 @@ export default function LinkCreateBox({
       // filter by constraint
       .filter(entry => {
         const constraints = ontology.constraints[entry.entryName];
+        if (!constraints) return true;
+
         const matchedConstraint = constraints.find(constraint =>
           matchLinkConstraint(constraint, fromEntry, toEntry)
         );
@@ -199,6 +205,18 @@ export default function LinkCreateBox({
         </button>
         <button
           onClick={() => {
+            if (onEvent) {
+              let state = getState();
+
+              onEvent({
+                type: 'link-add', // TODO: add strick type for event
+                fromEntryId: state.linkEditFromEntryId,
+                toEntryId: state.linkEditToEntryId,
+                legendId: state.linkEditSelectedLegendId,
+                attributes: enteredAttribute,
+              });
+            }
+
             dispatch({
               type: 'end-create-link',
               enteredAttributes: enteredAttribute,

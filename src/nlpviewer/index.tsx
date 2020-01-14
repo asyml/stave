@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import TextViewer, { TextViewerProp } from './components/TextViewer';
+import TextViewer, { OnEventType } from './components/TextViewer';
 import {
   TextViewerProvider,
   useTextViewerDispatch,
@@ -8,12 +8,20 @@ import {
 import './lib/log';
 import './styles/normalize.css';
 import './styles/global.css';
+import { ISinglePack, IOntology, IPlugin } from './lib/interfaces';
 
 export * from './lib/transform';
 export * from './lib/interfaces';
 export * from './contexts/text-viewer.context';
 
-export default function NLPViewer(props: TextViewerProp) {
+export interface NLPViewerProp {
+  textPack: ISinglePack;
+  ontology: IOntology;
+  plugins: IPlugin[];
+  onEvent?: OnEventType;
+}
+
+export default function NLPViewer(props: NLPViewerProp) {
   return (
     <TextViewerProvider>
       <TextViewerFetchContainer {...props} />;
@@ -21,7 +29,7 @@ export default function NLPViewer(props: TextViewerProp) {
   );
 }
 
-function TextViewerFetchContainer(props: TextViewerProp) {
+function TextViewerFetchContainer(props: NLPViewerProp) {
   const dispatch = useTextViewerDispatch();
 
   useEffect(() => {
@@ -34,7 +42,7 @@ function TextViewerFetchContainer(props: TextViewerProp) {
       type: 'set-ontology',
       ontology: props.ontology,
     });
-  }, [dispatch, props]);
+  }, [dispatch, props.textPack, props.ontology]);
 
-  return <TextViewer {...props} />;
+  return <TextViewer plugins={props.plugins} onEvent={props.onEvent} />;
 }

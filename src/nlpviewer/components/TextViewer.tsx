@@ -1,11 +1,6 @@
 import React from 'react';
 import style from '../styles/TextViewer.module.css';
-import {
-  ISinglePack,
-  IOntology,
-  IAnnotation,
-  IPlugin,
-} from '../lib/interfaces';
+import { IAnnotation, IPlugin } from '../lib/interfaces';
 import { applyColorToLegend } from '../lib/utils';
 import AnnotationDetail from './AnnotationDetail';
 import LinkDetail from './LinkDetail';
@@ -18,21 +13,20 @@ import {
 import LinkCreateBox from './LinkCreateBox';
 import AnnotationCreateBox from './AnnotationCreateBox';
 
+export type OnEventType = (event: any) => void;
+
 export interface TextViewerProp {
-  textPack: ISinglePack;
-  ontology: IOntology;
   plugins: IPlugin[];
+  onEvent?: OnEventType;
 }
 
-function TextViewer({ textPack, ontology, plugins }: TextViewerProp) {
-  // console.log('TextViewer rerender' + Math.random());
-
-  const { annotations, legends, links, attributes } = textPack;
-  const annotationLegendsWithColor = applyColorToLegend(legends.annotations);
-  const linksLegendsWithColor = applyColorToLegend(legends.links);
+function TextViewer({ plugins, onEvent }: TextViewerProp) {
   const appState = useTextViewerState();
   const dispatch = useTextViewerDispatch();
   const {
+    textPack,
+    ontology,
+
     selectedAnnotationId,
     selectedLinkId,
 
@@ -44,6 +38,12 @@ function TextViewer({ textPack, ontology, plugins }: TextViewerProp) {
     annoEditCursorBegin,
     annoEditCursorEnd,
   } = appState;
+
+  if (!textPack || !ontology) return null;
+
+  const { annotations, legends, links, attributes } = textPack;
+  const annotationLegendsWithColor = applyColorToLegend(legends.annotations);
+  const linksLegendsWithColor = applyColorToLegend(legends.links);
 
   const selectedAnnotation =
     annotations.find(ann => ann.id === selectedAnnotationId) || null;
@@ -127,6 +127,7 @@ function TextViewer({ textPack, ontology, plugins }: TextViewerProp) {
                 fromEntryId={linkEditFromEntryId}
                 toEntryId={linkEditToEntryId}
                 ontology={ontology}
+                onEvent={onEvent}
               />
             </div>
           )}
@@ -137,6 +138,7 @@ function TextViewer({ textPack, ontology, plugins }: TextViewerProp) {
                 cursorBegin={annoEditCursorBegin}
                 cursorEnd={annoEditCursorEnd}
                 ontology={ontology}
+                onEvent={onEvent}
               />
             </div>
           )}
@@ -144,7 +146,7 @@ function TextViewer({ textPack, ontology, plugins }: TextViewerProp) {
           {selectedLink && (
             <div>
               <h2>Link Attributes</h2>
-              <LinkDetail link={selectedLink} />
+              <LinkDetail link={selectedLink} onEvent={onEvent} />
             </div>
           )}
 
@@ -155,6 +157,7 @@ function TextViewer({ textPack, ontology, plugins }: TextViewerProp) {
                 parentAnnotations={selectedAnnotaionParents}
                 childAnnotations={selectedAnnotaionChildren}
                 annotation={selectedAnnotation}
+                onEvent={onEvent}
               />
             </div>
           )}
