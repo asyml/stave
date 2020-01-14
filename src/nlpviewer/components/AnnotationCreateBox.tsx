@@ -3,6 +3,7 @@ import Select from 'react-select';
 import {
   useTextViewerDispatch,
   useTextViewerState,
+  getState,
 } from '../contexts/text-viewer.context';
 import style from '../styles/CreateBox.module.css';
 import {
@@ -11,11 +12,14 @@ import {
   IEntryAttributeDefinition,
 } from '../lib/interfaces';
 import { shortId, isEntryAnnotation } from '../lib/utils';
+import { OnEventType } from './TextViewer';
+import { restorePos } from '../lib/text-spacer';
 
 export interface AnnotationCreateBoxProp {
   cursorBegin: number | null;
   cursorEnd: number | null;
   ontology: IOntology;
+  onEvent?: OnEventType;
 }
 
 interface AttrConstraint {
@@ -26,6 +30,7 @@ export default function AnnotationCreateBox({
   cursorBegin,
   cursorEnd,
   ontology,
+  onEvent,
 }: AnnotationCreateBoxProp) {
   const dispatch = useTextViewerDispatch();
   const { annoEditSelectedLegendId } = useTextViewerState();
@@ -213,9 +218,38 @@ export default function AnnotationCreateBox({
         </button>
         <button
           onClick={() => {
+            if (onEvent) {
+              let state = getState();
+
+              if (
+                state.annoEditCursorBegin === null ||
+                state.annoEditCursorEnd === null ||
+                state.annoEditSelectedLegendId === null
+              ) {
+                throw new Error(
+                  'cannot create annotation with no begin or end cursor selected'
+                );
+              }
+
+              const [actualBegin, actualEnd] = restorePos(
+                state.charMoveMap,
+                state.annoEditCursorBegin,
+                state.annoEditCursorEnd
+              );
+
+              onEvent({
+                type: 'annotation-add', // TODO: add strick type for event
+                span: {
+                  begin: actualBegin,
+                  end: actualEnd,
+                },
+                legendId: state.annoEditSelectedLegendId,
+                attributes: enteredAttribute,
+              });
+            }
+
             dispatch({
               type: 'annotation-edit-submit',
-              enteredAttributes: enteredAttribute,
             });
           }}
           disabled={!isAddEnabled}

@@ -243,7 +243,6 @@ export type Action =
     }
   | {
       type: 'annotation-edit-submit';
-      enteredAttributes?: Record<number, any>;
     }
   | {
       type: 'jump-to-annotation';
@@ -267,7 +266,7 @@ export type Action =
  */
 
 function textViewerReducer(state: State, action: Action): State {
-  // ll('reducer', action);
+  ll('reducer', action);
 
   switch (action.type) {
     case 'set-text-pack':
@@ -277,28 +276,32 @@ function textViewerReducer(state: State, action: Action): State {
         textPack: action.textPack,
 
         // TODO: remove the following test code
-        selectedLegendIds: [
-          'forte.data.ontology.ontonotes_ontology.PredicateMention',
-          'forte.data.ontology.base_ontology.PredicateArgument',
-          'forte.data.ontology.base_ontology.CoreferenceGroup',
-          'forte.data.ontology.base_ontology.Token',
-          'forte.data.ontology.base_ontology.CoreferenceMention',
-          'forte.data.ontology.base_ontology.CoreferenceGroup2',
-          action.textPack.legends.links[0].id,
-        ],
-        selectedLegendAttributeIds: [
-          // attributeId(
-          //   'forte.data.ontology.stanfordnlp_ontology.Token',
-          //   'pos_tag'
-          // ),
-          // attributeId('forte.data.ontology.stanfordnlp_ontology.Foo', 'name'),
-          // attributeId(action.textPack.legends.links[0].id, 'rel_type'),
-          attributeId(
-            'forte.data.ontology.base_ontology.PredicateLink',
-            'arg_type'
-          ),
-          attributeId('forte.data.ontology.base_ontology.Token', 'pos_tag'),
-        ],
+        selectedLegendIds: state.textPack
+          ? state.selectedLegendIds
+          : [
+              'forte.data.ontology.ontonotes_ontology.PredicateMention',
+              'forte.data.ontology.base_ontology.PredicateArgument',
+              'forte.data.ontology.base_ontology.CoreferenceGroup',
+              'forte.data.ontology.base_ontology.Token',
+              'forte.data.ontology.base_ontology.CoreferenceMention',
+              'forte.data.ontology.base_ontology.CoreferenceGroup2',
+              action.textPack.legends.links[0].id,
+            ],
+        selectedLegendAttributeIds: state.textPack
+          ? state.selectedLegendAttributeIds
+          : [
+              // attributeId(
+              //   'forte.data.ontology.stanfordnlp_ontology.Token',
+              //   'pos_tag'
+              // ),
+              // attributeId('forte.data.ontology.stanfordnlp_ontology.Foo', 'name'),
+              // attributeId(action.textPack.legends.links[0].id, 'rel_type'),
+              attributeId(
+                'forte.data.ontology.base_ontology.PredicateLink',
+                'arg_type'
+              ),
+              attributeId('forte.data.ontology.base_ontology.Token', 'pos_tag'),
+            ],
         // selectedAnnotationId: '5',
         // selectedGroupIds: action.textPack.groups.map(g => g.id),
         // collpasedLineIndexes: [],
@@ -740,26 +743,12 @@ function textViewerReducer(state: State, action: Action): State {
         state.linkEditFromEntryId &&
         state.linkEditSelectedLegendId
       ) {
-        const textPack = state.textPack as ISinglePack;
-        const linkToAdd = newLink(
-          state.linkEditFromEntryId,
-          state.linkEditToEntryId,
-          state.linkEditSelectedLegendId,
-          action.enteredAttributes
-        );
-
         return {
           ...state,
           linkEditIsDragging: false,
           linkEditIsCreating: false,
           linkEditFromEntryId: null,
           linkEditToEntryId: null,
-          selectedLinkId: linkToAdd.id,
-          textPack: {
-            ...textPack,
-            links: [...textPack.links, linkToAdd],
-          },
-          ...initialSpacingState,
         };
       } else {
         return {
@@ -850,40 +839,10 @@ function textViewerReducer(state: State, action: Action): State {
       };
 
     case 'annotation-edit-submit': {
-      if (
-        state.annoEditCursorBegin === null ||
-        state.annoEditCursorEnd === null ||
-        state.annoEditSelectedLegendId === null
-      ) {
-        throw new Error(
-          'cannot create annotation with no begin or end cursor selected'
-        );
-      }
-
-      const [actualBegin, actualEnd] = restorePos(
-        state.charMoveMap,
-        state.annoEditCursorBegin,
-        state.annoEditCursorEnd
-      );
-
-      const newAnno = newAnnotaion(
-        actualBegin,
-        actualEnd,
-        state.annoEditSelectedLegendId,
-        action.enteredAttributes
-      );
-
-      const textPack = state.textPack as ISinglePack;
-
       return {
         ...state,
         annoEditCursorBegin: null,
         annoEditCursorEnd: null,
-        textPack: {
-          ...textPack,
-          annotations: [...textPack.annotations, newAnno],
-        },
-        ...initialSpacingState,
       };
     }
 
@@ -925,48 +884,41 @@ function textViewerReducer(state: State, action: Action): State {
   }
 }
 
+let __currentState: State = initialState;
+
+function storeCurrentStateReducer(state: State, action: Action): State {
+  __currentState = state;
+  return state;
+}
+
+function combineReducers(...reducers: Array<typeof textViewerReducer>) {
+  return (state: State, action: Action) => {
+    reducers.forEach(reducer => {
+      state = reducer(state, action);
+    });
+
+    return state;
+  };
+}
+
+function getState() {
+  return __currentState;
+}
+let w: any = window;
+w.getState = getState;
+
 const [
   TextViewerProvider,
   useTextViewerState,
   useTextViewerDispatch,
-] = createContextProvider(textViewerReducer, initialState);
+] = createContextProvider(
+  combineReducers(textViewerReducer, storeCurrentStateReducer),
+  initialState
+);
 
-export { TextViewerProvider, useTextViewerState, useTextViewerDispatch };
-
-function newLink(
-  fromEntryId: string,
-  toEntryId: string,
-  legendId: string,
-  attributes: Record<string, any> = {}
-) {
-  return {
-    id: legendId + '.' + Math.random(),
-    legendId: legendId,
-    fromEntryId: fromEntryId,
-    toEntryId: toEntryId,
-    attributes: {
-      'py/object': legendId,
-      ...attributes,
-    },
-  };
-}
-
-function newAnnotaion(
-  begin: number,
-  end: number,
-  legendId: string,
-  attributes: Record<string, any> = {}
-) {
-  return {
-    span: {
-      begin: begin,
-      end: end,
-    },
-    id: legendId + '.' + Math.random(),
-    legendId: legendId,
-    attributes: {
-      'py/object': legendId,
-      ...attributes,
-    },
-  };
-}
+export {
+  TextViewerProvider,
+  useTextViewerState,
+  useTextViewerDispatch,
+  getState,
+};

@@ -39,9 +39,9 @@ urlpatterns = [
     path('documents/<int:document_id>/annotations/<int:annotation_id>/delete',
          document.delete_annotation),
 
-    path('documents/<int:document_id>/link/new', document.new_link),
-    path('documents/<int:document_id>/link/<int:link_id>/edit', document.edit_link),
-    path('documents/<int:document_id>/link/<int:link_id>/delete',
+    path('documents/<int:document_id>/links/new', document.new_link),
+    path('documents/<int:document_id>/links/<int:link_id>/edit', document.edit_link),
+    path('documents/<int:document_id>/links/<int:link_id>/delete',
          document.delete_link),
 
     path('admin/', admin.site.urls),
