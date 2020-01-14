@@ -1,4 +1,4 @@
-import { ISinglePack, IOntology } from './interfaces';
+import { ISinglePack, IOntology, IAnnotation, ILink } from './interfaces';
 
 export function transformPack(
   rawPack: string,
@@ -104,7 +104,10 @@ export function transformPack(
     },
   };
 
-  const configTransformed = camelCaseDeep(config);
+  const configTransformed = {
+    constraints: [],
+    ...camelCaseDeep(config),
+  };
 
   return [pack, configTransformed] as any;
 }
@@ -212,4 +215,31 @@ function findEntryNameMatchDeep(
   } else {
     return false;
   }
+}
+
+export function transformBackAnnotation(annotation: IAnnotation): any {
+  return {
+    'py/object': annotation.legendId,
+    'py/state': {
+      _span: {
+        begin: annotation.span.begin,
+        end: annotation.span.end,
+        'py/object': 'forte.data.base.Span',
+      },
+      _tid: annotation.id,
+      ...annotation.attributes,
+    },
+  };
+}
+
+export function transformBackLink(link: ILink): any {
+  return {
+    'py/object': link.legendId,
+    'py/state': {
+      _child: link.toEntryId,
+      _parent: link.toEntryId,
+      _tid: link.id,
+      ...link.attributes,
+    },
+  };
 }

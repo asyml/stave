@@ -96,7 +96,7 @@ def new_annotation(request, document_id):
     doc.textPack = json.dumps(textPackJson)
     doc.save()
 
-    return JsonResponse({"id": received_json_data}, safe=False)
+    return JsonResponse({"id": annotation_id}, safe=False)
 
 
 @require_login
@@ -187,7 +187,7 @@ def new_link(request, document_id):
     doc.textPack = json.dumps(textPackJson)
     doc.save()
 
-    return JsonResponse({"id": received_json_data}, safe=False)
+    return JsonResponse({"id": link_id}, safe=False)
 
 
 @require_login

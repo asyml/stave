@@ -61,6 +61,48 @@ export function createUser(name: string, password: string) {
   }).then(r => r.json());
 }
 
+export function addAnnotation(documentId: string, data: any) {
+  return postData(`/api/documents/${documentId}/annotations/new`, {
+    data,
+  }).then(r => r.json());
+}
+
+export function editAnnotation(
+  documentId: string,
+  annotationId: string,
+  data: any
+) {
+  return postData(
+    `/api/documents/${documentId}/annotations/${annotationId}/edit`,
+    {
+      data,
+    }
+  );
+}
+
+export function deleteAnnotation(documentId: string, annotationId: string) {
+  return postData(
+    `/api/documents/${documentId}/annotations/${annotationId}/delete`,
+    {}
+  );
+}
+
+export function addLink(documentId: string, data: any) {
+  return postData(`/api/documents/${documentId}/links/new`, {
+    data,
+  }).then(r => r.json());
+}
+
+export function editLink(documentId: string, linkId: string, data: any) {
+  return postData(`/api/documents/${documentId}/links/${linkId}/edit`, {
+    data,
+  });
+}
+
+export function deleteLink(documentId: string, linkId: string) {
+  return postData(`/api/documents/${documentId}/links/${linkId}/delete`, {});
+}
+
 export function login(name: string, password: string) {
   return postData(`/api/login`, {
     name,
