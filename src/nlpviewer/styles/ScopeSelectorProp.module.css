@@ -1,0 +1,5 @@
+.input {
+  display: inline-block;
+  width: 200px;
+  z-index: 999;
+}
