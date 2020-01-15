@@ -1,15 +1,14 @@
 import React from 'react';
-import { IColoredLegend, IOntology } from '../lib/interfaces';
+import { IEntryDefinition, IOntology } from '../lib/interfaces';
 import { Dispatch } from '../contexts/text-viewer.context';
-import { attributeId } from '../lib/utils';
+import { attributeId, shortId } from '../lib/utils';
 import style from '../styles/LegendList.module.css';
 
 interface LegendListProp {
   title: string;
-  legends: IColoredLegend[];
+  legends: (IEntryDefinition & { color: string })[];
   selectedLegendIds: string[];
   selectedLegendAttributeIds: string[];
-  ontology: IOntology;
   dispatch: Dispatch;
 }
 
@@ -18,32 +17,28 @@ export default function LegendList({
   legends,
   selectedLegendIds,
   selectedLegendAttributeIds,
-  ontology,
   dispatch,
 }: LegendListProp) {
   return (
     <div className={style.annotation_legend_container}>
       <h2>{title}</h2>
       <ul className={style.list}>
-        {legends.map(legend => {
-          const isSelected = selectedLegendIds.indexOf(legend.id) > -1;
-          const legendDef = ontology.entryDefinitions.find(
-            entryDef => entryDef.entryName === legend.id
-          );
+        {legends.map((legend, i) => {
+          const isSelected = selectedLegendIds.indexOf(legend.entryName) > -1;
 
           return (
-            <li key={legend.id}>
+            <li key={legend.entryName + i}>
               <div
                 className={style.lengend_container}
                 onClick={() => {
                   isSelected
                     ? dispatch({
                         type: 'deselect-legend',
-                        legendId: legend.id,
+                        legendId: legend.entryName,
                       })
                     : dispatch({
                         type: 'select-legend',
-                        legendId: legend.id,
+                        legendId: legend.entryName,
                       });
                 }}
               >
@@ -54,16 +49,16 @@ export default function LegendList({
                     color: 'white',
                   }}
                 >
-                  {legend.name}
+                  {legend.entryName.split('.').pop()}
                 </span>
               </div>
 
-              {legendDef && legendDef.attributes ? (
+              {legend.attributes ? (
                 <div className={style.attribute_name_container}>
-                  {legendDef.attributes.map(attr => {
+                  {legend.attributes.map(attr => {
                     const isSelected =
                       selectedLegendAttributeIds.indexOf(
-                        attributeId(legend.id, attr.attributeName)
+                        attributeId(legend.entryName, attr.attributeName)
                       ) > -1;
 
                     return (
@@ -74,12 +69,12 @@ export default function LegendList({
                           isSelected
                             ? dispatch({
                                 type: 'deselect-legend-attribute',
-                                legendId: legend.id,
+                                legendId: legend.entryName,
                                 attributeId: attr.attributeName,
                               })
                             : dispatch({
                                 type: 'select-legend-attribute',
-                                legendId: legend.id,
+                                legendId: legend.entryName,
                                 attributeId: attr.attributeName,
                               });
                         }}
