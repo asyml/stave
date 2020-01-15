@@ -46,6 +46,9 @@ export type State = {
   annoEditSelectedLegendId: string | null;
 
   jumpToAnnotation: string | null;
+
+  selectedScopeId: string | null; // scope id is is legend id
+  selectedScopeIndex: number; // scope id is is legend id
 };
 
 const initialSpacingState = {
@@ -95,6 +98,9 @@ const initialState: State = {
   ...initialLinkEditState,
   ...initialSpacingState,
   ...initialAnnoEditState,
+
+  selectedScopeId: null,
+  selectedScopeIndex: 0,
 };
 
 /**
@@ -255,6 +261,10 @@ export type Action =
       type: 'add-member-to-group';
       groupId: string;
       memberId: string;
+    }
+  | {
+      type: 'set-scope';
+      scopeId: string | null;
     };
 
 /**
@@ -879,6 +889,13 @@ function textViewerReducer(state: State, action: Action): State {
           ...textPack,
           groups,
         },
+      };
+    }
+
+    case 'set-scope': {
+      return {
+        ...state,
+        selectedScopeId: action.scopeId,
       };
     }
   }

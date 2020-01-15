@@ -39,6 +39,9 @@
   border-bottom: 1px solid #ccc;
   padding: 8px;
   background: #f8f8fa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .is_adding_annotation {
@@ -69,4 +72,8 @@
   max-height: 300px;
   overflow: scroll;
   border-top: 1px solid #ccc;
+}
+
+.scope_selector_container > span {
+  margin-right: 8px;
 }
