@@ -3,7 +3,7 @@ import style from '../styles/TextArea.module.css';
 import {
   ISinglePack,
   IRect,
-  IColoredLegend,
+  IEntryDefinition,
   IAnnotationPosition,
   IAnnotation,
   ILink,
@@ -28,7 +28,7 @@ import LineWithArrow from './LineWithArrow';
 
 export interface TextAreaProp {
   textPack: ISinglePack;
-  annotationLegendsColored: IColoredLegend[];
+  annotationLegendsColored: (IEntryDefinition & { color: string })[];
 }
 
 function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
@@ -295,7 +295,7 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
       >
         {annotationsWithPosition.map((ann, i) => {
           const legend = annotationLegendsColored.find(
-            legend => legend.id === ann.annotation.legendId
+            legend => legend.entryName === ann.annotation.legendId
           );
 
           if (!legend) {

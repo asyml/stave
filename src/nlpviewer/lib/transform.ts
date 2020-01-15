@@ -1,4 +1,5 @@
 import { ISinglePack, IOntology, IAnnotation, ILink } from './interfaces';
+import { isEntryAnnotation, isEntryLink } from './utils';
 
 export function transformPack(
   rawPack: string,
@@ -6,107 +7,63 @@ export function transformPack(
 ): [ISinglePack, IOntology] {
   const data = JSON.parse(rawPack);
   const config = JSON.parse(rawOntology);
+
   const packData = data['py/state'];
+  const annotations = packData.annotations.filter((a: any) => !!a['py/state']);
 
-  const annotationLegendNames: string[] = [];
-  packData.annotations.forEach((ann: any) => {
-    const legendName = getLegendName(ann);
-    if (annotationLegendNames.indexOf(legendName) === -1) {
-      annotationLegendNames.push(legendName);
-    }
-  });
+  const configTransformed = {
+    constraints: [],
+    ...camelCaseDeep(config),
+  };
 
-  const annotationLegends = annotationLegendNames.map((l, i) => {
-    return {
-      id: l,
-      name: l.split('.').pop(),
-    };
-  });
+  const formatedAnnotations = annotations
+    .map((a: any) => {
+      const legendName = getLegendName(a);
 
-  const linkLegendNames: string[] = [];
-  packData.links.forEach((link: any) => {
-    const legendName = getLegendName(link);
-    if (linkLegendNames.indexOf(legendName) === -1) {
-      linkLegendNames.push(legendName);
-    }
-  });
+      return {
+        span: {
+          begin: a['py/state']._span.begin,
+          end: a['py/state']._span.end,
+        },
+        id: a['py/state']._tid + '',
+        legendId: legendName,
+        attributes: getAttrs(configTransformed, a),
+      };
+    })
+    .filter(Boolean);
 
-  const linkLegends = linkLegendNames.map((l, i) => {
-    return {
-      id: l,
-      name: l.split('.').pop(),
-    };
-  });
+  const links = packData.links
+    .map((link: any) => {
+      const legendName = getLegendName(link);
 
-  const groupLegendNames: string[] = [];
-  packData.groups.forEach((group: any) => {
-    const legendName = getLegendName(group);
-    if (groupLegendNames.indexOf(legendName) === -1) {
-      groupLegendNames.push(legendName);
-    }
-  });
-
-  const groupLegends = groupLegendNames.map((l, i) => {
-    return {
-      id: l,
-      name: l.split('.').pop(),
-    };
-  });
-
-  const annotations = packData.annotations.map((a: any) => {
-    const legendName = getLegendName(a);
-    const existedLegend: any = annotationLegends.find(l => l.id === legendName);
-    return {
-      span: {
-        begin: a['py/state']._span.begin,
-        end: a['py/state']._span.end,
-      },
-      id: a['py/state']._tid + '',
-      legendId: existedLegend.id,
-      attributes: getAttrs(config, a),
-    };
-  });
-
-  const links = packData.links.map((link: any) => {
-    const legendName = getLegendName(link);
-    const existedLegend: any = linkLegends.find(l => l.id === legendName);
-    return {
-      id: link['py/state']._tid + '',
-      fromEntryId: link['py/state']._parent + '',
-      toEntryId: link['py/state']._child + '',
-      legendId: existedLegend.id,
-      attributes: getAttrs(config, link),
-    };
-  });
+      return {
+        id: link['py/state']._tid + '',
+        fromEntryId: link['py/state']._parent + '',
+        toEntryId: link['py/state']._child + '',
+        legendId: legendName,
+        attributes: getAttrs(configTransformed, link),
+      };
+    })
+    .filter(Boolean);
 
   const groups = packData.groups.map((group: any) => {
     const legendName = getLegendName(group);
-    const existedLegend: any = groupLegends.find(l => l.id === legendName);
+
     return {
       id: group['py/state']._tid + '',
       members: group['py/state']['_members']['py/set'].map((i: any) => i + ''),
-      memberType: getGroupType(existedLegend.id, config),
-      legendId: existedLegend.id,
-      attributes: getAttrs(config, group),
+      memberType: getGroupType(legendName, configTransformed),
+      legendId: legendName,
+      attributes: getAttrs(configTransformed, group),
     };
   });
 
   const pack = {
     text: packData._text,
-    annotations: annotations,
+    annotations: formatedAnnotations,
     links: links,
     groups: groups,
     attributes: packData.meta,
-    legends: {
-      annotations: annotationLegends,
-      links: linkLegends,
-      groups: groupLegends,
-    },
-  };
-
-  const configTransformed = {
-    constraints: [],
-    ...camelCaseDeep(config),
   };
 
   return [pack, configTransformed] as any;
@@ -143,15 +100,15 @@ function camelCaseDeep(obj: any): any {
 
 function getAttrs(config: any, a: any) {
   const legendName = getLegendName(a);
-  const legend = config['entry_definitions'].find(
-    (entry: any) => entry.entry_name === legendName
+  const legend = config['entryDefinitions'].find(
+    (entry: any) => entry.entryName === legendName
   );
 
   if (!legend || !legend.attributes) {
     return {};
   }
 
-  const attrNames = legend.attributes.map((a: any) => a.attribute_name);
+  const attrNames = legend.attributes.map((a: any) => a.attributeName);
   const attrs: any = {};
 
   Object.keys(a['py/state']).forEach(key => {
@@ -164,56 +121,16 @@ function getAttrs(config: any, a: any) {
 }
 
 function getGroupType(groupEntryName: any, config: any) {
-  const entry = config.entry_definitions.find(
-    (ent: any) => ent.entry_name === groupEntryName
+  const entry = config.entryDefinitions.find(
+    (ent: any) => ent.entryName === groupEntryName
   );
 
-  if (isEntryAnnotation(config, entry.member_type)) {
+  if (isEntryAnnotation(config, entry.memberType)) {
     return 'annotation';
-  } else if (isEntryLink(config, entry.member_type)) {
+  } else if (isEntryLink(config, entry.memberType)) {
     return 'link';
   } else {
     throw new Error('unknow group entry ' + groupEntryName);
-  }
-}
-
-function isEntryAnnotation(config: any, entryName: any) {
-  return findEntryNameMatchDeep(
-    config,
-    entryName,
-    'forte.data.ontology.top.Annotation'
-  );
-}
-
-function isEntryLink(config: any, entryName: any) {
-  return findEntryNameMatchDeep(
-    config,
-    entryName,
-    'forte.data.ontology.top.Link'
-  );
-}
-
-function findEntryNameMatchDeep(
-  config: any,
-  entryName: any,
-  matchName: any
-): any {
-  if (entryName === matchName) {
-    return true;
-  }
-
-  const entry = config.entry_definitions.find(
-    (ent: any) => ent.entry_name === entryName
-  );
-
-  if (!entry) {
-    throw new Error('unknow entry name ' + entryName);
-  }
-
-  if (entry.parent_entry) {
-    return findEntryNameMatchDeep(config, entry.parent_entry, matchName);
-  } else {
-    return false;
   }
 }
 

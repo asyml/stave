@@ -1,7 +1,11 @@
 import React from 'react';
 import style from '../styles/TextViewer.module.css';
 import { IAnnotation, IPlugin } from '../lib/interfaces';
-import { applyColorToLegend } from '../lib/utils';
+import {
+  applyColorToLegend,
+  isEntryAnnotation,
+  isEntryLink,
+} from '../lib/utils';
 import AnnotationDetail from './AnnotationDetail';
 import LinkDetail from './LinkDetail';
 import TextDetail from './TextDetail';
@@ -45,9 +49,18 @@ function TextViewer({ plugins, onEvent }: TextViewerProp) {
 
   if (!textPack || !ontology) return null;
 
-  const { annotations, legends, links, attributes } = textPack;
-  const annotationLegendsWithColor = applyColorToLegend(legends.annotations);
-  const linksLegendsWithColor = applyColorToLegend(legends.links);
+  const { annotations, links, attributes } = textPack;
+
+  const annotationLegendsWithColor = applyColorToLegend(
+    ontology.entryDefinitions.filter(entry =>
+      isEntryAnnotation(ontology, entry.entryName)
+    )
+  );
+  const linksLegendsWithColor = applyColorToLegend(
+    ontology.entryDefinitions.filter(entry =>
+      isEntryLink(ontology, entry.entryName)
+    )
+  );
 
   const selectedAnnotation =
     annotations.find(ann => ann.id === selectedAnnotationId) || null;
@@ -56,13 +69,11 @@ function TextViewer({ plugins, onEvent }: TextViewerProp) {
 
   links.forEach(link => {
     if (link.fromEntryId === selectedAnnotationId) {
-      selectedAnnotaionChildren.push(
-        annotations.find(ann => ann.id === link.toEntryId) as IAnnotation
-      );
+      let anno = annotations.find(ann => ann.id === link.toEntryId);
+      if (anno) selectedAnnotaionChildren.push(anno);
     } else if (link.toEntryId === selectedAnnotationId) {
-      selectedAnnotaionParents.push(
-        annotations.find(ann => ann.id === link.fromEntryId) as IAnnotation
-      );
+      let anno = annotations.find(ann => ann.id === link.fromEntryId);
+      if (anno) selectedAnnotaionParents.push(anno);
     }
   });
 
