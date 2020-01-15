@@ -14219,60 +14219,60 @@ export const singlePack: ISinglePack = {
     "py/object": "forte.data.data_pack.Meta",
     "span_unit": "character"
   },
-  "legends": {
-    "annotations": [
-      {
-        "id": "forte.data.ontology.base_ontology.EntityMention",
-        "name": "EntityMention"
-      },
-      {
-        "id": "forte.data.ontology.base_ontology.Token",
-        "name": "Token"
-      },
-      {
-        "id": "forte.data.ontology.ontonotes_ontology.Token",
-        "name": "Token"
-      },
-      {
-        "id": "forte.data.ontology.base_ontology.CoreferenceMention",
-        "name": "CoreferenceMention"
-      },
-      {
-        "id": "forte.data.ontology.base_ontology.PredicateArgument",
-        "name": "PredicateArgument"
-      },
-      {
-        "id": "forte.data.ontology.base_ontology.Sentence",
-        "name": "Sentence"
-      },
-      {
-        "id": "forte.data.ontology.ontonotes_ontology.Sentence",
-        "name": "Sentence"
-      },
-      {
-        "id": "forte.data.ontology.base_ontology.Document",
-        "name": "Document"
-      },
-      {
-        "id": "forte.data.ontology.ontonotes_ontology.PredicateMention",
-        "name": "PredicateMention"
-      }
-    ],
-    "links": [
-      {
-        "id": "forte.data.ontology.base_ontology.PredicateLink",
-        "name": "PredicateLink"
-      }
-    ],
-    "groups": [
-      {
-        "id": "forte.data.ontology.base_ontology.CoreferenceGroup",
-        "name": "CoreferenceGroup"
-      },
-      {
-        "id": "forte.data.ontology.base_ontology.CoreferenceGroup2",
-        "name": "CoreferenceGroup2"
-      }
-    ]
-  }
+  // "legends": {
+  //   "annotations": [
+  //     {
+  //       "id": "forte.data.ontology.base_ontology.EntityMention",
+  //       "name": "EntityMention"
+  //     },
+  //     {
+  //       "id": "forte.data.ontology.base_ontology.Token",
+  //       "name": "Token"
+  //     },
+  //     {
+  //       "id": "forte.data.ontology.ontonotes_ontology.Token",
+  //       "name": "Token"
+  //     },
+  //     {
+  //       "id": "forte.data.ontology.base_ontology.CoreferenceMention",
+  //       "name": "CoreferenceMention"
+  //     },
+  //     {
+  //       "id": "forte.data.ontology.base_ontology.PredicateArgument",
+  //       "name": "PredicateArgument"
+  //     },
+  //     {
+  //       "id": "forte.data.ontology.base_ontology.Sentence",
+  //       "name": "Sentence"
+  //     },
+  //     {
+  //       "id": "forte.data.ontology.ontonotes_ontology.Sentence",
+  //       "name": "Sentence"
+  //     },
+  //     {
+  //       "id": "forte.data.ontology.base_ontology.Document",
+  //       "name": "Document"
+  //     },
+  //     {
+  //       "id": "forte.data.ontology.ontonotes_ontology.PredicateMention",
+  //       "name": "PredicateMention"
+  //     }
+  //   ],
+  //   "links": [
+  //     {
+  //       "id": "forte.data.ontology.base_ontology.PredicateLink",
+  //       "name": "PredicateLink"
+  //     }
+  //   ],
+  //   "groups": [
+  //     {
+  //       "id": "forte.data.ontology.base_ontology.CoreferenceGroup",
+  //       "name": "CoreferenceGroup"
+  //     },
+  //     {
+  //       "id": "forte.data.ontology.base_ontology.CoreferenceGroup2",
+  //       "name": "CoreferenceGroup2"
+  //     }
+  //   ]
+  // }
 };

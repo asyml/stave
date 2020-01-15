@@ -35,21 +35,8 @@ export interface ISinglePack {
   annotations: IAnnotation[];
   links: ILink[];
   groups: IGroup[];
-  legends: {
-    annotations: ILegend[];
-    links: ILegend[];
-    groups: ILegend[];
-  };
+
   attributes: IAttributes;
-}
-
-export interface ILegend {
-  id: string;
-  name: string;
-}
-
-export interface IColoredLegend extends ILegend {
-  color: string;
 }
 
 export interface IRect {

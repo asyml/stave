@@ -1,13 +1,14 @@
 import {
-  ILegend,
-  IColoredLegend,
+  IEntryDefinition,
   ILinkWithPos,
   ISinglePack,
   IOntology,
 } from './interfaces';
 import { colorPalettes } from './color';
 
-export function applyColorToLegend(legends: ILegend[]): IColoredLegend[] {
+export function applyColorToLegend(
+  legends: IEntryDefinition[]
+): (IEntryDefinition & { color: string })[] {
   return legends.map((leg, i) => {
     return {
       ...leg,
