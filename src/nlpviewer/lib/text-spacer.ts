@@ -1,5 +1,4 @@
 import {
-  ISinglePack,
   ISpaceMap,
   ILinkWithPos,
   IAnnotationPosition,
@@ -11,7 +10,7 @@ import { notNullOrUndefined, attributeId } from './utils';
 export const fontWidth = 6;
 
 export interface SpacedText {
-  text: string;
+  spacedText: string;
   charMoveMap: Map<number, number>;
   annotationPositions: IAnnotationPosition[];
   textNodeWidth: number;
@@ -36,7 +35,9 @@ export interface SpacedText {
  *
  */
 export function spaceOutText(
-  textPack: ISinglePack,
+  annotations: IAnnotation[],
+  text: string,
+  links: ILink[],
   selectedLegendIds: string[],
   selectedLegendAttributeIds: string[],
   collpasedLinesIndex: number[]
@@ -57,7 +58,7 @@ export function spaceOutText(
   textNodeEl.style.border = '1px solid red';
   textNodeEl.style.position = 'fixed';
   textNodeEl.style.left = '-9999px';
-  textNodeEl.textContent = textPack.text;
+  textNodeEl.textContent = text;
 
   root.appendChild(textNodeEl);
 
@@ -70,7 +71,6 @@ export function spaceOutText(
   // textNodeEl.appendChild(dom);
   // dom.style.whiteSpace = 'pre-wrap';
 
-  const { annotations } = textPack;
   const textNode = textNodeEl && (textNodeEl.childNodes[0] as HTMLElement);
 
   const textAreaRect = textNodeEl.getBoundingClientRect();
@@ -82,7 +82,7 @@ export function spaceOutText(
 
   const annotationsPos = annotations.map(anno => {
     const range = document.createRange();
-
+    console.log('anno.span', anno.span.begin, anno.span.end);
     range.setStart(textNode, anno.span.begin);
     range.setEnd(textNode, anno.span.end);
     const rects = Array.from(range.getClientRects() as DOMRectList);
@@ -102,10 +102,9 @@ export function spaceOutText(
     annotations
   ).filter(ann => selectedLegendIds.indexOf(ann.annotation.legendId) > -1);
 
-  const linksWithPos = mergeLinkWithPosition(
-    textPack.links,
-    annotationsWithPos
-  ).filter(link => selectedLegendIds.indexOf(link.link.legendId) > -1);
+  const linksWithPos = mergeLinkWithPosition(links, annotationsWithPos).filter(
+    link => selectedLegendIds.indexOf(link.link.legendId) > -1
+  );
 
   const spaceMap: ISpaceMap = calcuateSpaceMap(
     annotationsWithPos,
@@ -116,7 +115,7 @@ export function spaceOutText(
   const [
     caculcatedSpacedTextWithEmptySpace,
     caculcatedSpacedAnnotationSpanWithEmptySpace,
-  ] = calculateNewText(textPack, spaceMap, ' ');
+  ] = calculateNewText(annotations, text, spaceMap, ' ');
 
   textNodeEl.textContent = caculcatedSpacedTextWithEmptySpace;
 
@@ -153,7 +152,7 @@ export function spaceOutText(
   ).filter(ann => selectedLegendIds.indexOf(ann.annotation.legendId) > -1);
 
   const linksWithPosWithEmptySpaces = mergeLinkWithPosition(
-    textPack.links,
+    links,
     annotationsWithPosWithEmptySpaces
   ).filter(link => selectedLegendIds.indexOf(link.link.legendId) > -1);
 
@@ -204,9 +203,8 @@ export function spaceOutText(
   });
 
   const updatedTextPackWithNewline = {
-    ...textPack,
     text: caculcatedSpacedTextWithEmptySpace,
-    annotations: textPack.annotations.map(ann => {
+    annotations: annotations.map(ann => {
       return {
         ...ann,
         span: {
@@ -218,7 +216,8 @@ export function spaceOutText(
   };
 
   const [textWithNewLine, annotationSpanMap] = calculateNewText(
-    updatedTextPackWithNewline,
+    updatedTextPackWithNewline.annotations,
+    updatedTextPackWithNewline.text,
     spaceMapWithNewline,
     '\n',
     'before'
@@ -255,14 +254,14 @@ export function spaceOutText(
 
   const charMoveMap = new Map<number, number>();
   Object.keys(spaceMap).forEach(annId => {
-    const annotation = textPack.annotations.find(ann => ann.id === annId);
+    const annotation = annotations.find(ann => ann.id === annId);
     if (annotation) {
       charMoveMap.set(annotation.span.end, spaceMap[annId].spaceToMove);
     }
   });
 
   Object.keys(spaceMapWithNewline).forEach(annId => {
-    const annotation = textPack.annotations.find(ann => ann.id === annId);
+    const annotation = annotations.find(ann => ann.id === annId);
     if (annotation) {
       charMoveMap.set(
         annotation.span.begin - 1,
@@ -273,7 +272,7 @@ export function spaceOutText(
   });
 
   return {
-    text: textWithNewLine,
+    spacedText: textWithNewLine,
     charMoveMap,
     annotationPositions: annotationPositionsWithNewLine,
     textNodeWidth: lineWidthWithNewLine,
@@ -358,12 +357,13 @@ export function mergeLinkWithPosition(
  *
  */
 function calculateNewText(
-  textPack: ISinglePack,
+  annotations: IAnnotation[],
+  text: string,
   spaceMap: ISpaceMap,
   fill: string,
   insertDirection: 'before' | 'after' = 'after'
 ) {
-  const textSplit = textPack.text.split('');
+  const textSplit = text.split('');
   const sortedSpaceMap = Object.keys(spaceMap)
     .filter(annId => spaceMap[annId].spaceToMove > 0)
     .map(annId => spaceMap[annId])
@@ -378,7 +378,7 @@ function calculateNewText(
     [key: string]: { begin: number; end: number };
   } = {};
 
-  textPack.annotations.forEach(ann => {
+  annotations.forEach(ann => {
     spacedAnnotationSpan[ann.id] = {
       begin: ann.span.begin,
       end: ann.span.end,
