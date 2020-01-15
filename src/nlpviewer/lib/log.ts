@@ -5,14 +5,6 @@ const colorIterator = createColorIterator();
 
 (window as any).ll = ll;
 export function ll(label: string, ...values: any[]) {
-  let e = new Error();
-  let stack = e.stack || '';
-  const stackFormatted = stack
-    .split('\n')
-    .map(a => '> ' + a.trim().replace(/^at\s+/, ''))
-    .slice(2)
-    .join('\n');
-
   let color = '';
   if (labels[label]) {
     color = labels[label];
@@ -21,13 +13,7 @@ export function ll(label: string, ...values: any[]) {
     color = labels[label];
   }
 
-  console.groupCollapsed(
-    `%c ${label} `,
-    `background: ${color}; color: white;`,
-    ...values
-  );
-  console.log(stackFormatted);
-  console.groupEnd();
+  console.log(`%c ${label} `, `background: ${color}; color: white;`, ...values);
 }
 
 function createColorIterator() {

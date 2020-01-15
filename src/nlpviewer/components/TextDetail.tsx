@@ -1,5 +1,5 @@
 import React from 'react';
-import { IColoredLegend, IAttributes, IOntology } from '../lib/interfaces';
+import { IEntryDefinition, IAttributes, IOntology } from '../lib/interfaces';
 import {
   useTextViewerState,
   useTextViewerDispatch,
@@ -10,8 +10,8 @@ import LegendList from './LegendList';
 
 export interface TextDetailProp {
   attributes: IAttributes;
-  annotationLegends: IColoredLegend[];
-  linkLegends: IColoredLegend[];
+  annotationLegends: (IEntryDefinition & { color: string })[];
+  linkLegends: (IEntryDefinition & { color: string })[];
   ontology: IOntology;
 }
 
@@ -37,7 +37,6 @@ export default function TextDetail({
           legends={annotationLegends}
           selectedLegendIds={selectedLegendIds}
           selectedLegendAttributeIds={selectedLegendAttributeIds}
-          ontology={ontology}
           dispatch={dispatch}
         />
 
@@ -46,7 +45,6 @@ export default function TextDetail({
           legends={linkLegends}
           selectedLegendIds={selectedLegendIds}
           selectedLegendAttributeIds={selectedLegendAttributeIds}
-          ontology={ontology}
           dispatch={dispatch}
         />
       </>
