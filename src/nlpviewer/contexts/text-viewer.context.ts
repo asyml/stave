@@ -265,7 +265,9 @@ export type Action =
   | {
       type: 'set-scope';
       scopeId: string | null;
-    };
+    }
+  | { type: 'prev-scope-item' }
+  | { type: 'next-scope-item' };
 
 /**
  *
@@ -895,7 +897,38 @@ function textViewerReducer(state: State, action: Action): State {
     case 'set-scope': {
       return {
         ...state,
+        ...initialSpacingState,
+        selectedScopeIndex: 0,
         selectedScopeId: action.scopeId,
+      };
+    }
+
+    case 'prev-scope-item': {
+      const prevScopeIndex =
+        state.selectedScopeIndex <= 0 ? 0 : state.selectedScopeIndex - 1;
+
+      return {
+        ...state,
+        ...initialSpacingState,
+        selectedScopeIndex: prevScopeIndex,
+      };
+    }
+
+    case 'next-scope-item': {
+      if (!state.textPack) return state;
+
+      const scopeAnnotations = state.textPack.annotations.filter(
+        ann => ann.legendId === state.selectedScopeId
+      );
+      const prevScopeIndex =
+        state.selectedScopeIndex >= scopeAnnotations.length
+          ? 0
+          : state.selectedScopeIndex + 1;
+
+      return {
+        ...state,
+        ...initialSpacingState,
+        selectedScopeIndex: prevScopeIndex,
       };
     }
   }

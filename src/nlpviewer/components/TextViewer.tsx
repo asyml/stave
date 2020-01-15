@@ -116,6 +116,29 @@ function TextViewer({ plugins, onEvent }: TextViewerProp) {
                 selectedScopeId={selectedScopeId}
                 selectedScopeIndex={selectedScopeIndex}
               />
+
+              {selectedScopeId !== null && (
+                <div className={style.scope_nav_container}>
+                  <button
+                    disabled={selectedScopeIndex === 0}
+                    onClick={() => dispatch({ type: 'prev-scope-item' })}
+                  >
+                    ←
+                  </button>
+                  <button
+                    disabled={
+                      selectedScopeIndex ===
+                      textPack.annotations.filter(
+                        ann => ann.legendId === selectedScopeId
+                      ).length -
+                        1
+                    }
+                    onClick={() => dispatch({ type: 'next-scope-item' })}
+                  >
+                    →
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
