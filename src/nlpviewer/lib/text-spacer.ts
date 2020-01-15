@@ -82,7 +82,7 @@ export function spaceOutText(
 
   const annotationsPos = annotations.map(anno => {
     const range = document.createRange();
-
+    console.log('anno.span', anno.span.begin, anno.span.end);
     range.setStart(textNode, anno.span.begin);
     range.setEnd(textNode, anno.span.end);
     const rects = Array.from(range.getClientRects() as DOMRectList);
