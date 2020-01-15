@@ -6,6 +6,7 @@ import AnnotationDetail from './AnnotationDetail';
 import LinkDetail from './LinkDetail';
 import TextDetail from './TextDetail';
 import TextArea from './TextArea';
+import ScopeSelector from './ScopeSelector';
 import {
   useTextViewerState,
   useTextViewerDispatch,
@@ -37,6 +38,9 @@ function TextViewer({ plugins, onEvent }: TextViewerProp) {
     annoEditIsCreating,
     annoEditCursorBegin,
     annoEditCursorEnd,
+
+    selectedScopeId,
+    selectedScopeIndex,
   } = appState;
 
   if (!textPack || !ontology) return null;
@@ -82,24 +86,60 @@ function TextViewer({ plugins, onEvent }: TextViewerProp) {
             ${annoEditIsCreating && style.is_adding_annotation}`}
         >
           <div className={style.tool_bar_container}>
-            <button
-              className={style.add_annotation_button}
-              onClick={() => {
-                dispatch({
-                  type: annoEditIsCreating
-                    ? 'exit-annotation-edit'
-                    : 'start-annotation-edit',
-                });
-              }}
-            >
-              {annoEditIsCreating ? `Cancel add annotation` : `Add annotation`}
-            </button>
+            <div className={style.add_annotation_container}>
+              <button
+                className={style.add_annotation_button}
+                onClick={() => {
+                  dispatch({
+                    type: annoEditIsCreating
+                      ? 'exit-annotation-edit'
+                      : 'start-annotation-edit',
+                  });
+                }}
+              >
+                {annoEditIsCreating
+                  ? `Cancel add annotation`
+                  : `Add annotation`}
+              </button>
 
-            {annoEditIsCreating && (
-              <div className={style.button_action_description}>
-                select text to add annotation
-              </div>
-            )}
+              {annoEditIsCreating && (
+                <div className={style.button_action_description}>
+                  select text to add annotation
+                </div>
+              )}
+            </div>
+
+            <div className={style.scope_selector_container}>
+              <span>Scope:</span>
+              <ScopeSelector
+                ontology={ontology}
+                selectedScopeId={selectedScopeId}
+                selectedScopeIndex={selectedScopeIndex}
+              />
+
+              {selectedScopeId !== null && (
+                <div className={style.scope_nav_container}>
+                  <button
+                    disabled={selectedScopeIndex === 0}
+                    onClick={() => dispatch({ type: 'prev-scope-item' })}
+                  >
+                    ←
+                  </button>
+                  <button
+                    disabled={
+                      selectedScopeIndex ===
+                      textPack.annotations.filter(
+                        ann => ann.legendId === selectedScopeId
+                      ).length -
+                        1
+                    }
+                    onClick={() => dispatch({ type: 'next-scope-item' })}
+                  >
+                    →
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
 
           <div className={`${style.text_area_container}`}>

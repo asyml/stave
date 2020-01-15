@@ -6,6 +6,7 @@ import {
   IColoredLegend,
   IAnnotationPosition,
   IAnnotation,
+  ILink,
 } from '../lib/interfaces';
 import { calcuateLinesLevels, calcuateLinkHeight } from '../lib/utils';
 import {
@@ -31,7 +32,7 @@ export interface TextAreaProp {
 }
 
 function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
-  const { annotations, text, links } = textPack;
+  let { annotations, text, links } = textPack;
   const textNodeEl = useRef<HTMLDivElement>(null);
   const textAreaEl = useRef<HTMLDivElement>(null);
 
@@ -64,11 +65,44 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
     annoEditCursorEnd,
 
     jumpToAnnotation,
+
+    selectedScopeId,
+    selectedScopeIndex,
   } = useTextViewerState();
+
+  if (selectedScopeId !== null) {
+    const scopeAnnotations = annotations.filter(
+      ann => ann.legendId === selectedScopeId
+    );
+    const currScopeAnnotation = scopeAnnotations[selectedScopeIndex];
+
+    text = text.substring(
+      currScopeAnnotation.span.begin,
+      currScopeAnnotation.span.end
+    );
+    annotations = annotations
+      .filter(
+        ann =>
+          ann.span.begin >= currScopeAnnotation.span.begin &&
+          ann.span.end <= currScopeAnnotation.span.end
+      )
+      .map(ann => {
+        const scoppedSpan = {
+          begin: ann.span.begin - currScopeAnnotation.span.begin,
+          end: ann.span.end - currScopeAnnotation.span.begin,
+        };
+        return {
+          ...ann,
+          span: scoppedSpan,
+        };
+      });
+  }
 
   useEffect(() => {
     function calculateTextSpace(
-      textPack: ISinglePack,
+      annotations: IAnnotation[],
+      text: string,
+      links: ILink[],
       selectedLegendIds: string[],
       selectedLegendAttributeIds: string[],
       spacingCalcuated: boolean,
@@ -76,12 +110,14 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
     ) {
       if (!spacingCalcuated) {
         const {
-          text,
+          spacedText,
           charMoveMap,
           annotationPositions,
           textNodeWidth,
         } = spaceOutText(
-          textPack,
+          annotations,
+          text,
+          links,
           selectedLegendIds,
           selectedLegendAttributeIds,
           collpasedLinesIndex
@@ -89,7 +125,7 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
 
         dispatch({
           type: 'set-spaced-annotation-span',
-          spacedText: text,
+          spacedText,
           charMoveMap,
           annotationPositions,
           textNodeWidth,
@@ -104,7 +140,9 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
     }, 500);
 
     calculateTextSpace(
-      textPack,
+      annotations,
+      text,
+      links,
       selectedLegendIds,
       selectedLegendAttributeIds,
       spacingCalcuated,
@@ -131,7 +169,9 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
       window.removeEventListener('resize', handleWindowResize);
     };
   }, [
-    textPack,
+    annotations,
+    text,
+    links,
     selectedLegendIds,
     selectedLegendAttributeIds,
     spacingCalcuated,
