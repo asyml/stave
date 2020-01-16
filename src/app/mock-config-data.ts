@@ -9,8 +9,8 @@ export const ontology: IOntology = {
       parentEntryName: 'forte.data.ontology.top.Annotation',
       attributes: [
         {
-          attributeName: 'pos_tag',
-          attributeType: 'str',
+          name: 'pos_tag',
+          type: 'str',
         },
       ],
     },
@@ -37,8 +37,8 @@ export const ontology: IOntology = {
       childType: 'forte.data.ontology.base_ontology.PredicateArgument',
       attributes: [
         {
-          attributeName: 'arg_type',
-          attributeType: 'str',
+          name: 'arg_type',
+          type: 'str',
         },
       ],
     },
@@ -61,8 +61,8 @@ export const ontology: IOntology = {
       parentEntryName: 'forte.data.ontology.top.Annotation',
       attributes: [
         {
-          attributeName: 'ner_type',
-          attributeType: 'str',
+          name: 'ner_type',
+          type: 'str',
         },
       ],
     },
@@ -71,8 +71,8 @@ export const ontology: IOntology = {
       parentEntryName: 'forte.data.ontology.base_ontology.Token',
       attributes: [
         {
-          attributeName: 'sense',
-          attributeType: 'str',
+          name: 'sense',
+          type: 'str',
         },
       ],
     },
@@ -81,12 +81,12 @@ export const ontology: IOntology = {
       parentEntryName: 'forte.data.ontology.base_ontology.Sentence',
       attributes: [
         {
-          attributeName: 'speaker',
-          attributeType: 'str',
+          name: 'speaker',
+          type: 'str',
         },
         {
-          attributeName: 'part_id',
-          attributeType: 'str',
+          name: 'part_id',
+          type: 'str',
         },
       ],
     },
@@ -95,16 +95,16 @@ export const ontology: IOntology = {
       parentEntryName: 'forte.data.ontology.top.Annotation',
       attributes: [
         {
-          attributeName: 'pred_type',
-          attributeType: 'str',
+          name: 'pred_type',
+          type: 'str',
         },
         {
-          attributeName: 'pred_lemma',
-          attributeType: 'str',
+          name: 'pred_lemma',
+          type: 'str',
         },
         {
-          attributeName: 'framenet_id',
-          attributeType: 'str',
+          name: 'framenet_id',
+          type: 'str',
         },
       ],
     },

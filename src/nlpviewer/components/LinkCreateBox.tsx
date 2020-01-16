@@ -170,19 +170,19 @@ export default function LinkCreateBox({
               return (
                 <div
                   className={style.legend_attribute_item}
-                  key={attr.attributeName}
+                  key={attr.name}
                 >
                   <div className={style.legend_attribute_item_title}>
-                    {attr.attributeName}
+                    {attr.name}
                   </div>
                   <div>
                     <input
                       type="text"
-                      value={enteredAttribute[attr.attributeName] || ''}
+                      value={enteredAttribute[attr.name] || ''}
                       onChange={e =>
                         setEnteredAttribute({
                           ...enteredAttribute,
-                          [attr.attributeName]: e.target.value,
+                          [attr.name]: e.target.value,
                         })
                       }
                     />
