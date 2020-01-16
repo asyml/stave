@@ -108,7 +108,7 @@ function getAttrs(config: any, a: any) {
     return {};
   }
 
-  const attrNames = legend.attributes.map((a: any) => a.attributeName);
+  const attrNames = legend.attributes.map((a: any) => a.name);
   const attrs: any = {};
 
   Object.keys(a['py/state']).forEach(key => {

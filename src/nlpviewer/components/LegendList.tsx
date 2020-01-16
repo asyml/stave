@@ -58,29 +58,29 @@ export default function LegendList({
                   {legend.attributes.map(attr => {
                     const isSelected =
                       selectedLegendAttributeIds.indexOf(
-                        attributeId(legend.entryName, attr.attributeName)
+                        attributeId(legend.entryName, attr.name)
                       ) > -1;
 
                     return (
                       <div
                         className={style.attribute_name}
-                        key={attr.attributeName}
+                        key={attr.name}
                         onClick={() => {
                           isSelected
                             ? dispatch({
                                 type: 'deselect-legend-attribute',
                                 legendId: legend.entryName,
-                                attributeId: attr.attributeName,
+                                attributeId: attr.name,
                               })
                             : dispatch({
                                 type: 'select-legend-attribute',
                                 legendId: legend.entryName,
-                                attributeId: attr.attributeName,
+                                attributeId: attr.name,
                               });
                         }}
                       >
                         <input type="radio" readOnly checked={isSelected} />
-                        {attr.attributeName}
+                        {attr.name}
                       </div>
                     );
                   })}

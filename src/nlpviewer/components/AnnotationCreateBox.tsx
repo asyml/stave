@@ -100,10 +100,10 @@ export default function AnnotationCreateBox({
           return (
             <div
               className={style.legend_attribute_item}
-              key={attr.attributeName}
+              key={attr.name}
             >
               <div className={style.legend_attribute_item_title}>
-                {attr.attributeName}
+                {attr.name}
               </div>
 
               {renderAttributeInput(attr, attrConstraint)}
@@ -118,14 +118,14 @@ export default function AnnotationCreateBox({
     attr: IEntryAttributeDefinition,
     attrConstraint: AttrConstraint
   ) {
-    if (attrConstraint[attr.attributeName]) {
-      const options = Array.from(attrConstraint[attr.attributeName]).map(v => ({
+    if (attrConstraint[attr.name]) {
+      const options = Array.from(attrConstraint[attr.name]).map(v => ({
         value: v,
         label: v,
       }));
 
       const selectedOption = options.find(
-        o => o.value === enteredAttribute[attr.attributeName]
+        o => o.value === enteredAttribute[attr.name]
       );
 
       return (
@@ -136,7 +136,7 @@ export default function AnnotationCreateBox({
             onChange={item => {
               setEnteredAttribute({
                 ...enteredAttribute,
-                [attr.attributeName]: (item as ISelectOption).value,
+                [attr.name]: (item as ISelectOption).value,
               });
             }}
             options={options}
@@ -149,11 +149,11 @@ export default function AnnotationCreateBox({
           <input
             type="text"
             className={style.input}
-            value={enteredAttribute[attr.attributeName] || ''}
+            value={enteredAttribute[attr.name] || ''}
             onChange={e =>
               setEnteredAttribute({
                 ...enteredAttribute,
-                [attr.attributeName]: e.target.value,
+                [attr.name]: e.target.value,
               })
             }
           />
