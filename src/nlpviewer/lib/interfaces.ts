@@ -147,8 +147,8 @@ export interface IEntryDefinition {
 }
 
 export interface IEntryAttributeDefinition {
-  attributeType: string;
-  attributeName: string;
+  type: string;
+  name: string;
   [key: string]: any;
 }
 
