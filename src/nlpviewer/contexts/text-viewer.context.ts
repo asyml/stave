@@ -1,7 +1,6 @@
-import { ISinglePack, IOntology, IAnnotationPosition } from '../lib/interfaces';
 import { createContextProvider } from '../lib/create-context-provider';
+import { IAnnotationPosition, IOntology, ISinglePack } from '../lib/interfaces';
 import { attributeId } from '../lib/utils';
-import { restorePos } from '../lib/text-spacer';
 
 export type Dispatch = (action: Action) => void;
 
@@ -278,7 +277,7 @@ export type Action =
  */
 
 function textViewerReducer(state: State, action: Action): State {
-  ll('reducer', action);
+  // ll('reducer', action);
 
   switch (action.type) {
     case 'set-text-pack':
@@ -288,32 +287,38 @@ function textViewerReducer(state: State, action: Action): State {
         textPack: action.textPack,
 
         // // TODO: remove the following test code
-        // selectedLegendIds: state.textPack
-        //   ? state.selectedLegendIds
-        //   : [
-        //       'forte.data.ontology.ontonotes_ontology.PredicateMention',
-        //       'forte.data.ontology.base_ontology.PredicateArgument',
-        //       'forte.data.ontology.base_ontology.CoreferenceGroup',
-        //       'forte.data.ontology.base_ontology.Token',
-        //       'forte.data.ontology.base_ontology.CoreferenceMention',
-        //       'forte.data.ontology.base_ontology.CoreferenceGroup2',
-        //       action.textPack.legends.links[0].id,
-        //     ],
-        // selectedLegendAttributeIds: state.textPack
-        //   ? state.selectedLegendAttributeIds
-        //   : [
-        //       // attributeId(
-        //       //   'forte.data.ontology.stanfordnlp_ontology.Token',
-        //       //   'pos_tag'
-        //       // ),
-        //       // attributeId('forte.data.ontology.stanfordnlp_ontology.Foo', 'name'),
-        //       // attributeId(action.textPack.legends.links[0].id, 'rel_type'),
-        //       attributeId(
-        //         'forte.data.ontology.base_ontology.PredicateLink',
-        //         'arg_type'
-        //       ),
-        //       attributeId('forte.data.ontology.base_ontology.Token', 'pos_tag'),
-        //     ],
+        selectedLegendIds: state.textPack
+          ? state.selectedLegendIds
+          : [
+              // 'forte.data.ontology.base_ontology.Sentence',
+              'forte.data.ontology.ontonotes_ontology.PredicateMention',
+              'forte.data.ontology.base_ontology.PredicateArgument',
+              'forte.data.ontology.base_ontology.PredicateLink',
+
+              // 'forte.data.ontology.base_ontology.CoreferenceGroup',
+              // 'forte.data.ontology.base_ontology.Token',
+              // 'forte.data.ontology.base_ontology.CoreferenceMention',
+              // 'forte.data.ontology.base_ontology.CoreferenceGroup2',
+            ],
+        selectedLegendAttributeIds: state.textPack
+          ? state.selectedLegendAttributeIds
+          : [
+              // attributeId(
+              //   'forte.data.ontology.stanfordnlp_ontology.Token',
+              //   'pos_tag'
+              // ),
+              // attributeId('forte.data.ontology.stanfordnlp_ontology.Foo', 'name'),
+              // attributeId(action.textPack.legends.links[0].id, 'rel_type'),
+              attributeId(
+                'forte.data.ontology.ontonotes_ontology.PredicateMention',
+                'pred_type'
+              ),
+              attributeId(
+                'forte.data.ontology.base_ontology.PredicateLink',
+                'arg_type'
+              ),
+              // attributeId('forte.data.ontology.base_ontology.Token', 'pos_tag'),
+            ],
 
         // selectedAnnotationId: '5',
         // selectedGroupIds: action.textPack.groups.map(g => g.id),
