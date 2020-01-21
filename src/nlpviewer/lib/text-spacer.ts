@@ -20,8 +20,8 @@ export interface SpacedText {
  *
  * Given
  *  - a text pack (with links, annotations)
- *  - selected legend ids (to know which annotation and link are affecting),
- *  - selected attirbute ids (to know what link label are affecting) and lines to be collapsed
+ *  - selected legend ids (to know which annotation and link are effecting),
+ *  - selected attirbute ids (to know what link label are effecting) and lines to be collapsed
  *
  * calcuate
  *  - new text that inserted empty space and new lines
@@ -62,10 +62,10 @@ export function spaceOutText(
 
   root.appendChild(textNodeEl);
 
-  // domContainer.style.top = '0';
-  // domContainer.style.left = '0';
-  // domContainer.style.background = 'white';
-  // domContainer.style.zIndex = '100';
+  // textNodeEl.style.top = '0';
+  // textNodeEl.style.left = '0';
+  // textNodeEl.style.background = 'white';
+  // textNodeEl.style.zIndex = '100';
 
   // const dom = document.createElement('div');
   // textNodeEl.appendChild(dom);
@@ -79,6 +79,21 @@ export function spaceOutText(
     width: textAreaRect.width,
     height: textAreaRect.height,
   };
+
+  // add invisibleAnnotations for each words,
+  // so that long annotation can be broken down
+  let invisibleAnnotations: any[] = [];
+  let currPosition = -1;
+  text.split(' ').forEach((text, i) => {
+    invisibleAnnotations.push({
+      span: { begin: currPosition + 1, end: currPosition + 1 + text.length },
+      id: 'i-' + i,
+      legendId: 'invisible',
+      attributes: {},
+    });
+    currPosition = currPosition + 1 + text.length;
+  });
+  annotations = annotations.concat(invisibleAnnotations);
 
   const annotationsPos = annotations.map(anno => {
     const range = document.createRange();
@@ -100,7 +115,11 @@ export function spaceOutText(
   const annotationsWithPos = mergeAnnotationWithPosition(
     annotationsPos,
     annotations
-  ).filter(ann => selectedLegendIds.indexOf(ann.annotation.legendId) > -1);
+  ).filter(
+    ann =>
+      ann.annotation.legendId === 'invisible' ||
+      selectedLegendIds.indexOf(ann.annotation.legendId) > -1
+  );
 
   const linksWithPos = mergeLinkWithPosition(links, annotationsWithPos).filter(
     link => selectedLegendIds.indexOf(link.link.legendId) > -1
@@ -149,7 +168,11 @@ export function spaceOutText(
   const annotationsWithPosWithEmptySpaces = mergeAnnotationWithPosition(
     annotationsPosWithEmptySpaces,
     annotations
-  ).filter(ann => selectedLegendIds.indexOf(ann.annotation.legendId) > -1);
+  ).filter(
+    ann =>
+      ann.annotation.legendId === 'invisible' ||
+      selectedLegendIds.indexOf(ann.annotation.legendId) > -1
+  );
 
   const linksWithPosWithEmptySpaces = mergeLinkWithPosition(
     links,
@@ -230,27 +253,29 @@ export function spaceOutText(
   const textAreaRectWithNewLine = textNodeEl.getBoundingClientRect() as DOMRect;
   const lineWidthWithNewLine = textAreaRectWithNewLine.width;
 
-  const annotationPositionsWithNewLine = annotations.map(anno => {
-    const range = document.createRange();
+  const annotationPositionsWithNewLine = annotations
+    .filter(a => a.legendId !== 'invisible')
+    .map(anno => {
+      const range = document.createRange();
 
-    range.setStart(textNodeWithNewline, annotationSpanMap[anno.id].begin);
-    range.setEnd(textNodeWithNewline, annotationSpanMap[anno.id].end);
+      range.setStart(textNodeWithNewline, annotationSpanMap[anno.id].begin);
+      range.setEnd(textNodeWithNewline, annotationSpanMap[anno.id].end);
 
-    let rects = Array.from(range.getClientRects() as DOMRectList);
+      let rects = Array.from(range.getClientRects() as DOMRectList);
 
-    if (rects.length > 1) {
-      rects = rects.filter(rect => rect.width > 5);
-    }
+      if (rects.length > 1) {
+        rects = rects.filter(rect => rect.width > 5);
+      }
 
-    return {
-      rects: rects.map(rect => ({
-        x: rect.x - textAreaRectWithNewLine.left,
-        y: rect.y - textAreaRectWithNewLine.top,
-        width: rect.width,
-        height: rect.height,
-      })),
-    };
-  });
+      return {
+        rects: rects.map(rect => ({
+          x: rect.x - textAreaRectWithNewLine.left,
+          y: rect.y - textAreaRectWithNewLine.top,
+          width: rect.width,
+          height: rect.height,
+        })),
+      };
+    });
 
   const charMoveMap = new Map<number, number>();
   Object.keys(spaceMap).forEach(annId => {
