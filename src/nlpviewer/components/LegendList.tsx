@@ -1,7 +1,7 @@
 import React from 'react';
-import { IEntryDefinition, IOntology } from '../lib/interfaces';
 import { Dispatch } from '../contexts/text-viewer.context';
-import { attributeId, shortId } from '../lib/utils';
+import { IEntryDefinition } from '../lib/interfaces';
+import { attributeId } from '../lib/utils';
 import style from '../styles/LegendList.module.css';
 
 interface LegendListProp {
