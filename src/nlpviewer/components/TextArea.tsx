@@ -151,7 +151,7 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
 
     if (spacingCalcuated && jumpToAnnotation !== null) {
       const el = document.querySelector(
-        `[data-annotaion-id="${jumpToAnnotation}"]`
+        `[data-annotation-id="${jumpToAnnotation}"]`
       );
 
       if (el) {
@@ -509,28 +509,28 @@ function LineWithArrowContainer({
     linkEditFromEntryId &&
     linkEditToEntryId
   ) {
-    const startAnnotaion = annotationsWithPosition.find(
+    const startAnnotation = annotationsWithPosition.find(
       link => link.annotation.id === linkEditFromEntryId
     );
 
-    const endAnnotaion = annotationsWithPosition.find(
+    const endAnnotation = annotationsWithPosition.find(
       link => link.annotation.id === linkEditToEntryId
     );
 
-    if (!startAnnotaion || !endAnnotaion) return null;
+    if (!startAnnotation || !endAnnotation) return null;
 
     const fromPos = {
       x:
-        startAnnotaion.position.rects[0].x +
-        startAnnotaion.position.rects[0].width,
-      y: startAnnotaion.position.rects[0].y,
+        startAnnotation.position.rects[0].x +
+        startAnnotation.position.rects[0].width,
+      y: startAnnotation.position.rects[0].y,
     };
 
     const toPos = {
       x:
-        endAnnotaion.position.rects[0].x +
-        endAnnotaion.position.rects[0].width / 2,
-      y: endAnnotaion.position.rects[0].y,
+        endAnnotation.position.rects[0].x +
+        endAnnotation.position.rects[0].width / 2,
+      y: endAnnotation.position.rects[0].y,
     };
 
     return (
@@ -566,17 +566,17 @@ function ConnectorContainer({
   }
 
   const textNodeRect = textNodeEl.getBoundingClientRect();
-  const startAnnotaion = annotationsWithPosition.find(
+  const startAnnotation = annotationsWithPosition.find(
     link => link.annotation.id === linkEditFromEntryId
   );
 
-  if (!startAnnotaion) return null;
+  if (!startAnnotation) return null;
 
   return (
     <div className={style.link_edit_container}>
       <LinkEditConnector
-        // annotation={startAnnotaion}
-        position={startAnnotaion.position}
+        // annotation={startAnnotation}
+        position={startAnnotation.position}
         // fromEntryId={linkEditFromEntryId}
         offsetX={textNodeRect.left}
         offsetY={textNodeRect.top}

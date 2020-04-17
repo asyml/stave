@@ -55,7 +55,7 @@ export default function TextDetail({
     title: 'metadata',
     body: () => (
       <div>
-        <Attributes attributes={attributes} />
+        <Attributes attributes={attributes['py/state']} />
       </div>
     ),
   };

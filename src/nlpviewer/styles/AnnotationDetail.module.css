@@ -13,12 +13,12 @@
   direction: rtl;
 }
 
-.annotaition_detail_section {
+.annotation_detail_section {
   border: 1px solid #ccc;
   margin-bottom: 8px;
 }
 
-.annotaition_detail_section h2 {
+.annotation_detail_section h2 {
   font-size: 12px;
   padding: 8px;
   margin: 0;
@@ -26,7 +26,7 @@
   background: #f8f8fa;
 }
 
-.annotaition_detail_section_body {
+.annotation_detail_section_body {
   padding: 8px;
 }
 
