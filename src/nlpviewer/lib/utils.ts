@@ -5,6 +5,7 @@ import {
   IOntology,
 } from './interfaces';
 import { colorPalettes } from './color';
+import { stringify } from 'querystring';
 
 export function applyColorToLegend(
   legends: IEntryDefinition[]
@@ -15,6 +16,26 @@ export function applyColorToLegend(
       color: colorPalettes[i % colorPalettes.length],
     };
   });
+}
+
+export function displayAttributeLabel(attr_value: any) {
+  const attr_type:string = (typeof attr_value)
+
+  if (attr_type === 'boolean'){
+    console.log(attr_value)
+    console.log(stringify(attr_value))
+    return attr_value.toString()
+  } else if (attr_type === 'string'){
+    return attr_value.substring(0,3)
+  }else if (attr_type === 'number'){
+    return attr_value.toString()
+  }else if (attr_type === 'object'){
+    // It'd be great to display the object in some way, but it will 
+    // change the design a bit.
+    return ''
+  }else{
+    return ''
+  }
 }
 
 export function notNullOrUndefined<T>(x: T | null | undefined): x is T {
