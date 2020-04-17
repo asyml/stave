@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { IAnnotationPosition, IAnnotation } from '../lib/interfaces';
 import style from '../styles/AnnotationLabel.module.css';
-import { attributeId, displayAttributeLabel } from '../lib/utils';
+import { attributeId, displayAttributeInline, displayAttributeSidebar, displayAttributeFloating } from '../lib/utils';
 
 export interface AnnotationLabelProp {
   position: IAnnotationPosition;
@@ -67,11 +67,12 @@ function AnnotationLabel({
                 <>
                   <span className={style.annotation_attr_label}>{attrKey}</span>
                   <span className={style.annotation_attr_value}>
-                    {annotation.attributes[attrKey]}
+                  {/*Is this the floating window? */}
+                  {displayAttributeFloating(annotation.attributes[attrKey])}
                   </span>
                 </>
               ) : (
-                displayAttributeLabel(annotation.attributes[attrKey])
+                displayAttributeInline(annotation.attributes[attrKey])
               )}
             </div>
           );

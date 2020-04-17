@@ -5,7 +5,6 @@ import {
   IOntology,
 } from './interfaces';
 import { colorPalettes } from './color';
-import { stringify } from 'querystring';
 
 export function applyColorToLegend(
   legends: IEntryDefinition[]
@@ -18,23 +17,53 @@ export function applyColorToLegend(
   });
 }
 
-export function displayAttributeLabel(attr_value: any) {
+export function displayAttributeInline(attr_value: any) {
   const attr_type:string = (typeof attr_value)
+  
+  // The way that we display null value and other objects will leave an empty box.
 
   if (attr_type === 'boolean'){
-    console.log(attr_value)
-    console.log(stringify(attr_value))
     return attr_value.toString()
   } else if (attr_type === 'string'){
     return attr_value.substring(0,3)
   }else if (attr_type === 'number'){
     return attr_value.toString()
-  }else if (attr_type === 'object'){
-    // It'd be great to display the object in some way, but it will 
-    // change the design a bit.
+  }else if (attr_value === null){
     return ''
   }else{
-    return ''
+    return '-'
+  }
+}
+
+export function displayAttributeFloating(attr_value: any){
+  const attr_type:string = (typeof attr_value)
+
+  if (attr_type === 'boolean'){
+    return attr_value.toString()
+  } else if (attr_type === 'string'){
+    return attr_value.substring(0,3)
+  }else if (attr_type === 'number'){
+    return attr_value.toString()
+  }else if (attr_value === null){
+    return 'N/A'
+  }else{
+    return 'complex object'
+  }
+}
+
+export function displayAttributeSidebar(attr_value: any){
+  const attr_type:string = (typeof attr_value)
+
+  if (attr_type === 'boolean'){
+    return attr_value.toString()
+  } else if (attr_type === 'string'){
+    return attr_value.substring(0,3)
+  }else if (attr_type === 'number'){
+    return attr_value.toString()
+  }else if (attr_value === null){
+    return 'N/A'
+  }else{
+    return 'complex object'
   }
 }
 
