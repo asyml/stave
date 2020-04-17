@@ -51,7 +51,7 @@ export default function AnnotationCreateBox({
     };
   }, [cursorEnd]);
 
-  const legendTypeOptions = ontology.entryDefinitions
+  const legendTypeOptions = ontology.definitions
     .filter(entry => {
       return isEntryAnnotation(ontology, entry.entryName);
     })
@@ -62,7 +62,7 @@ export default function AnnotationCreateBox({
       };
     });
 
-  const selectedLegendDefinition = ontology.entryDefinitions.find(def => {
+  const selectedLegendDefinition = ontology.definitions.find(def => {
     return def.entryName === annoEditSelectedLegendId;
   });
 

@@ -381,7 +381,7 @@ function textViewerReducer(state: State, action: Action): State {
       return {
         ...state,
         ...initialSpacingState,
-        selectedLegendIds: state.ontology.entryDefinitions.map(
+        selectedLegendIds: state.ontology.definitions.map(
           entry => entry.entryName
         ),
       };

@@ -48,7 +48,7 @@ export default function LinkCreateBox({
     };
   }, [toEntryId]);
 
-  const selectedLegendDefinition = ontology.entryDefinitions.find(def => {
+  const selectedLegendDefinition = ontology.definitions.find(def => {
     return def.entryName === linkEditSelectedLegendId;
   });
 
@@ -65,7 +65,7 @@ export default function LinkCreateBox({
       ann => ann.id === toEntryId
     ) as IAnnotation;
 
-    const legendTypeOptions = ontology.entryDefinitions
+    const legendTypeOptions = ontology.definitions
       .filter(entry => {
         return isEntryLink(ontology, entry.entryName);
       })

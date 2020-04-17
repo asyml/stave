@@ -344,7 +344,7 @@ function findEntryNameMatchDeep(
     return true;
   }
 
-  const entry = config.entryDefinitions.find(
+  const entry = config.definitions.find(
     ent => ent.entryName === entryName
   );
 
@@ -360,7 +360,7 @@ function findEntryNameMatchDeep(
 }
 
 export function getGroupType(groupEntryName: string, config: IOntology) {
-  const entry = config.entryDefinitions.find(
+  const entry = config.definitions.find(
     ent => ent.entryName === groupEntryName
   );
 

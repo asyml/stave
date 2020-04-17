@@ -52,12 +52,12 @@ function TextViewer({ plugins, onEvent }: TextViewerProp) {
   const { annotations, links, attributes } = textPack;
 
   const annotationLegendsWithColor = applyColorToLegend(
-    ontology.entryDefinitions.filter(entry =>
+    ontology.definitions.filter(entry =>
       isEntryAnnotation(ontology, entry.entryName)
     )
   );
   const linksLegendsWithColor = applyColorToLegend(
-    ontology.entryDefinitions.filter(entry =>
+    ontology.definitions.filter(entry =>
       isEntryLink(ontology, entry.entryName)
     )
   );
