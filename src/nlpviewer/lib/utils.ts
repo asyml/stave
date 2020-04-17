@@ -21,6 +21,7 @@ export function displayAttributeInline(attr_value: any) {
   const attr_type:string = (typeof attr_value)
   
   // The way that we display null value and other objects will leave an empty box.
+  // We can probably use the ontology to filter out some of these.
 
   if (attr_type === 'boolean'){
     return attr_value.toString()
