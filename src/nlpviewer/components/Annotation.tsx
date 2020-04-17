@@ -3,7 +3,7 @@ import { IAnnotation, IAnnotationPosition } from '../lib/interfaces';
 import { useTextViewerDispatch } from '../contexts/text-viewer.context';
 import style from '../styles/Annotation.module.css';
 
-export interface AnnotaionProp {
+export interface AnnotationProp {
   annotation: IAnnotation;
   isSelected: boolean;
   isHighlighted: boolean;
@@ -15,7 +15,7 @@ export interface AnnotaionProp {
   linkEditFromEntryId: string | null;
 }
 
-function Annotaion({
+function Annotation({
   annotation,
   isSelected,
   isHighlighted,
@@ -25,7 +25,7 @@ function Annotaion({
   linkEditIsDragging,
   linkEditFromEntryId,
   linkEditToEntryId,
-}: AnnotaionProp) {
+}: AnnotationProp) {
   const dispatch = useTextViewerDispatch();
 
   return (
@@ -48,7 +48,7 @@ function Annotaion({
             style={{
               transform: `translate(${rect.x - 1}px,${rect.y}px)`,
             }}
-            data-annotaion-id={annotation.id}
+            data-annotation-id={annotation.id}
             onMouseEnter={() => {
               if (!isHighlighted) {
                 dispatch({
@@ -75,7 +75,7 @@ function Annotaion({
             }}
           >
             <div
-              className={`${style.annotaion}`}
+              className={`${style.annotation}`}
               style={{
                 marginTop: -2,
                 height: rect.height,
@@ -111,11 +111,11 @@ function Annotaion({
               }}
             >
               <div
-                className={`${style.annotaion_inner_left}`}
+                className={`${style.annotation_inner_left}`}
                 style={{ borderRightColor: legendColor }}
               ></div>
               <div
-                className={`${style.annotaion_inner_right}`}
+                className={`${style.annotation_inner_right}`}
                 style={{ borderLeftColor: legendColor }}
               ></div>
             </div>
@@ -144,4 +144,4 @@ function Annotaion({
   );
 }
 
-export default memo(Annotaion);
+export default memo(Annotation);

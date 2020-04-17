@@ -156,7 +156,7 @@ export default function LinkCreateBox({
             }
           }}
         >
-          {toEntryId ? shortId(toEntryId) : '[Click annotaion to select]'}
+          {toEntryId ? shortId(toEntryId) : '[Click annotation to select]'}
         </div>
       </div>
 

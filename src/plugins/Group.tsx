@@ -87,9 +87,9 @@ function Group(props: PluginComponenProp) {
 
 function getMemberDetail(group: IGroup, member: string, textPack: ISinglePack) {
   if (group.memberType === 'annotation') {
-    const annotaion = textPack.annotations.find(ann => ann.id === member);
-    if (annotaion) {
-      return textPack.text.substring(annotaion.span.begin, annotaion.span.end);
+    const annotation = textPack.annotations.find(ann => ann.id === member);
+    if (annotation) {
+      return textPack.text.substring(annotation.span.begin, annotation.span.end);
     } else {
       return '';
     }

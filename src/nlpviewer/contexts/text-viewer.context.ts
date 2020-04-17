@@ -148,7 +148,7 @@ export type Action =
       type: 'unhighlight-annotation';
     }
   | {
-      type: 'delete-anntation';
+      type: 'delete-annotation';
       annotationId: string;
     }
   | {
@@ -500,7 +500,7 @@ function textViewerReducer(state: State, action: Action): State {
         highlightedLinkIds: [],
       };
 
-    case 'delete-anntation': {
+    case 'delete-annotation': {
       if (!state.textPack) {
         return state;
       }
