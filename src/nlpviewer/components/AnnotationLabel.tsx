@@ -67,7 +67,6 @@ function AnnotationLabel({
                 <>
                   <span className={style.annotation_attr_label}>{attrKey}</span>
                   <span className={style.annotation_attr_value}>
-                  {/*Is this the floating window? */}
                   {displayAttributeFloating(annotation.attributes[attrKey])}
                   </span>
                 </>
