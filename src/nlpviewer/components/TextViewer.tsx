@@ -52,28 +52,28 @@ function TextViewer({ plugins, onEvent }: TextViewerProp) {
   const { annotations, links, attributes } = textPack;
 
   const annotationLegendsWithColor = applyColorToLegend(
-    ontology.entryDefinitions.filter(entry =>
+    ontology.definitions.filter(entry =>
       isEntryAnnotation(ontology, entry.entryName)
     )
   );
   const linksLegendsWithColor = applyColorToLegend(
-    ontology.entryDefinitions.filter(entry =>
+    ontology.definitions.filter(entry =>
       isEntryLink(ontology, entry.entryName)
     )
   );
 
   const selectedAnnotation =
     annotations.find(ann => ann.id === selectedAnnotationId) || null;
-  const selectedAnnotaionParents: IAnnotation[] = [];
-  const selectedAnnotaionChildren: IAnnotation[] = [];
+  const selectedAnnotationParents: IAnnotation[] = [];
+  const selectedAnnotationChildren: IAnnotation[] = [];
 
   links.forEach(link => {
     if (link.fromEntryId === selectedAnnotationId) {
       let anno = annotations.find(ann => ann.id === link.toEntryId);
-      if (anno) selectedAnnotaionChildren.push(anno);
+      if (anno) selectedAnnotationChildren.push(anno);
     } else if (link.toEntryId === selectedAnnotationId) {
       let anno = annotations.find(ann => ann.id === link.fromEntryId);
-      if (anno) selectedAnnotaionParents.push(anno);
+      if (anno) selectedAnnotationParents.push(anno);
     }
   });
 
@@ -205,8 +205,8 @@ function TextViewer({ plugins, onEvent }: TextViewerProp) {
             <div>
               <h2>Annotation Attributes</h2>
               <AnnotationDetail
-                parentAnnotations={selectedAnnotaionParents}
-                childAnnotations={selectedAnnotaionChildren}
+                parentAnnotations={selectedAnnotationParents}
+                childAnnotations={selectedAnnotationChildren}
                 annotation={selectedAnnotation}
                 onEvent={onEvent}
               />

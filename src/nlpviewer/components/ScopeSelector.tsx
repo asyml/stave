@@ -20,7 +20,7 @@ export default function ScopeSelector({
   const legendTypeOptions: {
     value: string | null;
     label: string;
-  }[] = ontology.entryDefinitions
+  }[] = ontology.definitions
     .filter(entry => {
       return isEntryAnnotation(ontology, entry.entryName);
     })

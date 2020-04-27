@@ -51,13 +51,13 @@ export default function AnnotationDetail({
   }
 
   return (
-    <div className={style.annotaition_detail}>
+    <div className={style.annotation_detail}>
       {renderLinkedAnnotations(parentAnnotations, '↘ parents')}
       {renderLinkedAnnotations(childAnnotations, '↗ children')}
 
-      <div className={style.annotaition_detail_section}>
+      <div className={style.annotation_detail_section}>
         <h2>Attributes</h2>
-        <div className={style.annotaition_detail_section_body}>
+        <div className={style.annotation_detail_section_body}>
           <Attributes
             attributes={{
               id: annotation.id,
@@ -78,7 +78,7 @@ export default function AnnotationDetail({
             }
 
             dispatch({
-              type: 'delete-anntation',
+              type: 'delete-annotation',
               annotationId: annotation.id,
             });
           }}

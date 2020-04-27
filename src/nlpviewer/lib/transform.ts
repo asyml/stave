@@ -63,7 +63,7 @@ export function transformPack(
     annotations: formatedAnnotations,
     links: links,
     groups: groups,
-    attributes: packData.meta,
+    attributes: packData.meta['py/state'],
   };
 
   return [pack, configTransformed] as any;
@@ -100,7 +100,9 @@ function camelCaseDeep(obj: any): any {
 
 function getAttrs(config: any, a: any) {
   const legendName = getLegendName(a);
-  const legend = config['entryDefinitions'].find(
+
+
+  const legend = config['definitions'].find(
     (entry: any) => entry.entryName === legendName
   );
 
@@ -121,7 +123,7 @@ function getAttrs(config: any, a: any) {
 }
 
 function getGroupType(groupEntryName: any, config: any) {
-  const entry = config.entryDefinitions.find(
+  const entry = config.definitions.find(
     (ent: any) => ent.entryName === groupEntryName
   );
 

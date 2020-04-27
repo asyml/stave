@@ -17,6 +17,57 @@ export function applyColorToLegend(
   });
 }
 
+export function displayAttributeInline(attr_value: any) {
+  const attr_type:string = (typeof attr_value)
+  
+  // The way that we display null value and other objects will leave an empty box.
+  // We can probably use the ontology to filter out some of these.
+
+  if (attr_type === 'boolean'){
+    return attr_value.toString()
+  } else if (attr_type === 'string'){
+    return attr_value.substring(0,3)
+  }else if (attr_type === 'number'){
+    return attr_value.toString()
+  }else if (attr_value === null){
+    return ''
+  }else{
+    return '-'
+  }
+}
+
+export function displayAttributeFloating(attr_value: any){
+  const attr_type:string = (typeof attr_value)
+
+  if (attr_type === 'boolean'){
+    return attr_value.toString()
+  } else if (attr_type === 'string'){
+    return attr_value.substring(0,3)
+  }else if (attr_type === 'number'){
+    return attr_value.toString()
+  }else if (attr_value === null){
+    return 'N/A'
+  }else{
+    return 'complex object'
+  }
+}
+
+export function displayAttributeSidebar(attr_value: any){
+  const attr_type:string = (typeof attr_value)
+
+  if (attr_type === 'boolean'){
+    return attr_value.toString()
+  } else if (attr_type === 'string'){
+    return attr_value.substring(0,3)
+  }else if (attr_type === 'number'){
+    return attr_value.toString()
+  }else if (attr_value === null){
+    return 'N/A'
+  }else{
+    return 'complex object'
+  }
+}
+
 export function notNullOrUndefined<T>(x: T | null | undefined): x is T {
   return x !== null && x !== undefined;
 }
@@ -344,7 +395,7 @@ function findEntryNameMatchDeep(
     return true;
   }
 
-  const entry = config.entryDefinitions.find(
+  const entry = config.definitions.find(
     ent => ent.entryName === entryName
   );
 
@@ -360,7 +411,7 @@ function findEntryNameMatchDeep(
 }
 
 export function getGroupType(groupEntryName: string, config: IOntology) {
-  const entry = config.entryDefinitions.find(
+  const entry = config.definitions.find(
     ent => ent.entryName === groupEntryName
   );
 

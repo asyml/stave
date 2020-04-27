@@ -99,7 +99,7 @@ function main() {
     annotations: annotations,
     links: links,
     groups: groups,
-    attributes: packData.meta,
+    attributes: packData.meta['py/state'],
     legends: {
       annotations: annotationLegends,
       links: linkLegends,
