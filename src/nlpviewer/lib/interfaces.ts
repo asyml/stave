@@ -66,9 +66,9 @@ export interface IAnnotationWithPos {
 }
 
 export interface IOntology {
-  ontologyName: string;
-  imports: string[];
-  entryDefinitions: IEntryDefinition[];
+  name: string;
+  imports?: string[];
+  definitions: IEntryDefinition[];
   constraints: IConstraints;
 }
 
@@ -143,6 +143,7 @@ export interface IEntryDefinition {
   parentType?: string;
   childType?: string;
   memberType?: string;
+  description?: string;
   attributes?: IEntryAttributeDefinition[];
 }
 

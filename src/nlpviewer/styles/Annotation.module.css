@@ -5,14 +5,14 @@
   transition: box-shadow 0.36s;
 }
 
-.annotaion {
+.annotation {
   cursor: pointer;
   transition: opacity 0.36s;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
 }
 
-.annotaion_inner_left {
+.annotation_inner_left {
   position: absolute;
   top: 0px;
   left: 0px;
@@ -24,7 +24,7 @@
   transform: rotate(45deg);
 }
 
-.annotaion_inner_right {
+.annotation_inner_right {
   position: absolute;
   top: -0;
   right: 0px;
