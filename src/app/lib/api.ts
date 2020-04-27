@@ -3,7 +3,16 @@ interface APIDocument {
   textPack: string;
   ontology: string;
 }
-
+interface APICrossDocPack{
+  id: string;
+  textPack: string;
+}
+interface APICrossDoc {
+  crossDocPack:APICrossDocPack;
+  _parent: APIDocument;
+  _child: APIDocument;
+  nextCrossDocId : string;
+}
 export function fetchDocuments(): Promise<any> {
   return fetch(`/api/documents`).then(r => r.json());
 }
@@ -61,6 +70,15 @@ export function createUser(name: string, password: string) {
   }).then(r => r.json());
 }
 
+export function fetchCrossDocs(): Promise<any> {
+  return fetch(`/api/crossdocs`).then(r => r.json());
+}
+export function fetchCrossDoc(id: string): Promise<APICrossDoc>  {
+  return fetch(`/api/crossdocs/${id}`).then(r => r.json());
+}
+
+
+
 export function addAnnotation(documentId: string, data: any) {
   return postData(`/api/documents/${documentId}/annotations/new`, {
     data,
@@ -101,6 +119,12 @@ export function editLink(documentId: string, linkId: string, data: any) {
 
 export function deleteLink(documentId: string, linkId: string) {
   return postData(`/api/documents/${documentId}/links/${linkId}/delete`, {});
+}
+
+export function addCrossLink(crossDocID: string, data: any) {
+  return postData(`/api/crossdocs/${crossDocID}/links/new`, {
+    data,
+  }).then(r => r.json());
 }
 
 export function login(name: string, password: string) {

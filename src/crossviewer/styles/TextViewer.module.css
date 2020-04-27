@@ -1,0 +1,105 @@
+.text_viewer {
+  font-size: 13px;
+  min-width: 800px;
+}
+
+.layout_container {
+  display: flex;
+  height: calc(100% - 35px);
+}
+
+.metadata_side_container {
+  flex: 0 0 250px;
+  padding: 8px 0;
+  overflow: hidden;
+}
+
+.attributes_side_container {
+  flex: 0 0 250px;
+  padding: 8px;
+  overflow: hidden;
+}
+
+.center_area_container {
+  border: 1px solid #ccc;
+  border-top: none;
+  height: calc(100vh - 50px);
+  flex: 1;
+  position: relative;
+  transition: background 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.attributes_side_container h2 {
+  font-size: 16px;
+}
+
+.tool_bar_container {
+  border-bottom: 1px solid #ccc;
+  padding: 8px;
+  background: #f8f8fa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.input_bar_container {
+  border-bottom: 1px solid #ccc;
+  padding: 8px;
+  background: #f8f8fa;
+  display: flex;
+  align-items: center;
+}
+
+.is_adding_annotation {
+  background: rgba(9, 154, 235, 0.05);
+}
+
+.is_grouping_annotation {
+  background: rgba(235, 9, 9, 0.05);
+}
+
+.next_event_button {
+  margin-right: 8px;
+}
+
+
+.next_doc_button {
+  margin-right: 8px;
+}
+
+.evidence_button{
+  margin-right: 8px;
+}
+
+.text_area_container {
+  padding: 16px;
+  height: 100%;
+  overflow: scroll;
+}
+
+.button_action_description {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #999;
+}
+
+.plugins_container {
+  max-height: 300px;
+  overflow: scroll;
+  border-top: 1px solid #ccc;
+}
+
+.scope_selector_container {
+  display: flex;
+  align-items: center;
+}
+
+.scope_selector_container > span {
+  margin-right: 8px;
+}
+
+.scope_nav_container {
+  margin-left: 8px;
+}

@@ -15,34 +15,40 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from nlpviewer_backend.handlers import session, user, document
+from nlpviewer_backend.handlers import session, user, document, crossdoc, homepage
 
 urlpatterns = [
-    path('login', session.login),
-    path('logout', session.logout),
+    path('', homepage.index),
 
-    path('users', user.listAll),
-    path('users/new', user.create),
-    path('users/<int:user_id>', user.query),
-    path('users/<int:user_id>/edit', user.edit),
-    path('users/<int:user_id>/delete', user.delete),
+    path('api/login', session.login),
+    path('api/logout', session.logout),
 
-    path('documents', document.listAll),
-    path('documents/new', document.create),
-    path('documents/<int:document_id>', document.query),
-    path('documents/<int:document_id>/edit', document.edit),
-    path('documents/<int:document_id>/delete', document.delete),
+    path('api/users', user.listAll),
+    path('api/users/new', user.create),
+    path('api/users/<int:user_id>', user.query),
+    path('api/users/<int:user_id>/edit', user.edit),
+    path('api/users/<int:user_id>/delete', user.delete),
 
-    path('documents/<int:document_id>/annotations/new', document.new_annotation),
-    path('documents/<int:document_id>/annotations/<int:annotation_id>/edit',
+    path('api/documents', document.listAll),
+    path('api/documents/new', document.create),
+    path('api/documents/<int:document_id>', document.query),
+    path('api/documents/<int:document_id>/edit', document.edit),
+    path('api/documents/<int:document_id>/delete', document.delete),
+
+    path('api/documents/<int:document_id>/annotations/new', document.new_annotation),
+    path('api/documents/<int:document_id>/annotations/<int:annotation_id>/edit',
          document.edit_annotation),
-    path('documents/<int:document_id>/annotations/<int:annotation_id>/delete',
+    path('api/documents/<int:document_id>/annotations/<int:annotation_id>/delete',
          document.delete_annotation),
 
-    path('documents/<int:document_id>/links/new', document.new_link),
-    path('documents/<int:document_id>/links/<int:link_id>/edit', document.edit_link),
-    path('documents/<int:document_id>/links/<int:link_id>/delete',
+    path('api/documents/<int:document_id>/links/new', document.new_link),
+    path('api/documents/<int:document_id>/links/<int:link_id>/edit', document.edit_link),
+    path('api/documents/<int:document_id>/links/<int:link_id>/delete',
          document.delete_link),
+
+    path('api/crossdocs', crossdoc.listAll),
+    path('api/crossdocs/<int:crossDoc_id>', crossdoc.query),
+    path('api/crossdocs/<int:crossDoc_id>/links/new', crossdoc.new_cross_doc_link),
 
     path('admin/', admin.site.urls),
 ]

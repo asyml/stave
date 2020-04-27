@@ -10,6 +10,7 @@ import {
 
 import Login from './pages/Login';
 import Viewer from './pages/Viewer';
+import CrossDoc from './pages/CrossDoc';
 import Documents from './pages/Documents';
 import Users from './pages/Users';
 import { logout } from './lib/api';
@@ -18,6 +19,7 @@ import { singlePack } from './mock-data-2';
 import { ontology } from './mock-config-data';
 import NLPViewer from '../nlpviewer';
 import groupPlugin from '../plugins/Group';
+import AllCrossDocs from "./pages/AllCrossDocs";
 
 function App() {
   return (
@@ -30,6 +32,9 @@ function App() {
             <ul>
               <li>
                 <Link to="/">All documents</Link>
+              </li>
+              <li>
+                <Link to="/crossdocs">All cross doc references</Link>
               </li>
               <li>
                 <Link to="/users">All Users</Link>
@@ -52,7 +57,12 @@ function App() {
           <Route path="/documents/:id">
             <Viewer />
           </Route>
-
+          <Route path="/crossdocs/:id">
+            <CrossDoc />
+          </Route>
+          <Route path="/crossdocs">
+            <AllCrossDocs />
+          </Route>
           <Route path="/">
             <Documents />
           </Route>

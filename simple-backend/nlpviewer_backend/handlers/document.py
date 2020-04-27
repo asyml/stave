@@ -8,7 +8,7 @@ from ..models import Document, User
 from ..lib.require_login import require_login
 
 
-@require_login
+
 def listAll(request):
     documents = Document.objects.all().values()
     return JsonResponse(list(documents), safe=False)
