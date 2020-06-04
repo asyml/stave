@@ -26,3 +26,7 @@ yarn-error.log*
 *.pyc
 venv
 simple-backend/db.sqlite3
+
+stave.iml
+.idea
+simple-backend/frontend/*

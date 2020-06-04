@@ -3,8 +3,7 @@ from django.urls import include, path
 from django.http import HttpResponse, JsonResponse
 from django.forms import model_to_dict
 import json
-from ..models import User
-
+from ..models import User, CrossDoc
 
 def login(request):
     print(request.body)
@@ -29,3 +28,19 @@ def logout(request):
         1  # do nothing
 
     return HttpResponse("OK")
+
+
+
+
+
+#### only for cross doc login
+
+def login_amazon_turk(request):
+    print(request.body)
+    received_json_data = json.loads(request.body)
+    turkID = received_json_data.get('turkID')
+    print(turkID)
+    cross_doc = CrossDoc.objects.order_by('?').first()
+    to_return = {"id": str(cross_doc.pk)}
+
+    return JsonResponse(to_return, safe=False)

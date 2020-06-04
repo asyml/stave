@@ -1,52 +1,71 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import style from '../styles/CrossDocStyle.module.css';
 import {ISinglePack, IAnnotation} from "../../nlpviewer";
-import {IMultiPack} from "./lib/interfaces";
+import {IMultiPack, IRange} from "./lib/interfaces";
 import Event from "./Event";
-import {highlight_legend} from "../index";
+// @ts-ignore
+import Highlightable from "highlightable";
 
 export interface TextAreaBProp {
-  textPack: ISinglePack;
-  nowOnEventIndex: number;
-  multiPack: IMultiPack;
+    textPack: ISinglePack;
+    AnowOnEventIndex:number;
+    BnowOnEventIndex: number;
+    BSelectedIndex:number[]
+    eventClickCallBack: any;
 }
 
-function TextAreaB({ textPack, nowOnEventIndex, multiPack}: TextAreaBProp) {
-  let { annotations, text, links } = textPack;
-  if (nowOnEventIndex >= textPack.annotations.length) {
+function TextAreaB({ textPack, AnowOnEventIndex, BnowOnEventIndex, BSelectedIndex, eventClickCallBack}: TextAreaBProp) {
+    let {annotations, text, links} = textPack;
+
+    const highlightedText = highlighHelper(text, annotations);
+
+
+    function highlighHelper(text:String, annotations: IAnnotation[]) {
+        let to_return = [];
+        let i:number;
+        to_return.push(text.substring(0,annotations[0].span.begin));
+        for (i = 0; i < annotations.length-1; i ++) {
+            let initSelected = 0;
+            if (i == BnowOnEventIndex) {
+                initSelected = 1;
+            } else if (BSelectedIndex.includes(i)) {
+                initSelected = 2;
+            }
+            to_return.push((<Event eventIndex = {i}
+                                   eventText = {text.substring(annotations[i].span.begin, annotations[i].span.end)}
+                                   AnowOnEventIndex = {AnowOnEventIndex}
+                                   initSelected={initSelected}
+                                   eventClickCallBack = {eventClickCallBack}/>));
+            to_return.push(text.substring(annotations[i].span.end, annotations[i+1].span.begin));
+        }
+
+        let initSelected = 0;
+        if (i == BnowOnEventIndex) {
+            initSelected = 1;
+        } else if (BSelectedIndex.includes(i)) {
+            initSelected = 2;
+        }
+        to_return.push((<Event eventIndex = {i}
+                               eventText = {text.substring(annotations[i].span.begin, annotations[i].span.end)}
+                               AnowOnEventIndex = {AnowOnEventIndex}
+                               initSelected={initSelected}
+                               eventClickCallBack = {eventClickCallBack}/>));
+        to_return.push(text.substring(annotations[i].span.end));
+        return to_return;
+    }
+
     return (
-        <div className={style.text_area_container_visible}>
-          <div className={style.text_node_container}>
-            {text}
-          </div>
+        <div
+            className={style.text_area_container_visible}
+        >
+            <div className={style.text_node_container}>
+                {highlightedText}
+            </div>
         </div>
-    )
-  }
-
-  const nowOnEvent = textPack.annotations[nowOnEventIndex];
-  annotations.sort(function(a, b){return a.span.begin - b.span.begin});
-  const highlight_annotations = annotations.filter((entry:IAnnotation)=>entry.legendId == highlight_legend);
-  const highlightedText = highlighHelper(text, nowOnEvent);
-  return (
-    <div className={style.text_area_container_visible} >
-      <div className={style.text_node_container} >
-        {highlightedText}
-      </div>
-    </div>
-  );
+    );
 }
 
-function highlighHelper(text:String, nowOnEvent:IAnnotation) {
-  let to_return = [];
-  // Outer loop to create parent
-  to_return.push(text.substring(0,nowOnEvent.span.begin));
-  to_return.push(<Event eventText={text.substring(nowOnEvent.span.begin, nowOnEvent.span.end)}
-                        nowOnEvent={nowOnEvent}/>);
 
-
-  to_return.push(text.substring(nowOnEvent.span.end));
-  return to_return;
-}
 
 
 export default TextAreaB;

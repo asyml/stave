@@ -22,6 +22,7 @@ urlpatterns = [
 
     path('api/login', session.login),
     path('api/logout', session.logout),
+    path("api/login-amazon-turk", session.login_amazon_turk),
 
     path('api/users', user.listAll),
     path('api/users/new', user.create),
@@ -49,6 +50,7 @@ urlpatterns = [
     path('api/crossdocs', crossdoc.listAll),
     path('api/crossdocs/<int:crossDoc_id>', crossdoc.query),
     path('api/crossdocs/<int:crossDoc_id>/links/new', crossdoc.new_cross_doc_link),
-
+    path('api/crossdocs/<int:crossDoc_id>/links/update', crossdoc.update_cross_doc_link),
+    path('api/crossdocs/<int:crossDoc_id>/links/<int:link_id>/delete', crossdoc.delete_cross_doc_link),
     path('admin/', admin.site.urls),
 ]

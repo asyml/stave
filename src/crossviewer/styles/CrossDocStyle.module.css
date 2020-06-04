@@ -88,11 +88,21 @@
   background-color: #ff8b90;
   cursor: pointer;
 }
+.event_now_on{
+  border: 3px solid#0071ff;
+}
 .event_selected {
   background-color: #fe346e;
 }
 .event_selected_hovered {
   background-color: #fe346e;
   cursor: pointer;
+}
+
+.a_now_event {
+  border: 3px solid #0071ff;
+}
+.a_other_event {
+  border-bottom: 3px solid #0071ff;
 }
 

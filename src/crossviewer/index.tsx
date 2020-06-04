@@ -1,14 +1,20 @@
 import React, {useEffect, useState, } from 'react';
-
-
+import Select from 'react-select';
+import ReactModal from 'react-modal';
 
 import style from "./styles/TextViewer.module.css";
 import TextAreaA from "./components/TextAreaA";
 import TextAreaB from "./components/TextAreaB";
 import {IAnnotation, ISinglePack,} from '../nlpviewer/lib/interfaces';
-import {ICrossDocLink, IMultiPack} from "./components/lib/interfaces";
+import {
+  IAllRangesForOneType,
+  ICrossDocLink,
+  IMultiPack, IMultiPackOntology,
+  IRange
+} from "./components/lib/interfaces";
 import ScopeSelector from "../nlpviewer/components/ScopeSelector";
 import {inspect} from "util";
+import {cross_doc_event_legend} from "./components/lib/definitions";
 
 export type OnEventType = (event: any) => void;
 
@@ -16,76 +22,141 @@ export interface CrossDocProp {
   textPackA: ISinglePack;
   textPackB: ISinglePack;
   multiPack: IMultiPack;
+  ontology:  IMultiPackOntology;
   onEvent: OnEventType;
-  nextCrossDocEnabled : boolean;
 }
-export const highlight_legend : string = "ft.onto.base_ontology.EntityMention";
 export default function CrossViewer(props: CrossDocProp) {
 
-  const {textPackA, textPackB, multiPack, onEvent, nextCrossDocEnabled} = props;
+  const {textPackA, textPackB, multiPack, ontology, onEvent} = props;
   let annotationsA = textPackA.annotations;
   let annotationsB = textPackB.annotations;
-  console.log("wefwef",nextCrossDocEnabled);
   annotationsA.sort(function(a, b){return a.span.begin - b.span.begin});
   annotationsB.sort(function(a, b){return a.span.begin - b.span.begin});
 
-  const all_events_A : IAnnotation[] = annotationsA.filter((entry:IAnnotation)=>entry.legendId == highlight_legend);
-  const all_events_B : IAnnotation[] = annotationsB.filter((entry:IAnnotation)=>entry.legendId == highlight_legend);
+  const all_events_A : IAnnotation[] = annotationsA.filter((entry:IAnnotation)=>entry.legendId == cross_doc_event_legend);
+  const all_events_B : IAnnotation[] = annotationsB.filter((entry:IAnnotation)=>entry.legendId == cross_doc_event_legend);
   textPackA.annotations = all_events_A;
   textPackB.annotations = all_events_B;
 
 
   const [AnowOnEventIndex, setANowOnEventIndex] =  useState<number>(0);
-  const [BnowOnEventIndex, setBNowOnEventIndex] =  useState<number>(0);
-  const [input, setInput] =  useState<string>("");
+  const [BnowOnEventIndex, setBNowOnEventIndex] =  useState<number>(-1);
+  const nowAOnEvent = all_events_A[AnowOnEventIndex];
+  const nowBOnEvent = BnowOnEventIndex >= 0 ? all_events_B[BnowOnEventIndex] : undefined;
 
-  const nowAOnEvent : IAnnotation = all_events_A[AnowOnEventIndex];
+  const [nowQuestionIndex, setNowQuestionIndex] =  useState<number>(-1);
+  const now_question = nowQuestionIndex >=0 ? ontology.coref_questions[nowQuestionIndex] : undefined;
 
-  // const [selectedText, setSelectedText] =  useState<String | null>(null);
-  // function selectText(e:any) {
-  //   // @ts-ignore
-  //   setSelectedText( window.getSelection().toString());
-  // }
+  const [currentAnswers, setCurrentAnswers] = useState<number []>([]);
 
-  const YesNoEnable: boolean = BnowOnEventIndex < all_events_B.length;
-  const nextEventEnable:boolean = AnowOnEventIndex < all_events_A.length-1 && BnowOnEventIndex == all_events_B.length;
-  const nextDocEnable: boolean = AnowOnEventIndex == all_events_A.length-1 && BnowOnEventIndex == all_events_B.length && nextCrossDocEnabled;
+  const [instructionOpen, setInstructionOpen] = useState<boolean>(false);
 
-  function clickNextDocument(){
-    onEvent({type:"next-document"});
+
+  const BSelectedIndex = multiPack.crossDocLink.filter(item => item._parent_token === +nowAOnEvent.id)
+            .map(item => item._child_token)
+            .map(event_id => all_events_B.findIndex(event => +event.id===event_id));
+
+  // const options = [
+  //   { value: 'location', label: 'location' },
+  //   { value: 'time', label: 'time' },
+  //   { value: 'argument', label: 'argument' }
+  // ];
+
+
+  const BackEnable: boolean =  AnowOnEventIndex > 0;
+  const nextEventEnable:boolean = AnowOnEventIndex < all_events_A.length-1 ;
+
+
+  function constructNewLink(whetherCoref:boolean, new_answers:number[]) : ICrossDocLink {
+    const newLink :ICrossDocLink= {
+      id: undefined,
+      _parent_token: +nowAOnEvent.id,
+      _child_token: +all_events_B[BnowOnEventIndex].id,
+      coref: whetherCoref,
+      answers: new_answers};
+    return newLink;
+
   }
 
+  function clickViewInstruction(){
+    setInstructionOpen(true);
+    return false;
+  }
+  function clickAnywhere(){
+    if (instructionOpen) {
+      setInstructionOpen(false);
+    }
+    return false;
+  }
 
   function clickNextEvent() {
-      setBNowOnEventIndex(0);
-      setANowOnEventIndex(AnowOnEventIndex+1);
+    setANowOnEventIndex(AnowOnEventIndex+1);
   }
-  function clickYes(){
 
-    const link :ICrossDocLink= {
-      id: "null",
-      _parent_token: parseInt(annotationsA[AnowOnEventIndex].id),
-      _child_token: parseInt(annotationsB[BnowOnEventIndex].id)};
-    onEvent({type:"link-add", link:link, input: input});
+  function clickBack() {
+    setANowOnEventIndex(AnowOnEventIndex-1);
+  }
+  function clickOption(option_id:number) {
+    if (option_id == -1) {
+      resetBAndQuestions();
+      return;
+    }
+    let new_answers = [...currentAnswers];
+    new_answers.push(option_id);
+    if (nowQuestionIndex < ontology.coref_questions.length-1){
+      setNowQuestionIndex(nowQuestionIndex+1);
+      setCurrentAnswers(new_answers);
+    } else {
+      const newLink = constructNewLink(true, new_answers);
+      onEvent({
+        type:"link-add",
+        newLink: newLink,
+      });
+      resetBAndQuestions();
+    }
+  }
 
-    setInput("");
-    setBNowOnEventIndex(BnowOnEventIndex + 1)
+  function eventClickCallBack(eventIndex:number, selected:boolean){
+    if (BnowOnEventIndex>=0) {
+      return
+    }
+    if (selected) {
+      setBNowOnEventIndex(eventIndex);
+      setNowQuestionIndex(0);
+
+    } else {
+      // @ts-ignore
+      const linkID = multiPack.crossDocLink.find(item => item._parent_token === +nowAOnEvent.id && item._child_token === +all_events_B[eventIndex].id).id;
+      onEvent({
+        type: "link-delete",
+        linkID: linkID,
+      });
+    }
+    return
   }
-  function clickNo() {
-    setInput("");
-    setBNowOnEventIndex(BnowOnEventIndex + 1)
+
+  function resetBAndQuestions() {
+    setBNowOnEventIndex(-1);
+    setNowQuestionIndex(-1);
+    setCurrentAnswers([]);
   }
-  function handleInputChange(evt : any) {
-    setInput(evt.target.value);
-  }
+
 
   return (
+      <div onClick={clickAnywhere}>
+        <ReactModal isOpen={instructionOpen} className={style.modal} overlayClassName={style.modal_overlay}>haha</ReactModal>
       <div className={style.text_viewer}>
-
         {/*discription here*/}
         <div className={style.tool_bar_container}>
-          <div style={{fontSize: "20px"}}>
-          Please click on the events on the right pane if the events are coreferential to the event highlighted on the left pane.
+          <div className={style.spread_flex_container}>
+            <button onClick={clickViewInstruction}
+                    className={style.button_view_instruction}>
+              View Instructions
+            </button>
+            <button onClick={clickViewInstruction}
+                    className={style.button_view_instruction}>
+              View Annotations
+            </button>
           </div>
         </div>
 
@@ -93,76 +164,21 @@ export default function CrossViewer(props: CrossDocProp) {
         {/*next event and document*/}
         <div className={style.tool_bar_container}>
           <div>
+            <button disabled={!BackEnable} onClick={clickBack}
+                    className={style.button_next_event}>
+              Back
+            </button>
             <button disabled={!nextEventEnable} onClick={clickNextEvent}
-                className={style.next_event_button}
+                    className={style.button_next_event}
             > Next event
             </button>
-            <div className={style.button_action_description}>
-              Click only if you have finished this event
-            </div>
-          </div>
 
-          <div style={{textAlign:"right"}}>
-            <button disabled={!nextDocEnable} onClick={clickNextDocument}
-                className={style.next_doc_button}
-            > Next document
-            </button>
             <div className={style.button_action_description}>
-              This button is enabled only when all events are finished.
+              Click next event only if you have finished this event
             </div>
           </div>
         </div>
 
-
-        {/*justify and coref button*/}
-        <div className={style.input_bar_container}>
-          <div>
-            <button disabled={!YesNoEnable} onClick={clickYes}
-                    className={style.next_event_button}
-            > Yes
-            </button>
-            <button disabled={!YesNoEnable} onClick={clickNo}
-                    className={style.next_event_button}
-            > No
-            </button>
-            <div className={style.button_action_description}>
-              Two events corefenrential
-            </div>
-          </div>
-
-          <textarea
-              value = {input}
-              onChange={handleInputChange}
-              style={{height:"100px", width:"200px"}}
-          ></textarea>
-        </div>
-
-        {/*<div className={style.tool_bar_container}>*/}
-        {/*  <div>*/}
-        {/*    <button className={style.evidence_button} onClick={selectText} style={{backgroundColor:"blue"}}>*/}
-        {/*      Argument*/}
-        {/*    </button>*/}
-        {/*  </div>*/}
-
-        {/*  <div>*/}
-        {/*    <button className={style.evidence_button} style={{backgroundColor:"red"}}>*/}
-        {/*      Locaition*/}
-        {/*    </button>*/}
-
-        {/*  </div>*/}
-        {/*  <div>*/}
-        {/*    <button className={style.evidence_button} style={{backgroundColor:"green"}}>*/}
-        {/*      Temperal*/}
-        {/*    </button>*/}
-
-        {/*  </div>*/}
-        {/*  <div>*/}
-        {/*    <button className={style.evidence_button} style={{backgroundColor:"yellow"}}>*/}
-        {/*      Number*/}
-        {/*    </button>*/}
-
-        {/*  </div>*/}
-        {/*</div>*/}
 
         <main className={style.layout_container}>
 
@@ -173,8 +189,7 @@ export default function CrossViewer(props: CrossDocProp) {
             <div className={`${style.text_area_container}`}>
               <TextAreaA
                   textPack={textPackA}
-                  nowOnEventIndex={AnowOnEventIndex}
-                  // selectedText = {selectedText}
+                  AnowOnEventIndex={AnowOnEventIndex}
               />
             </div>
           </div>
@@ -185,14 +200,36 @@ export default function CrossViewer(props: CrossDocProp) {
             <div className={`${style.text_area_container}`}>
               <TextAreaB
                   textPack={textPackB}
-                  nowOnEventIndex = {BnowOnEventIndex}
-                  multiPack={multiPack}
+                  AnowOnEventIndex={AnowOnEventIndex}
+                  BnowOnEventIndex={BnowOnEventIndex}
+                  BSelectedIndex={BSelectedIndex}
+                  eventClickCallBack={eventClickCallBack}
               />
             </div>
           </div>
 
 
         </main>
+        <div className={style.bottom_box}>
+        {now_question ?
+          <div>
+            <div className={style.question_container}>
+              {now_question.question_text}
+            </div>
+            <div className={style.option_container}>
+            {now_question.options.map(option => {
+              return (
+                  <button className={style.button_option} key={option.option_id} onClick={e => clickOption(option.option_id)}>
+                    {option.option_text}
+                  </button>
+              )
+            })}
+            </div>
+            <button className={style.button_option_alert}onClick={e => clickOption(-1)}>I don't think they are coreferential anymore.</button>
+          </div>
+          : null}
+        </div>
+      </div>
       </div>
   );
 }

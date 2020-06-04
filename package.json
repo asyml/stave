@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/react-modal": "^3.10.5",
+    "highlightable": "^1.0.7",
     "lodash-es": "^4.17.15",
+    "react-modal": "^3.11.2",
     "react-select": "^3.0.8"
   },
   "devDependencies": {
