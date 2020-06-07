@@ -1,5 +1,4 @@
 import React, {useEffect, useState, } from 'react';
-import Select from 'react-select';
 import ReactModal from 'react-modal';
 
 import style from "./styles/TextViewer.module.css";
@@ -7,13 +6,9 @@ import TextAreaA from "./components/TextAreaA";
 import TextAreaB from "./components/TextAreaB";
 import {IAnnotation, ISinglePack,} from '../nlpviewer/lib/interfaces';
 import {
-  IAllRangesForOneType,
   ICrossDocLink,
-  IMultiPack, IMultiPackOntology,
-  IRange
+  IMultiPack, IMultiPackQuestion,
 } from "./components/lib/interfaces";
-import ScopeSelector from "../nlpviewer/components/ScopeSelector";
-import {inspect} from "util";
 import {cross_doc_event_legend} from "./components/lib/definitions";
 
 export type OnEventType = (event: any) => void;
@@ -22,12 +17,12 @@ export interface CrossDocProp {
   textPackA: ISinglePack;
   textPackB: ISinglePack;
   multiPack: IMultiPack;
-  ontology:  IMultiPackOntology;
+  multiPackQuestion:  IMultiPackQuestion;
   onEvent: OnEventType;
 }
 export default function CrossViewer(props: CrossDocProp) {
 
-  const {textPackA, textPackB, multiPack, ontology, onEvent} = props;
+  const {textPackA, textPackB, multiPack, multiPackQuestion, onEvent} = props;
   let annotationsA = textPackA.annotations;
   let annotationsB = textPackB.annotations;
   annotationsA.sort(function(a, b){return a.span.begin - b.span.begin});
@@ -45,7 +40,7 @@ export default function CrossViewer(props: CrossDocProp) {
   const nowBOnEvent = BnowOnEventIndex >= 0 ? all_events_B[BnowOnEventIndex] : undefined;
 
   const [nowQuestionIndex, setNowQuestionIndex] =  useState<number>(-1);
-  const now_question = nowQuestionIndex >=0 ? ontology.coref_questions[nowQuestionIndex] : undefined;
+  const now_question = nowQuestionIndex >=0 ? multiPackQuestion.coref_questions[nowQuestionIndex] : undefined;
 
   const [currentAnswers, setCurrentAnswers] = useState<number []>([]);
 
@@ -73,7 +68,10 @@ export default function CrossViewer(props: CrossDocProp) {
       _parent_token: +nowAOnEvent.id,
       _child_token: +all_events_B[BnowOnEventIndex].id,
       coref: whetherCoref,
-      answers: new_answers};
+      answers: new_answers.map((option_id, index) => ({
+        question_id: multiPackQuestion.coref_questions[index].question_id,
+        option_id: option_id
+      }))};
     return newLink;
 
   }
@@ -103,7 +101,7 @@ export default function CrossViewer(props: CrossDocProp) {
     }
     let new_answers = [...currentAnswers];
     new_answers.push(option_id);
-    if (nowQuestionIndex < ontology.coref_questions.length-1){
+    if (nowQuestionIndex < multiPackQuestion.coref_questions.length-1){
       setNowQuestionIndex(nowQuestionIndex+1);
       setCurrentAnswers(new_answers);
     } else {

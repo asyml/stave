@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import CrossViewer from '../../crossviewer';
 import {transformPack, ISinglePack} from '../../nlpviewer';
-import {IMultiPack, IMultiPackOntology} from "../../crossviewer/components/lib/interfaces";
+import {IMultiPack, IMultiPackQuestion} from "../../crossviewer/components/lib/interfaces";
 import {
   transformMultiPack,
   transformBackMultiPack,
-  transformMultiPackOntology
+  transformMultiPackQuestion
 } from "../../crossviewer/components/lib/utils";
 import {useParams, useLocation, useHistory} from 'react-router-dom';
 import {
@@ -24,8 +24,7 @@ function CrossDoc() {
   const [packA, setPackA] = useState<ISinglePack | null>(null);
   const [packB, setPackB] = useState<ISinglePack | null>(null);
   const [multiPack, setMultiPack] = useState<IMultiPack|null>(null);
-  const [multiPackOntology, setMultiPackOntology] = useState<IMultiPackOntology|null>(null);
-  const [nextCrossDocId, setNextCrossDocId]= useState<string>("-1");
+  const [multiPackQuestion, setMultiPackQuestion] = useState<IMultiPackQuestion|null>(null);
   const history = useHistory();
   useEffect(() => {
     if (id) {
@@ -41,19 +40,16 @@ function CrossDoc() {
         );
         setPackB(singlePackFromAPI1);
         const MultiPack = transformMultiPack(data.crossDocPack.textPack);
+        const MultiPackQuestion = transformMultiPackQuestion(data.crossDocPack.textPack);
         setMultiPack(MultiPack);
-        const MultiPackOntology = transformMultiPackOntology(data.crossDocPack.ontology);
-        setMultiPackOntology(MultiPackOntology);
-
-        if (data.nextCrossDocId != "-1"){
-          setNextCrossDocId(data.nextCrossDocId);
-        }
+        // const MultiPackOntology = transformMultiPackOntology(data.crossDocPack.ontology);
+        setMultiPackQuestion(MultiPackQuestion);
 
       });
     }
   }, [id]);
 
-  if (!packA || !packB || !multiPack || !multiPackOntology) {
+  if (!packA || !packB || !multiPack || !multiPackQuestion) {
     return <div>Loading...</div>;
   }
 
@@ -62,7 +58,7 @@ function CrossDoc() {
       textPackA={packA}
       textPackB={packB}
       multiPack={multiPack}
-      ontology={multiPackOntology}
+      multiPackQuestion={multiPackQuestion}
       onEvent={event => {
         if (!id) return;
         if (event.type === 'link-add') {
@@ -92,8 +88,6 @@ function CrossDoc() {
             //   crossDocLink:newCrossDocLink,
             // });
           });
-        } else if (event.type == "next-document") {
-          history.push("/crossdocs/"+nextCrossDocId);
         }
 
       }}

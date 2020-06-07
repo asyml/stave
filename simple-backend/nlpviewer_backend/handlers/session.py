@@ -3,7 +3,7 @@ from django.urls import include, path
 from django.http import HttpResponse, JsonResponse
 from django.forms import model_to_dict
 import json
-from ..models import User, CrossDoc
+from ..models import User, CrossDoc, CrossDocAnnotation
 
 def login(request):
     print(request.body)
@@ -39,8 +39,17 @@ def login_amazon_turk(request):
     print(request.body)
     received_json_data = json.loads(request.body)
     turkID = received_json_data.get('turkID')
+    request.session['turkID'] = turkID
     print(turkID)
     cross_doc = CrossDoc.objects.order_by('?').first()
-    to_return = {"id": str(cross_doc.pk)}
+
+    new_cross_doc_anno = CrossDocAnnotation()
+    new_cross_doc_anno.name = cross_doc.name
+    new_cross_doc_anno.turkID = turkID
+    new_cross_doc_anno.textPack = cross_doc.textPack
+    new_cross_doc_anno.ontology = cross_doc.ontology
+    new_cross_doc_anno.save()
+
+    to_return = {"id": str(new_cross_doc_anno.pk)}
 
     return JsonResponse(to_return, safe=False)

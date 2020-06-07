@@ -1,42 +1,37 @@
 import {IAnnotation} from "../../../nlpviewer";
-import {ICrossDocLink, IMultiPack, IMultiPackOntology, IQuestion} from "./interfaces";
+import {ICrossDocLink, IMultiPack, IMultiPackQuestion, IQuestion} from "./interfaces";
 import {coref_question_entry_name, suggest_question_entry_name} from "./definitions";
 
-function find_annotation_by_id(annotations: IAnnotation[], tid: string) {
-    for (let i = 0; i < annotations.length; i++) {
-        if (annotations[i].id=="tid") {
 
-        }
-    }
-}
-
-export function transformMultiPackOntology(rawOntology: string): IMultiPackOntology {
+export function transformMultiPackQuestion(rawOntology: string): IMultiPackQuestion {
     const data = JSON.parse(rawOntology);
     // @ts-ignore
-    const coref_questions =  data['entryDefinitions'].find(item => item["entry_name"] === coref_question_entry_name)["attributes"].map(raw_question => {
-            const question : IQuestion = {
-                question_id: raw_question["question_id"],
-                question_text: raw_question["question_text"],
-                // @ts-ignore
-                options : raw_question["options"].map(raw_option =>
-                  ({
-                      option_id: raw_option["option_id"],
-                      option_text: raw_option['option_text']
-                  })
-                )
-            };
-            return question
-        });
-    //@ts-ignore
-    const suggest_questions =  data['entryDefinitions'].find(item => item["entry_name"] === suggest_question_entry_name)["attributes"].map(raw_question => {
+    const coref_questions =  data['py/state']["generics"].filter(item => item["py/object"] === coref_question_entry_name).map(raw_question => {
         const question : IQuestion = {
-            question_id: raw_question["question_id"],
-            question_text: raw_question["question_text"],
+            question_id: raw_question["_tid"],
+            question_text: raw_question["py/state"]["text"],
             // @ts-ignore
-            options : raw_question["options"].map(raw_option =>
+            options : raw_question["py/state"]["options"].map((raw_option, index) =>
               ({
-                  option_id: raw_option["option_id"],
-                  option_text: raw_option['option_text']
+                  option_id: index,
+                  option_text: raw_option
+              })
+            )
+        };
+        return question
+        });
+
+    console.log(data['py/state']["generics"]);
+    //@ts-ignore
+    const suggest_questions =  data['py/state']["generics"].filter(item => item["py/object"] === suggest_question_entry_name).map(raw_question => {
+        const question : IQuestion = {
+            question_id: raw_question["_tid"],
+            question_text: raw_question["py/state"]["text"],
+            // @ts-ignore
+            options : raw_question["py/state"]["options"].map((raw_option, index) =>
+              ({
+                  option_id: index,
+                  option_text: raw_option
               })
             )
         };
@@ -75,8 +70,8 @@ export function transformBackMultiPack(link: ICrossDocLink): any {
             'py/state': {
                 _child: { "py/tuple":[1, link._child_token]},
                 _parent: { "py/tuple":[0, link._parent_token]},
-                rel_type: link.coref? "coreference" : "non-coreference",
-                evidence_questions: link.answers,
+                rel_type: link.coref? "coref" : "not-coref",
+                evidence_question_answers: link.answers,
             },
         }
     } else {
@@ -84,9 +79,9 @@ export function transformBackMultiPack(link: ICrossDocLink): any {
             'py/state': {
                 _child: {"py/tuple": [1, link._child_token]},
                 _parent: {"py/tuple": [0, link._parent_token]},
-                rel_type: link.coref? "coreference" : "non-coreference",
+                rel_type: link.coref? "coref" : "not-coreference",
                 _tid: link.id,
-                evidence_questions: link.answers,
+                evidence_question_answers: link.answers,
             }
         }
     }

@@ -4,7 +4,11 @@ export interface ICrossDocLink {
     _parent_token: number;
     _child_token: number;
     coref: boolean;
-    answers: number[];
+    answers: ICrossDocLinkAnswer[];
+}
+export interface ICrossDocLinkAnswer {
+    question_id: number;
+    option_id: number;
 }
 
 export interface IMultiPack {
@@ -13,7 +17,7 @@ export interface IMultiPack {
     crossDocLink : ICrossDocLink[];
 }
 
-export interface IMultiPackOntology {
+export interface IMultiPackQuestion {
     coref_questions: IQuestion[];
     suggest_questions: IQuestion[];
 }

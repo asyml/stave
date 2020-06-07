@@ -5,15 +5,14 @@ from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.forms import model_to_dict
 import uuid
 import json
-from ..models import Document, User, CrossDoc
+from ..models import Document, User, CrossDocAnnotation
 from ..lib.require_login import require_login
 import os
 import re
-
+from ..apps import read_multipack_index, index_file_path
 
 
 default_type = "ft.onto.base_ontology.CrossDocEventRelation"
-index_file_path = os.path.join(settings.BASE_DIR,"nlpviewer_backend", "pack.idx")
 
 def format_cross_doc_helper(link, next_tid):
 
@@ -28,16 +27,6 @@ def find_next_tid(textPackJson):
         if link['py/state']["_tid"] >= max_tid:
             max_tid = link['py/state']["_tid"] + 1
     return max_tid
-
-def read_multipack_index(index_file):
-    extid_to_name = {}
-    with open(index_file) as f:
-        for line in f:
-            pairs = line.strip().split()
-            external_id = int(pairs[0])
-            file_name = pairs[1].split('/')[-1]
-            extid_to_name[external_id] = file_name
-    return extid_to_name
 
 def extract_doc_id_from_crossdoc(cross_doc):
     text_pack = json.loads(cross_doc.textPack)
@@ -56,16 +45,16 @@ def listAll(request):
 
 
 
-def query(request, crossDoc_id):
-    cross_doc = CrossDoc.objects.get(pk=crossDoc_id)
+def query(request, crossDocAnno_id):
+    cross_doc = CrossDocAnnotation.objects.get(pk=crossDocAnno_id)
     doc_0, doc_1 = extract_doc_id_from_crossdoc(cross_doc)
 
-    next_cross_doc = CrossDoc.objects.filter(pk__gt=crossDoc_id).order_by('pk').first()
-    if next_cross_doc == None:
-        next_cross_doc_id = "-1"
-    else:
-        next_cross_doc_id = str(next_cross_doc.pk)
-    to_return = {"crossDocPack":model_to_dict(cross_doc),"_parent": model_to_dict(doc_0), "_child":model_to_dict(doc_1), "nextCrossDocId":next_cross_doc_id}
+    # next_cross_doc = CrossDoc.objects.filter(pk__gt=crossDoc_id).order_by('pk').first()
+    # if next_cross_doc == None:
+    #     next_cross_doc_id = "-1"
+    # else:
+    #     next_cross_doc_id = str(next_cross_doc.pk)
+    to_return = {"crossDocPack":model_to_dict(cross_doc),"_parent": model_to_dict(doc_0), "_child":model_to_dict(doc_1)}
 
     return JsonResponse(to_return, safe=False)
 
@@ -93,9 +82,9 @@ def query(request, crossDoc_id):
 
 
 
-def new_cross_doc_link(request, crossDoc_id):
+def new_cross_doc_link(request, crossDocAnno_id):
 
-    crossDoc = CrossDoc.objects.get(pk=crossDoc_id)
+    crossDoc = CrossDocAnnotation.objects.get(pk=crossDocAnno_id)
     docJson = model_to_dict(crossDoc)
     textPackJson = json.loads(docJson['textPack'])
     
@@ -114,11 +103,11 @@ def new_cross_doc_link(request, crossDoc_id):
     return JsonResponse({"crossDocPack": model_to_dict(crossDoc)}, safe=False)
 
 
-def update_cross_doc_link(request, crossDoc_id):
+def update_cross_doc_link(request, crossDocAnno_id):
 
     success = False
 
-    crossDoc = CrossDoc.objects.get(pk=crossDoc_id)
+    crossDoc = CrossDocAnnotation.objects.get(pk=crossDocAnno_id)
     docJson = model_to_dict(crossDoc)
     textPackJson = json.loads(docJson['textPack'])
     
@@ -141,9 +130,9 @@ def update_cross_doc_link(request, crossDoc_id):
 
 
 
-def delete_cross_doc_link(request, crossDoc_id, link_id):
+def delete_cross_doc_link(request, crossDocAnno_id, link_id):
 
-    crossDoc = CrossDoc.objects.get(pk=crossDoc_id)
+    crossDoc = CrossDocAnnotation.objects.get(pk=crossDocAnno_id)
     docJson = model_to_dict(crossDoc)
     textPackJson = json.loads(docJson['textPack'])
 

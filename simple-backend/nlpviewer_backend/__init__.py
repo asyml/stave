@@ -1,0 +1,1 @@
+default_app_config = 'nlpviewer_backend.apps.MyAppConfig'
