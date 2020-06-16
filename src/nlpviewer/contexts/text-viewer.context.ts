@@ -368,7 +368,7 @@ function textViewerReducer(state: State, action: Action): State {
           ...state,
           ...initialSpacingState,
           selectedLegendIds: state.selectedLegendIds.filter(
-            id => id !== action.legendId
+            (id) => id !== action.legendId
           ),
         };
       }
@@ -382,7 +382,7 @@ function textViewerReducer(state: State, action: Action): State {
         ...state,
         ...initialSpacingState,
         selectedLegendIds: state.ontology.definitions.map(
-          entry => entry.entryName
+          (entry) => entry.entryName
         ),
       };
 
@@ -425,7 +425,7 @@ function textViewerReducer(state: State, action: Action): State {
       let halfSelectedLinkIds: string[] = [];
 
       if (state.textPack) {
-        state.textPack.links.forEach(link => {
+        state.textPack.links.forEach((link) => {
           if (link.fromEntryId === action.annotationId) {
             halfSelectedLinkIds.push(link.id);
             halfSelectedAnnotationIds.push(link.toEntryId);
@@ -469,7 +469,7 @@ function textViewerReducer(state: State, action: Action): State {
       let highlightedLinkIds: string[] = [];
 
       if (state.textPack) {
-        state.textPack.links.forEach(link => {
+        state.textPack.links.forEach((link) => {
           if (link.fromEntryId === action.annotationId) {
             highlightedLinkIds.push(link.id);
             highlightedAnnotationIds.push(link.toEntryId);
@@ -506,25 +506,25 @@ function textViewerReducer(state: State, action: Action): State {
       }
 
       const annotations = state.textPack.annotations.filter(
-        ann => ann.id !== action.annotationId
+        (ann) => ann.id !== action.annotationId
       );
 
       const links = state.textPack.links.filter(
-        link =>
+        (link) =>
           link.fromEntryId !== action.annotationId &&
           link.toEntryId !== action.annotationId
       );
 
       const removedLinkIds = state.textPack.links
         .filter(
-          link =>
+          (link) =>
             link.fromEntryId === action.annotationId ||
             link.toEntryId === action.annotationId
         )
-        .map(l => l.id);
+        .map((l) => l.id);
 
-      const groups = state.textPack.groups.map(group => {
-        const filteredMemberIds = group.members.filter(id => {
+      const groups = state.textPack.groups.map((group) => {
+        const filteredMemberIds = group.members.filter((id) => {
           if (group.memberType === 'annotation') {
             return id !== action.annotationId;
           } else if (group.memberType === 'link') {
@@ -554,7 +554,7 @@ function textViewerReducer(state: State, action: Action): State {
 
     case 'select-legend-attribute': {
       const selectedLegendAttributeIds = state.selectedLegendAttributeIds.filter(
-        id => {
+        (id) => {
           return id.indexOf(action.legendId) !== 0;
         }
       );
@@ -571,7 +571,7 @@ function textViewerReducer(state: State, action: Action): State {
 
     case 'deselect-legend-attribute': {
       const selectedLegendAttributeIds = state.selectedLegendAttributeIds.filter(
-        id => {
+        (id) => {
           return id.indexOf(action.legendId) !== 0;
         }
       );
@@ -617,7 +617,7 @@ function textViewerReducer(state: State, action: Action): State {
         ...state,
         ...initialSpacingState,
         collpasedLineIndexes: state.collpasedLineIndexes.filter(
-          i => i !== action.lineIndex
+          (i) => i !== action.lineIndex
         ),
       };
 
@@ -628,7 +628,7 @@ function textViewerReducer(state: State, action: Action): State {
 
       let halfSelectedAnnotationIds: string[] = [];
       if (state.textPack) {
-        const link = state.textPack.links.find(l => l.id === action.linkId);
+        const link = state.textPack.links.find((l) => l.id === action.linkId);
         if (link) {
           halfSelectedAnnotationIds = [link.fromEntryId, link.toEntryId];
         }
@@ -657,7 +657,7 @@ function textViewerReducer(state: State, action: Action): State {
 
       let heighligAnnotationIds = state.highlightedAnnotationIds;
       if (state.textPack) {
-        const link = state.textPack.links.find(l => l.id === action.linkId);
+        const link = state.textPack.links.find((l) => l.id === action.linkId);
         if (link) {
           heighligAnnotationIds = [link.fromEntryId, link.toEntryId];
         }
@@ -683,12 +683,14 @@ function textViewerReducer(state: State, action: Action): State {
       }
 
       const links = state.textPack.links.filter(
-        link => link.id !== action.linkId
+        (link) => link.id !== action.linkId
       );
 
-      const groups = state.textPack.groups.map(group => {
+      const groups = state.textPack.groups.map((group) => {
         if (group.memberType === 'link') {
-          const filteredMemberIds = group.members.filter(id => !action.linkId);
+          const filteredMemberIds = group.members.filter(
+            (id) => !action.linkId
+          );
           return {
             ...group,
             members: filteredMemberIds,
@@ -882,7 +884,7 @@ function textViewerReducer(state: State, action: Action): State {
 
     case 'add-member-to-group': {
       const textPack = state.textPack as ISinglePack;
-      const groups = textPack.groups.map(g => {
+      const groups = textPack.groups.map((g) => {
         if (g.id === action.groupId) {
           return {
             ...g,
@@ -926,7 +928,7 @@ function textViewerReducer(state: State, action: Action): State {
       if (!state.textPack) return state;
 
       const scopeAnnotations = state.textPack.annotations.filter(
-        ann => ann.legendId === state.selectedScopeId
+        (ann) => ann.legendId === state.selectedScopeId
       );
       const prevScopeIndex =
         state.selectedScopeIndex >= scopeAnnotations.length
@@ -951,7 +953,7 @@ function storeCurrentStateReducer(state: State, action: Action): State {
 
 function combineReducers(...reducers: Array<typeof textViewerReducer>) {
   return (state: State, action: Action) => {
-    reducers.forEach(reducer => {
+    reducers.forEach((reducer) => {
       state = reducer(state, action);
     });
 
