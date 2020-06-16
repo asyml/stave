@@ -54,6 +54,7 @@ export function spaceOutText(
 
   textNodeEl.id = 'text-spacer';
   textNodeEl.style.width = `calc(100% - ${otherWidth}px)`;
+  textNodeEl.style.minWidth = `350px`;
   textNodeEl.style.margin = '50px auto';
   textNodeEl.style.whiteSpace = 'pre-wrap';
   textNodeEl.style.lineHeight = '20px';
@@ -932,7 +933,7 @@ function getScrollbarWidth() {
   const outer = document.createElement('div');
   outer.style.visibility = 'hidden';
   outer.style.overflow = 'scroll'; // forcing scrollbar to appear
-  outer.style.msOverflowStyle = 'scrollbar'; // needed for WinJS apps
+  (outer.style as any).msOverflowStyle = 'scrollbar'; // needed for WinJS apps
   document.body.appendChild(outer);
 
   // Creating inner element and placing it in the container
