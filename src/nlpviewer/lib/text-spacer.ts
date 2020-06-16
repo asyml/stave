@@ -50,9 +50,10 @@ export function spaceOutText(
   const root = document.getElementById('root') as HTMLElement;
   const textNodeEl = document.createElement('div');
   const scrollbarWidth = getScrollbarWidth();
+  const otherWidth = 250 * 2 + 16 * 2 + scrollbarWidth; // two side panel + 2 padding
 
   textNodeEl.id = 'text-spacer';
-  textNodeEl.style.width = `calc(100% - ${534 + scrollbarWidth}px)`;
+  textNodeEl.style.width = `calc(100% - ${otherWidth}px)`;
   textNodeEl.style.margin = '50px auto';
   textNodeEl.style.whiteSpace = 'pre-wrap';
   textNodeEl.style.lineHeight = '20px';
@@ -63,6 +64,7 @@ export function spaceOutText(
 
   root.appendChild(textNodeEl);
 
+  // // START: debugging text view
   // textNodeEl.style.top = '0';
   // textNodeEl.style.left = '0';
   // textNodeEl.style.background = 'white';
@@ -71,6 +73,7 @@ export function spaceOutText(
   // const dom = document.createElement('div');
   // textNodeEl.appendChild(dom);
   // dom.style.whiteSpace = 'pre-wrap';
+  // // END: debugging text view
 
   const textNode = textNodeEl && (textNodeEl.childNodes[0] as HTMLElement);
 
@@ -85,7 +88,7 @@ export function spaceOutText(
   // so that long annotation can be broken down
   let invisibleAnnotations: any[] = [];
   let currPosition = -1;
-  text.split(' ').forEach((text, i) => {
+  text.split(/\s/).forEach((text, i) => {
     invisibleAnnotations.push({
       span: { begin: currPosition + 1, end: currPosition + 1 + text.length },
       id: 'i-' + i,
@@ -94,6 +97,7 @@ export function spaceOutText(
     });
     currPosition = currPosition + 1 + text.length;
   });
+
   annotations = annotations.concat(invisibleAnnotations);
 
   const annotationsPos = annotations.map((anno) => {
@@ -196,9 +200,14 @@ export function spaceOutText(
 
   Object.keys(linesLevelsWithNewline).forEach((lineHeight, i) => {
     const levelNum = linesLevelsWithNewline[lineHeight].length;
-    const firstAnnotation = getFirstAnnotationOfLine(
+    const annotationsAtCurrLine = getAnnotationsByLine(
       annotationsWithPosWithEmptySpaces,
       +lineHeight
+    );
+
+    let firstAnnotation = annotationsAtCurrLine[0];
+    let fullOfInvisible = annotationsAtCurrLine.every(
+      (ann) => ann.annotation.legendId === 'invisible'
     );
 
     spaceMapWithNewline[firstAnnotation.annotation.id] = {
@@ -218,11 +227,9 @@ export function spaceOutText(
           },
         },
       },
-      spaceToMove: calcuateLinesToInsertByLevelNum(
-        collpasedLinesIndex,
-        i,
-        levelNum
-      ),
+      spaceToMove: fullOfInvisible
+        ? 0
+        : calcuateLinesToInsertByLevelNum(collpasedLinesIndex, i, levelNum),
     };
   });
 
@@ -835,52 +842,6 @@ function calcuateSpaceMap(
     }
   });
 
-  const pixelNeededForAnnoLabel = 35; // we only show 3 char
-  annotationWithPosition
-    .slice(0)
-    .sort((a, b) => a.annotation.span.end - b.annotation.span.end)
-    .forEach((annPos, i, arr) => {
-      if (i < arr.length - 1 && annPos.position.rects.length === 1) {
-        const nextAnnPos = arr[i + 1];
-        const midAnnX =
-          annPos.position.rects[0].x + annPos.position.rects[0].width / 2;
-        const nextMidAnnX =
-          nextAnnPos.position.rects[0].x +
-          nextAnnPos.position.rects[0].width / 2;
-        const isSameLine =
-          annPos.position.rects[0].y === nextAnnPos.position.rects[0].y;
-
-        let distance;
-        if (isSameLine) {
-          distance = nextMidAnnX - midAnnX;
-        } else {
-          const midAnnXToEnd = annPos.position.rects[0].width / 2;
-          const nextMidAnnXToStart = nextAnnPos.position.rects[0].width / 2;
-
-          distance = midAnnXToEnd + nextMidAnnXToStart + 4;
-        }
-
-        if (distance < pixelNeededForAnnoLabel && distance > 0) {
-          const spaceToMove = Math.ceil(
-            (pixelNeededForAnnoLabel - distance) / fontWidth
-          );
-          if (spaceMap[annPos.annotation.id] === undefined) {
-            spaceMap[annPos.annotation.id] = {
-              annotationWithPos: annPos,
-              spaceToMove,
-            };
-          } else {
-            if (spaceToMove > spaceMap[annPos.annotation.id].spaceToMove) {
-              spaceMap[annPos.annotation.id] = {
-                annotationWithPos: annPos,
-                spaceToMove,
-              };
-            }
-          }
-        }
-      }
-    });
-
   return spaceMap;
 }
 
@@ -942,7 +903,7 @@ function calcuateLinesToInsertByLevelNum(
  * to insert.
  *
  */
-function getFirstAnnotationOfLine(
+function getAnnotationsByLine(
   annotationWithPosition: {
     position: IAnnotationPosition;
     annotation: IAnnotation;
@@ -953,7 +914,7 @@ function getFirstAnnotationOfLine(
     .filter((ann) => ann.position.rects[0].y === lineHeight)
     .sort((annA, annB) => {
       return annA.position.rects[0].x - annB.position.rects[0].x;
-    })[0];
+    });
 }
 
 function getTextWidth(text: string, fontWidth: number) {
