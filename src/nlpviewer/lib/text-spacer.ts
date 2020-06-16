@@ -21,16 +21,16 @@ export interface SpacedText {
  * Given
  *  - a text pack (with links, annotations)
  *  - selected legend ids (to know which annotation and link are effecting),
- *  - selected attirbute ids (to know what link label are effecting) and lines to be collapsed
+ *  - selected attribute ids (to know what link label are effecting) and lines to be collapsed
  *
- * calcuate
+ * calculate
  *  - new text that inserted empty space and new lines
- *  - a map of [annotation original end position] to number of charactor to insert after
- *    - used to restore the orignal position when new annotation is added to new text
+ *  - a map of [annotation original end position] to number of character to insert after
+ *    - used to restore the original position when new annotation is added to new text
  *  - every annotation's new position
- *  - dimention of the text node
+ *  - dimension of the text node
  *
- * the calcuation has two steps, first it find and insert empty space, then based on
+ * the calculation has two steps, first it find and insert empty space, then based on
  * the result, decide how many new line to insert between each line.
  *
  */
