@@ -26,3 +26,8 @@ def logout(request):
         1  # do nothing
 
     return HttpResponse("OK")
+
+def signup(request):
+    received_json_data = json.loads(request.body)
+    new_name = received_json_data.get('name')
+    new_password = received_json_data.get('password')

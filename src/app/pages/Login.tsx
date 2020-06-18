@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { login } from '../lib/api';
 import { useHistory } from 'react-router-dom';
+import { AppProvider, AppConsumer } from '../App'
 
-function Login() {
+function Login() { 
   const [error, setError] = useState<string>('');
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -12,11 +13,15 @@ function Login() {
     e.preventDefault();
     login(username, password)
       .then(e => {
-        history.push('/');
+        history.push('/users');
       })
       .catch(e => {
         setError('login failed');
       });
+  }
+
+  function redirectSignup(e: any) {
+    history.push("/signup") 
   }
 
   return (
@@ -45,6 +50,7 @@ function Login() {
         {error ? <div>{error}</div> : null}
 
         <button onClick={handleLogin}>login</button>
+        <button onClick={redirectSignup}>sign up</button>
       </form>
     </div>
   );

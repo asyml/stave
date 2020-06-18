@@ -18,6 +18,8 @@ import {
 import LinkCreateBox from './LinkCreateBox';
 import AnnotationCreateBox from './AnnotationCreateBox';
 
+import { useHistory } from 'react-router-dom';
+
 export type OnEventType = (event: any) => void;
 
 export interface TextViewerProp {
@@ -25,9 +27,19 @@ export interface TextViewerProp {
   onEvent?: OnEventType;
 }
 
+
 function TextViewer({ plugins, onEvent }: TextViewerProp) {
   const appState = useTextViewerState();
   const dispatch = useTextViewerDispatch();
+
+  const history = useHistory();
+  function redirectOntology(e: any) {
+    let url = window.location.pathname;
+    url = url.replace('documents','ontology');
+    history.push(url) 
+  }
+
+
   const {
     textPack,
     ontology,
@@ -118,6 +130,10 @@ function TextViewer({ plugins, onEvent }: TextViewerProp) {
                   select text to add annotation
                 </div>
               )}
+            </div>
+
+            <div >
+              <button onClick={redirectOntology}>View Edit Ontology</button>
             </div>
 
             <div className={style.scope_selector_container}>

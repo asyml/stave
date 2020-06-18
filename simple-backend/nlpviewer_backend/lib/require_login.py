@@ -15,3 +15,16 @@ def require_login(func):
 
         return func(*args, **kwargs)
     return wrapper
+
+def require_admin(func):
+    def wrapper(*args, **kwargs):
+        request = args[0]
+
+        try:
+            userJson = model_to_dict(
+                User.objects.get(pk=request.session['user_id']))
+        except:
+            return HttpResponse('no access', status=401)
+
+        return func(*args, **kwargs)
+    return wrapper
