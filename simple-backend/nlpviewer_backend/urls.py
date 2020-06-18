@@ -20,6 +20,7 @@ from nlpviewer_backend.handlers import session, user, document
 urlpatterns = [
     path('login', session.login),
     path('logout', session.logout),
+    path('signup', user.signup),
 
     path('users', user.listAll),
     path('users/new', user.create),
@@ -32,6 +33,7 @@ urlpatterns = [
     path('documents/<int:document_id>', document.query),
     path('documents/<int:document_id>/edit', document.edit),
     path('documents/<int:document_id>/delete', document.delete),
+    path('documents/<int:document_id>/edit_ontology', document.edit_ontology),
 
     path('documents/<int:document_id>/annotations/new', document.new_annotation),
     path('documents/<int:document_id>/annotations/<int:annotation_id>/edit',

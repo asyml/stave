@@ -9,6 +9,8 @@ import {
 } from 'react-router-dom';
 
 import Login from './pages/Login';
+import SignUp from './pages/SignUp';
+import Ontology from './pages/Ontology';
 import Viewer from './pages/Viewer';
 import Documents from './pages/Documents';
 import Users from './pages/Users';
@@ -18,6 +20,9 @@ import { singlePack } from './mock-data-2';
 import { ontology } from './mock-config-data';
 import NLPViewer from '../nlpviewer';
 import groupPlugin from '../plugins/Group';
+
+const initialState = { state: 0 };
+export const { Provider: AppProvider, Consumer: AppConsumer } = React.createContext(initialState);
 
 function App() {
   return (
@@ -45,6 +50,10 @@ function App() {
             <Login />
           </Route>
 
+          <Route path="/signup">
+            <SignUp />
+          </Route>
+
           <Route path="/users">
             <Users />
           </Route>
@@ -53,9 +62,14 @@ function App() {
             <Viewer />
           </Route>
 
+          <Route path="/ontology/:id">
+            <Ontology />
+          </Route>
+
           <Route path="/">
             <Documents />
           </Route>
+
         </Switch>
       </div>
     </Router>

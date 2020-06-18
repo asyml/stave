@@ -26,6 +26,18 @@ def create(request):
     userJson = model_to_dict(user)
     return JsonResponse(userJson, safe=False)
 
+def signup(request):
+    received_json_data = json.loads(request.body)
+
+    user = User(
+        name=received_json_data.get('name'),
+        password=received_json_data.get('password')
+    )
+    user.save()
+
+    userJson = model_to_dict(user)
+    return JsonResponse(userJson, safe=False)
+
 
 @require_login
 def edit(request, user_id):

@@ -41,6 +41,27 @@ def edit(request, document_id):
     docJson = model_to_dict(doc)
     return JsonResponse(docJson, safe=False)
 
+@require_login
+def edit_ontology(request, document_id):
+    print('called')
+    try:
+        doc = Document.objects.get(pk=document_id)
+        received_json_data = json.loads(request.body)
+
+        doc.ontology = received_json_data.get('ontology')
+        doc.save()
+
+        status = 1
+    except:
+        status = 0
+
+    docJson = {
+        'id': document_id,
+        'status': status
+    }
+    print(docJson)
+    return JsonResponse(docJson, safe=False)
+
 
 @require_login
 def query(request, document_id):

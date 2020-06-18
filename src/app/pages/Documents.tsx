@@ -35,6 +35,8 @@ function Documents() {
 
   if (!docs.length) return null;
 
+  console.log(docs);
+
   return (
     <div className="content">
       <div className="content_left">

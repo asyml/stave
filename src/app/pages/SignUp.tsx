@@ -1,35 +1,33 @@
 import React, { useState } from 'react';
-import { login } from '../lib/api';
+import { signup } from '../lib/api';
 import { useHistory } from 'react-router-dom';
-import { AppProvider, AppConsumer } from '../App'
 
-function Login() { 
+function SignUp() {
   const [error, setError] = useState<string>('');
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const history = useHistory();
 
-  function handleLogin(e: any) {
+  function handleSignUp(e: any) {
     e.preventDefault();
-    login(username, password)
+    signup(username, password)
       .then(e => {
-        history.push('/users');
+        history.push('/');
       })
       .catch(e => {
-        setError('login failed');
+        setError('sign up failed');
       });
-  }
-
-  function redirectSignup(e: any) {
-    history.push("/signup") 
   }
 
   return (
     <div>
-      <h2>Login</h2>
+      <h2>Sign Up</h2>
+      <h3>Bienvenue</h3>
 
-      <form onSubmit={handleLogin}>
+      <form onSubmit={handleSignUp}>
+
         <div>
+          <h4>Your Username</h4>
           <input
             placeholder="username"
             onChange={e => setUsername(e.target.value)}
@@ -39,6 +37,7 @@ function Login() {
         </div>
 
         <div>
+          <h4>Your Password</h4>
           <input
             placeholder="password"
             onChange={e => setPassword(e.target.value)}
@@ -49,11 +48,10 @@ function Login() {
 
         {error ? <div>{error}</div> : null}
 
-        <button onClick={handleLogin}>login</button>
-        <button onClick={redirectSignup}>sign up</button>
+        <br></br><button onClick={handleSignUp}>sign up</button>
       </form>
     </div>
   );
 }
 
-export default Login;
+export default SignUp;

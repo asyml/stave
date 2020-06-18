@@ -1,4 +1,4 @@
-interface APIDocument {
+export interface APIDocument {
   id: string;
   textPack: string;
   ontology: string;
@@ -16,6 +16,12 @@ export function updateDocument(id: string, name: string, textPack: string) {
   return postData(`/api/documents/${id}/edit`, {
     name: name,
     textPack: textPack,
+  }).then(r => r.json());
+}
+
+export function updateOntology(id: string, ontology: string) {
+  return postData(`/api/documents/${id}/edit_ontology`, {
+    ontology: ontology,
   }).then(r => r.json());
 }
 
@@ -105,6 +111,13 @@ export function deleteLink(documentId: string, linkId: string) {
 
 export function login(name: string, password: string) {
   return postData(`/api/login`, {
+    name,
+    password,
+  });
+}
+
+export function signup(name: string, password: string) {
+  return postData(`/api/signup`, {
     name,
     password,
   });
