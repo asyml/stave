@@ -8,8 +8,8 @@ export function transformMultiPackQuestion(rawOntology: string): IMultiPackQuest
     // @ts-ignore
     const coref_questions =  data['py/state']["generics"].filter(item => item["py/object"] === coref_question_entry_name).map(raw_question => {
         const question : IQuestion = {
-            question_id: raw_question["_tid"],
-            question_text: raw_question["py/state"]["text"],
+            question_id: raw_question["py/state"]["_tid"],
+            question_text: raw_question["py/state"]["question_body"],
             // @ts-ignore
             options : raw_question["py/state"]["options"].map((raw_option, index) =>
               ({
@@ -25,8 +25,8 @@ export function transformMultiPackQuestion(rawOntology: string): IMultiPackQuest
     //@ts-ignore
     const suggest_questions =  data['py/state']["generics"].filter(item => item["py/object"] === suggest_question_entry_name).map(raw_question => {
         const question : IQuestion = {
-            question_id: raw_question["_tid"],
-            question_text: raw_question["py/state"]["text"],
+            question_id: raw_question["py/state"]["_tid"],
+            question_text: raw_question["py/state"]["question_body"],
             // @ts-ignore
             options : raw_question["py/state"]["options"].map((raw_option, index) =>
               ({
@@ -46,14 +46,13 @@ export function transformMultiPack (rawPack: string): IMultiPack  {
     const data = JSON.parse(rawPack);
     const packData = data['py/state'];
     const [doc0, doc1] = packData['_pack_ref'];
-    const crossDocs = [doc0, doc1];
     const linkData = packData['links'];
     const crossLinks :ICrossDocLink[]= linkData.map((a: any)=> {
         return {
             id: a["py/state"]["_tid"],
             _parent_token: a["py/state"]["_parent"]["py/tuple"][1],
             _child_token: a["py/state"]["_child"]["py/tuple"][1],
-            coref: a["py/state"]["rel_type"] === "coreference",
+            coref: a["py/state"]["rel_type"],
         };
     });
     return {
@@ -70,8 +69,9 @@ export function transformBackMultiPack(link: ICrossDocLink): any {
             'py/state': {
                 _child: { "py/tuple":[1, link._child_token]},
                 _parent: { "py/tuple":[0, link._parent_token]},
-                rel_type: link.coref? "coref" : "not-coref",
-                evidence_question_answers: link.answers,
+                rel_type: link.coref,
+                coref_question_answers: link.coref_answers,
+                suggested_question_answers: link.suggested_answers,
             },
         }
     } else {
@@ -79,9 +79,10 @@ export function transformBackMultiPack(link: ICrossDocLink): any {
             'py/state': {
                 _child: {"py/tuple": [1, link._child_token]},
                 _parent: {"py/tuple": [0, link._parent_token]},
-                rel_type: link.coref? "coref" : "not-coreference",
+                rel_type: link.coref,
                 _tid: link.id,
-                evidence_question_answers: link.answers,
+                coref_question_answers: link.coref_answers,
+                suggested_question_answers: link.suggested_answers,
             }
         }
     }

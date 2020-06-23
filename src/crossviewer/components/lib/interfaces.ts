@@ -3,8 +3,9 @@ export interface ICrossDocLink {
     id: number|undefined;
     _parent_token: number;
     _child_token: number;
-    coref: boolean;
-    answers: ICrossDocLinkAnswer[];
+    coref: string;
+    coref_answers: ICrossDocLinkAnswer[];
+    suggested_answers: ICrossDocLinkAnswer[];
 }
 export interface ICrossDocLinkAnswer {
     question_id: number;

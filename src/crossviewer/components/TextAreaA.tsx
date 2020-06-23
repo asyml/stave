@@ -24,7 +24,6 @@ function TextAreaA({ textPack, AnowOnEventIndex}: TextAreaAProp) {
   }
 
   const highlightedText = highlighHelper(text, annotations, AnowOnEventIndex);
-
   return (
     <div
       className={style.text_area_container_visible}

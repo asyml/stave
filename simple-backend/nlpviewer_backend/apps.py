@@ -1,11 +1,15 @@
 from django.apps import AppConfig
 from django.conf import settings
-import os, json
+import os, json, sys
 from os import listdir
 from os.path import isfile, join
 
-
-index_file_path = os.path.join(settings.BASE_DIR, "pack.idx")
+pack_ontology_path = os.path.join(settings.BASE_DIR, "initial_data", "pack_ontology.json")
+multi_ontology_path = os.path.join(settings.BASE_DIR, "initial_data", "multi_ontology.json")
+pack_index_path = os.path.join(settings.BASE_DIR, "initial_data", "pack.idx")
+multi_index_path = os.path.join(settings.BASE_DIR, "initial_data", "multi.idx")
+pack_folder = os.path.join(settings.BASE_DIR, "initial_data", "packs")
+multi_folder = os.path.join(settings.BASE_DIR, "initial_data", "multi")
 
 
 class MyAppConfig(AppConfig):
@@ -13,18 +17,21 @@ class MyAppConfig(AppConfig):
     verbose_name = "Backend for NLPViewer"
     def ready(self):
         from .models import Document, User, CrossDoc
-        with open(os.path.join(settings.BASE_DIR, "pack_ontology.json")) as f:
+        with open(pack_ontology_path) as f:
             pack_ontology = json.load(f)
 
-        with open(os.path.join(settings.BASE_DIR, "multi_ontology.json")) as f:
+        with open(multi_ontology_path) as f:
             multi_ontology = json.load(f)
 
         # read all packs
-        all_packs = listdir(os.path.join(settings.BASE_DIR, "packs"))
-        for pack in all_packs:
+
+        pack_mapping = read_index_file(pack_index_path)
+        multi_mapping = read_index_file(multi_index_path)
+
+        for _, pack in pack_mapping.items():
             # if does not exist, add it to the database
             if not Document.objects.filter(name=pack).exists():
-                with open(os.path.join(settings.BASE_DIR, "packs",pack)) as f:
+                with open(os.path.join(pack_folder, pack)) as f:
                     print("new one", pack)
                     text_pack = json.load(f)
                     new_object = Document()
@@ -34,11 +41,10 @@ class MyAppConfig(AppConfig):
                     new_object.save()
 
         # read all multi
-        all_multi = listdir(os.path.join(settings.BASE_DIR, "multi"))
-        for multi in all_multi:
+        for _, multi in multi_mapping.items():
             # if does not exist, add it to the database
             if not CrossDoc.objects.filter(name=multi).exists():
-                with open(os.path.join(settings.BASE_DIR, "multi",multi)) as f:
+                with open(os.path.join(multi_folder, multi)) as f:
                     print("new one", multi)
                     text_pack = json.load(f)
                     new_object = CrossDoc()
@@ -46,18 +52,19 @@ class MyAppConfig(AppConfig):
                     new_object.textPack = json.dumps(text_pack)
                     new_object.ontology = json.dumps(multi_ontology)
                     new_object.save()
+        return
 
 
 
 
 
-def read_multipack_index(index_file):
+def read_index_file(index_file):
     extid_to_name = {}
     with open(index_file) as f:
         for line in f:
             pairs = line.strip().split()
             external_id = int(pairs[0])
-            file_name = pairs[1]
+            file_name = pairs[1].split("/")[-1]
             extid_to_name[external_id] = file_name
     return extid_to_name
 
