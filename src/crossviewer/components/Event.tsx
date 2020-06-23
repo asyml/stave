@@ -43,7 +43,10 @@ function Event({eventIndex, eventText, AnowOnEventIndex, initSelected,eventClick
     }
 
     return (
-        <span className={eventStyle} onMouseEnter={mouseOn} onMouseLeave={mouseOff} onClick={onClick}>{eventText}</span>
+        <span className={eventStyle} onMouseEnter={mouseOn} onMouseLeave={mouseOff}
+              onClick={e => onClick(e)}>
+            {eventText}
+        </span>
     );
 }
 

@@ -187,6 +187,7 @@ export default function CrossViewer(props: CrossDocProp) {
       setNowQuestionIndex(0);
 
     } else {
+      if (!window.confirm("Are you sure you wish to delete this pair?")) return;
       // @ts-ignore
       const linkID = multiPack.crossDocLink.find(item => item._parent_token === +nowAOnEvent.id && item._child_token === +all_events_B[eventIndex].id).id;
       onEvent({
