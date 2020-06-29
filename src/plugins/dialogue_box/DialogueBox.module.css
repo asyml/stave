@@ -1,3 +1,6 @@
+.bubble_container{
+  clear:both;
+}
 .bubble_left {
   font-size: 16px;
   line-height: 1.4;

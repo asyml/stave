@@ -7,20 +7,26 @@ import TextInput from "./TextInput"
 
 function Utterance(text: string, annotation: IAnnotation){
     if (annotation.attributes.speaker === 'user'){
-        return <div className={style.bubble_left} key={'utterance_bubble_' + annotation.id}>    
-            <div key={'utterance_' + annotation.id}>
-                {text.substring(annotation.span.begin, annotation.span.end)}
+        return <div className={style.bubble_container} key={'utterance_container_' + annotation.id}> 
+            <div className={style.bubble_left} key={'utterance_bubble_' + annotation.id}>    
+                <div key={'utterance_' + annotation.id}>
+                    {text.substring(annotation.span.begin, annotation.span.end)}
+                </div>
             </div>
         </div>
     }else if (annotation.attributes.speaker === 'ai'){
-        return <div className={style.bubble_right} key={'utterance_bubble_' + annotation.id}>    
-            <div key={'utterance_' + annotation.id}>
-                {text.substring(annotation.span.begin, annotation.span.end)}
+        return <div className={style.bubble_container} key={'utterance_container_' + annotation.id}>        
+            <div className={style.bubble_right} key={'utterance_bubble_' + annotation.id}>    
+                <div key={'utterance_' + annotation.id}>
+                    {text.substring(annotation.span.begin, annotation.span.end)}
+                </div>
             </div>
         </div>
     } else{
-        return <div className={style.bubble_right} key={'utterance_bubble_' + annotation.id}>    
+        return  <div className={style.bubble_container} key={'utterance_container_' + annotation.id}>        
+        <div className={style.bubble_right} key={'utterance_bubble_' + annotation.id}>    
             ...
+        </div>
         </div>
     }
 }

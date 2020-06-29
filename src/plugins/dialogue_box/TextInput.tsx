@@ -11,10 +11,10 @@ interface TextInputState{
     textValue: string;
 }
 
-
 function createUtterance(textPack: ISinglePack, newUtterance: string){
     let {annotations, text} = textPack;
     text = text + '\n' + newUtterance;
+    console.log(textPack);
 }
 
 class TextInput extends React.Component<TextInputProp, TextInputState>{
