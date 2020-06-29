@@ -16,15 +16,17 @@ import { logout } from './lib/api';
 
 import { singlePack } from './mock-data-2';
 import { ontology } from './mock-config-data';
+import {layout} from './layout';
 import NLPViewer from '../nlpviewer';
-import groupPlugin from '../plugins/Group';
+import groupPlugin from '../plugins/group/Group';
+import dialogueBoxPlugin from '../plugins/dialogue_box/DialogueBox';
 
 function App() {
   return (
     <Router>
       <div>
         <header className="layout_header">
-          <span>NLP Viewer</span>
+          <span>Stave</span>
 
           <nav>
             <ul>
@@ -51,7 +53,7 @@ function App() {
 
           <Route path="/documents/:id">
             <Viewer />
-          </Route>
+          </Route>          
 
           <Route path="/">
             <Documents />
@@ -67,7 +69,8 @@ function ViewWithDemoData() {
     <NLPViewer
       textPack={singlePack}
       ontology={ontology}
-      plugins={[groupPlugin]}
+      plugins={[groupPlugin, dialogueBoxPlugin]}
+      layout={layout}
     />
   );
 }

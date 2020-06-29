@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
-import { Dispatch, State } from '../nlpviewer';
+import { State } from '../../nlpviewer';
 import style from './Group.module.css';
-import { IGroup, ISinglePack } from '../nlpviewer';
+import { IGroup, ISinglePack } from '../../nlpviewer';
+import {PluginComponentProp} from '../lib/interface';
 
-interface PluginComponenProp {
-  dispatch: Dispatch;
-  appState: State;
-}
-
-function Group(props: PluginComponenProp) {
+function Group(props: PluginComponentProp) {
   const [dropGroupId, setDropGroupId] = useState<string | null>(null);
 
   if (!props.appState.textPack) {

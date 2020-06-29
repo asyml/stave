@@ -6,7 +6,9 @@ import NLPViewer, {
   transformBackAnnotation,
   transformBackLink,
 } from '../../nlpviewer';
-import groupPlugin from '../../plugins/Group';
+import groupPlugin from '../../plugins/group/Group';
+import {layout} from '../layout';
+import dialoguePlugin from '../../plugins/dialogue_box/DialogueBox';
 import { useParams } from 'react-router-dom';
 import {
   fetchDocument,
@@ -49,7 +51,9 @@ function Viewer() {
     <NLPViewer
       textPack={pack.singlePack}
       ontology={pack.ontology}
-      plugins={[groupPlugin]}
+      // plugins={[groupPlugin]}
+      plugins={[groupPlugin, dialoguePlugin]}
+      layout={layout}
       onEvent={event => {
         if (!id) return;
 

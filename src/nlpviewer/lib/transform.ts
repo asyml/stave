@@ -101,7 +101,6 @@ function camelCaseDeep(obj: any): any {
 function getAttrs(config: any, a: any) {
   const legendName = getLegendName(a);
 
-
   const legend = config['definitions'].find(
     (entry: any) => entry.entryName === legendName
   );
