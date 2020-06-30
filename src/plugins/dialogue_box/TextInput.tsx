@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React from 'react'
 import style from './TextInput.module.css'
 import {ISinglePack} from "../../nlpviewer"
 import {OnEventType} from "./DialogueBox"
@@ -14,7 +14,7 @@ interface TextInputState{
 }
 
 function submitUtterance(textPack: ISinglePack, newUtterance: string, onEvent?: OnEventType){
-    let {annotations, text} = textPack;
+    let {text} = textPack;
 
     text = text + '\n' + newUtterance;
     const end = text.length;

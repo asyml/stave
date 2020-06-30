@@ -72,6 +72,8 @@ function DialogueBox(props: PluginComponentProp) {
         model_ok = true
     });
 
+    console.log(model_ok);
+
     return (        
         <div key = 'plugin-dialogue-box'>
             <div key='dialogue-utterances-container'>
