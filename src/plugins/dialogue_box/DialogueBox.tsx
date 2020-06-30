@@ -45,6 +45,10 @@ function Utterance(text: string, annotation: IAnnotation){
 
 function DialogueBox(props: PluginComponentProp) {
     let { id } = useParams();
+
+    // Avoid confusion between doc_id and annotation id.
+    const doc_id = id;
+    
     const [pack, setPack] = useState<ISinglePack | null> (props.appState.textPack);
 
     if(!pack){
@@ -66,14 +70,12 @@ function DialogueBox(props: PluginComponentProp) {
     // Call API to load the NLP model of name "model_name".
     loadNlpModel(model_name).then(() =>{
         model_ok = true
-        console.log('model loaded')
     });
 
     return (        
         <div key = 'plugin-dialogue-box'>
             <div key='dialogue-utterances-container'>
                 { utterances.map((ann, i) =>{
-                    console.log(ann);
                     return Utterance(text, ann);
                 })}            
             </div>        
@@ -83,34 +85,27 @@ function DialogueBox(props: PluginComponentProp) {
                         const {type, text, ...annotation} = event;
                         const annotationAPIData = transformBackAnnotation(annotation);
 
-                        // TODO: use int instead of UUID
-                        console.log('what is the id?')
-                        console.log(id)
-                        
-                        editText(id, text).then(() =>{
-                            console.log('edit text return');
-                            setPack({
-                                ...pack,
-                                text: text,
-                            });
+                        editText(doc_id, text).then(() =>{
+                            addAnnotation(doc_id, annotationAPIData).then(({ id }) => {
+                                // Update the pack after set the text then the annotation.
+                                annotation.id = id;
+                                setPack({                              
+                                    ...pack,
+                                    text: text,
+                                    annotations: [...pack.annotations, annotation],
+                                });
+                                runNlp(doc_id, model_name).then(data => {
+                                    const [singlePackFromAPI, ontologyFromAPI] = transformPack(
+                                        data.textPack,
+                                        data.ontology
+                                    );        
+                                    setPack({
+                                        ...singlePackFromAPI
+                                    })
+                                });            
+                            });    
                         });
-                        addAnnotation(id, annotationAPIData).then(({ id }) => {
-                            console.log('edit annotation return')
-                            annotation.id = id;                
-                            setPack({                              
-                                ...pack,
-                                annotations: [...pack.annotations, annotation],
-                            });
-                          });
-                        runNlp(id, model_name).then(data => {
-                            const [singlePackFromAPI, ontologyFromAPI] = transformPack(
-                                data.textPack,
-                                data.ontology
-                            );                            
-                            setPack({
-                                ...singlePackFromAPI
-                            })
-                        });
+
                     }
                 }}></TextInput>
             </div>
