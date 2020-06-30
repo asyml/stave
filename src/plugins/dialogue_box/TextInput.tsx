@@ -1,20 +1,41 @@
 import React, {Component} from 'react'
 import style from './TextInput.module.css'
 import {ISinglePack} from "../../nlpviewer"
+import {OnEventType} from "./DialogueBox"
 
 export interface TextInputProp{
     textValue: string;
     textPack: ISinglePack;
+    onEvent?: OnEventType;
 }
 
 interface TextInputState{
     textValue: string;
 }
 
-function createUtterance(textPack: ISinglePack, newUtterance: string){
+function submitUtterance(textPack: ISinglePack, newUtterance: string, onEvent?: OnEventType){
     let {annotations, text} = textPack;
+
     text = text + '\n' + newUtterance;
-    console.log(textPack);
+    const end = text.length;
+    const begin = text.length - newUtterance.length;
+
+    if (onEvent){
+        onEvent(
+            {
+                type: 'new-utterance', // TODO: add strick type for event
+                text: text,
+                span: {
+                    begin: begin,
+                    end: end,
+                },
+                legendId: "ft.onto.base_ontology.Utterance",
+                attributes: {
+                    "speaker": "user",
+                },
+            }
+        )
+    }
 }
 
 class TextInput extends React.Component<TextInputProp, TextInputState>{
@@ -26,13 +47,32 @@ class TextInput extends React.Component<TextInputProp, TextInputState>{
     }
 
     render(){
-        return <form>
+        return <form onSubmit={e => {e.preventDefault();}} >
             <label>
                 <input className={style.field} type="text" value={this.state.textValue} onChange={e => {
                     this.setState({textValue: e.target.value})
-                }}/>                
+                }}  
+                onKeyUp={e => {
+                    if (e.key === "Enter"){
+                        submitUtterance(
+                            this.props.textPack, 
+                            this.state.textValue,
+                            this.props.onEvent,
+                        );
+                        this.setState({textValue:''});
+                    }
+                }}
+                />                
             </label>
-            <input type="button" value="Submit" onClick={e => createUtterance(this.props.textPack, this.state.textValue)}/>
+            <input type="button" value="Submit" onClick={
+                e => {
+                    submitUtterance(
+                        this.props.textPack, 
+                        this.state.textValue,
+                        this.props.onEvent);
+                    this.setState({textValue:''});
+                }}
+            />
         </form>
     };
 }

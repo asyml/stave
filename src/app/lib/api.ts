@@ -61,6 +61,12 @@ export function createUser(name: string, password: string) {
   }).then(r => r.json());
 }
 
+export function editText(documentId: string, new_text: string){
+  return postData(`/api/documents/${documentId}/text/edit`,{
+    new_text
+  });
+}
+
 export function addAnnotation(documentId: string, data: any) {
   return postData(`/api/documents/${documentId}/annotations/new`, {
     data,
@@ -101,6 +107,14 @@ export function editLink(documentId: string, linkId: string, data: any) {
 
 export function deleteLink(documentId: string, linkId: string) {
   return postData(`/api/documents/${documentId}/links/${linkId}/delete`, {});
+}
+
+export function loadNlpModel(modelName: string){
+  return postData(`/api/nlp/load/${modelName}`, {})
+}
+
+export function runNlp(documentId: string, modelName: string): Promise<APIDocument>{
+  return postData(`/api/nlp/${documentId}/${modelName}`, {}).then(r => r.json());
 }
 
 export function login(name: string, password: string) {

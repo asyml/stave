@@ -58,6 +58,20 @@ def delete(request, document_id):
 
 
 @require_login
+def edit_text(request, document_id):
+    data = json.loads(request.body)
+    doc = Document.objects.get(pk=document_id)
+    
+    docJson = model_to_dict(doc)
+    textPackJson = json.loads(docJson['textPack'])
+
+    textPackJson['py/state']['_text'] = data['new_text']
+    doc.textPack = json.dumps(textPackJson)
+    doc.save()
+
+    return HttpResponse('OK')
+
+@require_login
 def new_annotation(request, document_id):
 
     # get pack from db
@@ -66,7 +80,7 @@ def new_annotation(request, document_id):
     # insert the annotation data into pack
     # - get text pack from dock
     # - parse text pack to json
-    # - append annotatition to annotations in json
+    # - append annotation to annotations in json
     # - stringify the updated json and update the textPack in doc
     # - save back to doc
 
@@ -77,7 +91,7 @@ def new_annotation(request, document_id):
     #         "_span": {
     #             "begin": 0,
     #             "end": 8,
-    #             "py/object": "forte.data.base.Span"
+    #             "py/object": "forte.data.span.Span"
     #         },
     #         "_tid": 1,
     #         "ner_type": "DATE"
@@ -92,6 +106,10 @@ def new_annotation(request, document_id):
 
     docJson = model_to_dict(doc)
     textPackJson = json.loads(docJson['textPack'])
+
+    print('adding new annotation')
+    print(textPackJson)
+
     textPackJson['py/state']['annotations'].append(annotation)
     doc.textPack = json.dumps(textPackJson)
     doc.save()
