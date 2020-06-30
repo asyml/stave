@@ -47,11 +47,8 @@ def run_pipeline(request, document_id, model_name):
 
     processedPack = nlp_models[model_name].process([docJson['textPack']])
 
-    print('result data')
-    print(processedPack)
-
     doc.textPack = processedPack.serialize()
     doc.save()
 
-    return JsonResponse(docJson, safe=False)
+    return JsonResponse(model_to_dict(doc), safe=False)
 

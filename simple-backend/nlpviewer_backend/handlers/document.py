@@ -97,18 +97,16 @@ def new_annotation(request, document_id):
     #         "ner_type": "DATE"
     #     }
     # }
-    received_json_data = json.loads(request.body)
     doc = Document.objects.get(pk=document_id)
-
-    annotation_id = str(uuid.uuid1())
-    annotation = received_json_data.get('data')
-    annotation["py/state"]['_tid'] = annotation_id
-
     docJson = model_to_dict(doc)
     textPackJson = json.loads(docJson['textPack'])
 
-    print('adding new annotation')
-    print(textPackJson)
+    annotation_id = textPackJson['py/state']['serialization']['next_id']
+    textPackJson['py/state']['serialization']['next_id'] = annotation_id + 1
+
+    received_json_data = json.loads(request.body)
+    annotation = received_json_data.get('data')
+    annotation["py/state"]['_tid'] = annotation_id
 
     textPackJson['py/state']['annotations'].append(annotation)
     doc.textPack = json.dumps(textPackJson)
