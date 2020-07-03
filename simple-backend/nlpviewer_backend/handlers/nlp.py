@@ -5,6 +5,7 @@ from django.forms import model_to_dict
 from django.http import Http404
 import uuid
 import json
+import os
 from ..models import Document, User
 from ..lib.require_login import require_login
 
@@ -21,7 +22,9 @@ def load_content_rewriter():
     # Create the pipeline and add the processor
     pipeline = Pipeline[DataPack]()
     pipeline.set_reader(RawDataDeserializeReader())
-    pipeline.add(ContentRewriter())
+    pipeline.add(ContentRewriter(), config={
+        'model_dir': os.environ.get('content_rewriter_model_path')
+    })
 
     # Models gets initialize.
     pipeline.initialize()
