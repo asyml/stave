@@ -16,7 +16,7 @@ from forte.pipeline import Pipeline
 nlp_models = {}
 
 def load_content_rewriter():
-    from examples.generators.content_rewriter.rewriter import ContentRewriter
+    from examples.content_rewriter.rewriter import ContentRewriter
     from forte.data.readers import RawDataDeserializeReader
 
     # Create the pipeline and add the processor
