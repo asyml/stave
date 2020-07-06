@@ -16,42 +16,42 @@ from forte.pipeline import Pipeline
 nlp_models = {}
 
 def load_content_rewriter():
-    from examples.content_rewriter.rewriter import ContentRewriter
-    from forte.data.readers import RawDataDeserializeReader
+  from examples.content_rewriter.rewriter import ContentRewriter
+  from forte.data.readers import RawDataDeserializeReader
 
-    # Create the pipeline and add the processor
-    pipeline = Pipeline[DataPack]()
-    pipeline.set_reader(RawDataDeserializeReader())
-    pipeline.add(ContentRewriter(), config={
-        'model_dir': os.environ.get('content_rewriter_model_path')
-    })
+  # Create the pipeline and add the processor
+  pipeline = Pipeline[DataPack]()
+  pipeline.set_reader(RawDataDeserializeReader())
+  pipeline.add(ContentRewriter(), config={
+    'model_dir': os.environ.get('content_rewriter_model_path')
+  })
 
-    # Models gets initialize.
-    pipeline.initialize()
+  # Models gets initialize.
+  pipeline.initialize()
 
-    return pipeline
+  return pipeline
 
 
 def load_model(request, model_name: str):
-    if model_name == 'content_rewriter':
-        if model_name in nlp_models:
-            return HttpResponse('OK')
-        else:
-            nlp_models[model_name] = load_content_rewriter()
-            return HttpResponse('OK')
+  if model_name == 'content_rewriter':
+    if model_name in nlp_models:
+      return HttpResponse('OK')
     else:
-        response =  Http404(f"Cannot find model {model_name}")
+      nlp_models[model_name] = load_content_rewriter()
+      return HttpResponse('OK')
+  else:
+    response =  Http404(f"Cannot find model {model_name}")
 
 
 @require_login
 def run_pipeline(request, document_id, model_name):
-    doc = Document.objects.get(pk=document_id)
-    docJson = model_to_dict(doc)
+  doc = Document.objects.get(pk=document_id)
+  docJson = model_to_dict(doc)
 
-    processedPack = nlp_models[model_name].process([docJson['textPack']])
+  processedPack = nlp_models[model_name].process([docJson['textPack']])
 
-    doc.textPack = processedPack.serialize()
-    doc.save()
+  doc.textPack = processedPack.serialize()
+  doc.save()
 
-    return JsonResponse(model_to_dict(doc), safe=False)
+  return JsonResponse(model_to_dict(doc), safe=False)
 
