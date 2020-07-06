@@ -90,12 +90,9 @@ function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
     )
   );
 
-  var pluginKey = 0
-
   function renderPlugin(p:IPlugin){
     const Comp = p.component;
-    pluginKey = pluginKey + 1;
-    return <Comp key={pluginKey} dispatch={dispatch} appState={appState}/>;
+    return <Comp key={'plugin_' + p.name} dispatch={dispatch} appState={appState}/>;
   }
 
   function renderPluginByName(name: string){
@@ -113,9 +110,7 @@ function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
     if (enabledPlugins.length === 0){
       return (
         <div className={style.plugins_container}>
-          {enabledPlugins.map((p, i) => {
-            return renderPlugin(p);
-          })}
+          No Plugins Configured.
         </div>
       );
     } else if (enabledPlugins.length > 0){

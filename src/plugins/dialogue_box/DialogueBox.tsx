@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   State, 
   IAnnotation, 
@@ -68,9 +68,11 @@ function DialogueBox(props: PluginComponentProp) {
   const model_name = 'content_rewriter'
 
   // Call API to load the NLP model of name "model_name".
-  loadNlpModel(model_name).then(() =>{
-    model_ok = true
-  });
+  useEffect(() =>{
+    loadNlpModel(model_name).then(() =>{
+      model_ok = true
+    });
+  }, [])
 
   console.log(model_ok);
 
