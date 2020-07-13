@@ -13,6 +13,8 @@ import SignUp from './pages/SignUp';
 import Ontology from './pages/Ontology';
 import Viewer from './pages/Viewer';
 import Documents from './pages/Documents';
+import Projects from './pages/Projects'
+import Project from './pages/Project'
 import Users from './pages/Users';
 import { logout } from './lib/api';
 
@@ -64,6 +66,14 @@ function App() {
 
           <Route path="/ontology/:id">
             <Ontology />
+          </Route>
+
+          <Route path="/projects">
+            <Projects />
+          </Route>
+
+          <Route path="/project/:id">
+            <Project />
           </Route>
 
           <Route path="/">

@@ -4,7 +4,7 @@ from django.http import HttpResponse, JsonResponse
 from django.forms import model_to_dict
 import uuid
 import json
-from ..models import Document, User
+from ..models import Document, User, Project
 from ..lib.require_login import require_login
 
 
@@ -17,12 +17,18 @@ def listAll(request):
 @require_login
 def create(request):
     received_json_data = json.loads(request.body)
+    print(received_json_data)
 
     doc = Document(
         name=received_json_data.get('name'),
         textPack=received_json_data.get('textPack'),
-        ontology=received_json_data.get('ontology')
+        ontology = received_json_data.get('ontology'),
+        project = Project.objects.get(
+            pk=received_json_data.get('project_id')
+        )
     )
+    print(received_json_data.get('project_id'))
+    print(doc)
 
     doc.save()
 
@@ -41,6 +47,7 @@ def edit(request, document_id):
     docJson = model_to_dict(doc)
     return JsonResponse(docJson, safe=False)
 
+# need rewrite 
 @require_login
 def edit_ontology(request, document_id):
     print('called')

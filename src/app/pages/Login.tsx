@@ -13,7 +13,7 @@ function Login() {
     e.preventDefault();
     login(username, password)
       .then(e => {
-        history.push('/users');
+        history.push('/projects');
       })
       .catch(e => {
         setError('login failed');

@@ -132,9 +132,9 @@ function TextViewer({ plugins, onEvent }: TextViewerProp) {
               )}
             </div>
 
-            <div >
+            {/* <div >
               <button onClick={redirectOntology}>View Edit Ontology</button>
-            </div>
+            </div> */}
 
             <div className={style.scope_selector_container}>
               <span>Scope:</span>
