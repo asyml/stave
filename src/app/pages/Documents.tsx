@@ -22,7 +22,8 @@ function Documents() {
   }
 
   function handleAdd() {
-    createDocument(name, pack, ontology).then(() => {
+    let project_id = window.location.pathname.split("/").pop() !;
+    createDocument(name, pack, ontology, project_id).then(() => {
       updateDocs();
     });
   }

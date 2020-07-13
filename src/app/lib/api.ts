@@ -8,6 +8,10 @@ export function fetchDocuments(): Promise<any> {
   return fetch(`/api/documents`).then(r => r.json());
 }
 
+export function fetchProjects(): Promise<any> {
+  return fetch(`/api/projects`).then(r => r.json());
+}
+
 export function fetchDocument(id: string): Promise<APIDocument> {
   return fetch(`/api/documents/${id}`).then(r => r.json());
 }
@@ -28,17 +32,37 @@ export function updateOntology(id: string, ontology: string) {
 export function createDocument(
   name: string,
   textPack: string,
-  ontology: string
+  ontology: string,
+  project_id: string
 ) {
   return postData(`/api/documents/new`, {
     name: name,
     textPack: textPack,
+    ontology: ontology,
+    project_id: project_id
+  }).then(r => r.json());
+}
+
+export function createProject(
+  name: string,
+  ontology: string
+) {
+  return postData(`/api/projects/new`, {
+    name: name,
     ontology: ontology,
   }).then(r => r.json());
 }
 
 export function deleteDocument(id: string) {
   return postData(`/api/documents/${id}/delete`);
+}
+
+export function deleteProject(id: string) {
+  return postData(`/api/projects/${id}/delete`);
+}
+
+export function fetchDocumentsProject(id: string){
+  return postData(`/api/projects/${id}/docs`).then(r => r.json());
 }
 
 export function fetchUsers() {
