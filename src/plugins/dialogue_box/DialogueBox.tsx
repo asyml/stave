@@ -17,10 +17,39 @@ import {
   runNlp,
 } from '../../app/lib/api';
 
+
+function Cell(cell_text: string, cell_key: string){
+  return <td key={cell_key}>{cell_text}</td>
+}
+
+function Row(row_text: string, row_key: string){
+  return <tr key={row_key}>
+    { row_text.split('|').reverse().filter((c, i) => i > 0).map((c, i) =>{
+          return Cell(c, row_key + '_' + i.toString());
+        })}  
+  </tr>
+}
+
+function Table(text: string, annotation: IAnnotation){
+  const table_str = text.substring(annotation.span.begin, annotation.span.end)
+  return (
+    <table className={style.table} key={'context_table_' + annotation.id}>
+      <tbody key={'context_tbody_' + annotation.id}>{
+        table_str.split(" ").map((row, i) => {
+          return Row(row, 'context_table_row_' + i.toString());
+        })
+        }
+      </tbody>
+    </table>
+  )
+}
+
+
 function Utterance(text: string, annotation: IAnnotation){
   if (annotation.attributes.speaker === 'ai'){
     return <div className={style.bubble_container} key={'utterance_container_' + annotation.id}> 
       <div className={style.bubble_left} key={'utterance_bubble_' + annotation.id}>    
+        <div className={style.speaker_icon}>&#x1F916;</div>
         <div key={'utterance_' + annotation.id}>
           {text.substring(annotation.span.begin, annotation.span.end)}
         </div>
@@ -28,7 +57,8 @@ function Utterance(text: string, annotation: IAnnotation){
     </div>
   }else if (annotation.attributes.speaker === 'user'){
     return <div className={style.bubble_container} key={'utterance_container_' + annotation.id}>        
-      <div className={style.bubble_right} key={'utterance_bubble_' + annotation.id}>    
+      <div className={style.bubble_right} key={'utterance_bubble_' + annotation.id}>
+        <div className={style.speaker_icon}>&#x1F464;</div>
         <div key={'utterance_' + annotation.id}>
           {text.substring(annotation.span.begin, annotation.span.end)}
         </div>
@@ -51,33 +81,46 @@ function DialogueBox(props: PluginComponentProp) {
   
   const [pack, setPack] = useState<ISinglePack | null> (props.appState.textPack);
 
+  // Call API to load the NLP model of name "model_name".
+  const model_name = 'content_rewriter'
+  useEffect(() =>{
+    try {
+      loadNlpModel(model_name).then(() =>{
+        console.log("Model Loaded Successfully.");    
+      });      
+    } catch (error) {
+      console.log("Error during loading model.");
+      console.error(error) 
+    }
+  }, [])
+
+
   if(!pack){
     return null;
   }
 
   let {annotations, text} = pack;
 
-  const utterances = annotations.filter(
+  const contexts = annotations.filter(
     (ann) => {
-      // TODO: This did not read the class hierarchy.
-      return ann.legendId === "ft.onto.base_ontology.Utterance"
+      return ann.legendId === "ft.onto.base_ontology.UtteranceContext";
     }
   );
 
-  var model_ok = false
-  const model_name = 'content_rewriter'
-
-  // Call API to load the NLP model of name "model_name".
-  useEffect(() =>{
-    loadNlpModel(model_name).then(() =>{
-      model_ok = true
-    });
-  }, [])
-
-  console.log(model_ok);
+  const utterances = annotations.filter(
+    (ann) => {
+      // TODO: This did not read the class hierarchy.
+      return ann.legendId === "ft.onto.base_ontology.Utterance";
+    }
+  );
 
   return (        
     <div key = 'plugin-dialogue-box'>
+      <div key = 'dialogue-context-container'>
+        {contexts.map((ann) =>{
+          return Table(text, ann);
+        })}         
+      </div>
       <div key='dialogue-utterances-container'>
         { utterances.map((ann, i) =>{
           return Utterance(text, ann);
@@ -91,7 +134,7 @@ function DialogueBox(props: PluginComponentProp) {
 
             editText(doc_id, text).then(() =>{
               addAnnotation(doc_id, annotationAPIData).then(({ id }) => {
-                // Update the pack after set the text then the annotation.
+                // Update the pack, first set the text then, add the new annotation.
                 annotation.id = id;
                 setPack({                              
                   ...pack,
