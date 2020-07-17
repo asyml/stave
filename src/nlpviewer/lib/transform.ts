@@ -101,7 +101,6 @@ function camelCaseDeep(obj: any): any {
 function getAttrs(config: any, a: any) {
   const legendName = getLegendName(a);
 
-
   const legend = config['definitions'].find(
     (entry: any) => entry.entryName === legendName
   );
@@ -132,7 +131,7 @@ function getGroupType(groupEntryName: any, config: any) {
   } else if (isEntryLink(config, entry.memberType)) {
     return 'link';
   } else {
-    throw new Error('unknow group entry ' + groupEntryName);
+    throw new Error('unknown group entry ' + groupEntryName);
   }
 }
 
@@ -143,7 +142,7 @@ export function transformBackAnnotation(annotation: IAnnotation): any {
       _span: {
         begin: annotation.span.begin,
         end: annotation.span.end,
-        'py/object': 'forte.data.base.Span',
+        'py/object': 'forte.data.span.Span',
       },
       _tid: annotation.id,
       ...annotation.attributes,

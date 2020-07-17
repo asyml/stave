@@ -41,7 +41,9 @@ function Users() {
         {users.map(d => (
           <ul key={d.id}>
             <li>
-              <Link to={`/documents/${d.id}`}>{d.name}</Link> {d.textPack}{' '}
+              {/* 'User detail is not implemented' */}
+              {/* <Link to={`/documents/${d.id}`}>{d.name}</Link> {d.textPack}{' '} */}
+              <span>{d.name} </span>
               <button onClick={() => handleDelete(d.id)}>X</button>
             </li>
           </ul>
