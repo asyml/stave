@@ -72,7 +72,7 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
 
   if (selectedScopeId !== null) {
     const scopeAnnotations = annotations.filter(
-      ann => ann.legendId === selectedScopeId
+      (ann) => ann.legendId === selectedScopeId
     );
     const currScopeAnnotation = scopeAnnotations[selectedScopeIndex];
 
@@ -82,11 +82,11 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
     );
     annotations = annotations
       .filter(
-        ann =>
+        (ann) =>
           ann.span.begin >= currScopeAnnotation.span.begin &&
           ann.span.end <= currScopeAnnotation.span.end
       )
-      .map(ann => {
+      .map((ann) => {
         const scoppedSpan = {
           begin: ann.span.begin - currScopeAnnotation.span.begin,
           end: ann.span.end - currScopeAnnotation.span.begin,
@@ -137,7 +137,7 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
       dispatch({
         type: 'reset-calculated-text-space',
       });
-    }, 500);
+    }, 300);
 
     calculateTextSpace(
       annotations,
@@ -182,13 +182,13 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
 
   const annotationsWithPosition = useMemo(() => {
     return mergeAnnotationWithPosition(annotationPositions, annotations).filter(
-      ann => selectedLegendIds.indexOf(ann.annotation.legendId) > -1
+      (ann) => selectedLegendIds.indexOf(ann.annotation.legendId) > -1
     );
   }, [annotationPositions, annotations, selectedLegendIds]);
 
   const linksWithPos = useMemo(() => {
     return mergeLinkWithPosition(links, annotationsWithPosition).filter(
-      link => selectedLegendIds.indexOf(link.link.legendId) > -1
+      (link) => selectedLegendIds.indexOf(link.link.legendId) > -1
     );
   }, [links, annotationsWithPosition, selectedLegendIds]);
 
@@ -204,7 +204,7 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
     return calcuateLinkHeight(linesLevels, linkGap);
   }, [linesLevels, linkGap]);
 
-  const lineHeights = Object.keys(linesLevels).map(l => +l);
+  const lineHeights = Object.keys(linesLevels).map((l) => +l);
 
   const textAreaClass = `text_area_container ${style.text_area_container} ${
     spacedText ? style.text_area_container_visible : ''
@@ -295,7 +295,7 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
       >
         {annotationsWithPosition.map((ann, i) => {
           const legend = annotationLegendsColored.find(
-            legend => legend.entryName === ann.annotation.legendId
+            (legend) => legend.entryName === ann.annotation.legendId
           );
 
           if (!legend) {
@@ -408,7 +408,7 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
           pointerEvents: annoEditIsCreating ? 'none' : 'initial',
         }}
       >
-        {annotationsWithPosition.map(ann => {
+        {annotationsWithPosition.map((ann) => {
           const isSelected = ann.annotation.id === selectedAnnotationId;
 
           return (
@@ -429,7 +429,7 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
           pointerEvents: annoEditIsCreating ? 'none' : 'initial',
         }}
       >
-        {linksWithPos.map(linkPos => {
+        {linksWithPos.map((linkPos) => {
           const isLinkSelected = selectedLinkId === linkPos.link.id;
           const isLinkHightlighted =
             highlightedLinkIds.includes(linkPos.link.id) ||
@@ -510,11 +510,11 @@ function LineWithArrowContainer({
     linkEditToEntryId
   ) {
     const startAnnotation = annotationsWithPosition.find(
-      link => link.annotation.id === linkEditFromEntryId
+      (link) => link.annotation.id === linkEditFromEntryId
     );
 
     const endAnnotation = annotationsWithPosition.find(
-      link => link.annotation.id === linkEditToEntryId
+      (link) => link.annotation.id === linkEditToEntryId
     );
 
     if (!startAnnotation || !endAnnotation) return null;
@@ -567,7 +567,7 @@ function ConnectorContainer({
 
   const textNodeRect = textNodeEl.getBoundingClientRect();
   const startAnnotation = annotationsWithPosition.find(
-    link => link.annotation.id === linkEditFromEntryId
+    (link) => link.annotation.id === linkEditFromEntryId
   );
 
   if (!startAnnotation) return null;
@@ -606,7 +606,7 @@ function getTextSelectionIndicators(
     range.setStart(textNode, begin);
     range.setEnd(textNode, end);
     const rects = Array.from(range.getClientRects() as DOMRectList);
-    const annoEditTextSelectionRect = rects.map(rect => ({
+    const annoEditTextSelectionRect = rects.map((rect) => ({
       x: rect.x - textAreaRect.left,
       y: rect.y - textAreaRect.top,
       width: rect.width,

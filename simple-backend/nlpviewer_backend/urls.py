@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from nlpviewer_backend.handlers import session, user, document
+from nlpviewer_backend.handlers import session, user, document, nlp
 
 urlpatterns = [
     path('login', session.login),
@@ -43,6 +43,11 @@ urlpatterns = [
     path('documents/<int:document_id>/links/<int:link_id>/edit', document.edit_link),
     path('documents/<int:document_id>/links/<int:link_id>/delete',
          document.delete_link),
+
+    path('documents/<int:document_id>/text/edit', document.edit_text),   
+
+    path('nlp/load/<model_name>', nlp.load_model),
+    path('nlp/<int:document_id>/<model_name>', nlp.run_pipeline),
 
     path('admin/', admin.site.urls),
 ]
