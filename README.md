@@ -25,12 +25,13 @@ yarn 1.22.4
   - `python -m pip install Django`
 - `./start-dev.sh`
   - This script will use the example db: `mv db.sqlite3.example db.sqlite3`
-- go to http://127.0.0.1:8000/documents
 
 
 ## Start the Front End
 After the server starts, then simply 
 - yarn && yarn start
+- go to http://127.0.0.1:8000/documents
 
 The default username/password for the demonstration data is admin/admin
+
 

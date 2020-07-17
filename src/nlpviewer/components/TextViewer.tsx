@@ -1,6 +1,7 @@
 import React from 'react';
+import Tab from './Tab';
 import style from '../styles/TextViewer.module.css';
-import { IAnnotation, IPlugin } from '../lib/interfaces';
+import { IAnnotation, IPlugin, ILayout } from '../lib/interfaces';
 import {
   applyColorToLegend,
   isEntryAnnotation,
@@ -17,6 +18,8 @@ import {
 } from '../contexts/text-viewer.context';
 import LinkCreateBox from './LinkCreateBox';
 import AnnotationCreateBox from './AnnotationCreateBox';
+import groupPlugin from '../../plugins/group/Group';
+
 
 import { useHistory } from 'react-router-dom';
 
@@ -25,10 +28,12 @@ export type OnEventType = (event: any) => void;
 export interface TextViewerProp {
   plugins: IPlugin[];
   onEvent?: OnEventType;
+  layout: ILayout;
 }
 
 
-function TextViewer({ plugins, onEvent }: TextViewerProp) {
+function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
+
   const appState = useTextViewerState();
   const dispatch = useTextViewerDispatch();
 
@@ -92,143 +97,256 @@ function TextViewer({ plugins, onEvent }: TextViewerProp) {
   const selectedLink = links.find(link => link.id === selectedLinkId) || null;
   const enabledPlugins = plugins.filter(p => p.enabled(appState));
 
-  return (
+  const pluginsByName = new Map<string, IPlugin>(
+    enabledPlugins.map(
+      p => [p.name, p]
+    )
+  );
+
+  function renderPlugin(p:IPlugin){
+    const Comp = p.component;
+    return <Comp key={'plugin_' + p.name} dispatch={dispatch} appState={appState}/>;
+  }
+
+  function renderPluginByName(name: string){
+    if (pluginsByName.has(name)){
+      const p = pluginsByName.get(name);
+      if (typeof p !== 'undefined'){
+        return renderPlugin(p);
+      }
+    } 
+    return null;
+  }
+
+  function renderAllPlugin(){
+    console.log("Rendering all plugins")
+    if (enabledPlugins.length === 0){
+      return (
+        <div className={style.plugins_container}>
+          No Plugins Configured.
+        </div>
+      );
+    } else if (enabledPlugins.length > 0){
+      const tabList = enabledPlugins.map((p, i) => {
+        return {
+          title: p.name,
+          body : () => renderPlugin(p),
+        }
+      });
+
+      return (
+        <div className={style.plugins_container}>
+          <Tab tabs={tabList} activeTabIndex={0}></Tab>
+        </div>
+      );
+    }
+    return null
+  }
+
+
+  function customRender(areaName: string){
+      // Rendering based on customized layout setup.
+
+      // Disable this area
+      if (layout[areaName]  === 'disable'){
+        return null
+      }
+
+      // Render Plugins.
+      if (layout[areaName]  === 'plugins'){
+        return renderAllPlugin();
+      }       
+  
+      if (pluginsByName.has(layout[areaName])){
+          return renderPluginByName(layout[areaName])
+      } 
+  
+      return <span>Invalid component</span>          
+  }
+
+  function MiddleCenterArea(){
+    const areaName = 'center-middle';
+      if (typeof layout[areaName] === 'undefined' || layout[areaName] === 'default-nlp'){
+        if (textPack){
+          return ( 
+            <TextArea textPack={textPack}
+              annotationLegendsColored={annotationLegendsWithColor}
+            />);
+        }
+      }
+
+    return customRender(areaName);
+  }
+
+  function MiddleBottomArea(){
+    const areaName = 'center-bottom';
+    // When not specific plugin is defined, center bottom is 
+    if (typeof layout[areaName] === 'undefined'){
+      const Comp = groupPlugin.component;
+      return <Comp key={groupPlugin.name} dispatch={dispatch} appState={appState} />;
+    }
+
+    return customRender(areaName);
+  }
+
+  function LeftArea(){
+    const areaName = 'left';
+
+    if (typeof layout[areaName] === 'undefined' || layout[areaName] === 'default-meta'){
+      if (textPack && ontology){
+        return ( 
+          <div className={style.metadata_side_container}>
+            <TextDetail
+              annotationLegends={annotationLegendsWithColor}
+              linkLegends={linksLegendsWithColor}
+              attributes={attributes}
+              ontology={ontology}
+            />
+          </div>      
+        );
+      }
+    }
+    return customRender(areaName);
+  }
+
+  function RightArea(){
+    const areaName = 'right';
+
+    if (layout[areaName] === 'example' || layout[areaName] === 'default-attribute'){
+      if (textPack && ontology){
+        return (
+          <div className={style.attributes_side_container}>
+            {linkEditIsCreating && (
+              <div>
+                <h2>Create Link</h2>
+                <LinkCreateBox
+                  fromEntryId={linkEditFromEntryId}
+                  toEntryId={linkEditToEntryId}
+                  ontology={ontology}
+                  onEvent={onEvent}
+                />
+              </div>
+            )}
+
+            {annoEditIsCreating && annoEditCursorBegin !== null && (
+              <div className={style.link_edit_container}>
+                <AnnotationCreateBox
+                  cursorBegin={annoEditCursorBegin}
+                  cursorEnd={annoEditCursorEnd}
+                  ontology={ontology}
+                  onEvent={onEvent}
+                />
+              </div>
+            )}
+
+            {selectedLink && (
+              <div>
+                <h2>Link Attributes</h2>
+                <LinkDetail link={selectedLink} onEvent={onEvent} />
+              </div>
+            )}
+
+            {selectedAnnotation && (
+              <div>
+                <h2>Annotation Attributes</h2>
+                <AnnotationDetail
+                  parentAnnotations={selectedAnnotationParents}
+                  childAnnotations={selectedAnnotationChildren}
+                  annotation={selectedAnnotation}
+                  onEvent={onEvent}
+                />
+              </div>
+            )}
+          </div>
+        )
+      }
+    }
+
+    return customRender(areaName);
+  }
+
+  function ToolBar(){
+    if (typeof layout['center-middle'] === 'undefined' || layout['center-middle'] === 'default-nlp'){
+      if (textPack && ontology){
+        return(
+          <div className={style.tool_bar_container}>
+          <div className={style.add_annotation_container}>
+            <button
+              className={style.add_annotation_button}
+              onClick={() => {
+                dispatch({
+                  type: annoEditIsCreating
+                    ? 'exit-annotation-edit'
+                    : 'start-annotation-edit',
+                });
+              }}
+            >
+              {annoEditIsCreating
+                ? `Cancel add annotation`
+                : `Add annotation`}
+            </button>
+
+            {annoEditIsCreating && (
+              <div className={style.button_action_description}>
+                select text to add annotation
+              </div>
+            )}
+          </div>
+
+          <div className={style.scope_selector_container}>
+            <span>Scope:</span>
+            <ScopeSelector
+              ontology={ontology}
+              selectedScopeId={selectedScopeId}
+              selectedScopeIndex={selectedScopeIndex}
+            />
+
+            {selectedScopeId !== null && (
+              <div className={style.scope_nav_container}>
+                <button
+                  disabled={selectedScopeIndex === 0}
+                  onClick={() => dispatch({ type: 'prev-scope-item' })}
+                >
+                  ←
+                </button>
+                <button
+                  disabled={
+                    selectedScopeIndex ===
+                    textPack.annotations.filter(
+                      ann => ann.legendId === selectedScopeId
+                    ).length -
+                      1
+                  }
+                  onClick={() => dispatch({ type: 'next-scope-item' })}
+                >                
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+        );
+      }
+    }
+    if (layout['center-middle'] === 'example'){
+      return <span>Example component</span>
+    }  
+    return <div></div>
+  }
+
+return (
     <div className={style.text_viewer}>
       <main className={style.layout_container}>
-        <div className={style.metadata_side_container}>
-          <TextDetail
-            annotationLegends={annotationLegendsWithColor}
-            linkLegends={linksLegendsWithColor}
-            attributes={attributes}
-            ontology={ontology}
-          />
+          <LeftArea/>
+          <div className={`${style.center_area_container}
+              ${annoEditIsCreating && style.is_adding_annotation}`}
+          >
+            <ToolBar/>
+            <div className={`${style.text_area_container}`}>
+                <MiddleCenterArea/>
+            </div>
+            <MiddleBottomArea/>
         </div>
-
-        <div
-          className={`${style.center_area_container} 
-            ${annoEditIsCreating && style.is_adding_annotation}`}
-        >
-          <div className={style.tool_bar_container}>
-            <div className={style.add_annotation_container}>
-              <button
-                className={style.add_annotation_button}
-                onClick={() => {
-                  dispatch({
-                    type: annoEditIsCreating
-                      ? 'exit-annotation-edit'
-                      : 'start-annotation-edit',
-                  });
-                }}
-              >
-                {annoEditIsCreating
-                  ? `Cancel add annotation`
-                  : `Add annotation`}
-              </button>
-
-              {annoEditIsCreating && (
-                <div className={style.button_action_description}>
-                  select text to add annotation
-                </div>
-              )}
-            </div>
-
-            {/* <div >
-              <button onClick={redirectOntology}>View Edit Ontology</button>
-            </div> */}
-
-            <div className={style.scope_selector_container}>
-              <span>Scope:</span>
-              <ScopeSelector
-                ontology={ontology}
-                selectedScopeId={selectedScopeId}
-                selectedScopeIndex={selectedScopeIndex}
-              />
-
-              {selectedScopeId !== null && (
-                <div className={style.scope_nav_container}>
-                  <button
-                    disabled={selectedScopeIndex === 0}
-                    onClick={() => dispatch({ type: 'prev-scope-item' })}
-                  >
-                    ←
-                  </button>
-                  <button
-                    disabled={
-                      selectedScopeIndex ===
-                      textPack.annotations.filter(
-                        ann => ann.legendId === selectedScopeId
-                      ).length -
-                        1
-                    }
-                    onClick={() => dispatch({ type: 'next-scope-item' })}
-                  >
-                    →
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className={`${style.text_area_container}`}>
-            <TextArea
-              textPack={textPack}
-              annotationLegendsColored={annotationLegendsWithColor}
-            />
-          </div>
-
-          {enabledPlugins.length ? (
-            <div className={style.plugins_container}>
-              {enabledPlugins.map((p, i) => {
-                const Comp = p.component;
-                return <Comp key={i} dispatch={dispatch} appState={appState} />;
-              })}
-            </div>
-          ) : null}
-        </div>
-
-        <div className={style.attributes_side_container}>
-          {linkEditIsCreating && (
-            <div>
-              <h2>Create Link</h2>
-              <LinkCreateBox
-                fromEntryId={linkEditFromEntryId}
-                toEntryId={linkEditToEntryId}
-                ontology={ontology}
-                onEvent={onEvent}
-              />
-            </div>
-          )}
-
-          {annoEditIsCreating && annoEditCursorBegin !== null && (
-            <div className={style.link_edit_container}>
-              <AnnotationCreateBox
-                cursorBegin={annoEditCursorBegin}
-                cursorEnd={annoEditCursorEnd}
-                ontology={ontology}
-                onEvent={onEvent}
-              />
-            </div>
-          )}
-
-          {selectedLink && (
-            <div>
-              <h2>Link Attributes</h2>
-              <LinkDetail link={selectedLink} onEvent={onEvent} />
-            </div>
-          )}
-
-          {selectedAnnotation && (
-            <div>
-              <h2>Annotation Attributes</h2>
-              <AnnotationDetail
-                parentAnnotations={selectedAnnotationParents}
-                childAnnotations={selectedAnnotationChildren}
-                annotation={selectedAnnotation}
-                onEvent={onEvent}
-              />
-            </div>
-          )}
-        </div>
+        <RightArea/>
       </main>
     </div>
   );
