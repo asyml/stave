@@ -21,16 +21,16 @@ export interface SpacedText {
  * Given
  *  - a text pack (with links, annotations)
  *  - selected legend ids (to know which annotation and link are effecting),
- *  - selected attirbute ids (to know what link label are effecting) and lines to be collapsed
+ *  - selected attribute ids (to know what link label are effecting) and lines to be collapsed
  *
- * calcuate
+ * calculate
  *  - new text that inserted empty space and new lines
- *  - a map of [annotation original end position] to number of charactor to insert after
- *    - used to restore the orignal position when new annotation is added to new text
+ *  - a map of [annotation original end position] to number of character to insert after
+ *    - used to restore the original position when new annotation is added to new text
  *  - every annotation's new position
- *  - dimention of the text node
+ *  - dimension of the text node
  *
- * the calcuation has two steps, first it find and insert empty space, then based on
+ * the calculation has two steps, first it find and insert empty space, then based on
  * the result, decide how many new line to insert between each line.
  *
  */
@@ -49,9 +49,12 @@ export function spaceOutText(
 
   const root = document.getElementById('root') as HTMLElement;
   const textNodeEl = document.createElement('div');
+  const scrollbarWidth = getScrollbarWidth();
+  const otherWidth = 250 * 2 + 16 * 2 + scrollbarWidth; // two side panel + 2 padding
 
   textNodeEl.id = 'text-spacer';
-  textNodeEl.style.width = 'calc(100% - 534px)';
+  textNodeEl.style.width = `calc(100% - ${otherWidth}px)`;
+  textNodeEl.style.minWidth = `350px`;
   textNodeEl.style.margin = '50px auto';
   textNodeEl.style.whiteSpace = 'pre-wrap';
   textNodeEl.style.lineHeight = '20px';
@@ -62,6 +65,7 @@ export function spaceOutText(
 
   root.appendChild(textNodeEl);
 
+  // // START: debugging text view
   // textNodeEl.style.top = '0';
   // textNodeEl.style.left = '0';
   // textNodeEl.style.background = 'white';
@@ -70,6 +74,7 @@ export function spaceOutText(
   // const dom = document.createElement('div');
   // textNodeEl.appendChild(dom);
   // dom.style.whiteSpace = 'pre-wrap';
+  // // END: debugging text view
 
   const textNode = textNodeEl && (textNodeEl.childNodes[0] as HTMLElement);
 
@@ -84,7 +89,7 @@ export function spaceOutText(
   // so that long annotation can be broken down
   let invisibleAnnotations: any[] = [];
   let currPosition = -1;
-  text.split(' ').forEach((text, i) => {
+  text.split(/\s/).forEach((text, i) => {
     invisibleAnnotations.push({
       span: { begin: currPosition + 1, end: currPosition + 1 + text.length },
       id: 'i-' + i,
@@ -93,9 +98,10 @@ export function spaceOutText(
     });
     currPosition = currPosition + 1 + text.length;
   });
+
   annotations = annotations.concat(invisibleAnnotations);
 
-  const annotationsPos = annotations.map(anno => {
+  const annotationsPos = annotations.map((anno) => {
     const range = document.createRange();
 
     range.setStart(textNode, anno.span.begin);
@@ -103,7 +109,7 @@ export function spaceOutText(
     const rects = Array.from(range.getClientRects() as DOMRectList);
 
     return {
-      rects: rects.map(rect => ({
+      rects: rects.map((rect) => ({
         x: rect.x - textAreaRect.left,
         y: rect.y - textAreaRect.top,
         width: rect.width,
@@ -116,13 +122,13 @@ export function spaceOutText(
     annotationsPos,
     annotations
   ).filter(
-    ann =>
+    (ann) =>
       ann.annotation.legendId === 'invisible' ||
       selectedLegendIds.indexOf(ann.annotation.legendId) > -1
   );
 
   const linksWithPos = mergeLinkWithPosition(links, annotationsWithPos).filter(
-    link => selectedLegendIds.indexOf(link.link.legendId) > -1
+    (link) => selectedLegendIds.indexOf(link.link.legendId) > -1
   );
 
   const spaceMap: ISpaceMap = calcuateSpaceMap(
@@ -142,7 +148,7 @@ export function spaceOutText(
   const textNodeWithEmptySpace =
     textNodeEl && (textNodeEl.childNodes[0] as HTMLElement);
 
-  const annotationsPosWithEmptySpaces = annotations.map(anno => {
+  const annotationsPosWithEmptySpaces = annotations.map((anno) => {
     const range = document.createRange();
 
     range.setStart(
@@ -156,7 +162,7 @@ export function spaceOutText(
     const rects = Array.from(range.getClientRects() as DOMRectList);
 
     return {
-      rects: rects.map(rect => ({
+      rects: rects.map((rect) => ({
         x: rect.x - textAreaRectWithEmptySpace.left,
         y: rect.y - textAreaRectWithEmptySpace.top,
         width: rect.width,
@@ -169,7 +175,7 @@ export function spaceOutText(
     annotationsPosWithEmptySpaces,
     annotations
   ).filter(
-    ann =>
+    (ann) =>
       ann.annotation.legendId === 'invisible' ||
       selectedLegendIds.indexOf(ann.annotation.legendId) > -1
   );
@@ -177,7 +183,7 @@ export function spaceOutText(
   const linksWithPosWithEmptySpaces = mergeLinkWithPosition(
     links,
     annotationsWithPosWithEmptySpaces
-  ).filter(link => selectedLegendIds.indexOf(link.link.legendId) > -1);
+  ).filter((link) => selectedLegendIds.indexOf(link.link.legendId) > -1);
 
   const lineStartXWithEmptySpace = 0; //textAreaDimensionWithEmptySpace.x;
   const lineWidthWithEmptySpace = textAreaDimensionWithEmptySpace.width;
@@ -195,9 +201,14 @@ export function spaceOutText(
 
   Object.keys(linesLevelsWithNewline).forEach((lineHeight, i) => {
     const levelNum = linesLevelsWithNewline[lineHeight].length;
-    const firstAnnotation = getFirstAnnotationOfLine(
+    const annotationsAtCurrLine = getAnnotationsByLine(
       annotationsWithPosWithEmptySpaces,
       +lineHeight
+    );
+
+    let firstAnnotation = annotationsAtCurrLine[0];
+    let fullOfInvisible = annotationsAtCurrLine.every(
+      (ann) => ann.annotation.legendId === 'invisible'
     );
 
     spaceMapWithNewline[firstAnnotation.annotation.id] = {
@@ -217,17 +228,15 @@ export function spaceOutText(
           },
         },
       },
-      spaceToMove: calcuateLinesToInsertByLevelNum(
-        collpasedLinesIndex,
-        i,
-        levelNum
-      ),
+      spaceToMove: fullOfInvisible
+        ? 0
+        : calcuateLinesToInsertByLevelNum(collpasedLinesIndex, i, levelNum),
     };
   });
 
   const updatedTextPackWithNewline = {
     text: caculcatedSpacedTextWithEmptySpace,
-    annotations: annotations.map(ann => {
+    annotations: annotations.map((ann) => {
       return {
         ...ann,
         span: {
@@ -254,8 +263,8 @@ export function spaceOutText(
   const lineWidthWithNewLine = textAreaRectWithNewLine.width;
 
   const annotationPositionsWithNewLine = annotations
-    .filter(a => a.legendId !== 'invisible')
-    .map(anno => {
+    .filter((a) => a.legendId !== 'invisible')
+    .map((anno) => {
       const range = document.createRange();
 
       range.setStart(textNodeWithNewline, annotationSpanMap[anno.id].begin);
@@ -264,11 +273,11 @@ export function spaceOutText(
       let rects = Array.from(range.getClientRects() as DOMRectList);
 
       if (rects.length > 1) {
-        rects = rects.filter(rect => rect.width > 5);
+        rects = rects.filter((rect) => rect.width > 5);
       }
 
       return {
-        rects: rects.map(rect => ({
+        rects: rects.map((rect) => ({
           x: rect.x - textAreaRectWithNewLine.left,
           y: rect.y - textAreaRectWithNewLine.top,
           width: rect.width,
@@ -278,15 +287,15 @@ export function spaceOutText(
     });
 
   const charMoveMap = new Map<number, number>();
-  Object.keys(spaceMap).forEach(annId => {
-    const annotation = annotations.find(ann => ann.id === annId);
+  Object.keys(spaceMap).forEach((annId) => {
+    const annotation = annotations.find((ann) => ann.id === annId);
     if (annotation) {
       charMoveMap.set(annotation.span.end, spaceMap[annId].spaceToMove);
     }
   });
 
-  Object.keys(spaceMapWithNewline).forEach(annId => {
-    const annotation = annotations.find(ann => ann.id === annId);
+  Object.keys(spaceMapWithNewline).forEach((annId) => {
+    const annotation = annotations.find((ann) => ann.id === annId);
     if (annotation) {
       charMoveMap.set(
         annotation.span.begin - 1,
@@ -340,12 +349,12 @@ export function mergeLinkWithPosition(
   }[]
 ) {
   return links
-    .map(link => {
+    .map((link) => {
       const fromEntryWithPosition = annotationWithPosition.find(
-        ann => ann.annotation.id === link.fromEntryId
+        (ann) => ann.annotation.id === link.fromEntryId
       );
       const toEntryWithPosition = annotationWithPosition.find(
-        ann => ann.annotation.id === link.toEntryId
+        (ann) => ann.annotation.id === link.toEntryId
       );
       if (fromEntryWithPosition && toEntryWithPosition) {
         const fromEntryX = fromEntryWithPosition.position.rects[0].x;
@@ -390,8 +399,8 @@ function calculateNewText(
 ) {
   const textSplit = text.split('');
   const sortedSpaceMap = Object.keys(spaceMap)
-    .filter(annId => spaceMap[annId].spaceToMove > 0)
-    .map(annId => spaceMap[annId])
+    .filter((annId) => spaceMap[annId].spaceToMove > 0)
+    .map((annId) => spaceMap[annId])
     .sort((annA, annB) => {
       return (
         annA.annotationWithPos.annotation.span.end -
@@ -403,7 +412,7 @@ function calculateNewText(
     [key: string]: { begin: number; end: number };
   } = {};
 
-  annotations.forEach(ann => {
+  annotations.forEach((ann) => {
     spacedAnnotationSpan[ann.id] = {
       begin: ann.span.begin,
       end: ann.span.end,
@@ -413,9 +422,7 @@ function calculateNewText(
   for (let i = 0; i < sortedSpaceMap.length; i++) {
     const space = sortedSpaceMap[i];
     const spaceFromLast = sortedSpaceMap[sortedSpaceMap.length - i - 1];
-    const emptySpaces = Array(spaceFromLast.spaceToMove)
-      .fill(fill)
-      .join('');
+    const emptySpaces = Array(spaceFromLast.spaceToMove).fill(fill).join('');
 
     if (insertDirection === 'before') {
       textSplit.splice(
@@ -427,7 +434,7 @@ function calculateNewText(
       const begin =
         spacedAnnotationSpan[space.annotationWithPos.annotation.id].begin;
 
-      Object.keys(spacedAnnotationSpan).forEach(annId => {
+      Object.keys(spacedAnnotationSpan).forEach((annId) => {
         if (spacedAnnotationSpan[annId].begin >= begin) {
           spacedAnnotationSpan[annId].begin =
             spacedAnnotationSpan[annId].begin + space.spaceToMove;
@@ -453,7 +460,7 @@ function calculateNewText(
       const end =
         spacedAnnotationSpan[space.annotationWithPos.annotation.id].end;
 
-      Object.keys(spacedAnnotationSpan).forEach(annId => {
+      Object.keys(spacedAnnotationSpan).forEach((annId) => {
         if (spacedAnnotationSpan[annId].begin >= end) {
           spacedAnnotationSpan[annId].begin =
             spacedAnnotationSpan[annId].begin + space.spaceToMove;
@@ -500,7 +507,7 @@ function calcuateLinesLevels(
   lineWidth: number
 ): Record<string, ILinkWithPos[][]> {
   const lineMap: any = {};
-  linksWithPos.forEach(link => {
+  linksWithPos.forEach((link) => {
     if (link.fromLinkY === link.toLinkY) {
       lineMap[link.fromLinkY] = lineMap[link.fromLinkY] || [];
       lineMap[link.fromLinkY].push(link);
@@ -522,7 +529,7 @@ function calcuateLinesLevels(
     }
   });
 
-  Object.keys(lineMap).forEach(key => {
+  Object.keys(lineMap).forEach((key) => {
     lineMap[key] = calculateLevelForSingleLine(lineMap[key]);
   });
 
@@ -544,7 +551,7 @@ function calcuateLinesLevels(
     links: ILinkWithPos[]
   ): ILinkWithPos[][] {
     const levels: ILinkWithPos[][] = [];
-    links.forEach(link => {
+    links.forEach((link) => {
       let insertLevel = -1;
       let pushLevel = -1;
       for (let i = 0; i < levels.length; i++) {
@@ -578,7 +585,7 @@ function calcuateLinesLevels(
     });
 
     pushDownLinksInLevels(levels);
-    return levels.filter(l => l.length);
+    return levels.filter((l) => l.length);
   }
 
   // go through each level from bottom to top
@@ -605,7 +612,7 @@ function calcuateLinesLevels(
       }
 
       levels[i] = level.filter(
-        (_, i) => linkstoPush.map(l => l[0]).indexOf(i) === -1
+        (_, i) => linkstoPush.map((l) => l[0]).indexOf(i) === -1
       );
       linkstoPush.forEach(([linkIndex, levelIndex]) => {
         levels[levelIndex].push(level[linkIndex]);
@@ -695,9 +702,9 @@ export function calcuateLinkHeight(
 ) {
   const linksHeightMap: Record<string, Record<string, number>> = {};
 
-  Object.keys(linkLevels).forEach(y => {
+  Object.keys(linkLevels).forEach((y) => {
     linkLevels[y].forEach((links, i, arr) => {
-      links.forEach(link => {
+      links.forEach((link) => {
         linksHeightMap[link.link.id] = linksHeightMap[link.link.id] || {};
         linksHeightMap[link.link.id][y] = (arr.length - 1 - i) * gap;
       });
@@ -798,16 +805,16 @@ function calcuateSpaceMap(
 ) {
   const spaceMap: ISpaceMap = {};
 
-  linksWithPos.forEach(linkPos => {
+  linksWithPos.forEach((linkPos) => {
     const label = Object.keys(linkPos.link.attributes)
-      .filter(attrKey => {
+      .filter((attrKey) => {
         return (
           selectedLegendAttributeIds.indexOf(
             attributeId(linkPos.link.legendId, attrKey)
           ) > -1
         );
       })
-      .map(attrKey => linkPos.link.attributes[attrKey])
+      .map((attrKey) => linkPos.link.attributes[attrKey])
       .join(',');
 
     const pixelNeedForLinkLabel = getTextWidth(label, fontWidth);
@@ -836,52 +843,6 @@ function calcuateSpaceMap(
     }
   });
 
-  const pixelNeededForAnnoLabel = 35; // we only show 3 char
-  annotationWithPosition
-    .slice(0)
-    .sort((a, b) => a.annotation.span.end - b.annotation.span.end)
-    .forEach((annPos, i, arr) => {
-      if (i < arr.length - 1 && annPos.position.rects.length === 1) {
-        const nextAnnPos = arr[i + 1];
-        const midAnnX =
-          annPos.position.rects[0].x + annPos.position.rects[0].width / 2;
-        const nextMidAnnX =
-          nextAnnPos.position.rects[0].x +
-          nextAnnPos.position.rects[0].width / 2;
-        const isSameLine =
-          annPos.position.rects[0].y === nextAnnPos.position.rects[0].y;
-
-        let distance;
-        if (isSameLine) {
-          distance = nextMidAnnX - midAnnX;
-        } else {
-          const midAnnXToEnd = annPos.position.rects[0].width / 2;
-          const nextMidAnnXToStart = nextAnnPos.position.rects[0].width / 2;
-
-          distance = midAnnXToEnd + nextMidAnnXToStart + 4;
-        }
-
-        if (distance < pixelNeededForAnnoLabel && distance > 0) {
-          const spaceToMove = Math.ceil(
-            (pixelNeededForAnnoLabel - distance) / fontWidth
-          );
-          if (spaceMap[annPos.annotation.id] === undefined) {
-            spaceMap[annPos.annotation.id] = {
-              annotationWithPos: annPos,
-              spaceToMove,
-            };
-          } else {
-            if (spaceToMove > spaceMap[annPos.annotation.id].spaceToMove) {
-              spaceMap[annPos.annotation.id] = {
-                annotationWithPos: annPos,
-                spaceToMove,
-              };
-            }
-          }
-        }
-      }
-    });
-
   return spaceMap;
 }
 
@@ -904,7 +865,7 @@ function getLevelsFromJustAnnotations(
 ): Record<string, ILinkWithPos[][]> {
   const levels: any = {};
   const set = new Set(
-    annotationWithPosition.map(ann => ann.position.rects[0].y)
+    annotationWithPosition.map((ann) => ann.position.rects[0].y)
   );
   for (let height of Array.from(set)) {
     levels[height] = [];
@@ -943,7 +904,7 @@ function calcuateLinesToInsertByLevelNum(
  * to insert.
  *
  */
-function getFirstAnnotationOfLine(
+function getAnnotationsByLine(
   annotationWithPosition: {
     position: IAnnotationPosition;
     annotation: IAnnotation;
@@ -951,16 +912,39 @@ function getFirstAnnotationOfLine(
   lineHeight: number
 ) {
   return annotationWithPosition
-    .filter(ann => ann.position.rects[0].y === lineHeight)
+    .filter((ann) => ann.position.rects[0].y === lineHeight)
     .sort((annA, annB) => {
       return annA.position.rects[0].x - annB.position.rects[0].x;
-    })[0];
+    });
 }
 
 function getTextWidth(text: string, fontWidth: number) {
-  const textUpperLen = text.split('').filter(c => c === c.toUpperCase()).length;
+  const textUpperLen = text.split('').filter((c) => c === c.toUpperCase())
+    .length;
   const textOtherLen = text.length - textUpperLen;
   const padding = fontWidth * 2;
 
   return textUpperLen * (fontWidth + 3) + textOtherLen * fontWidth + padding;
+}
+
+// https://stackoverflow.com/questions/13382516/getting-scroll-bar-width-using-javascript
+function getScrollbarWidth() {
+  // Creating invisible container
+  const outer = document.createElement('div');
+  outer.style.visibility = 'hidden';
+  outer.style.overflow = 'scroll'; // forcing scrollbar to appear
+  (outer.style as any).msOverflowStyle = 'scrollbar'; // needed for WinJS apps
+  document.body.appendChild(outer);
+
+  // Creating inner element and placing it in the container
+  const inner = document.createElement('div');
+  outer.appendChild(inner);
+
+  // Calculating difference between container's full width and the child width
+  const scrollbarWidth = outer.offsetWidth - inner.offsetWidth;
+
+  // Removing temporary elements from the DOM
+  outer.remove();
+
+  return scrollbarWidth;
 }

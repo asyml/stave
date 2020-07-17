@@ -59,7 +59,7 @@
 .text_area_container {
   padding: 16px;
   height: 100%;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 .button_action_description {
@@ -70,7 +70,7 @@
 
 .plugins_container {
   max-height: 300px;
-  overflow: scroll;
+  overflow-y: scroll;
   border-top: 1px solid #ccc;
 }
 

@@ -20,8 +20,10 @@ import { logout } from './lib/api';
 
 import { singlePack } from './mock-data-2';
 import { ontology } from './mock-config-data';
+import {layout} from './layout';
 import NLPViewer from '../nlpviewer';
-import groupPlugin from '../plugins/Group';
+import groupPlugin from '../plugins/group/Group';
+import dialogueBoxPlugin from '../plugins/dialogue_box/DialogueBox';
 
 const initialState = { state: 0 };
 export const { Provider: AppProvider, Consumer: AppConsumer } = React.createContext(initialState);
@@ -31,7 +33,7 @@ function App() {
     <Router>
       <div>
         <header className="layout_header">
-          <span>NLP Viewer</span>
+          <span>Stave</span>
 
           <nav>
             <ul>
@@ -62,7 +64,7 @@ function App() {
 
           <Route path="/documents/:id">
             <Viewer />
-          </Route>
+          </Route>          
 
           <Route path="/ontology/:id">
             <Ontology />
@@ -91,7 +93,8 @@ function ViewWithDemoData() {
     <NLPViewer
       textPack={singlePack}
       ontology={ontology}
-      plugins={[groupPlugin]}
+      plugins={[groupPlugin, dialogueBoxPlugin]}
+      layout={layout}
     />
   );
 }

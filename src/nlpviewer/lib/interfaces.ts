@@ -184,3 +184,7 @@ export interface IPlugin {
   component: (props: any) => JSX.Element | null;
   enabled: (props: any) => boolean;
 }
+
+export interface ILayout {
+  [position: string] : string;
+}
