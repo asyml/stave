@@ -143,7 +143,9 @@ async function postData(url = '', data = {}) {
   });
 
   if (response.status >= 400) {
-    throw new Error(response.statusText);
+    // throw new Error(response.statusText);
+    console.error(response.statusText);
+    return response;
   } else {
     return response;
   }
