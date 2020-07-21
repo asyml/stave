@@ -9,7 +9,7 @@
 
 **Stave** is a platform for building reusable web-based  visualization and annotation tools for NLP. It is currently under incubation. 
 
-Stave was originally developed and is actively contributed by [Petuum](https://petuum.com/) in collaboration with other institutes.
+Stave was originally developed and is actively contributed by [Petuum](https://petuum.com/) in collaboration with other institutes. A mirror of this repository is maintained by [Petuum Open Source](https://github.com/petuum).
 
 ## Environment
 The project is tested on:
