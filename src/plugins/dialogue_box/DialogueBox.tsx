@@ -65,6 +65,7 @@ function Utterance(text: string, annotation: IAnnotation){
       </div>
     </div>
   } else{
+    // This case is likely to caused by an incorrect ontology associated with the data pack.
     return  <div className={style.bubble_container} key={'utterance_container_' + annotation.id}>        
     <div className={style.bubble_right} key={'utterance_bubble_' + annotation.id}>    
       ...
@@ -80,13 +81,21 @@ function DialogueBox(props: PluginComponentProp) {
   const doc_id = id;
   
   const [pack, setPack] = useState<ISinglePack | null> (props.appState.textPack);
+  const [modelLoaded, setModelLoaded] = useState<boolean>  (false);
+
+  console.log(props.appState.textPack)
 
   // Call API to load the NLP model of name "model_name".
-  const model_name = 'content_rewriter'
+  const model_name = 'content_rewriter';
   useEffect(() =>{
     try {
-      loadNlpModel(model_name).then(() =>{
-        console.log("Model Loaded Successfully.");    
+      loadNlpModel(model_name).then((response) =>{
+        if(response.headers.get('load_success') === 'True'){
+          console.log("Model Loaded Successfully.");      
+          setModelLoaded(true);
+        }else{
+          console.log("Model not loaded, check backend log.")
+        }        
       });      
     } catch (error) {
       console.log("Error during loading model.");
@@ -114,6 +123,8 @@ function DialogueBox(props: PluginComponentProp) {
     }
   );
 
+  
+
   return (        
     <div key = 'plugin-dialogue-box'>
       <div key = 'dialogue-context-container'>
@@ -136,23 +147,25 @@ function DialogueBox(props: PluginComponentProp) {
               addAnnotation(doc_id, annotationAPIData).then(({ id }) => {
                 // Update the pack, first set the text then, add the new annotation.
                 annotation.id = id;
+
                 setPack({                              
                   ...pack,
                   text: text,
                   annotations: [...pack.annotations, annotation],
                 });
-                runNlp(doc_id, model_name).then(data => {
-                  const [singlePackFromAPI, ontologyFromAPI] = transformPack(
-                    data.textPack,
-                    data.ontology
-                  );        
-                  setPack({
-                    ...singlePackFromAPI
-                  })
-                });            
+                if (modelLoaded){
+                  runNlp(doc_id, model_name).then(data => {
+                    const [singlePackFromAPI, ontologyFromAPI] = transformPack(
+                      data.textPack,
+                      data.ontology
+                    );        
+                    setPack({
+                      ...singlePackFromAPI
+                    })
+                  }); 
+                }  
               });    
             });
-
           }
         }}></TextInput>
       </div>
