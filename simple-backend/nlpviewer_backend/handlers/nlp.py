@@ -24,8 +24,7 @@ except ImportError:
 
 nlp_models = {}
 
-@require_login
-def load_content_rewriter():
+def __load_content_rewriter():
   if forte_installed:
     from examples.content_rewriter.rewriter import ContentRewriter
     from forte.data.readers import RawDataDeserializeReader
@@ -56,31 +55,49 @@ def load_content_rewriter():
 
 @require_login
 def load_model(request, model_name: str):
+  response: HttpResponse
   if model_name == 'content_rewriter':
     if model_name in nlp_models:
-      return HttpResponse('OK')
+      response = HttpResponse('OK')
+      response['load_success'] = True
     else:
-      nlp_models[model_name] = load_content_rewriter()
-      return HttpResponse('OK')
+      m = __load_content_rewriter()
+      if m:
+        nlp_models[model_name]
+        response = HttpResponse('OK')
+        response['load_success'] = True
+      else:
+        response = HttpResponse('OK')
+        response['load_success'] = False
   else:
     response =  Http404(f"Cannot find model {model_name}")
+  
+  return response
 
 
 @require_login
 def run_pipeline(request, document_id, model_name):
   doc = Document.objects.get(pk=document_id)
   docJson = model_to_dict(doc)
-  pipeline = nlp_models[model_name]
 
+  pipeline = nlp_models.get(model_name, None)
+
+  print('print the doc')
+  pack = json.loads(docJson['textPack'])['py/state']
+  print(pack['_text'])
+  print(pack['annotations'])
+
+  response: JsonResponse
   if pipeline:
     processedPack = pipeline.process([docJson['textPack']])
-    doc.textPack = processedPack.serialize()
-    doc.save()
+    doc.textPack = processedPack.serialize(True)
+    doc.save()    
+    response = JsonResponse(model_to_dict(doc), safe=False)
   else:
     logging.error(
-      "The NLP model of name {model_name} is not "
-      "loaded, please check the log for possible reasons."
+      f"The NLP model of name {model_name} is not "
+      f"loaded, please check the log for possible reasons."
     )
-
-  return JsonResponse(model_to_dict(doc), safe=False)
-
+    response = JsonResponse(docJson, safe=False)
+  # TODO: How to tell the front-end that pipeline is not run?
+  return response
