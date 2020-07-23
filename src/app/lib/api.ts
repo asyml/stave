@@ -4,6 +4,12 @@ export interface APIDocument {
   ontology: string;
 }
 
+export interface APIDocOntology {
+  id: string;
+  textPack: string;
+  ontology: string;
+}
+
 export function fetchDocuments(): Promise<any> {
   return fetch(`/api/documents`).then(r => r.json());
 }
@@ -14,6 +20,10 @@ export function fetchProjects(): Promise<any> {
 
 export function fetchDocument(id: string): Promise<APIDocument> {
   return fetch(`/api/documents/${id}`).then(r => r.json());
+}
+
+export function fetchDocOntology(id: string): Promise<APIDocOntology> {
+  return fetch(`/api/ontology_from_doc/${id}`).then(r => r.json());
 }
 
 export function updateDocument(id: string, name: string, textPack: string) {
@@ -64,6 +74,10 @@ export function deleteProject(id: string) {
 export function fetchDocumentsProject(id: string){
   return postData(`/api/projects/${id}/docs`).then(r => r.json());
 }
+
+// export function fetchOntologyByDocument(id: string):Promise<APIOntology>{
+//   return postData(`/api/doc_ontology_by_id/${id}`).then(r => r.json());
+// }
 
 export function fetchUsers() {
   return fetch(`/api/users`).then(r => r.json());

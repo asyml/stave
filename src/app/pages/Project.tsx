@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchDocument, createDocument, deleteDocument, fetchDocumentsProject } from '../lib/api';
+import { createDocument, deleteDocument, fetchDocumentsProject } from '../lib/api';
 import { Link, useHistory } from 'react-router-dom';
 
 function Docs() {
@@ -36,9 +36,6 @@ function Docs() {
       updateDocs();
     });
   }
-
-
-  console.log(docs);
 
   return (
     <div className="content">

@@ -37,11 +37,14 @@ function App() {
 
           <nav>
             <ul>
-              <li>
+              {/* <li>
                 <Link to="/">All documents</Link>
-              </li>
+              </li> */}
               <li>
                 <Link to="/users">All Users</Link>
+              </li>
+              <li>
+                <Link to="/projects">All Projects</Link>
               </li>
             </ul>
           </nav>
@@ -79,7 +82,7 @@ function App() {
           </Route>
 
           <Route path="/">
-            <Documents />
+            <Projects />
           </Route>
 
         </Switch>
