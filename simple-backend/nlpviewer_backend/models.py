@@ -31,9 +31,6 @@ class Document(models.Model):
     )
 
     textPack = models.TextField()
-    ontology = models.TextField(default='')
-
-    # migration: ontology - TextField
 
 class User(models.Model):
     name = models.CharField(max_length=200)

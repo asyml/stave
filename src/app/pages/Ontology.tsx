@@ -21,7 +21,7 @@ function Ontology() {
         
         let doc_id = window.location.pathname.split("/").pop();
 
-        if (doc_id != undefined){
+        if (doc_id !== undefined){
             return fetchDocument(doc_id).then(docs => {
                 setOntology(docs.ontology);
             });
@@ -40,11 +40,11 @@ function Ontology() {
 
   function handleEditOntology() {
       let doc_id = window.location.pathname.split("/").pop();
-      if (doc_id != undefined){
+      if (doc_id !== undefined){
        updateOntology(doc_id , ontology).then(edit_state => {
         updateDocs();
         setEditState(edit_state);
-        if(edit_state.status == 1){
+        if(edit_state.status === 1){
             console.log('Save OK');
         }
         else{
@@ -55,7 +55,7 @@ function Ontology() {
       }
   }
 
-  if (ontology == undefined) return null;
+  if (ontology === undefined) return null;
 
   
 

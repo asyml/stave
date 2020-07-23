@@ -48,7 +48,6 @@ export function createDocument(
   return postData(`/api/documents/new`, {
     name: name,
     textPack: textPack,
-    ontology: ontology,
     project_id: project_id
   }).then(r => r.json());
 }
