@@ -57,16 +57,6 @@ def query_docs(request, project_id):
 
     return JsonResponse(list(docs), safe=False)
 
-
-    # print(docs)
-    # print(docs.exists())
-
-    # docJson = model_to_dict(
-    #     docs.all().values
-    # ) if docs.exists() else None
-    # return JsonResponse(docJson, safe=False)
-
-
 @require_login
 def delete(request, project_id):
     pro = Project.objects.get(pk=project_id)

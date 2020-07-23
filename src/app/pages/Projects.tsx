@@ -32,9 +32,6 @@ function Projects() {
     });
   }
 
-
-  console.log(projects);
-
   return (
     <div className="content">
       <div className="content_left">

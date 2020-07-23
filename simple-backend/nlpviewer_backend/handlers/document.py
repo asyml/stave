@@ -17,7 +17,6 @@ def listAll(request):
 @require_login
 def create(request):
     received_json_data = json.loads(request.body)
-    print(received_json_data)
 
     doc = Document(
         name=received_json_data.get('name'),
@@ -27,9 +26,6 @@ def create(request):
             pk=received_json_data.get('project_id')
         )
     )
-    print(received_json_data.get('project_id'))
-    print(doc)
-
     doc.save()
 
     return JsonResponse({"id": doc.id}, safe=False)
@@ -50,7 +46,6 @@ def edit(request, document_id):
 # need rewrite 
 @require_login
 def edit_ontology(request, document_id):
-    print('called')
     try:
         doc = Document.objects.get(pk=document_id)
         received_json_data = json.loads(request.body)
@@ -66,7 +61,6 @@ def edit_ontology(request, document_id):
         'id': document_id,
         'status': status
     }
-    print(docJson)
     return JsonResponse(docJson, safe=False)
 
 
@@ -270,3 +264,17 @@ def delete_link(request, document_id, link_id):
     doc.save()
 
     return HttpResponse('OK')
+
+@require_login
+def get_doc_ontology_pack(request, document_id):
+    
+    doc = Document.objects.get(pk=document_id)
+    project = doc.project
+
+    docJson = {
+        'id': document_id,
+        'textPack': doc.textPack,
+        'ontology': project.ontology
+    }
+
+    return JsonResponse(docJson, safe=False)

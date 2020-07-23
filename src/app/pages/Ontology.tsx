@@ -55,8 +55,6 @@ function Ontology() {
       }
   }
 
-  console.log(ontology);
-
   if (ontology == undefined) return null;
 
   

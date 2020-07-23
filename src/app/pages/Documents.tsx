@@ -34,7 +34,10 @@ function Documents() {
     });
   }
 
-  if (!docs.length) return null;
+  if (!docs.length) {
+    console.log('empty result')
+    return null;
+  }
 
   console.log(docs);
 
