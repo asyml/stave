@@ -45,6 +45,7 @@ function TextAreaB({ textPack, AnowOnEventIndex, BnowOnEventIndex, BSelectedInde
         } else if (BSelectedIndex.includes(i)) {
             initSelected = 2;
         }
+
         to_return.push((<Event eventIndex = {i}
                                eventText = {text.substring(annotations[i].span.begin, annotations[i].span.end)}
                                AnowOnEventIndex = {AnowOnEventIndex}

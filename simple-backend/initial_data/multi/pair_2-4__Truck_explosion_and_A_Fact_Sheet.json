@@ -76,6 +76,18 @@
           ],
           "question_body": "Why do you think these two events are different?"
         }
+      },
+      {
+        "py/object": "edu.cmu.SuggestionQuestion",
+        "py/state": {
+          "_tid": 122,
+          "options": [
+            "They are not really relevant.",
+            "There is no enough information to determine that.",
+            "Some event details are conflicting."
+          ],
+          "question_body": "another question for suggested pairs?"
+        }
       }
     ],
     "groups": [],

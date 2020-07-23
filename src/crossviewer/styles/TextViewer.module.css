@@ -11,7 +11,7 @@
 .center_area_container {
   border: 1px solid #ccc;
   border-top: none;
-  height: calc(100vh - 300px);
+  height: calc(100vh - 200px);
   flex: 1;
   position: relative;
   transition: background 0.2s;
@@ -172,4 +172,20 @@
   left: 0;
   background-color: rgba(0,0,0,.4);
   z-index: 999;
+}
+
+.answer_box{
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+.second_tool_bar_container {
+  height: 120px;
+  border-bottom: 1px solid #ccc;
+  padding: 8px;
+  background: #f8f8fa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }

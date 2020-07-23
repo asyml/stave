@@ -28,6 +28,7 @@ function Event({eventIndex, eventText, AnowOnEventIndex, initSelected,eventClick
         eventClickCallBack(eventIndex, !selected);
         return false;
     }
+    const myRef = useRef(null)
 
     let eventStyle = "";
     if (selected == 0 && !hovered) {
@@ -35,6 +36,8 @@ function Event({eventIndex, eventText, AnowOnEventIndex, initSelected,eventClick
     } else if (selected == 0 && hovered) {
         eventStyle = style.event_not_selected_hovered;
     } else if (selected == 1) {
+        // @ts-ignore
+        myRef.current.scrollIntoView();
         eventStyle = style.event_now_on;
     } else if (selected == 2 && !hovered) {
         eventStyle = style.event_selected;
@@ -43,7 +46,7 @@ function Event({eventIndex, eventText, AnowOnEventIndex, initSelected,eventClick
     }
 
     return (
-        <span className={eventStyle} onMouseEnter={mouseOn} onMouseLeave={mouseOff}
+        <span ref={myRef} className={eventStyle} onMouseEnter={mouseOn} onMouseLeave={mouseOff}
               onClick={e => onClick(e)}>
             {eventText}
         </span>

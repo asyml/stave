@@ -90,6 +90,7 @@
 }
 .event_now_on{
   border: 3px solid#0071ff;
+  background-color: #a7dcff;
 }
 .event_selected {
   background-color: #fe346e;
