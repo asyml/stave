@@ -28,4 +28,4 @@ venv
 simple-backend/db.sqlite3
 
 .python-version
-/.idea
+.idea
