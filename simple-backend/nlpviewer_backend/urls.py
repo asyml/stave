@@ -59,8 +59,8 @@ urlpatterns = [
 
     path('ontology_from_doc/<int:document_id>', document.get_doc_ontology_pack),
 
-    path('nlp/load/<model_name>', nlp.load_model),
-    path('nlp/<int:document_id>/<model_name>', nlp.run_pipeline),
+    # path('nlp/load/<model_name>', nlp.load_model),
+    # path('nlp/<int:document_id>/<model_name>', nlp.run_pipeline),
 
     path('admin/', admin.site.urls),
 ]
