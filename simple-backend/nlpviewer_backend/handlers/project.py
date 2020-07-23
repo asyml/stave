@@ -20,7 +20,6 @@ def create(request):
 
     project = Project(
         name=received_json_data.get('name'),
-        # documents=received_json_data.get('documents'),
         ontology=received_json_data.get('ontology')
     )
 
@@ -31,14 +30,13 @@ def create(request):
 
 @require_login
 def edit(request, project_id):
-    pro = Project.objects.get(pk=project_id)
+    project = Project.objects.get(pk=project_id)
     received_json_data = json.loads(request.body)
 
-    pro.project_name = received_json_data.get('project_name')
-    pro.ontology = received_json_data.get('ontology')
+    project.project_name = received_json_data.get('project_name')
+    project.ontology = received_json_data.get('ontology')
 
-    # pro.documents.append(received_json_data.get('document'))
-    pro.save()
+    project.save()
 
     docJson = model_to_dict(pro)
     return JsonResponse(docJson, safe=False)
@@ -59,7 +57,7 @@ def query_docs(request, project_id):
 
 @require_login
 def delete(request, project_id):
-    pro = Project.objects.get(pk=project_id)
-    pro.delete()
+    project = Project.objects.get(pk=project_id)
+    project.delete()
 
     return HttpResponse('ok')

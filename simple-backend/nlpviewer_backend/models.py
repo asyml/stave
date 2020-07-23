@@ -1,15 +1,10 @@
 from django.db import models
 
-# class Ontology(models.Model):
-#     ontology_name = models.CharField(max_length=200)
-#     ontology_content = models.TextField(default='')
-
 class Project(models.Model):
     name = models.CharField(max_length=200)
     ontology = models.TextField(default='')
-    # ontology = models.TextField(default='')
 
-    # relationship: document 
+    # relationship: document -- defined in Document
     
     # documents = models.ForeignKey(
     #     to=Document,

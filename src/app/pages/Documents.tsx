@@ -39,8 +39,6 @@ function Documents() {
     return null;
   }
 
-  console.log(docs);
-
   return (
     <div className="content">
       <div className="content_left">

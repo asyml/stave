@@ -27,17 +27,9 @@ interface WholePack {
 function Viewer() {
   let { id } = useParams();
   const [pack, setPack] = useState<WholePack | null>(null);
-  //const [ontology, setOntology] = useState<APIOntology | null>(null);
 
   useEffect(() => {
     if (id) {
-
-      // const ontology = fetchOntologyFromDocument(id).then(data => {data.ontology})
-
-      // fetchOntologyFromDocument(id).then(
-      //   this.
-      // );
-
 
       fetchDocOntology(id).then(data => {
         const [singlePackFromAPI, ontologyFromAPI] = transformPack(
