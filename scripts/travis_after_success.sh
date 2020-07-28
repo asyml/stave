@@ -12,7 +12,7 @@ if [[ ${TRAVIS_BRANCH} == "master" ]] && [[ ${TRAVIS_PULL_REQUEST} == "false" ]]
   # Decrypt the private key.
   openssl aes-256-cbc -k "$travis_key_password" -md sha256 -d -a -in travis_key.enc -out ./travis_key
 
-  if [ -s "$_file" ]
+  if [ -s ./travis_key ]
   then
 	chmod 400 ./travis_key
   	echo "Host github.com" > ~/.ssh/config
