@@ -1,11 +1,14 @@
 language: node_js
 node_js:
-  - "stable"
+- stable
 cache:
   directories:
-    - node_modules
+  - node_modules
 script:
-  - npm test
-  - npm run build
-on:
+- npm test
+- npm run build
+true:
   branch: master
+env:
+  matrix:
+    secure: eewdWUO0wsPK1W5BLnv6ibJTmnU6IM/Bh7CThNAqs7jq0Ce5obtuZXkvdmf0Fyc1gToB1oxflU0bYFoB3gBhDPSJmGzrdJJhIOcTdzCJV57wu2Cyowx549BGIiP3wCXChlX0rXGUta95FSpo4OmLTswD2aVsfLzURS+jA/CasRXnThiLNLJsxRtjJDEavTSDkvwf7BW8P8Fn0hrOtKRS/+Mhg+VXw7CtmpYebDI8nBjCQnhWhCCy11Bj8fr5KbFsGRG66Z5YbYtoL12WKdGVuhrPy82VFBdN8yb8QQ9m4t8vjfr7tjyweyCX7AKxzYTwVW+gLkfDUbbWpjX3YTY/lE1c3X5Hg1bcAdXrSALdkefwFF1dduWkhDQWVS75OZZsKLZhpNBzSKMRyb9jS3qThs81nZr6GQMu4tgJOXW8E/cXX14GN4cxSS7dEY0ZSmnge/zcrp6YP7b/VVTUEWcLjW5z1jb4by3tMIo0RJN3xgaLzpAZvy0ydey6BUn6RnQq+MLjiVM18gPoEGRvOKGSCPcx8Fl5yeCeTshZ5CVwdS/ppUNaMP997bt4PSoXlQOQY5HqPMv4tQnOdtStTpsGZdG+/5RgdLyqnz4ryWqHsY3NaI85OGoYD8hHXR+z0nizs3J6C0XV0rSibS11Zw636w2lT7jlTSz29yE3VKa/n2s=
