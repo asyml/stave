@@ -5,6 +5,7 @@
 -----------------
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/asyml/stave/blob/master/LICENSE)
+[![Build Status](https://travis-ci.org/asyml/stave.svg?branch=master)](https://travis-ci.org/asyml/stave)
 
 
 **Stave** is a platform for building reusable web-based  visualization and annotation tools for NLP. It is currently under incubation. 
