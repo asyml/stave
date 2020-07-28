@@ -2,10 +2,10 @@
 echo "This script is run automatically after_success."
 
 ## The actions below tries to mirror the repo if this is run on the master branch of the main repoitory.
-mirror_from="https://github.com/asyml/forte.git"
-mirror_to="git@github.com:petuum/forte.git"
+mirror_from="https://github.com/asyml/stave.git"
+mirror_to="git@github.com:petuum/stave.git"
 
-if [[ ${TRAVIS_BRANCH} == "master" ]] && [[ ${TRAVIS_PULL_REQUEST} == "false" ]] && [[ ${TRAVIS_REPO_SLUG} == "asyml/forte" ]]; then
+if [[ ${TRAVIS_BRANCH} == "master" ]] && [[ ${TRAVIS_PULL_REQUEST} == "false" ]] && [[ ${TRAVIS_REPO_SLUG} == "asyml/stave" ]]; then
   echo "Mirroring from "${mirror_from} " to "${mirror_to}
 
   openssl version
