@@ -155,10 +155,11 @@ function DialogueBox(props: PluginComponentProp) {
                 });
                 if (modelLoaded){
                   runNlp(doc_id, model_name).then(data => {
-                    const [singlePackFromAPI, ontologyFromAPI] = transformPack(
+                    const [singlePackFromAPI, ] = transformPack(
                       data.textPack,
                       data.ontology
                     );        
+                    // Just printing the name to avoid "never used" command.
                     setPack({
                       ...singlePackFromAPI
                     })
