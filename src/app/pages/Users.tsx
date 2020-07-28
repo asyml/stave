@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createUser, fetchUsers, deleteUser } from '../lib/api';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 function Users() {
   const [users, setUsers] = useState<any[]>([]);
