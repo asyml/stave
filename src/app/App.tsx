@@ -37,9 +37,6 @@ function App() {
 
           <nav>
             <ul>
-              {/* <li>
-                <Link to="/">All documents</Link>
-              </li> */}
               <li>
                 <Link to="/users">All Users</Link>
               </li>

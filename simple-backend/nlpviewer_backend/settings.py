@@ -27,6 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# disable url check
+# SILENCED_SYSTEM_CHECKS = ['nlpviewer_backend.urls']
 
 # Application definition
 

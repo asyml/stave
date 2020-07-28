@@ -1,19 +1,11 @@
 from django.db import models
 
 class Project(models.Model):
+    # project: name, ontology
+    # realtionship: Project.document
+
     name = models.CharField(max_length=200)
     ontology = models.TextField(default='')
-
-    # relationship: document -- defined in Document
-    
-    # documents = models.ForeignKey(
-    #     to=Document,
-    #     on_delete=models.CASCADE,
-    #     related_name='project',
-    #     default='',
-    #     null=True,
-    #     blank=True
-    # )
 
 class Document(models.Model):
     # content: text pack + annotation
