@@ -8,7 +8,7 @@ class Project(models.Model):
     ontology = models.TextField(default='')
 
 class Document(models.Model):
-    # content: text pack + annotation
+    # content: textPack: text body + annotation
 
     name = models.CharField(max_length=200)
     
