@@ -142,7 +142,7 @@ function DialogueBox(props: PluginComponentProp) {
                   annotations: [...pack.annotations, annotation],
                 });
                 runNlp(doc_id, model_name).then(data => {
-                  const [singlePackFromAPI, ontologyFromAPI] = transformPack(
+                  const [singlePackFromAPI, ] = transformPack(
                     data.textPack,
                     data.ontology
                   );        

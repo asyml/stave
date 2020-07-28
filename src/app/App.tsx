@@ -12,7 +12,6 @@ import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import Ontology from './pages/Ontology';
 import Viewer from './pages/Viewer';
-import Documents from './pages/Documents';
 import Projects from './pages/Projects'
 import Project from './pages/Project'
 import Users from './pages/Users';
