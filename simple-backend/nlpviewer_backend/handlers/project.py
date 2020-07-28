@@ -61,3 +61,4 @@ def delete(request, project_id):
     project.delete()
 
     return HttpResponse('ok')
+    
