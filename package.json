@@ -47,6 +47,11 @@
       "last 1 safari version"
     ]
   },
+  "jest":{
+    "transformIgnorePatterns": [
+      "<rootDir>/node_modules/(?!lodash-es/.*)"
+    ]
+  },
   "prettier": {
     "singleQuote": true,
     "trailingComma": "es5"
