@@ -318,7 +318,8 @@ function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
                       1
                   }
                   onClick={() => dispatch({ type: 'next-scope-item' })}
-                >                
+                >      
+                  →       
                 </button>
               </div>
             )}
