@@ -60,6 +60,8 @@
   padding: 16px;
   height: 100%;
   overflow-y: scroll;
+  clear: both;
+  border-bottom: 1px solid #ccc;
 }
 
 .button_action_description {

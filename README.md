@@ -5,9 +5,12 @@
 -----------------
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/asyml/stave/blob/master/LICENSE)
+[![Build Status](https://travis-ci.org/asyml/stave.svg?branch=master)](https://travis-ci.org/asyml/stave)
 
 
-**Stave** is an open source project for visualizing and annotating NLP tasks.
+**Stave** is a platform for building reusable web-based  visualization and annotation tools for NLP. It is currently under incubation. 
+
+Stave was originally developed and is actively contributed by [Petuum](https://petuum.com/) in collaboration with other institutes. A mirror of this repository is maintained by [Petuum Open Source](https://github.com/petuum).
 
 ## Environment
 The project is tested on:
@@ -34,4 +37,14 @@ After the server starts, then simply
 
 The default username/password for the demonstration data is admin/admin
 
+### License
+
+[Apache License 2.0](./LICENSE)
+
+### Companies and Universities Supporting Forte
+<p float="left">
+   <img src="./docs/_static/img/Petuum.png" width="200" align="top">
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+   <img src="https://asyml.io/assets/institutions/cmu.png", width="200" align="top">
+</p>
 
