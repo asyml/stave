@@ -1,0 +1,18 @@
+language: node_js
+node_js:
+- stable
+cache:
+  directories:
+  - node_modules
+script:
+- npm test
+- npm run build
+true:
+  branch: master
+after_success:
+- "./scripts/travis_after_success.sh"
+env:
+  matrix:
+    secure: Wycs/Y4VIpVbcUbUJOazQUu4kbrCRW7hwsAkb2bHpMESOsxNfSbpz6r04HGgoHY6dAjhhLKJITQCQJ5jFJJHwtF2g1/PUa/AbRKhqi5tt3J12m1365Ww/LZfqJLtOaljnwHa3bQ/qLS76I4SCFhSdK8dnbQ336W0uitPSh2SOqPG+J3QAPeKrj6u3oWCB5PFJ14LrwjVFFYbHXLOcBCO1BHpXrwDsJGokWmyPMdgZWoMXvhYEOOWwh3DaEkS0BwnCR+y/Iu9zN2RVz7XLuDIKQCPmMKmLO4LRLdnqcMHhz9z0gpD4/UYAhGXgVFcRiYgAdT+tyAwnZawP7pp0mK2P+9Nq8foeTYj+eTgfLxcu36xsO/ICl3rx5YA9ZvBbT/Ifwgjn5FZOgAUtp1Dfhx66QnxKWJpIhINL66j/uYg6nmt10IP35Me/8v0F3J85CJapcy/FMuSqzUBsVeQhYjtVsY1BW53kwXspx4FAcCTRtI+F8PVUDR0PoTAPn38B62OlbdGpqa+uYNwt0o5tiZSSjjvdwcJDz11Hh2cBkKPQxs7IBDVxopbtLrNangwqDDGZXzj+taOwhdhwsA8fn9b7KP50iYvwjlWNKvmuVxA+FzUIsgcwp1+F9baijvX580dfpqCZr/u70O2UAJzTgUrzgzScd2t1rFt6pJL+yMFXNg=
+notifications:
+  email: false
