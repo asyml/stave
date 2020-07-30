@@ -9,8 +9,10 @@ import {
 } from 'react-router-dom';
 
 import Login from './pages/Login';
+import SignUp from './pages/SignUp';
 import Viewer from './pages/Viewer';
-import Documents from './pages/Documents';
+import Projects from './pages/Projects'
+import Project from './pages/Project'
 import Users from './pages/Users';
 import { logout } from './lib/api';
 
@@ -31,10 +33,10 @@ function App() {
           <nav>
             <ul>
               <li>
-                <Link to="/">All documents</Link>
+                <Link to="/users">All Users</Link>
               </li>
               <li>
-                <Link to="/users">All Users</Link>
+                <Link to="/projects">All Projects</Link>
               </li>
             </ul>
           </nav>
@@ -47,6 +49,10 @@ function App() {
             <Login />
           </Route>
 
+          <Route path="/signup">
+            <SignUp />
+          </Route>
+
           <Route path="/users">
             <Users />
           </Route>
@@ -55,9 +61,18 @@ function App() {
             <Viewer />
           </Route>          
 
-          <Route path="/">
-            <Documents />
+          <Route path="/projects">
+            <Projects />
           </Route>
+
+          <Route path="/project/:id">
+            <Project />
+          </Route>
+
+          <Route path="/">
+            <Projects />
+          </Route>
+
         </Switch>
       </div>
     </Router>

@@ -11,11 +11,12 @@ import {layout} from '../layout';
 import dialoguePlugin from '../../plugins/dialogue_box/DialogueBox';
 import { useParams } from 'react-router-dom';
 import {
-  fetchDocument,
+  fetchDocOntology,
   addAnnotation,
   deleteAnnotation,
   addLink,
   deleteLink,
+
 } from '../lib/api';
 
 interface WholePack {
@@ -29,7 +30,8 @@ function Viewer() {
 
   useEffect(() => {
     if (id) {
-      fetchDocument(id).then(data => {
+
+      fetchDocOntology(id).then(data => {
         const [singlePackFromAPI, ontologyFromAPI] = transformPack(
           data.textPack,
           data.ontology

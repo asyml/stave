@@ -20,7 +20,6 @@ import LinkCreateBox from './LinkCreateBox';
 import AnnotationCreateBox from './AnnotationCreateBox';
 import groupPlugin from '../../plugins/group/Group';
 
-
 export type OnEventType = (event: any) => void;
 
 export interface TextViewerProp {
@@ -29,9 +28,12 @@ export interface TextViewerProp {
   layout: ILayout;
 }
 
+
 function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
+
   const appState = useTextViewerState();
   const dispatch = useTextViewerDispatch();
+
   const {
     textPack,
     ontology,
@@ -129,6 +131,7 @@ function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
     }
     return null
   }
+
 
   function customRender(areaName: string){
       // Rendering based on customized layout setup.

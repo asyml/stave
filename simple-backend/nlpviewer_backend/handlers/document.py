@@ -4,7 +4,7 @@ from django.http import HttpResponse, JsonResponse
 from django.forms import model_to_dict
 import uuid
 import json
-from ..models import Document, User
+from ..models import Document, User, Project
 from ..lib.require_login import require_login
 
 
@@ -21,9 +21,10 @@ def create(request):
     doc = Document(
         name=received_json_data.get('name'),
         textPack=received_json_data.get('textPack'),
-        ontology=received_json_data.get('ontology')
+        project = Project.objects.get(
+            pk=received_json_data.get('project_id')
+        )
     )
-
     doc.save()
 
     return JsonResponse({"id": doc.id}, safe=False)
@@ -39,6 +40,26 @@ def edit(request, document_id):
     doc.save()
 
     docJson = model_to_dict(doc)
+    return JsonResponse(docJson, safe=False)
+
+# need rewrite 
+@require_login
+def edit_ontology(request, document_id):
+    try:
+        doc = Document.objects.get(pk=document_id)
+        received_json_data = json.loads(request.body)
+
+        doc.ontology = received_json_data.get('ontology')
+        doc.save()
+
+        status = 1
+    except:
+        status = 0
+
+    docJson = {
+        'id': document_id,
+        'status': status
+    }
     return JsonResponse(docJson, safe=False)
 
 
@@ -242,3 +263,17 @@ def delete_link(request, document_id, link_id):
     doc.save()
 
     return HttpResponse('OK')
+
+@require_login
+def get_doc_ontology_pack(request, document_id):
+    
+    doc = Document.objects.get(pk=document_id)
+    project = doc.project
+
+    docJson = {
+        'id': document_id,
+        'textPack': doc.textPack,
+        'ontology': project.ontology
+    }
+
+    return JsonResponse(docJson, safe=False)
