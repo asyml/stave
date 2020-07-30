@@ -10,7 +10,6 @@ import {
 
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
-import Ontology from './pages/Ontology';
 import Viewer from './pages/Viewer';
 import Projects from './pages/Projects'
 import Project from './pages/Project'
@@ -61,10 +60,6 @@ function App() {
           <Route path="/documents/:id">
             <Viewer />
           </Route>          
-
-          <Route path="/ontology/:id">
-            <Ontology />
-          </Route>
 
           <Route path="/projects">
             <Projects />
