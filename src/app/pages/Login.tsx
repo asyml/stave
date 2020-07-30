@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { login } from '../lib/api';
 import { useHistory } from 'react-router-dom';
-import { AppProvider, AppConsumer } from '../App'
 
 function Login() { 
   const [error, setError] = useState<string>('');
