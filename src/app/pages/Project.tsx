@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { fetchDocuments, createDocument, deleteDocument } from '../lib/api';
+import { createDocument, deleteDocument, fetchDocumentsProject } from '../lib/api';
 import { Link, useHistory } from 'react-router-dom';
 
-function Documents() {
+function Docs() {
   const [docs, setDocs] = useState<any[]>([]);
   const [name, setName] = useState<string>('');
-  const [pack, setPack] = useState<string>('');
   const [ontology, setOntology] = useState<string>('');
+  const [pack, setPack] = useState<string>('');
   const history = useHistory();
 
   useEffect(() => {
@@ -16,12 +16,15 @@ function Documents() {
   }, [history]);
 
   function updateDocs() {
-    return fetchDocuments().then(docs => {
+    let project_id = window.location.pathname.split("/").pop() !;
+
+    return fetchDocumentsProject(project_id).then(docs => {
       setDocs(docs);
     });
   }
 
   function handleAdd() {
+
     let project_id = window.location.pathname.split("/").pop() !;
     createDocument(name, pack, ontology, project_id).then(() => {
       updateDocs();
@@ -34,27 +37,23 @@ function Documents() {
     });
   }
 
-  if (!docs.length) {
-    console.log('empty result')
-    return null;
-  }
-
   return (
     <div className="content">
       <div className="content_left">
-        <h2>All text packs:</h2>
-        {docs.map(d => (
+        <h2>All docs:</h2>
+        {
+        docs ? docs.map(d => (
           <ul key={d.id}>
             <li>
               <Link to={`/documents/${d.id}`}>{d.name}</Link>{' '}
               <button onClick={() => handleDelete(d.id)}>X</button>
             </li>
           </ul>
-        ))}
+        )) : 'Empty'}
       </div>
 
       <div>
-        <h2>new pack</h2>
+      <h2>new pack</h2>
         <div>
           <input
             placeholder="name"
@@ -93,4 +92,4 @@ function Documents() {
   );
 }
 
-export default Documents;
+export default Docs;

@@ -15,11 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from nlpviewer_backend.handlers import session, user, document, nlp
+
+from nlpviewer_backend.handlers import session, user, document, project, nlp
 
 urlpatterns = [
     path('login', session.login),
     path('logout', session.logout),
+    path('signup', user.signup),
 
     path('users', user.listAll),
     path('users/new', user.create),
@@ -32,6 +34,7 @@ urlpatterns = [
     path('documents/<int:document_id>', document.query),
     path('documents/<int:document_id>/edit', document.edit),
     path('documents/<int:document_id>/delete', document.delete),
+    path('documents/<int:document_id>/edit_ontology', document.edit_ontology),
 
     path('documents/<int:document_id>/annotations/new', document.new_annotation),
     path('documents/<int:document_id>/annotations/<int:annotation_id>/edit',
@@ -44,7 +47,16 @@ urlpatterns = [
     path('documents/<int:document_id>/links/<int:link_id>/delete',
          document.delete_link),
 
+
+    path('projects', project.listAll),
+    path('projects/new', project.create),
+    path('projects/<int:project_id>', project.query),
+    path('projects/<int:project_id>/docs', project.query_docs),
+    path('projects/<int:project_id>/delete', project.delete),
+
     path('documents/<int:document_id>/text/edit', document.edit_text),   
+
+    path('ontology_from_doc/<int:document_id>', document.get_doc_ontology_pack),
 
     path('nlp/load/<model_name>', nlp.load_model),
     path('nlp/<int:document_id>/<model_name>', nlp.run_pipeline),

@@ -1,4 +1,10 @@
-interface APIDocument {
+export interface APIDocument {
+  id: string;
+  textPack: string;
+  ontology: string;
+}
+
+export interface APIDocOntology {
   id: string;
   textPack: string;
   ontology: string;
@@ -8,8 +14,16 @@ export function fetchDocuments(): Promise<any> {
   return fetch(`/api/documents`).then(r => r.json());
 }
 
+export function fetchProjects(): Promise<any> {
+  return fetch(`/api/projects`).then(r => r.json());
+}
+
 export function fetchDocument(id: string): Promise<APIDocument> {
   return fetch(`/api/documents/${id}`).then(r => r.json());
+}
+
+export function fetchDocOntology(id: string): Promise<APIDocOntology> {
+  return fetch(`/api/ontology_from_doc/${id}`).then(r => r.json());
 }
 
 export function updateDocument(id: string, name: string, textPack: string) {
@@ -19,14 +33,31 @@ export function updateDocument(id: string, name: string, textPack: string) {
   }).then(r => r.json());
 }
 
+export function updateOntology(id: string, ontology: string) {
+  return postData(`/api/documents/${id}/edit_ontology`, {
+    ontology: ontology,
+  }).then(r => r.json());
+}
+
 export function createDocument(
   name: string,
   textPack: string,
-  ontology: string
+  ontology: string,
+  project_id: string
 ) {
   return postData(`/api/documents/new`, {
     name: name,
     textPack: textPack,
+    project_id: project_id
+  }).then(r => r.json());
+}
+
+export function createProject(
+  name: string,
+  ontology: string
+) {
+  return postData(`/api/projects/new`, {
+    name: name,
     ontology: ontology,
   }).then(r => r.json());
 }
@@ -34,6 +65,18 @@ export function createDocument(
 export function deleteDocument(id: string) {
   return postData(`/api/documents/${id}/delete`);
 }
+
+export function deleteProject(id: string) {
+  return postData(`/api/projects/${id}/delete`);
+}
+
+export function fetchDocumentsProject(id: string){
+  return postData(`/api/projects/${id}/docs`).then(r => r.json());
+}
+
+// export function fetchOntologyByDocument(id: string):Promise<APIOntology>{
+//   return postData(`/api/doc_ontology_by_id/${id}`).then(r => r.json());
+// }
 
 export function fetchUsers() {
   return fetch(`/api/users`).then(r => r.json());
@@ -119,6 +162,13 @@ export function runNlp(documentId: string, modelName: string): Promise<APIDocume
 
 export function login(name: string, password: string) {
   return postData(`/api/login`, {
+    name,
+    password,
+  });
+}
+
+export function signup(name: string, password: string) {
+  return postData(`/api/signup`, {
     name,
     password,
   });
