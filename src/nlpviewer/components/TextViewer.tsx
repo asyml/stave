@@ -20,9 +20,6 @@ import LinkCreateBox from './LinkCreateBox';
 import AnnotationCreateBox from './AnnotationCreateBox';
 import groupPlugin from '../../plugins/group/Group';
 
-
-import { useHistory } from 'react-router-dom';
-
 export type OnEventType = (event: any) => void;
 
 export interface TextViewerProp {
