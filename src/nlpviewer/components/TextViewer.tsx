@@ -37,14 +37,6 @@ function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
   const appState = useTextViewerState();
   const dispatch = useTextViewerDispatch();
 
-  const history = useHistory();
-  function redirectOntology(e: any) {
-    let url = window.location.pathname;
-    url = url.replace('documents','ontology');
-    history.push(url) 
-  }
-
-
   const {
     textPack,
     ontology,

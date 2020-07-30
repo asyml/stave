@@ -24,9 +24,6 @@ import NLPViewer from '../nlpviewer';
 import groupPlugin from '../plugins/group/Group';
 import dialogueBoxPlugin from '../plugins/dialogue_box/DialogueBox';
 
-const initialState = { state: 0 };
-export const { Provider: AppProvider, Consumer: AppConsumer } = React.createContext(initialState);
-
 function App() {
   return (
     <Router>
