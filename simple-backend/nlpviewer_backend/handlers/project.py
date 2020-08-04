@@ -6,6 +6,7 @@ import uuid
 import json
 from ..models import Project, Document, User
 from ..lib.require_login import require_login
+from django.contrib.auth.decorators import login_required
 
 
 @require_login

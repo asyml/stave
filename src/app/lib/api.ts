@@ -74,10 +74,6 @@ export function fetchDocumentsProject(id: string){
   return postData(`/api/projects/${id}/docs`).then(r => r.json());
 }
 
-// export function fetchOntologyByDocument(id: string):Promise<APIOntology>{
-//   return postData(`/api/doc_ontology_by_id/${id}`).then(r => r.json());
-// }
-
 export function fetchUsers() {
   return fetch(`/api/users`).then(r => r.json());
 }
