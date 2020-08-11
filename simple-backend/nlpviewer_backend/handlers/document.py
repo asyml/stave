@@ -29,7 +29,6 @@ def create(request):
     accessible for users with 'add' permission
     """
     if not request.user.has_perm('nlpviewer_backend.add_document'):
-        print(request.user.get_user_permissions())
         return HttpResponse('forbidden', status=403)
 
     received_json_data = json.loads(request.body)
