@@ -17,7 +17,7 @@ def listAll(request):
 def create(request):
     received_json_data = json.loads(request.body)
 
-    user = User(
+    user = User.objects.create_user(
         name=received_json_data.get('name'),
         password=received_json_data.get('password')
     )
@@ -29,7 +29,7 @@ def create(request):
 def signup(request):
     received_json_data = json.loads(request.body)
 
-    user = User(
+    user = User.objects.create_user(
         name=received_json_data.get('name'),
         password=received_json_data.get('password')
     )
@@ -45,7 +45,7 @@ def edit(request, user_id):
     received_json_data = json.loads(request.body)
 
     user.name = received_json_data.get('name')
-    user.password = received_json_data.get('password')
+    user.set_password(received_json_data.get('password'))
     user.save()
 
     userJson = model_to_dict(user)

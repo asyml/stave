@@ -17,6 +17,9 @@ export function fetchDocuments(): Promise<any> {
 export function fetchProjects(): Promise<any> {
   return fetch(`/api/projects`).then(r => r.json());
 }
+export function fetchAllProjects(): Promise<any> {
+  return fetch(`/api/projects/all`).then(r => r.json());
+}
 
 export function fetchDocument(id: string): Promise<APIDocument> {
   return fetch(`/api/documents/${id}`).then(r => r.json());
@@ -189,9 +192,7 @@ async function postData(url = '', data = {}) {
   });
 
   if (response.status >= 400) {
-    // throw new Error(response.statusText);
-    console.error(response.statusText);
-    return response;
+    throw new Error(response.statusText);
   } else {
     return response;
   }

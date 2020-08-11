@@ -7,24 +7,18 @@ from django.contrib.auth import authenticate
 def require_login(func):
     def wrapper(*args, **kwargs):
         request = args[0]
-        print('current user: ', request.user)
-
         if not request.user.is_authenticated:
-            print('not authenticated')
-            return HttpResponse('no access', status=401)
-
+            return HttpResponse('unauthenticated', status=401)
         return func(*args, **kwargs)
     return wrapper
 
 def require_admin(func):
+    """
+    accessible by superusers defined in django.
+    """
     def wrapper(*args, **kwargs):
         request = args[0]
-
-        try:
-            userJson = model_to_dict(
-                User.objects.get(pk=request.session['user_id']))
-        except:
-            return HttpResponse('no access', status=401)
-
+        if not request.user.is_superuser:
+            return HttpResponse('forbidden', status=403)
         return func(*args, **kwargs)
     return wrapper

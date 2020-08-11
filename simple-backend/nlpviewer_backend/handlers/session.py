@@ -12,22 +12,16 @@ def login(request):
     username = received_json_data.get('name')
     password = received_json_data.get('password')
 
-    print(username, password)
-
     user = auth.authenticate(username=username, password=password)
-
-    print(user)
-
     if user:
         auth.login(request, user=user)
         return HttpResponse("OK")
     else:
-        return HttpResponse("Failed", status=400)
+        return HttpResponse("authentication failed", status=401)
 
 
 def logout(request):
     auth.logout(request)
-
     return HttpResponse("OK")
 
 def signup(request):

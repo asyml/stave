@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import include, path
 from django.http import HttpResponse, JsonResponse
 from django.forms import model_to_dict
+from django.core.exceptions import ObjectDoesNotExist
 import uuid
 import json
 from ..models import Document, User, Project
@@ -10,12 +11,27 @@ from ..lib.require_login import require_login
 
 @require_login
 def listAll(request):
+    """
+    list all documents from the databse.
+    accessible for user with 'view' permission
+    """
+    if not request.user.has_perm('nlpviewer_backend.view_document'):
+        return HttpResponse('forbidden', status=403)
+    
     documents = Document.objects.all().values()
     return JsonResponse(list(documents), safe=False)
 
 
 @require_login
 def create(request):
+    """
+    create a new document.
+    accessible for users with 'add' permission
+    """
+    if not request.user.has_perm('nlpviewer_backend.add_document'):
+        print(request.user.get_user_permissions())
+        return HttpResponse('forbidden', status=403)
+
     received_json_data = json.loads(request.body)
 
     doc = Document(
@@ -32,7 +48,21 @@ def create(request):
 
 @require_login
 def edit(request, document_id):
-    doc = Document.objects.get(pk=document_id)
+    """
+    edit a document, query by id.
+    accessible for users with 'change' permission and the owner of the project.
+    """
+    # if doc doen't exist
+    try:
+        doc = Document.objects.get(pk=document_id)
+    except ObjectDoesNotExist: 
+        return HttpResponse('not found', status=404)
+
+    # check permissions
+    if not request.user.has_perm('nlpviewer_backend.change_document') and request.user != doc.project.user:
+        return HttpResponse('forbidden', status=403)
+
+    
     received_json_data = json.loads(request.body)
 
     doc.name = received_json_data.get('name')
@@ -42,7 +72,7 @@ def edit(request, document_id):
     docJson = model_to_dict(doc)
     return JsonResponse(docJson, safe=False)
 
-# need rewrite 
+# DEPRECATED - need rewrite 
 @require_login
 def edit_ontology(request, document_id):
     try:
@@ -65,14 +95,41 @@ def edit_ontology(request, document_id):
 
 @require_login
 def query(request, document_id):
+    """
+    query a document by id.
+    accessible for users with 'view' permission and the owner of the project.
+    """
+    # if doc doen't exist
+    try:
+        doc = Document.objects.get(pk=document_id)
+    except ObjectDoesNotExist: 
+        return HttpResponse('not found', status=404)
+
+    # check permissions
+    if not request.user.has_perm('nlpviewer_backend.view_document') and request.user != doc.project.user:
+        return HttpResponse('forbidden', status=403)
+
     docJson = model_to_dict(
-        Document.objects.get(pk=document_id))
+        doc)
     return JsonResponse(docJson, safe=False)
 
 
 @require_login
 def delete(request, document_id):
-    doc = Document.objects.get(pk=document_id)
+    """
+    delete a document by id.
+    accessible for users with 'delete' permission and the owner of the project.
+    """
+    # if doc doen't exist
+    try:
+        doc = Document.objects.get(pk=document_id)
+    except ObjectDoesNotExist: 
+        return HttpResponse('not found', status=404)
+
+    # check permissions
+    if not request.user.has_perm('nlpviewer_backend.delete_document') and request.user != doc.project.user:
+        return HttpResponse('forbidden', status=403)
+
     doc.delete()
 
     return HttpResponse('ok')
@@ -80,8 +137,21 @@ def delete(request, document_id):
 
 @require_login
 def edit_text(request, document_id):
+    """
+    edit a document, query by id.
+    accessible for users with 'change' permission and the owner of the project.
+    """
+    # if doc doen't exist
+    try:
+        doc = Document.objects.get(pk=document_id)
+    except ObjectDoesNotExist: 
+        return HttpResponse('not found', status=404)
+
+    # check permissions
+    if not request.user.has_perm('nlpviewer_backend.change_document') and request.user != doc.project.user:
+        return HttpResponse('forbidden', status=403)
+
     data = json.loads(request.body)
-    doc = Document.objects.get(pk=document_id)
     
     docJson = model_to_dict(doc)
     textPackJson = json.loads(docJson['textPack'])
@@ -118,6 +188,23 @@ def new_annotation(request, document_id):
     #         "ner_type": "DATE"
     #     }
     # }
+
+    """
+    add a annotation, query by document id.
+    accessible for users with 'change' permission and the owner of the project.
+    """
+    # if doc doen't exist
+    try:
+        doc = Document.objects.get(pk=document_id)
+    except ObjectDoesNotExist: 
+        return HttpResponse('not found', status=404)
+
+    # check permissions
+    if not request.user.has_perm('nlpviewer_backend.change_document') and request.user != doc.project.user:
+        return HttpResponse('forbidden', status=403)
+
+
+
     doc = Document.objects.get(pk=document_id)
     docJson = model_to_dict(doc)
     textPackJson = json.loads(docJson['textPack'])
@@ -147,8 +234,22 @@ def edit_annotation(request, document_id, annotation_id):
     # save to db
     # return OK
 
+    """
+    edit a annotation, query by document id and annotation id.
+    accessible for users with 'change' permission and the owner of the project.
+    """
+    # if doc doen't exist
+    try:
+        doc = Document.objects.get(pk=document_id)
+    except ObjectDoesNotExist: 
+        return HttpResponse('not found', status=404)
+
+    # check permissions
+    if not request.user.has_perm('nlpviewer_backend.change_document') and request.user != doc.project.user:
+        return HttpResponse('forbidden', status=403)
+
+
     received_json_data = json.loads(request.body)
-    doc = Document.objects.get(pk=document_id)
     annotation = received_json_data.get('data')
 
     docJson = model_to_dict(doc)
@@ -162,8 +263,6 @@ def edit_annotation(request, document_id, annotation_id):
     doc.save()
 
     return HttpResponse('OK')
-    # return JsonResponse(model_to_dict(doc), safe=False)
-
 
 @require_login
 def delete_annotation(request, document_id, annotation_id):
@@ -173,7 +272,20 @@ def delete_annotation(request, document_id, annotation_id):
     # save to db
     # return OK
 
-    doc = Document.objects.get(pk=document_id)
+    """
+    delete a annotation, query by document id and annotation id.
+    accessible for users with 'delete' permission and the owner of the project.
+    """
+    # if doc doen't exist
+    try:
+        doc = Document.objects.get(pk=document_id)
+    except ObjectDoesNotExist: 
+        return HttpResponse('not found', status=404)
+
+    # check permissions
+    if not request.user.has_perm('nlpviewer_backend.delete_document') and request.user != doc.project.user:
+        return HttpResponse('forbidden', status=403)
+
     docJson = model_to_dict(doc)
     textPackJson = json.loads(docJson['textPack'])
 
@@ -211,8 +323,21 @@ def new_link(request, document_id):
     #     }
     #   }
 
+    """
+    add a link, query by document id.
+    accessible for users with 'change' permission and the owner of the project.
+    """
+    # if doc doen't exist
+    try:
+        doc = Document.objects.get(pk=document_id)
+    except ObjectDoesNotExist: 
+        return HttpResponse('not found', status=404)
+
+    # check permissions
+    if not request.user.has_perm('nlpviewer_backend.change_document') and request.user != doc.project.user:
+        return HttpResponse('forbidden', status=403)
+
     received_json_data = json.loads(request.body)
-    doc = Document.objects.get(pk=document_id)
 
     link_id = str(uuid.uuid1())
     link = received_json_data.get('data')
@@ -229,8 +354,21 @@ def new_link(request, document_id):
 
 @require_login
 def edit_link(request, document_id, link_id):
+    """
+    edit a link, query by document id and link id.
+    accessible for users with 'change' permission and the owner of the project.
+    """
+    # if doc doen't exist
+    try:
+        doc = Document.objects.get(pk=document_id)
+    except ObjectDoesNotExist: 
+        return HttpResponse('not found', status=404)
+
+    # check permissions
+    if not request.user.has_perm('nlpviewer_backend.change_document') and request.user != doc.project.user:
+        return HttpResponse('forbidden', status=403)
+
     received_json_data = json.loads(request.body)
-    doc = Document.objects.get(pk=document_id)
     link = received_json_data.get('data')
 
     docJson = model_to_dict(doc)
@@ -248,8 +386,20 @@ def edit_link(request, document_id, link_id):
 
 @require_login
 def delete_link(request, document_id, link_id):
+    """
+    delete a link, query by document id and link id.
+    accessible for users with 'delete' permission and the owner of the project.
+    """
+    # if doc doen't exist
+    try:
+        doc = Document.objects.get(pk=document_id)
+    except ObjectDoesNotExist: 
+        return HttpResponse('not found', status=404)
 
-    doc = Document.objects.get(pk=document_id)
+    # check permissions
+    if not request.user.has_perm('nlpviewer_backend.delete_document') and request.user != doc.project.user:
+        return HttpResponse('forbidden', status=403)
+
     docJson = model_to_dict(doc)
     textPackJson = json.loads(docJson['textPack'])
 
@@ -266,9 +416,21 @@ def delete_link(request, document_id, link_id):
 
 @require_login
 def get_doc_ontology_pack(request, document_id):
-    
-    doc = Document.objects.get(pk=document_id)
-    project = doc.project
+    """
+    get document pack + ontology by document id
+    accessible for users with 'view' permission and the owner of the project.
+    """
+    # if doc doen't exist
+    try:
+        doc = Document.objects.get(pk=document_id)
+        project = doc.project
+    except ObjectDoesNotExist: 
+        return HttpResponse('not found', status=404)
+
+    # check permissions
+    if not request.user.has_perm('nlpviewer_backend.view_document') and request.user != doc.project.user:
+        return HttpResponse('forbidden', status=403)
+
 
     docJson = {
         'id': document_id,

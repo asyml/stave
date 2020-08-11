@@ -48,7 +48,8 @@ urlpatterns = [
          document.delete_link),
 
 
-    path('projects', project.listAll),
+    path('projects/all', project.listAll),
+    path('projects', project.list_user_projects),
     path('projects/new', project.create),
     path('projects/<int:project_id>', project.query),
     path('projects/<int:project_id>/docs', project.query_docs),
