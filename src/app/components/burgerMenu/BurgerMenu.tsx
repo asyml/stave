@@ -44,7 +44,7 @@ class BurgerMenu extends React.Component<{open: boolean, setOpen: Function}> {
         {childrenWithProps}
       </StyledMenu>
     </div>  
-    )
+    );
   }
 }
 
