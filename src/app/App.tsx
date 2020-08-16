@@ -5,7 +5,6 @@ import {
   Switch,
   Route,
   Link,
-  useHistory,
 } from 'react-router-dom';
 
 import Login from './pages/Login';
@@ -15,14 +14,13 @@ import Projects from './pages/Projects'
 import Project from './pages/Project'
 import Users from './pages/Users';
 import BurgerMenu from './components/burgerMenu';
-import { logout } from './lib/api';
-
 import { singlePack } from './mock-data-2';
 import { ontology } from './mock-config-data';
 import { layout } from './layout';
 import NLPViewer from '../nlpviewer';
 import groupPlugin from '../plugins/group/Group';
 import dialogueBoxPlugin from '../plugins/dialogue_box/DialogueBox';
+import AccountMenu from './components/accountMenu';
 
 function App() {
   const [open, setOpen] = useState<boolean>(false);
@@ -35,7 +33,7 @@ function App() {
             <Link to="/users">All Users</Link>
             <Link to="/projects">All Projects</Link>
           </BurgerMenu>
-          <Logout />
+          <AccountMenu></AccountMenu>
         </header>
 
         <Switch>
@@ -82,17 +80,6 @@ function ViewWithDemoData() {
       layout={layout}
     />
   );
-}
-
-function Logout() {
-  const history = useHistory();
-
-  function handleLogout() {
-    logout().then(() => {
-      history.push('/login');
-    });
-  }
-  return <button onClick={() => handleLogout()}>logout</button>;
 }
 
 let EntryComponent = App;
