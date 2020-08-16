@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './style.css';
 import {
   BrowserRouter as Router,
@@ -14,33 +14,27 @@ import Viewer from './pages/Viewer';
 import Projects from './pages/Projects'
 import Project from './pages/Project'
 import Users from './pages/Users';
+import BurgerMenu from './components/burgerMenu';
 import { logout } from './lib/api';
 
 import { singlePack } from './mock-data-2';
 import { ontology } from './mock-config-data';
-import {layout} from './layout';
+import { layout } from './layout';
 import NLPViewer from '../nlpviewer';
 import groupPlugin from '../plugins/group/Group';
 import dialogueBoxPlugin from '../plugins/dialogue_box/DialogueBox';
 
 function App() {
+  const [open, setOpen] = useState<boolean>(false);
+
   return (
     <Router>
       <div>
         <header className="layout_header">
-          <span>Stave</span>
-
-          <nav>
-            <ul>
-              <li>
-                <Link to="/users">All Users</Link>
-              </li>
-              <li>
-                <Link to="/projects">All Projects</Link>
-              </li>
-            </ul>
-          </nav>
-
+          <BurgerMenu open={open} setOpen={setOpen}>
+            <Link to="/users">All Users</Link>
+            <Link to="/projects">All Projects</Link>
+          </BurgerMenu>
           <Logout />
         </header>
 
