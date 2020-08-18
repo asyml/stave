@@ -15,7 +15,7 @@ function LoginAmazonTurk() {
         history.push( '/crossdocs/'+json_data.id);
       })
       .catch(e => {
-        setError('login failed');
+        setError('you have finished all documents');
       });
   }
 

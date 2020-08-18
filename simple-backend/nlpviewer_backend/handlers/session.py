@@ -42,7 +42,7 @@ def login_amazon_turk(request):
     turkID = received_json_data.get('turkID')
     request.session['turkID'] = turkID
 
-    min_name = get_min_count_cross_doc()
+    min_name = get_min_count_cross_doc(turkID)
     cross_doc = CrossDoc.objects.get(name=min_name)
     print(min_name)
 
@@ -57,7 +57,7 @@ def login_amazon_turk(request):
 
     return JsonResponse(to_return, safe=False)
 
-def get_min_count_cross_doc():
+def get_min_count_cross_doc(turkID):
     template_names = set()
     annotated_count = defaultdict(int)
     all_templates = CrossDoc.objects.all()
@@ -70,10 +70,11 @@ def get_min_count_cross_doc():
 
     min_count = 2**14
     min_name = None
-    print(template_names)
-    print(annotated_count)
     for name in template_names:
-        if annotated_count[name] < min_count:
+        mylist = CrossDocAnnotation.objects.filter(name = name, turkID=turkID)
+        anno_before = True if len(mylist)>0 else False
+        print(name, anno_before)
+        if (not anno_before) and (annotated_count[name] < min_count):
             min_count = annotated_count[name]
             min_name = name
     return min_name

@@ -13,6 +13,8 @@ import {
   IMultiPack, IMultiPackQuestion,
 } from "./components/lib/interfaces";
 import {cross_doc_event_legend} from "./components/lib/definitions";
+// @ts-ignore
+import { useAlert } from 'react-alert'
 
 export type OnEventType = (event: any) => void;
 
@@ -85,6 +87,10 @@ export default function CrossViewer(props: CrossDocProp) {
   const progress_percent = Math.floor(AnowOnEventIndex / all_events_A.length * 100);
 
   const [finished, setFinished] = useState<boolean>(false);
+
+
+  const alert = useAlert()
+
 
   function constructNewLink(whetherCoref:boolean, new_answers:number[], new_suggested_answers:number[]) : ICrossDocLink {
     const newLink :ICrossDocLink= {
@@ -191,6 +197,8 @@ export default function CrossViewer(props: CrossDocProp) {
         } else {
           setANowOnEventIndex(AnowOnEventIndex + 1);
         }
+      } else {
+        alert.success('Success, please look at the next pair.');
       }
       resetBAndQuestions();
     }
@@ -342,42 +350,6 @@ export default function CrossViewer(props: CrossDocProp) {
 
 
         </main>
-        {/*<div className={style.bottom_box}>*/}
-        {/*{now_question ?*/}
-        {/*  <div>*/}
-        {/*    <div className={style.question_container}>*/}
-        {/*      {now_question.question_text}*/}
-        {/*    </div>*/}
-        {/*    <div className={style.option_container}>*/}
-        {/*    {now_question.options.map(option => {*/}
-        {/*      return (*/}
-        {/*          <button className={style.button_option} key={option.option_id} onClick={e => clickOption(option.option_id)}>*/}
-        {/*            {option.option_text}*/}
-        {/*          </button>*/}
-        {/*      )*/}
-        {/*    })}*/}
-        {/*    </div>*/}
-        {/*    <button className={style.button_option_alert}onClick={e => clickOption(-1)}>Cancel</button>*/}
-        {/*  </div>*/}
-        {/*  : null}*/}
-        {/*  {now_suggested_question ?*/}
-        {/*    <div>*/}
-        {/*      <div className={style.question_container}>*/}
-        {/*        {now_suggested_question.question_text}*/}
-        {/*      </div>*/}
-        {/*      <div className={style.option_container}>*/}
-        {/*        {now_suggested_question.options.map(option => {*/}
-        {/*          return (*/}
-        {/*            <button className={style.button_option_alert} key={option.option_id} onClick={e => clickSuggestedOption(option.option_id)}>*/}
-        {/*              {option.option_text}*/}
-        {/*            </button>*/}
-        {/*          )*/}
-        {/*        })}*/}
-        {/*      </div>*/}
-        {/*      <button className={style.button_option}onClick={e => clickSuggestedOption(-1)}>I think they are coreferential.</button>*/}
-        {/*    </div>*/}
-        {/*    : null}*/}
-        {/*</div>*/}
       </div>
       </div>
   );
