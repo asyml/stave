@@ -71,7 +71,7 @@ def edit(request, document_id):
     docJson = model_to_dict(doc)
     return JsonResponse(docJson, safe=False)
 
-# DEPRECATED - need rewrite 
+# TODO - need rewrite
 @require_login
 def edit_ontology(request, document_id):
     try:
