@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { fetchProjects, createProject, deleteProject } from '../lib/api';
 import { Link, useHistory } from 'react-router-dom';
+import {FileWithPath} from 'react-dropzone';
+import DropUpload from '../components/dropUpload';
+
 
 function Projects() {
   const [projects, setProjects] = useState<any[]>([]);
@@ -32,6 +35,16 @@ function Projects() {
     });
   }
 
+  function userAddFiles(acceptedFiles: FileWithPath[]) {
+    if (acceptedFiles.length > 0){    
+      const reader = new FileReader();
+      reader.readAsText(acceptedFiles[0]);      
+      reader.onload = function() {
+        setOntology(reader.result as string);        
+      }
+    }
+  }  
+
   return (
     <div className="content">
       <div className="content_left">
@@ -50,7 +63,7 @@ function Projects() {
         <h2>new project</h2>
         <div>
           <input
-            placeholder="name"
+            placeholder="Your Project Name"
             value={name}
             onChange={e => setName(e.target.value)}
             name="name"
@@ -64,13 +77,20 @@ function Projects() {
             onChange={e => setOntology(e.target.value)}
             name="ontology"
             id=""
-            cols={30}
+            cols={50}
             rows={10}
           ></textarea>
         </div>
+
+        <DropUpload
+          fileLimit={1048576}
+          filesAddedFunc={userAddFiles}
+        />
+
         <div>
           <button onClick={handleAdd}>Add</button>
         </div>
+      
       </div>
     </div>
   );
