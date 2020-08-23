@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {useDropzone, FileWithPath} from 'react-dropzone';
 import styled from 'styled-components';
 
 export interface DropUploadProp {
   fileLimit: number,  
-  filesAddedFunc: Function,
+  uploadFunc: Function,
+  mimeType: string,
+  allowMultiple: boolean,
+  dropZoneText?: string,
+  fileDropFunc?: Function,  
 }
 
 const getColor = (props: any) => {
@@ -39,10 +43,16 @@ const Container = styled.div`
 
 function DropUpload({
   fileLimit,
-  filesAddedFunc,
+  uploadFunc,
+  mimeType,
+  allowMultiple,
+  dropZoneText,
+  fileDropFunc,
 }: DropUploadProp) {
+
+  const [files, setFiles] = useState([] as FileWithPath[]);
+
   const {
-    acceptedFiles, 
     getRootProps, 
     getInputProps,
     isDragActive,
@@ -51,17 +61,23 @@ function DropUpload({
   } = useDropzone(
     {
       onDrop: acceptedFiles => {
-        filesAddedFunc(acceptedFiles);
+        if (fileDropFunc && typeof(fileDropFunc) == "function"){
+          fileDropFunc(acceptedFiles);
+        }
+        acceptedFiles.forEach(file =>{
+          setFiles(files.concat(file));
+        });      
       },
-      accept: 'application/json',
+      accept: mimeType,
       maxSize: fileLimit,
+      multiple: allowMultiple
     }
   );
   
-  const files = acceptedFiles.map(file => {
+  const file_info = files.map((file, index) => {
     const f = file as FileWithPath
     return (
-      <li key={f.path}>
+      <li key={"upload_file_" + index}>
         {f.path} - {Math.round(f.size / 1024)} KB
       </li>
     )}
@@ -71,12 +87,18 @@ function DropUpload({
     <section className="container">
       <Container {...getRootProps({isDragActive, isDragAccept, isDragReject})}>
         <input {...getInputProps()} />
-        <p>Drag 'n' drop your ontology spec here, or click to select it.</p>
+        <p>{dropZoneText ? dropZoneText : "Drag 'n' drop your data here, or click to select it from a file browser."}</p>
       </Container>
       <aside>
-        <h4>Selected Ontology File</h4>
-        <ul>{files}</ul>
+        <h4>Documents to be added.</h4>
+        <ul>{file_info}</ul>
       </aside>
+      <div>
+          <button onClick={() => {
+            uploadFunc(files);
+            setFiles([] as FileWithPath[]);
+            }}>Add</button>
+      </div>
     </section>
   );
 }

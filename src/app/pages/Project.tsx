@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { createDocument, deleteDocument, fetchDocumentsProject } from '../lib/api';
 import { Link, useHistory } from 'react-router-dom';
+import DropUpload from '../components/dropUpload';
+import { FileWithPath } from 'react-dropzone';
 
 function Docs() {
   const [docs, setDocs] = useState<any[]>([]);
-  const [name, setName] = useState<string>('');
-  const [ontology, setOntology] = useState<string>('');
-  const [pack, setPack] = useState<string>('');
+
   const history = useHistory();
 
   useEffect(() => {
@@ -23,12 +23,20 @@ function Docs() {
     });
   }
 
-  function handleAdd() {
-
+  function handleAdd(filesToUpload: FileWithPath[]) {
     let project_id = window.location.pathname.split("/").pop() !;
-    createDocument(name, pack, ontology, project_id).then(() => {
-      updateDocs();
-    });
+
+    filesToUpload.forEach(
+      f => {
+        const reader = new FileReader();
+        reader.readAsText(f);      
+        reader.onload = function() {
+          createDocument(f.name, reader.result as string, project_id).then(()=> {
+            updateDocs();
+          })
+        }
+      }
+    );
   }
 
   function handleDelete(id: string) {
@@ -54,39 +62,14 @@ function Docs() {
 
       <div>
       <h2>new pack</h2>
-        <div>
-          <input
-            placeholder="name"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            name="name"
-          />
-        </div>
-        <div>
-          <textarea
-            placeholder="text pack body"
-            value={pack}
-            onChange={e => setPack(e.target.value)}
-            name="textpack"
-            id=""
-            cols={30}
-            rows={10}
-          ></textarea>
-        </div>
-        <div>
-          <textarea
-            placeholder="ontology body"
-            value={ontology}
-            onChange={e => setOntology(e.target.value)}
-            name="ontology"
-            id=""
-            cols={30}
-            rows={10}
-          ></textarea>
-        </div>
-        <div>
-          <button onClick={handleAdd}>Add</button>
-        </div>
+        <DropUpload 
+          fileLimit={5e7}
+          uploadFunc={handleAdd}
+          mimeType='application/json'
+          // Do not support zip now.
+          // mimeType='application/json, application/x-rar-compressed, application/octet-stream, application/zip, application/octet-stream, application/x-zip-compressed, multipart/x-zip'
+          allowMultiple={true}
+        />
       </div>
     </div>
   );

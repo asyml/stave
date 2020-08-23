@@ -42,7 +42,6 @@ export function updateOntology(id: string, ontology: string) {
 export function createDocument(
   name: string,
   textPack: string,
-  ontology: string,
   project_id: string
 ) {
   return postData(`/api/documents/new`, {

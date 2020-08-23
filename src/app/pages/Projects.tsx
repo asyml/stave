@@ -23,10 +23,14 @@ function Projects() {
     });
   }
 
-  function handleAdd() {
-    createProject(name, ontology).then(() => {
-      updateProjects();
-    });
+  function handleAdd(acceptedFiles: FileWithPath[]) {
+    if (name && ontology){
+      createProject(name, ontology).then(() =>{
+        updateProjects();
+      });
+    } else{
+      alert("Please fill in project name and upload ontology file.");
+    }
   }
 
   function handleDelete(id: string) {
@@ -38,7 +42,7 @@ function Projects() {
   function userAddFiles(acceptedFiles: FileWithPath[]) {
     if (acceptedFiles.length > 0){    
       const reader = new FileReader();
-      reader.readAsText(acceptedFiles[0]);      
+      reader.readAsText(acceptedFiles[0]);
       reader.onload = function() {
         setOntology(reader.result as string);        
       }
@@ -84,13 +88,11 @@ function Projects() {
 
         <DropUpload
           fileLimit={1048576}
-          filesAddedFunc={userAddFiles}
+          fileDropFunc={userAddFiles}
+          uploadFunc={handleAdd}
+          mimeType='application/json'
+          allowMultiple={false}
         />
-
-        <div>
-          <button onClick={handleAdd}>Add</button>
-        </div>
-      
       </div>
     </div>
   );
