@@ -32,6 +32,22 @@ function Projects() {
     });
   }
 
+  function onFileChange(e: React.ChangeEvent<HTMLInputElement>){
+    if(e.target.files !== null){
+      let file = e.target.files[0];
+      let reader = new FileReader();
+        reader.onload = function(e) {
+        if(e.target !== null){
+          if(typeof e.target.result === 'string'){
+            setOntology(e.target.result);
+          }
+        }
+      };
+      reader.readAsText(file);
+    }
+   
+  }
+
   return (
     <div className="content">
       <div className="content_left">
@@ -68,6 +84,11 @@ function Projects() {
             rows={10}
           ></textarea>
         </div>
+        <div> 
+          <label>Edit textbox or upload ontology file (.txt): <br/></label>
+          <input type="file" accept=".txt" onChange={e => onFileChange(e)} />
+        </div>
+        <br></br>
         <div>
           <button onClick={handleAdd}>Add</button>
         </div>
