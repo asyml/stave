@@ -8,7 +8,7 @@ export interface DropUploadProp {
   mimeType: string,
   allowMultiple: boolean,
   dropZoneText?: string,
-  fileDropFunc?: Function,  
+  fileDropFunc?: Function, 
 }
 
 const getColor = (props: any) => {
@@ -93,12 +93,6 @@ function DropUpload({
         <h4>Documents to be added.</h4>
         <ul>{file_info}</ul>
       </aside>
-      <div>
-          <button onClick={() => {
-            uploadFunc(files);
-            setFiles([] as FileWithPath[]);
-            }}>Add</button>
-      </div>
     </section>
   );
 }
