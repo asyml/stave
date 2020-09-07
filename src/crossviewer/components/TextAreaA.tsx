@@ -1,8 +1,6 @@
-import React, { useRef, useEffect, useMemo } from 'react';
+import React from 'react';
 import style from '../styles/CrossDocStyle.module.css';
 import {IAnnotation, ISinglePack} from "../../nlpviewer";
-import {OnEventType} from "../index"
-import {IRange} from "./lib/interfaces";
 
 
 export interface TextAreaAProp {
@@ -43,12 +41,12 @@ function highlighHelper(text:String, annotations: IAnnotation[], AnowOnEventInde
   let i:number;
   to_return.push(text.substring(0,annotations[0].span.begin));
   for (i = 0; i < annotations.length-1; i ++) {
-    const nowStyle = AnowOnEventIndex == i ? style.a_now_event : style.a_other_event;
-    to_return.push((<span className={nowStyle}>{text.substring(annotations[i].span.begin, annotations[i].span.end)}</span>));
+    const nowStyle = AnowOnEventIndex === i ? style.a_now_event : style.a_other_event;
+    to_return.push((<span key={i} className={nowStyle}>{text.substring(annotations[i].span.begin, annotations[i].span.end)}</span>));
     to_return.push(text.substring(annotations[i].span.end, annotations[i+1].span.begin));
   }
-  const nowStyle = AnowOnEventIndex == i ? style.a_now_event : style.a_other_event;
-  to_return.push((<span className={nowStyle}>{text.substring(annotations[i].span.begin, annotations[i].span.end)}</span>));
+  const nowStyle = AnowOnEventIndex === i ? style.a_now_event : style.a_other_event;
+  to_return.push((<span key={annotations.length-1} className={nowStyle}>{text.substring(annotations[i].span.begin, annotations[i].span.end)}</span>));
   to_return.push(text.substring(annotations[i].span.end));
   return to_return;
 }

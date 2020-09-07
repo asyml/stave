@@ -5,24 +5,52 @@ from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.forms import model_to_dict
 import uuid
 import json
-from ..models import Document, User, CrossDocAnnotation
+from ..models import Document, User, CrossDocAnnotation, CrossDoc
 from ..lib.require_login import require_login
 import os
 import re
 from ..apps import read_index_file, pack_index_path
 from copy import deepcopy
+from ..utils import gen_secret_code
 
 
 default_type = "edu.cmu.CrossEventRelation"
 
-def delete_link(textPack, parent_event_id, child_event_id):
-    new_links = []
+def read_creation_record(textPack):
+    """
+    Read teh creation record
+    Get a mapping from username to a set of tids
+    """
+    mapping = {} # from username/forteid to their creation records
+    for username in textPack["py/state"]["creation_records"]:
+        tids = set(textPack["py/state"]["creation_records"][username]["py/set"])
+        mapping[username] = tids
+    return mapping
+
+
+def delete_link(textPack, parent_event_id, child_event_id, forteID):
+    """
+    Delete both link and its creation record
+    This function does not return, it did operations on the original textPack
+    """
+    mapping = read_creation_record(textPack)
+    tid_to_delete = None
+    index_to_delete = None
     print(parent_event_id, child_event_id)
-    for item in textPack["py/state"]["links"]:
-        if item["py/state"]["_parent"]["py/tuple"][1] == parent_event_id and item["py/state"]["_child"]["py/tuple"][1] == child_event_id:
-            continue
-        new_links.append(item)
-    textPack["py/state"]["links"] = new_links
+
+    # delete by iterating all, and record down the wanted ones, skip the deleted one
+    for index, item in enumerate(textPack["py/state"]["links"]):
+        if item["py/state"]["_parent"]["py/tuple"][1] == parent_event_id and \
+            item["py/state"]["_child"]["py/tuple"][1] == child_event_id and \
+            forteID in mapping and \
+            item["py/state"]["_tid"] in mapping[forteID]:
+            tid_to_delete = item["py/state"]["_tid"]
+            index_to_delete = index
+
+    if tid_to_delete is not None:
+        del textPack["py/state"]["links"][index_to_delete]
+        textPack["py/state"]["creation_records"][forteID]["py/set"].remove(tid_to_delete)
+
 
 
 def format_cross_doc_helper(uploaded_link, next_tid):
@@ -93,16 +121,37 @@ def listAll(request):
 
 
 
-def query(request, crossDocAnno_id):
-    cross_doc = CrossDocAnnotation.objects.get(pk=crossDocAnno_id)
-    doc_0, doc_1 = extract_doc_id_from_crossdoc(cross_doc)
+# def query(request, crossDocAnno_id):
+#     cross_doc = CrossDocAnnotation.objects.get(pk=crossDocAnno_id)
+#     doc_0, doc_1 = extract_doc_id_from_crossdoc(cross_doc)
 
+#     # next_cross_doc = CrossDoc.objects.filter(pk__gt=crossDoc_id).order_by('pk').first()
+#     # if next_cross_doc == None:
+#     #     next_cross_doc_id = "-1"
+#     # else:
+#     #     next_cross_doc_id = str(next_cross_doc.pk)
+#     to_return = {"crossDocPack":model_to_dict(cross_doc),"_parent": model_to_dict(doc_0), "_child":model_to_dict(doc_1)}
+
+#     return JsonResponse(to_return, safe=False)
+
+def query(request, crossDoc_id):
+    cross_doc = CrossDoc.objects.get(pk=crossDoc_id)
+    doc_0, doc_1 = extract_doc_id_from_crossdoc(cross_doc)
+    forteID = request.session['forteID']
+    print(forteID)
+    secret_code = ""
+    if len(request.session["tasks"].split("-")) > int(request.session["current_task_index"])+1:
+        next_pk = request.session["tasks"].split("-")[int(request.session["current_task_index"])+1]
+        request.session["current_task_index"] += 1
+    else:
+        next_pk = "None"
+        secret_code = gen_secret_code(request.session["tasks"])
     # next_cross_doc = CrossDoc.objects.filter(pk__gt=crossDoc_id).order_by('pk').first()
     # if next_cross_doc == None:
     #     next_cross_doc_id = "-1"
     # else:
     #     next_cross_doc_id = str(next_cross_doc.pk)
-    to_return = {"crossDocPack":model_to_dict(cross_doc),"_parent": model_to_dict(doc_0), "_child":model_to_dict(doc_1)}
+    to_return = {"crossDocPack":model_to_dict(cross_doc),"_parent": model_to_dict(doc_0), "_child":model_to_dict(doc_1), "forteID":forteID, "nextID":str(next_pk), "secret_code":secret_code}
 
     return JsonResponse(to_return, safe=False)
 
@@ -130,12 +179,40 @@ def query(request, crossDocAnno_id):
 
 
 
-def new_cross_doc_link(request, crossDocAnno_id):
+# def new_cross_doc_link(request, crossDocAnno_id):
 
-    crossDoc = CrossDocAnnotation.objects.get(pk=crossDocAnno_id)
+#     crossDoc = CrossDocAnnotation.objects.get(pk=crossDocAnno_id)
+#     docJson = model_to_dict(crossDoc)
+#     textPackJson = json.loads(docJson['textPack'])
+    
+
+#     received_json_data = json.loads(request.body)
+#     data = received_json_data.get('data')
+#     link = data["link"]
+#     print(link)
+
+#     link_id = find_and_advance_next_tid(textPackJson)
+#     link = format_cross_doc_helper(link, link_id)
+
+#     # delete possible duplicate link before
+#     parent_event_id = link["py/state"]["_parent"]["py/tuple"][1]
+#     child_event_id = link["py/state"]["_child"]["py/tuple"][1]
+#     delete_link(textPackJson, parent_event_id, child_event_id)
+
+#     # append it to the database
+#     textPackJson['py/state']['links'].append(link)
+#     crossDoc.textPack = json.dumps(textPackJson)
+#     crossDoc.save()
+#     print(link_id)
+#     return JsonResponse({"crossDocPack": model_to_dict(crossDoc)}, safe=False)
+
+
+def new_cross_doc_link(request, crossDoc_id):
+
+    crossDoc = CrossDoc.objects.get(pk=crossDoc_id)
     docJson = model_to_dict(crossDoc)
     textPackJson = json.loads(docJson['textPack'])
-    
+    forteID = request.session['forteID']
 
     received_json_data = json.loads(request.body)
     data = received_json_data.get('data')
@@ -145,13 +222,20 @@ def new_cross_doc_link(request, crossDocAnno_id):
     link_id = find_and_advance_next_tid(textPackJson)
     link = format_cross_doc_helper(link, link_id)
 
-    # delete possible duplicate link before
+    # delete possible duplicate link before and the creation records
     parent_event_id = link["py/state"]["_parent"]["py/tuple"][1]
     child_event_id = link["py/state"]["_child"]["py/tuple"][1]
-    delete_link(textPackJson, parent_event_id, child_event_id)
+    delete_link(textPackJson, parent_event_id, child_event_id, forteID)
 
-    # append it to the database
+    # append new link to the textpack
     textPackJson['py/state']['links'].append(link)
+
+    # append the creation records
+    if forteID not in textPackJson["py/state"]["creation_records"]:
+        textPackJson["py/state"]["creation_records"][forteID] = {"py/set":[]}
+    textPackJson["py/state"]["creation_records"][forteID]["py/set"].append(link_id)
+
+    # commit to the database
     crossDoc.textPack = json.dumps(textPackJson)
     crossDoc.save()
     print(link_id)
@@ -185,11 +269,15 @@ def new_cross_doc_link(request, crossDocAnno_id):
 
 
 
-def delete_cross_doc_link(request, crossDocAnno_id, link_id):
+def delete_cross_doc_link(request, crossDoc_id, link_id):
+    """
+    request handler, delete by tid
+    """
 
-    crossDoc = CrossDocAnnotation.objects.get(pk=crossDocAnno_id)
+    crossDoc = CrossDoc.objects.get(pk=crossDoc_id)
     docJson = model_to_dict(crossDoc)
     textPackJson = json.loads(docJson['textPack'])
+    forteID = request.session['forteID']
 
     deleteIndex = -1
     success = False
@@ -202,6 +290,7 @@ def delete_cross_doc_link(request, crossDocAnno_id, link_id):
         success = False
     else:
         del textPackJson['py/state']['links'][deleteIndex]
+        textPackJson["py/state"]["creation_records"][forteID]["py/set"].remove(link_id)
         crossDoc.textPack = json.dumps(textPackJson)
         crossDoc.save()
 

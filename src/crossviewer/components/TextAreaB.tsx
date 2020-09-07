@@ -1,10 +1,7 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React from 'react';
 import style from '../styles/CrossDocStyle.module.css';
 import {ISinglePack, IAnnotation} from "../../nlpviewer";
-import {IMultiPack, IRange} from "./lib/interfaces";
 import Event from "./Event";
-// @ts-ignore
-import Highlightable from "highlightable";
 
 export interface TextAreaBProp {
     textPack: ISinglePack;
@@ -26,12 +23,13 @@ function TextAreaB({ textPack, AnowOnEventIndex, BnowOnEventIndex, BSelectedInde
         to_return.push(text.substring(0,annotations[0].span.begin));
         for (i = 0; i < annotations.length-1; i ++) {
             let initSelected = 0;
-            if (i == BnowOnEventIndex) {
+            if (i === BnowOnEventIndex) {
                 initSelected = 1;
             } else if (BSelectedIndex.includes(i)) {
                 initSelected = 2;
             }
-            to_return.push((<Event eventIndex = {i}
+            to_return.push((<Event key={i}
+                                   eventIndex = {i}
                                    eventText = {text.substring(annotations[i].span.begin, annotations[i].span.end)}
                                    AnowOnEventIndex = {AnowOnEventIndex}
                                    initSelected={initSelected}
@@ -40,13 +38,14 @@ function TextAreaB({ textPack, AnowOnEventIndex, BnowOnEventIndex, BSelectedInde
         }
 
         let initSelected = 0;
-        if (i == BnowOnEventIndex) {
+        if (i === BnowOnEventIndex) {
             initSelected = 1;
         } else if (BSelectedIndex.includes(i)) {
             initSelected = 2;
         }
 
-        to_return.push((<Event eventIndex = {i}
+        to_return.push((<Event key={i}
+                               eventIndex = {i}
                                eventText = {text.substring(annotations[i].span.begin, annotations[i].span.end)}
                                AnowOnEventIndex = {AnowOnEventIndex}
                                initSelected={initSelected}

@@ -16,6 +16,7 @@ export interface IMultiPack {
     _parent_doc: number;
     _child_doc: number;
     crossDocLink : ICrossDocLink[];
+    suggestedLink: ICrossDocLink[];
 }
 
 export interface IMultiPackQuestion {

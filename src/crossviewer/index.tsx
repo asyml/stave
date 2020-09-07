@@ -15,6 +15,7 @@ import {
 import {cross_doc_event_legend} from "./components/lib/definitions";
 // @ts-ignore
 import { useAlert } from 'react-alert'
+import {useHistory} from "react-router";
 
 export type OnEventType = (event: any) => void;
 
@@ -24,17 +25,24 @@ export interface CrossDocProp {
   multiPack: IMultiPack;
   multiPackQuestion:  IMultiPackQuestion;
   onEvent: OnEventType;
+  nextID: string;
+  secretCode: string;
 }
 export default function CrossViewer(props: CrossDocProp) {
 
-  const {textPackA, textPackB, multiPack, multiPackQuestion, onEvent} = props;
+  const history = useHistory();
+
+  const {textPackA, textPackB, multiPack, multiPackQuestion, onEvent, nextID, secretCode} = props;
+
+  console.log(nextID);
+
   let annotationsA = textPackA.annotations;
   let annotationsB = textPackB.annotations;
   annotationsA.sort(function(a, b){return a.span.begin - b.span.begin});
   annotationsB.sort(function(a, b){return a.span.begin - b.span.begin});
 
-  const all_events_A : IAnnotation[] = annotationsA.filter((entry:IAnnotation)=>entry.legendId == cross_doc_event_legend);
-  const all_events_B : IAnnotation[] = annotationsB.filter((entry:IAnnotation)=>entry.legendId == cross_doc_event_legend);
+  const all_events_A : IAnnotation[] = annotationsA.filter((entry:IAnnotation)=>entry.legendId === cross_doc_event_legend);
+  const all_events_B : IAnnotation[] = annotationsB.filter((entry:IAnnotation)=>entry.legendId === cross_doc_event_legend);
   textPackA.annotations = all_events_A;
   textPackB.annotations = all_events_B;
 
@@ -47,10 +55,10 @@ export default function CrossViewer(props: CrossDocProp) {
   const now_question = nowQuestionIndex >=0 ? multiPackQuestion.coref_questions[nowQuestionIndex] : undefined;
   const [currentAnswers, setCurrentAnswers] = useState<number []>([]);
 
-  const all_suggested_events_B : ICrossDocLink[] = multiPack.crossDocLink.filter((entry)=> {
-    const conditionA = entry.coref === "suggested";
+  const all_suggested_events_B : ICrossDocLink[] = multiPack.suggestedLink.filter((entry)=> {
+    // const conditionA = entry.coref === "suggested";
     const conditionB = entry._parent_token === +nowAOnEvent.id;
-    return conditionA && conditionB;
+    return conditionB;
   });
 
   console.log("suggested here",all_suggested_events_B);
@@ -59,19 +67,19 @@ export default function CrossViewer(props: CrossDocProp) {
   const now_suggested_question = nowSuggestedQuestionIndex >=0 ? multiPackQuestion.suggest_questions[nowSuggestedQuestionIndex] : undefined;
   const [currentSuggestedAnswers, setCurrentSuggestedAnswers] = useState<number []>([]);
   const [stillSuggesting, setStillSuggesting] = useState<boolean>(false);
-  if (stillSuggesting && (BnowOnEventIndex == -1 || +all_events_B[BnowOnEventIndex].id != all_suggested_events_B[0]._child_token)){
+  if (stillSuggesting && (BnowOnEventIndex === -1 || +all_events_B[BnowOnEventIndex].id !== all_suggested_events_B[0]._child_token)){
     console.log("haha");
     setBNowOnEventIndex(all_events_B.findIndex(event => +event.id === all_suggested_events_B[0]._child_token));
     setNowSuggestedQuestionIndex(0);
   }
 
   let dynamic_instruction = "";
-  if (BnowOnEventIndex==-1){
-    dynamic_instruction = "Click events on the right if they are coreferential to the left event."
-  } else if (nowQuestionIndex != -1) {
+  if (BnowOnEventIndex===-1){
+    dynamic_instruction = "Click events on the right if they are coreferential to the left event. Or click next event if there is no more."
+  } else if (nowQuestionIndex !== -1) {
     dynamic_instruction = "Answer why you think these two events are coreferential."
-  } else if (nowSuggestedQuestionIndex != -1) {
-    dynamic_instruction = "Answer why you don't think these two events are corefential."
+  } else if (nowSuggestedQuestionIndex !== -1) {
+    dynamic_instruction = "SUGGESTED PAIR: Answer why you don't think these two events are corefential."
   }
 
   const [instructionOpen, setInstructionOpen] = useState<boolean>(false);
@@ -82,14 +90,14 @@ export default function CrossViewer(props: CrossDocProp) {
 
 
 
-  const BackEnable: boolean =  AnowOnEventIndex > 0 && BnowOnEventIndex == -1;
-  const nextEventEnable:boolean = AnowOnEventIndex < all_events_A.length && BnowOnEventIndex == -1;
+  const BackEnable: boolean =  AnowOnEventIndex > 0 && BnowOnEventIndex === -1;
+  const nextEventEnable:boolean = AnowOnEventIndex < all_events_A.length && BnowOnEventIndex === -1;
   const progress_percent = Math.floor(AnowOnEventIndex / all_events_A.length * 100);
 
   const [finished, setFinished] = useState<boolean>(false);
 
 
-  const alert = useAlert()
+  const alert = useAlert();
 
 
   function constructNewLink(whetherCoref:boolean, new_answers:number[], new_suggested_answers:number[]) : ICrossDocLink {
@@ -132,7 +140,12 @@ export default function CrossViewer(props: CrossDocProp) {
     if (all_suggested_events_B.length <= 0) {
       setStillSuggesting(false);
       if (AnowOnEventIndex === all_events_A.length-1) {
-        setFinished(true);
+        if (nextID !== "None"){
+          history.push('/crossdocs/'+nextID);
+        }
+        else {
+          setFinished(true);
+        }
       } else {
         setANowOnEventIndex(AnowOnEventIndex + 1);
       }
@@ -153,7 +166,7 @@ export default function CrossViewer(props: CrossDocProp) {
     resetBAndQuestions();
   }
   function clickOption(option_id:number) {
-    if (option_id == -1) {
+    if (option_id === -1) {
       resetBAndQuestions();
       return;
     }
@@ -173,7 +186,7 @@ export default function CrossViewer(props: CrossDocProp) {
   }
 
   function clickSuggestedOption(option_id:number) {
-    if (option_id == -1) {
+    if (option_id === -1) {
       setNowQuestionIndex(0);
       setNowSuggestedQuestionIndex(-1);
       setStillSuggesting(false);
@@ -190,10 +203,15 @@ export default function CrossViewer(props: CrossDocProp) {
         type:"link-add",
         newLink: newLink,
       });
-      if (all_suggested_events_B.length == 1) {
+      if (all_suggested_events_B.length === 1) {
         setStillSuggesting(false);
         if (AnowOnEventIndex === all_events_A.length-1) {
-          setFinished(true);
+          if (nextID !== "None"){
+            history.push('/crossdocs/'+nextID);
+          }
+          else {
+            setFinished(true);
+          }
         } else {
           setANowOnEventIndex(AnowOnEventIndex + 1);
         }
@@ -210,7 +228,7 @@ export default function CrossViewer(props: CrossDocProp) {
     }
     if (selected) {
       // if there is no questions, directly send this link to server
-      if (multiPackQuestion.coref_questions.length == 0) {
+      if (multiPackQuestion.coref_questions.length === 0) {
         const newLink = constructNewLink(true, [], []);
         onEvent({
           type:"link-add",
@@ -247,7 +265,7 @@ export default function CrossViewer(props: CrossDocProp) {
   return (
       <div onClick={clickAnywhere}>
         <ReactModal isOpen={instructionOpen} className={style.modal} overlayClassName={style.modal_overlay}>haha</ReactModal>
-        <ReactModal isOpen={finished} className={style.modal} overlayClassName={style.modal_overlay}>You have finished.</ReactModal>
+        <ReactModal isOpen={finished} className={style.modal} overlayClassName={style.modal_overlay}>You have finished. Secret code is {secretCode}</ReactModal>
       <div className={style.text_viewer}>
         {/*discription here*/}
         <div className={style.tool_bar_container}>

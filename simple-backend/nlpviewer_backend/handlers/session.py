@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import include, path
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.forms import model_to_dict
 import json
 from ..models import User, CrossDoc, CrossDocAnnotation
@@ -37,45 +37,48 @@ def logout(request):
 #### only for cross doc login
 
 def login_amazon_turk(request):
+    # debug need to comment out when in production
     print(request.body)
     received_json_data = json.loads(request.body)
     turkID = received_json_data.get('turkID')
-    request.session['turkID'] = turkID
+    request.session['forteID'] = "stave."+turkID
 
-    min_name = get_min_count_cross_doc(turkID)
-    cross_doc = CrossDoc.objects.get(name=min_name)
-    print(min_name)
+    # pk = get_min_count_cross_doc(request.session['forteID'])
+    request.session["current_task_index"] = 0
+    pk = request.session["tasks"].split("-")[0]
 
-    new_cross_doc_anno = CrossDocAnnotation()
-    new_cross_doc_anno.name = cross_doc.name
-    new_cross_doc_anno.turkID = turkID
-    new_cross_doc_anno.textPack = cross_doc.textPack
-    new_cross_doc_anno.ontology = cross_doc.ontology
-    new_cross_doc_anno.save()
+    print("get pk", pk)
 
-    to_return = {"id": str(new_cross_doc_anno.pk)}
+    # if pk == -1:
+    #     return HttpResponseBadRequest()
 
-    return JsonResponse(to_return, safe=False)
+    to_return = {"id": str(pk)}
 
-def get_min_count_cross_doc(turkID):
+    return JsonResponse(to_return, safe=False)    
+
+
+def get_min_count_cross_doc(forteID):
     template_names = set()
     annotated_count = defaultdict(int)
     all_templates = CrossDoc.objects.all()
+
     for item in all_templates:
-        template_names.add(item.name)
-
-    all_annotated = CrossDocAnnotation.objects.all()
-    for item in all_annotated:
-        annotated_count[item.name] += 1
-
-    min_count = 2**14
-    min_name = None
-    for name in template_names:
-        mylist = CrossDocAnnotation.objects.filter(name = name, turkID=turkID)
-        anno_before = True if len(mylist)>0 else False
-        print(name, anno_before)
-        if (not anno_before) and (annotated_count[name] < min_count):
-            min_count = annotated_count[name]
-            min_name = name
-    return min_name
+        textPack = json.loads(item.textPack)
+        mapping = {} # from username/forteid to their creation records
+        for username in textPack["py/state"]["creation_records"]:
+            tids = set(textPack["py/state"]["creation_records"][username]["py/set"])
+            mapping[username] = tids
+        if len(mapping) < 3 and forteID not in mapping:
+            return item.pk
+    return -1
+    # min_count = 2**14
+    # min_name = None
+    # for name in template_names:
+    #     mylist = CrossDocAnnotation.objects.filter(name = name, turkID=turkID)
+    #     anno_before = True if len(mylist)>0 else False
+    #     print(name, anno_before)
+    #     if (not anno_before) and (annotated_count[name] < min_count):
+    #         min_count = annotated_count[name]
+    #         min_name = name
+    # return min_name
 

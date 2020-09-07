@@ -11,7 +11,7 @@ multi_index_path = os.path.join(settings.BASE_DIR, "initial_data", "multi.idx")
 pack_folder = os.path.join(settings.BASE_DIR, "initial_data", "packs")
 multi_folder = os.path.join(settings.BASE_DIR, "initial_data", "multi")
 
-
+# here is only run once when app starts, read initial data 
 class MyAppConfig(AppConfig):
     name = 'nlpviewer_backend'
     verbose_name = "Backend for NLPViewer"

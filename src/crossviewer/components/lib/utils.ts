@@ -1,4 +1,3 @@
-import {IAnnotation} from "../../../nlpviewer";
 import {ICrossDocLink, IMultiPack, IMultiPackQuestion, IQuestion} from "./interfaces";
 import {coref_question_entry_name, suggest_question_entry_name} from "./definitions";
 
@@ -42,29 +41,71 @@ export function transformMultiPackQuestion(rawOntology: string): IMultiPackQuest
             suggest_questions: suggest_questions,}
 }
 
-export function transformMultiPack (rawPack: string): IMultiPack  {
+export function transformMultiPack (rawPack: string, forteID: string): IMultiPack  {
     const data = JSON.parse(rawPack);
     const packData = data['py/state'];
     const [doc0, doc1] = packData['_pack_ref'];
+    console.log(forteID);
+
+    var annotated_tids : number[] = [];
+    if (forteID in packData['creation_records']) {
+        annotated_tids = packData['creation_records'][forteID]["py/set"];
+    }
+    console.log(annotated_tids);
+
     const linkData = packData['links'];
-    const crossLinks :ICrossDocLink[]= linkData.map((a: any)=> {
-        return {
+    const crossLinks :ICrossDocLink[]= linkData.flatMap((a: any)=> {
+        const link = {
             id: a["py/state"]["_tid"],
             _parent_token: a["py/state"]["_parent"]["py/tuple"][1],
             _child_token: a["py/state"]["_child"]["py/tuple"][1],
             coref: a["py/state"]["rel_type"],
         };
+
+        if (a["py/state"]["rel_type"] !== "suggested" && annotated_tids.includes(a["py/state"]["_tid"])) {
+            return [link];
+        } else {
+            return [];
+        }
     });
+
+    const suggestedLinks:ICrossDocLink[]= linkData.flatMap((a: any)=> {
+
+        const link = {
+            id: a["py/state"]["_tid"],
+            _parent_token: a["py/state"]["_parent"]["py/tuple"][1],
+            _child_token: a["py/state"]["_child"]["py/tuple"][1],
+            coref: a["py/state"]["rel_type"],
+        };
+        if (a["py/state"]["rel_type"] === "suggested"){
+            const parent_token = a["py/state"]["_parent"]["py/tuple"][1];
+            const child_token = a["py/state"]["_child"]["py/tuple"][1];
+            var found = false;
+            for (var i = 0; i < crossLinks.length; i++) {
+                if (crossLinks[i]._parent_token === parent_token && crossLinks[i]._child_token === child_token) found=true;
+            }
+            if (found) {
+                return [];
+            } else {
+                return [link];
+            }
+        } else {
+            return [];
+        }
+    });
+    console.log(crossLinks);
+    console.log(suggestedLinks);
     return {
         _parent_doc: doc0,
         _child_doc: doc1,
-        crossDocLink : crossLinks
+        crossDocLink : crossLinks,
+        suggestedLink: suggestedLinks,
     };
 }
 
 export function transformBackMultiPack(link: ICrossDocLink): any {
     console.log(link);
-    if (!link.hasOwnProperty('id') || link.id == undefined) {
+    if (!link.hasOwnProperty('id') || link.id === undefined) {
         return {
             'py/state': {
                 _child: { "py/tuple":[1, link._child_token]},

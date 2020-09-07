@@ -1,6 +1,5 @@
-import React, {useRef, useEffect, useMemo, useState} from 'react';
+import React, {useRef, useEffect, useState} from 'react';
 import style from '../styles/CrossDocStyle.module.css';
-import {IAnnotation} from "../../nlpviewer";
 
 export interface EventProp {
     eventIndex: number;
@@ -31,17 +30,17 @@ function Event({eventIndex, eventText, AnowOnEventIndex, initSelected,eventClick
     const myRef = useRef(null)
 
     let eventStyle = "";
-    if (selected == 0 && !hovered) {
+    if (selected === 0 && !hovered) {
         eventStyle = style.event_not_selected;
-    } else if (selected == 0 && hovered) {
+    } else if (selected === 0 && hovered) {
         eventStyle = style.event_not_selected_hovered;
-    } else if (selected == 1) {
+    } else if (selected === 1) {
         // @ts-ignore
         myRef.current.scrollIntoView();
         eventStyle = style.event_now_on;
-    } else if (selected == 2 && !hovered) {
+    } else if (selected === 2 && !hovered) {
         eventStyle = style.event_selected;
-    } else if (selected == 2 && hovered) {
+    } else if (selected === 2 && hovered) {
         eventStyle = style.event_selected_hovered;
     }
 

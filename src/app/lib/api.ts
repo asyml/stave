@@ -13,6 +13,9 @@ interface APICrossDoc {
   _parent: APIDocument;
   _child: APIDocument;
   nextCrossDocId : string;
+  forteID: string;
+  nextID:string;
+  secret_code: string;
 }
 
 export function fetchDocuments(): Promise<any> {

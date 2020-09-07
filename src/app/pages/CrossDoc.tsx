@@ -7,13 +7,10 @@ import {
   transformBackMultiPack,
   transformMultiPackQuestion
 } from "../../crossviewer/components/lib/utils";
-import {useParams, useLocation, useHistory} from 'react-router-dom';
+import {useParams, useHistory} from 'react-router-dom';
 import {
-  addAnnotation,
   addCrossLink,
-  addLink,
-  deleteAnnotation, deleteCrossLink,
-  deleteLink,
+  deleteCrossLink,
   fetchCrossDoc,
   updateCrossLink
 } from '../lib/api';
@@ -25,6 +22,9 @@ function CrossDoc() {
   const [packB, setPackB] = useState<ISinglePack | null>(null);
   const [multiPack, setMultiPack] = useState<IMultiPack|null>(null);
   const [multiPackQuestion, setMultiPackQuestion] = useState<IMultiPackQuestion|null>(null);
+  const [forteID, setForteID]  = useState<string>("");
+  const [nextID, setNextID] = useState<string>("None");
+  const [secretCode, setSecretCode] = useState<string>("");
   const history = useHistory();
   useEffect(() => {
     if (id) {
@@ -39,12 +39,14 @@ function CrossDoc() {
             data._child.ontology
         );
         setPackB(singlePackFromAPI1);
-        const MultiPack = transformMultiPack(data.crossDocPack.textPack);
+        setForteID(data.forteID);
+        const MultiPack = transformMultiPack(data.crossDocPack.textPack, data.forteID);
         const MultiPackQuestion = transformMultiPackQuestion(data.crossDocPack.textPack);
         setMultiPack(MultiPack);
         // const MultiPackOntology = transformMultiPackOntology(data.crossDocPack.ontology);
         setMultiPackQuestion(MultiPackQuestion);
-
+        setNextID(data.nextID);
+        setSecretCode(data.secret_code);
       });
     }
   }, [id]);
@@ -55,10 +57,13 @@ function CrossDoc() {
 
   return (
     <CrossViewer
+      key={id}
       textPackA={packA}
       textPackB={packB}
       multiPack={multiPack}
       multiPackQuestion={multiPackQuestion}
+      nextID = {nextID}
+      secretCode = {secretCode}
       onEvent={event => {
         if (!id) return;
         if (event.type === 'link-add') {
@@ -66,12 +71,12 @@ function CrossDoc() {
           const linkAPIData = transformBackMultiPack(newLink);
           const finalAPIData = {link:linkAPIData};
           addCrossLink(id, finalAPIData).then((return_object ) => {
-            setMultiPack(transformMultiPack(return_object.crossDocPack.textPack));
+            setMultiPack(transformMultiPack(return_object.crossDocPack.textPack, forteID));
           });
         } else if (event.type ==="link-delete") {
           const { type, linkID } = event;
           deleteCrossLink(id, linkID).then((return_object ) => {
-            setMultiPack(transformMultiPack(return_object.crossDocPack.textPack));
+            setMultiPack(transformMultiPack(return_object.crossDocPack.textPack, forteID));
           });
 
         } else if (event.type === 'link-update') {
@@ -79,14 +84,7 @@ function CrossDoc() {
           const linkAPIData = transformBackMultiPack(newLink);
           const finalAPIData = {link:linkAPIData};
           updateCrossLink(id, finalAPIData).then((return_object ) => {
-            setMultiPack(transformMultiPack(return_object.crossDocPack.textPack));
-            let newCrossDocLink = multiPack.crossDocLink;
-            // newCrossDocLink.push(newLink);
-            // setMultiPack({
-            //   _parent_doc:multiPack._parent_doc,
-            //   _child_doc:multiPack._child_doc,
-            //   crossDocLink:newCrossDocLink,
-            // });
+            setMultiPack(transformMultiPack(return_object.crossDocPack.textPack, forteID));
           });
         }
 

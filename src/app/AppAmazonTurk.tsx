@@ -10,20 +10,15 @@ import {
 } from 'react-router-dom';
 
 import LoginAmazonTurk from './pages/LoginAmazonTurk';
-import Viewer from './pages/Viewer';
 import CrossDoc from './pages/CrossDoc';
-import Documents from './pages/Documents';
-import Users from './pages/Users';
-import { logout } from './lib/api';
+// import { logout } from './lib/api';
 
 import { singlePack } from './mock-data-2';
 import { ontology } from './mock-config-data';
 import NLPViewer from '../nlpviewer';
 import groupPlugin from '../plugins/Group';
-import AllCrossDocs from "./pages/AllCrossDocs";
 
 function AppAmazonTurk() {
-  let loggedIn = false;
   return (
     <Router>
       <div>
@@ -57,16 +52,16 @@ function ViewWithDemoData() {
   );
 }
 
-function Logout() {
-  const history = useHistory();
-
-  function handleLogout() {
-    logout().then(() => {
-      history.push('/login');
-    });
-  }
-  return <button onClick={() => handleLogout()}>logout</button>;
-}
+// function Logout() {
+//   const history = useHistory();
+//
+//   function handleLogout() {
+//     logout().then(() => {
+//       history.push('/login');
+//     });
+//   }
+//   return <button onClick={() => handleLogout()}>logout</button>;
+// }
 
 let EntryComponent = AppAmazonTurk;
 
