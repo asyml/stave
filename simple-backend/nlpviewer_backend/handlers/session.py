@@ -38,8 +38,8 @@ def logout(request):
 
 def login_amazon_turk(request):
 
-    # this is only for testing !!!
-    request.session["tasks"] = "1-2"
+    # # this is only for testing !!!
+    # request.session["tasks"] = "1-2"
 
 
     # debug need to comment out when in production
