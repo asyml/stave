@@ -40,7 +40,10 @@ def login_amazon_turk(request):
 
     # # this is only for testing !!!
     # request.session["tasks"] = "1-2"
+    passed = check_url_parameters(request.session["tasks"])
 
+    if not passed:
+        return bad_request(request, None, template_name='400.html')
 
     # debug need to comment out when in production
     print(request.body)
@@ -94,4 +97,18 @@ def get_min_count_cross_doc(forteID):
     #         min_count = annotated_count[name]
     #         min_name = name
     # return min_name
+
+# check parameters are integers
+def check_url_parameters(tasks):
+    print(tasks)
+    if len(tasks) == 0:
+        return False
+    tasks = tasks.split("-")
+    try:
+        for task in tasks:
+            temp = int(task)
+    except:
+        print(tasks)
+        return False
+    return True
 

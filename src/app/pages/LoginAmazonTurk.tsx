@@ -21,7 +21,7 @@ function LoginAmazonTurk() {
         history.push( '/crossdocs/'+json_data.id);
       })
       .catch(e => {
-        setError('error encountered');
+        setError('You are not assigned to any tasks');
       });
   }
   function handleViewerLogin(e: any) {
