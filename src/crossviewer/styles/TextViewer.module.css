@@ -162,6 +162,7 @@
   border-radius: 1em;
   transform: translate(-50%, -50%);
   outline: transparent;
+  overflow-y: auto;
 }
 
 .modal_overlay {
@@ -188,4 +189,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.custom{
+  font-size: 50px;
 }

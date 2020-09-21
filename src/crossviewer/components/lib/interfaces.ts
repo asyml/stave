@@ -12,12 +12,19 @@ export interface ICrossDocLinkAnswer {
     option_id: number;
 }
 
+export interface ICreationRecordPerson {
+    forteID: string;
+    records: number[];
+}
+
 export interface IMultiPack {
     _parent_doc: number;
     _child_doc: number;
     crossDocLink : ICrossDocLink[];
     suggestedLink: ICrossDocLink[];
+    creation_records: ICreationRecordPerson[];
 }
+
 
 export interface IMultiPackQuestion {
     coref_questions: IQuestion[];

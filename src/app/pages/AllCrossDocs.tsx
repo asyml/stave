@@ -8,8 +8,10 @@ function AllCrossDocs() {
   const [pack, setPack] = useState<string>('');
 
   const history = useHistory();
+  console.log('haha2');
 
   useEffect(() => {
+    console.log('haha');
     updateDocs().catch(e => {
       history.push('/login');
     });
@@ -42,7 +44,7 @@ function AllCrossDocs() {
         {docs.map(d => (
           <ul key={d.id}>
             <li>
-              <Link to={`/crossdocs/${d.id}`}>{d.name}</Link>{' '}
+              <Link to={`/crossdocsviewer/${d.id}`}>{d.name}</Link>{' '}
               {/*<button onClick={() => handleDelete(d.id)}>X</button>*/}
             </li>
           </ul>

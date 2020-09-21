@@ -17,6 +17,9 @@ import { singlePack } from './mock-data-2';
 import { ontology } from './mock-config-data';
 import NLPViewer from '../nlpviewer';
 import groupPlugin from '../plugins/Group';
+import AllCrossDocs from "./pages/AllCrossDocs";
+import AnnotationViewer from "../crossviewer/AnnotationViewer";
+import CrossDocViewer from "./pages/CrossDocViewer";
 
 function AppAmazonTurk() {
   return (
@@ -35,6 +38,12 @@ function AppAmazonTurk() {
           </Route>
           <Route path="/crossdocs/:id">
             <CrossDoc />
+          </Route>
+          <Route path="/crossdocsviewer/:id">
+            <CrossDocViewer />
+          </Route>
+          <Route path="/crossdocsviewer">
+            <AllCrossDocs />
           </Route>
         </Switch>
       </div>

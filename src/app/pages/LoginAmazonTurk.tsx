@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { loginTurk } from '../lib/api';
+import { loginTurk, viewerLogin } from '../lib/api';
 import { useHistory } from 'react-router-dom';
 import style from "../../crossviewer/styles/TextViewer.module.css";
 import ReactModal from "react-modal";
+import ConsentForm from "../components/ConsentFrom";
 
 function LoginAmazonTurk() {
   const [turkID, setTurkID] = useState<string>('');
+  const [adminCode, setAdminCode] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const [adminError, setAdminError] = useState<string>('');
   const [agreementOpen, setAgreementOpen] = useState<boolean>(true);
 
   const history = useHistory();
@@ -18,7 +21,17 @@ function LoginAmazonTurk() {
         history.push( '/crossdocs/'+json_data.id);
       })
       .catch(e => {
-        setError('you have finished all documents');
+        setError('error encountered');
+      });
+  }
+  function handleViewerLogin(e: any) {
+    e.preventDefault();
+    viewerLogin(adminCode)
+      .then(json_data => {
+        history.push( '/crossdocsviewer');
+      })
+      .catch(e => {
+        setAdminError('wrong secret code');
       });
   }
 
@@ -29,10 +42,7 @@ function LoginAmazonTurk() {
   return (
     <div>
       <ReactModal isOpen={agreementOpen} className={style.modal} overlayClassName={style.modal_overlay}>
-        <div>
-          Consent Form
-        </div>
-        <button onClick={clickAgree}> I Agree </button>
+        <ConsentForm onEvent={clickAgree}/>
       </ReactModal>
       <h2>Input your Turk ID</h2>
       <form onSubmit={handleLogin}>
@@ -46,6 +56,20 @@ function LoginAmazonTurk() {
         </div>
         {error ? <div>{error}</div> : null}
         <button onClick={handleLogin}>login</button>
+      </form>
+
+      <h2 style={{marginTop: "8rem"}}>Annotation Admin Login</h2>
+      <form onSubmit={handleLogin}>
+        <div>
+          <input
+            placeholder="admin secret code"
+            onChange={e => setAdminCode(e.target.value)}
+            value={adminCode}
+            name="secretCode"
+          />
+        </div>
+        {adminError ? <div>{adminError}</div> : null}
+        <button onClick={handleViewerLogin}>login</button>
       </form>
     </div>
 

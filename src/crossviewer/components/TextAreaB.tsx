@@ -13,7 +13,7 @@ export interface TextAreaBProp {
 
 function TextAreaB({ textPack, AnowOnEventIndex, BnowOnEventIndex, BSelectedIndex, eventClickCallBack}: TextAreaBProp) {
     let {annotations, text, links} = textPack;
-
+    console.log(BSelectedIndex);
     const highlightedText = highlighHelper(text, annotations);
 
 

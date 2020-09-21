@@ -15,7 +15,6 @@
 .text_node_container {
   white-space: pre-wrap;
   position: relative;
-  z-index: 20;
   line-height: 20px;
 }
 

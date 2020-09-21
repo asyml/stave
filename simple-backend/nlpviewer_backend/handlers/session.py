@@ -37,6 +37,11 @@ def logout(request):
 #### only for cross doc login
 
 def login_amazon_turk(request):
+
+    # this is only for testing !!!
+    request.session["tasks"] = "1-2"
+
+
     # debug need to comment out when in production
     print(request.body)
     received_json_data = json.loads(request.body)
@@ -56,6 +61,14 @@ def login_amazon_turk(request):
 
     return JsonResponse(to_return, safe=False)    
 
+
+def login_viewer(request):
+    received_json_data = json.loads(request.body)
+    admin_code = received_json_data.get('adminCode')
+    if admin_code == "kairos":
+        return HttpResponse("OK")
+    else:
+        return HttpResponseBadRequest("Wrong password")
 
 def get_min_count_cross_doc(forteID):
     template_names = set()

@@ -22,6 +22,7 @@ urlpatterns = [
 
     path('api/login', session.login),
     path('api/logout', session.logout),
+    path('api/login-viewer', session.login_viewer),
     path("api/login-amazon-turk", session.login_amazon_turk),
 
     path('api/users', user.listAll),

@@ -158,6 +158,11 @@ export function loginTurk(turkID: string) {
     turkID,
   }).then(r=>r.json());
 }
+export function viewerLogin(adminCode: string) {
+  return postData(`/api/login-viewer`, {
+    adminCode,
+  });
+}
 
 export function addCrossLink(crossDocID: string, data: any) {
   return postData(`/api/crossdocs/${crossDocID}/links/new`, {

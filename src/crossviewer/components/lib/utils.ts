@@ -1,4 +1,4 @@
-import {ICrossDocLink, IMultiPack, IMultiPackQuestion, IQuestion} from "./interfaces";
+import {ICreationRecordPerson, ICrossDocLink, IMultiPack, IMultiPackQuestion, IQuestion} from "./interfaces";
 import {coref_question_entry_name, suggest_question_entry_name} from "./definitions";
 
 
@@ -100,8 +100,11 @@ export function transformMultiPack (rawPack: string, forteID: string): IMultiPac
         _child_doc: doc1,
         crossDocLink : crossLinks,
         suggestedLink: suggestedLinks,
+        creation_records: [],
     };
 }
+
+
 
 export function transformBackMultiPack(link: ICrossDocLink): any {
     console.log(link);
@@ -127,4 +130,44 @@ export function transformBackMultiPack(link: ICrossDocLink): any {
             }
         }
     }
+}
+
+
+
+
+export function transformMultiPackAnnoViewer (rawPack: string): IMultiPack  {
+    const data = JSON.parse(rawPack);
+    const packData = data['py/state'];
+    const [doc0, doc1] = packData['_pack_ref'];
+
+
+    const linkData = packData['links'];
+    const crossLinks :ICrossDocLink[]= linkData.flatMap((a: any)=> {
+        const link = {
+            id: a["py/state"]["_tid"],
+            _parent_token: a["py/state"]["_parent"]["py/tuple"][1],
+            _child_token: a["py/state"]["_child"]["py/tuple"][1],
+            coref: a["py/state"]["rel_type"],
+        };
+
+        if (a["py/state"]["rel_type"] !== "suggested") {
+            return [link];
+        } else {
+            return [];
+        }
+    });
+    const creation_records_data = packData["creation_records"];
+    const creation_records: ICreationRecordPerson[] = Object.keys(creation_records_data).map((forteID : any) => (
+      {
+          forteID: forteID,
+          records: creation_records_data[forteID]["py/set"]
+      }));
+    const suggestedLinks :ICrossDocLink[] = [];
+    return {
+        _parent_doc: doc0,
+        _child_doc: doc1,
+        crossDocLink : crossLinks,
+        suggestedLink: suggestedLinks,
+        creation_records: creation_records,
+    };
 }

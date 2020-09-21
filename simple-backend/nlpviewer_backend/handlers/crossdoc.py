@@ -137,15 +137,19 @@ def listAll(request):
 def query(request, crossDoc_id):
     cross_doc = CrossDoc.objects.get(pk=crossDoc_id)
     doc_0, doc_1 = extract_doc_id_from_crossdoc(cross_doc)
-    forteID = request.session['forteID']
-    print(forteID)
     secret_code = ""
-    if len(request.session["tasks"].split("-")) > int(request.session["current_task_index"])+1:
-        next_pk = request.session["tasks"].split("-")[int(request.session["current_task_index"])+1]
-        request.session["current_task_index"] += 1
-    else:
-        next_pk = "None"
-        secret_code = gen_secret_code(request.session["tasks"])
+    forteID = ""
+    next_pk = -1
+    if "forteID" in request.session:
+        forteID = request.session.get('forteID', "admin_viewer")
+        print(forteID)
+        secret_code = ""
+        if len(request.session["tasks"].split("-")) > int(request.session["current_task_index"])+1:
+            next_pk = request.session["tasks"].split("-")[int(request.session["current_task_index"])+1]
+            request.session["current_task_index"] += 1
+        else:
+            next_pk = "None"
+            secret_code = gen_secret_code(request.session["tasks"])
     # next_cross_doc = CrossDoc.objects.filter(pk__gt=crossDoc_id).order_by('pk').first()
     # if next_cross_doc == None:
     #     next_cross_doc_id = "-1"

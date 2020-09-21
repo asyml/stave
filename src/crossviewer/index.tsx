@@ -264,7 +264,7 @@ export default function CrossViewer(props: CrossDocProp) {
 
   return (
       <div onClick={clickAnywhere}>
-        <ReactModal isOpen={instructionOpen} className={style.modal} overlayClassName={style.modal_overlay}>haha</ReactModal>
+        <ReactModal isOpen={instructionOpen} className={style.modal} overlayClassName={style.modal_overlay}>Please refer to the instructions in the Google Doc.</ReactModal>
         <ReactModal isOpen={finished} className={style.modal} overlayClassName={style.modal_overlay}>You have finished. Secret code is {secretCode}</ReactModal>
       <div className={style.text_viewer}>
         {/*discription here*/}
