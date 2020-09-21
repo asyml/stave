@@ -159,7 +159,7 @@ function ConsentForm({onEvent}: ConsentFormProp) {
         <p style={{color:'red'}}>You need to answer yes to all agreements to continue.
         </p>
         : null}
-      <button style={{marginBottom:"2rem"}} onClick={handleSubmit}> I Agree </button>
+      <button style={{marginBottom:"2rem"}} onClick={handleSubmit}> Submit </button>
 
     </div>
 
