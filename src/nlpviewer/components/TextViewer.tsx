@@ -19,6 +19,8 @@ import {
 import LinkCreateBox from './LinkCreateBox';
 import AnnotationCreateBox from './AnnotationCreateBox';
 import groupPlugin from '../../plugins/group/Group';
+import {nextDocument, prevDocument} from '../../app/lib/api';
+import {useState} from 'react';
 
 export type OnEventType = (event: any) => void;
 
@@ -33,6 +35,9 @@ function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
 
   const appState = useTextViewerState();
   const dispatch = useTextViewerDispatch();
+
+  const [next_id, setNext] = useState<string>('');
+  const [prev_id, setPrev] = useState<string>('');
 
   const {
     textPack,
@@ -54,6 +59,15 @@ function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
   } = appState;
 
   if (!textPack || !ontology) return null;
+
+  let doc_id = window.location.pathname.split("/").pop() !;
+  nextDocument(doc_id).then(data => setNext(data.id));
+  prevDocument(doc_id).then(data => setPrev(data.id));
+  let next_url = '/documents/' + next_id;
+  let prev_url = '/documents/' + prev_id;
+
+
+  
 
   const { annotations, links, attributes } = textPack;
 
@@ -273,6 +287,27 @@ function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
               {annoEditIsCreating
                 ? `Cancel add annotation`
                 : `Add annotation`}
+            </button>
+            
+            {/* next and prev document */}
+            <button
+              className={style.add_prev_buttom}
+              onClick={() => {
+                window.location.href=prev_url;
+              }}
+            >
+              { `< Previous document`}
+            </button>
+            
+            
+
+            <button
+              className={style.add_next_buttom}
+              onClick={() => {
+                window.location.href=next_url;
+              }}
+            >
+              { `Next document >`}
             </button>
 
             {annoEditIsCreating && (
