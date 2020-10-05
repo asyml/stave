@@ -63,11 +63,6 @@ function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
   let doc_id = window.location.pathname.split("/").pop() !;
   nextDocument(doc_id).then(data => setNext(data.id));
   prevDocument(doc_id).then(data => setPrev(data.id));
-  let next_url = '/documents/' + next_id;
-  let prev_url = '/documents/' + prev_id;
-
-
-  
 
   const { annotations, links, attributes } = textPack;
 
@@ -293,7 +288,12 @@ function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
             <button
               className={style.add_prev_buttom}
               onClick={() => {
-                window.location.href=prev_url;
+                if(doc_id !== prev_id){
+                  let prev_url = '/documents/' + prev_id;
+                  window.location.href=prev_url;
+                }else{
+                  alert('This is the first document of the project.')
+                }
               }}
             >
               { `< Previous document`}
@@ -304,7 +304,12 @@ function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
             <button
               className={style.add_next_buttom}
               onClick={() => {
-                window.location.href=next_url;
+                if(doc_id !== next_id){
+                  let next_url = '/documents/' + next_id;
+                  window.location.href=next_url;
+                }else{
+                  alert('This is the last document of the project.')
+                }
               }}
             >
               { `Next document >`}
