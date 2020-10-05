@@ -76,13 +76,6 @@ function Projects() {
     }
   }
 
-  function handleUpload(acceptedFiles: FileWithPath[]) {
-    createProject(name, ontology).then(() => {
-      updateProjects();
-    });
-  }
-
-
   function handleDelete(id: string) {
     deleteProject(id).then(() => {
       updateProjects();
@@ -180,11 +173,10 @@ function Projects() {
                     </div> 
                     <div>
                       <DropUpload
-                      fileLimit={1048576}
-                      fileDropFunc={userAddFiles}
-                      uploadFunc={handleUpload}
-                      mimeType='application/json'
-                      allowMultiple={false}
+                        fileLimit={1048576}
+                        fileDropFunc={userAddFiles}
+                        mimeType='application/json'
+                        allowMultiple={false}
                       />
                     </div>
                     <div>
