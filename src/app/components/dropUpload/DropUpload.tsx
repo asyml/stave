@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import {useDropzone, FileWithPath} from 'react-dropzone';
 import styled from 'styled-components';
+import Button from '@material-ui/core/Button';
 
 export interface DropUploadProp {
   fileLimit: number,  
-  uploadFunc: Function,
   mimeType: string,
   allowMultiple: boolean,
+  fileActionButtonText?: string,
+  // If this function is provided, the fileActionButtonFunc will be evoked when the button is clicked.
+  fileActionButtonFunc?: Function, 
   dropZoneText?: string,
   fileDropFunc?: Function, 
 }
@@ -24,7 +27,7 @@ const getColor = (props: any) => {
   return '#b3b3b3';
 }
 
-const Container = styled.div`
+export const Container = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -43,9 +46,10 @@ const Container = styled.div`
 
 function DropUpload({
   fileLimit,
-  uploadFunc,
   mimeType,
   allowMultiple,
+  fileActionButtonText,
+  fileActionButtonFunc,
   dropZoneText,
   fileDropFunc,
 }: DropUploadProp) {
@@ -65,7 +69,8 @@ function DropUpload({
           fileDropFunc(acceptedFiles);
         }
         acceptedFiles.forEach(file =>{
-          setFiles(files.concat(file));
+          console.log(file)
+          setFiles(files => [...files, file]);
         });      
       },
       accept: mimeType,
@@ -83,6 +88,22 @@ function DropUpload({
     )}
   );
 
+  let action_button;
+  if (fileActionButtonFunc && typeof(fileActionButtonFunc) == "function"){
+    action_button = <Button
+                onClick={() => {
+                  fileActionButtonFunc(files);	
+                  setFiles([] as FileWithPath[]);	
+                }}  
+                color="primary"
+                size="small" 
+                variant="contained"
+                disableElevation
+              >
+                {fileActionButtonText}
+              </Button>
+  }
+
   return (
     <section className="container">
       <Container {...getRootProps({isDragActive, isDragAccept, isDragReject})}>
@@ -93,6 +114,7 @@ function DropUpload({
         <h4>Documents to be added.</h4>
         <ul>{file_info}</ul>
       </aside>
+      <div>	{action_button} </div>
     </section>
   );
 }

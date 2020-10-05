@@ -64,7 +64,8 @@ function Docs() {
       <h2>new pack</h2>
         <DropUpload 
           fileLimit={5e7}
-          uploadFunc={handleAdd}
+          fileActionButtonFunc={handleAdd}
+          fileActionButtonText={'ADD'}
           mimeType='application/json'
           // Do not support zip now.
           // mimeType='application/json, application/x-rar-compressed, application/octet-stream, application/zip, application/octet-stream, application/x-zip-compressed, multipart/x-zip'
