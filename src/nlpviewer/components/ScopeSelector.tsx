@@ -1,6 +1,6 @@
 import React from 'react';
-import { IOntology, ISelectOption } from '../lib/interfaces';
-import { isEntryAnnotation, shortId } from '../lib/utils';
+import { IOntology, ISelectOption, IScopeConfigs} from '../lib/interfaces';
+import { isAvailableScope, isEntryAnnotation, shortId } from '../lib/utils';
 import Select from 'react-select';
 import style from '../styles/ScopeSelectorProp.module.css';
 import { useTextViewerDispatch } from '../contexts/text-viewer.context';
@@ -9,12 +9,14 @@ export type ScopeSelectorProp = {
   ontology: IOntology;
   selectedScopeId: string | null;
   selectedScopeIndex: number;
+  scopeConfig: IScopeConfigs;
 };
 
 export default function ScopeSelector({
   ontology,
   selectedScopeId,
   selectedScopeIndex,
+  scopeConfig,
 }: ScopeSelectorProp) {
   const dispatch = useTextViewerDispatch();
   const legendTypeOptions: {
@@ -22,7 +24,7 @@ export default function ScopeSelector({
     label: string;
   }[] = ontology.definitions
     .filter(entry => {
-      return isEntryAnnotation(ontology, entry.entryName);
+      return isEntryAnnotation(ontology, entry.entryName) && isAvailableScope(scopeConfig, entry.entryName);
     })
     .map(def => {
       return {
