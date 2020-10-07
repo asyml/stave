@@ -366,17 +366,17 @@ function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
 return (
     <div className={style.text_viewer}>
       <main className={style.layout_container}>
-          <LeftArea/>
+          {LeftArea()}
           <div className={`${style.center_area_container}
               ${annoEditIsCreating && style.is_adding_annotation}`}
           >
             <ToolBar/>
             <div className={`${style.text_area_container}`}>
-                <MiddleCenterArea/>
+                {MiddleCenterArea()}
             </div>
-            <MiddleBottomArea/>
+            {MiddleBottomArea()}
         </div>
-        <RightArea/>
+        {RightArea()}
       </main>
     </div>
   );
