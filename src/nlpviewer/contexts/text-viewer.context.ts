@@ -291,10 +291,9 @@ function textViewerReducer(state: State, action: Action): State {
           ? state.selectedLegendIds
           : [
               // 'forte.data.ontology.base_ontology.Sentence',
-              'forte.data.ontology.ontonotes_ontology.PredicateMention',
-              'forte.data.ontology.base_ontology.PredicateArgument',
-              'forte.data.ontology.base_ontology.PredicateLink',
-
+              // 'forte.data.ontology.ontonotes_ontology.PredicateMention',
+              // 'forte.data.ontology.base_ontology.PredicateArgument',
+              // 'forte.data.ontology.base_ontology.PredicateLink',
               // 'forte.data.ontology.base_ontology.CoreferenceGroup',
               // 'forte.data.ontology.base_ontology.Token',
               // 'forte.data.ontology.base_ontology.CoreferenceMention',
@@ -309,14 +308,14 @@ function textViewerReducer(state: State, action: Action): State {
               // ),
               // attributeId('forte.data.ontology.stanfordnlp_ontology.Foo', 'name'),
               // attributeId(action.textPack.legends.links[0].id, 'rel_type'),
-              attributeId(
-                'forte.data.ontology.ontonotes_ontology.PredicateMention',
-                'pred_type'
-              ),
-              attributeId(
-                'forte.data.ontology.base_ontology.PredicateLink',
-                'arg_type'
-              ),
+              // attributeId(
+              //   'forte.onto.base_ontology.PredicateMention',
+              //   'pred_type'
+              // ),
+              // attributeId(
+              //   'forte.onto.base_ontology.PredicateLink',
+              //   'arg_type'
+              // ),
               // attributeId('forte.data.ontology.base_ontology.Token', 'pos_tag'),
             ],
 
@@ -343,6 +342,9 @@ function textViewerReducer(state: State, action: Action): State {
 
     case 'select-legend':
       if (state.selectedLegendIds.indexOf(action.legendId) === -1) {
+        console.log('update legend')
+        console.log(action.legendId)
+  
         return {
           ...state,
           ...initialSpacingState,

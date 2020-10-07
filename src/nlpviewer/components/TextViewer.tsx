@@ -6,6 +6,7 @@ import {
   applyColorToLegend,
   isEntryAnnotation,
   isEntryLink,
+  isAvailableLegend,
 } from '../lib/utils';
 import AnnotationDetail from './AnnotationDetail';
 import LinkDetail from './LinkDetail';
@@ -21,6 +22,7 @@ import AnnotationCreateBox from './AnnotationCreateBox';
 import groupPlugin from '../../plugins/group/Group';
 import {nextDocument, prevDocument} from '../../app/lib/api';
 import {useState} from 'react';
+import {projectConfig} from '../../app/project_config';
 
 export type OnEventType = (event: any) => void;
 
@@ -68,12 +70,12 @@ function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
 
   const annotationLegendsWithColor = applyColorToLegend(
     ontology.definitions.filter(entry =>
-      isEntryAnnotation(ontology, entry.entryName)
+      isEntryAnnotation(ontology, entry.entryName) && isAvailableLegend(projectConfig['legendConfigs'], entry.entryName)
     )
   );
   const linksLegendsWithColor = applyColorToLegend(
     ontology.definitions.filter(entry =>
-      isEntryLink(ontology, entry.entryName)
+      isEntryLink(ontology, entry.entryName) && isAvailableLegend(projectConfig['legendConfigs'], entry.entryName)
     )
   );
 
@@ -286,7 +288,6 @@ function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
             
             {/* next and prev document */}
             <button
-              className={style.add_prev_buttom}
               onClick={() => {
                 if(doc_id !== prev_id){
                   let prev_url = '/documents/' + prev_id;
@@ -299,10 +300,7 @@ function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
               { `< Previous document`}
             </button>
             
-            
-
             <button
-              className={style.add_next_buttom}
               onClick={() => {
                 if(doc_id !== next_id){
                   let next_url = '/documents/' + next_id;
@@ -328,6 +326,7 @@ function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
               ontology={ontology}
               selectedScopeId={selectedScopeId}
               selectedScopeIndex={selectedScopeIndex}
+              scopeConfig={projectConfig.scopeConfigs}
             />
 
             {selectedScopeId !== null && (
