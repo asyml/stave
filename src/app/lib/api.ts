@@ -29,6 +29,14 @@ export function fetchDocOntology(id: string): Promise<APIDocOntology> {
   return fetch(`/api/ontology_from_doc/${id}`).then(r => r.json());
 }
 
+export function nextDocument(id: string): Promise<any> {
+  return fetch(`/api/next_doc/${id}`).then(r => r.json());
+}
+
+export function prevDocument(id: string): Promise<any> {
+  return fetch(`/api/prev_doc/${id}`).then(r => r.json());
+}
+
 export function updateDocument(id: string, name: string, textPack: string) {
   return postData(`/api/documents/${id}/edit`, {
     name: name,
@@ -45,7 +53,6 @@ export function updateOntology(id: string, ontology: string) {
 export function createDocument(
   name: string,
   textPack: string,
-  ontology: string,
   project_id: string
 ) {
   return postData(`/api/documents/new`, {

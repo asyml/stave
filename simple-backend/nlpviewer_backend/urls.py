@@ -46,7 +46,9 @@ urlpatterns = [
     path('documents/<int:document_id>/links/<int:link_id>/edit', document.edit_link),
     path('documents/<int:document_id>/links/<int:link_id>/delete',
          document.delete_link),
-
+    
+    path('next_doc/<int:document_id>', document.get_next_document_id),
+    path('prev_doc/<int:document_id>', document.get_prev_document_id),
 
     path('projects/all', project.listAll),
     path('projects', project.list_user_projects),

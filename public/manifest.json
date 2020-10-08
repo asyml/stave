@@ -4,18 +4,18 @@
   "icons": [
     {
       "src": "favicon.ico",
-      "sizes": "32x32 16x16",
+      "sizes": "16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "logo_dark_192.png",
+      "src": "Stave-graphic@2x.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "224x233"
     },
     {
-      "src": "logo_dark_512.png",
+      "src": "Stave-graphic@5x.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "560x584"
     }	    
   ],
   "start_url": ".",

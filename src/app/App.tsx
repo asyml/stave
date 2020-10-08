@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './style.css';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Link,
-  useHistory,
 } from 'react-router-dom';
 
 import Login from './pages/Login';
@@ -14,34 +13,27 @@ import Viewer from './pages/Viewer';
 import Projects from './pages/Projects'
 import Project from './pages/Project'
 import Users from './pages/Users';
-import { logout } from './lib/api';
-
+import BurgerMenu from './components/burgerMenu';
 import { singlePack } from './mock-data-2';
 import { ontology } from './mock-config-data';
-import {layout} from './layout';
+import { layout } from './layout';
 import NLPViewer from '../nlpviewer';
 import groupPlugin from '../plugins/group/Group';
 import dialogueBoxPlugin from '../plugins/dialogue_box/DialogueBox';
+import AccountMenu from './components/accountMenu';
 
 function App() {
+  const [open, setOpen] = useState<boolean>(false);
+
   return (
     <Router>
       <div>
         <header className="layout_header">
-          <span>Stave</span>
-
-          <nav>
-            <ul>
-              <li>
-                <Link to="/users">All Users</Link>
-              </li>
-              <li>
-                <Link to="/projects">All Projects</Link>
-              </li>
-            </ul>
-          </nav>
-
-          <Logout />
+          <BurgerMenu open={open} setOpen={setOpen}>
+            <Link to="/users">All Users</Link>
+            <Link to="/projects">All Projects</Link>
+          </BurgerMenu>
+          <AccountMenu></AccountMenu>
         </header>
 
         <Switch>
@@ -88,17 +80,6 @@ function ViewWithDemoData() {
       layout={layout}
     />
   );
-}
-
-function Logout() {
-  const history = useHistory();
-
-  function handleLogout() {
-    logout().then(() => {
-      history.push('/login');
-    });
-  }
-  return <button onClick={() => handleLogout()}>logout</button>;
 }
 
 let EntryComponent = App;

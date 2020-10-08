@@ -3,6 +3,8 @@ import {
   ILinkWithPos,
   ISinglePack,
   IOntology,
+  ILegendConfigs,
+  IScopeConfigs,
 } from './interfaces';
 import { colorPalettes } from './color';
 
@@ -369,6 +371,18 @@ export function getMemberInGroup(
 //     return false;
 //   }
 // }
+
+export function isAvailableScope(config: IScopeConfigs, entryName: string){
+  return entryName in config;
+}
+
+export function isAvailableLegend(config: ILegendConfigs, entryName: string){
+  // Show all legends if no configuration is provided.
+  if (Object.keys(config).length === 0){
+    return true;
+  }
+  return entryName in config;
+}
 
 export function isEntryAnnotation(config: IOntology, entryName: string) {
   return findEntryNameMatchDeep(

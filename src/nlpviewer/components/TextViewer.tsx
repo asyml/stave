@@ -6,6 +6,7 @@ import {
   applyColorToLegend,
   isEntryAnnotation,
   isEntryLink,
+  isAvailableLegend,
 } from '../lib/utils';
 import AnnotationDetail from './AnnotationDetail';
 import LinkDetail from './LinkDetail';
@@ -19,6 +20,9 @@ import {
 import LinkCreateBox from './LinkCreateBox';
 import AnnotationCreateBox from './AnnotationCreateBox';
 import groupPlugin from '../../plugins/group/Group';
+import {nextDocument, prevDocument} from '../../app/lib/api';
+import {useState} from 'react';
+import {projectConfig} from '../../app/project_config';
 
 export type OnEventType = (event: any) => void;
 
@@ -33,6 +37,9 @@ function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
 
   const appState = useTextViewerState();
   const dispatch = useTextViewerDispatch();
+
+  const [next_id, setNext] = useState<string>('');
+  const [prev_id, setPrev] = useState<string>('');
 
   const {
     textPack,
@@ -55,16 +62,20 @@ function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
 
   if (!textPack || !ontology) return null;
 
+  let doc_id = window.location.pathname.split("/").pop() !;
+  nextDocument(doc_id).then(data => setNext(data.id));
+  prevDocument(doc_id).then(data => setPrev(data.id));
+
   const { annotations, links, attributes } = textPack;
 
   const annotationLegendsWithColor = applyColorToLegend(
     ontology.definitions.filter(entry =>
-      isEntryAnnotation(ontology, entry.entryName)
+      isEntryAnnotation(ontology, entry.entryName) && isAvailableLegend(projectConfig['legendConfigs'], entry.entryName)
     )
   );
   const linksLegendsWithColor = applyColorToLegend(
     ontology.definitions.filter(entry =>
-      isEntryLink(ontology, entry.entryName)
+      isEntryLink(ontology, entry.entryName) && isAvailableLegend(projectConfig['legendConfigs'], entry.entryName)
     )
   );
 
@@ -274,6 +285,33 @@ function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
                 ? `Cancel add annotation`
                 : `Add annotation`}
             </button>
+            
+            {/* next and prev document */}
+            <button
+              onClick={() => {
+                if(doc_id !== prev_id){
+                  let prev_url = '/documents/' + prev_id;
+                  window.location.href=prev_url;
+                }else{
+                  alert('This is the first document of the project.')
+                }
+              }}
+            >
+              { `< Previous document`}
+            </button>
+            
+            <button
+              onClick={() => {
+                if(doc_id !== next_id){
+                  let next_url = '/documents/' + next_id;
+                  window.location.href=next_url;
+                }else{
+                  alert('This is the last document of the project.')
+                }
+              }}
+            >
+              { `Next document >`}
+            </button>
 
             {annoEditIsCreating && (
               <div className={style.button_action_description}>
@@ -288,6 +326,7 @@ function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
               ontology={ontology}
               selectedScopeId={selectedScopeId}
               selectedScopeIndex={selectedScopeIndex}
+              scopeConfig={projectConfig.scopeConfigs}
             />
 
             {selectedScopeId !== null && (
@@ -326,17 +365,17 @@ function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
 return (
     <div className={style.text_viewer}>
       <main className={style.layout_container}>
-          <LeftArea/>
+          {LeftArea()}
           <div className={`${style.center_area_container}
               ${annoEditIsCreating && style.is_adding_annotation}`}
           >
             <ToolBar/>
             <div className={`${style.text_area_container}`}>
-                <MiddleCenterArea/>
+                {MiddleCenterArea()}
             </div>
-            <MiddleBottomArea/>
+            {MiddleBottomArea()}
         </div>
-        <RightArea/>
+        {RightArea()}
       </main>
     </div>
   );

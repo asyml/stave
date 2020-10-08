@@ -2,7 +2,7 @@
   padding: 10px;
   border-bottom: 1px solid #ccc;
   display: flex;
-  height: 35px;
+  justify-content: space-between;
 }
 
 .layout_header span {

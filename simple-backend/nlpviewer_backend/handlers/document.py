@@ -438,3 +438,29 @@ def get_doc_ontology_pack(request, document_id):
     }
 
     return JsonResponse(docJson, safe=False)
+
+@require_login
+def get_next_document_id(request, document_id):
+
+    doc = Document.objects.get(pk=document_id) 
+    project = doc.project
+    docs = project.documents
+    next_doc = docs.filter(id__gt=document_id).first()
+    if next_doc:
+        next_id = next_doc.id
+    else:
+        next_id = document_id
+    return JsonResponse({'id': str(next_id)}, safe=False)
+
+@require_login
+def get_prev_document_id(request, document_id):
+
+    doc = Document.objects.get(pk=document_id) 
+    project = doc.project
+    docs = project.documents
+    prev_doc = docs.filter(id__lt=document_id).last()
+    if prev_doc:
+        prev_id = prev_doc.id
+    else:
+        prev_id = document_id
+    return JsonResponse({'id': str(prev_id)}, safe=False)

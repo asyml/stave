@@ -188,3 +188,25 @@ export interface IPlugin {
 export interface ILayout {
   [position: string] : string;
 }
+
+export interface ILegendAttributeConfig{
+  [attribute: string]: boolean;
+}
+
+export interface ILegendConfig{
+  is_selected: boolean;
+  attributes?: ILegendAttributeConfig;
+}
+
+export interface ILegendConfigs {
+  [key: string]: ILegendConfig;
+}
+
+export interface IScopeConfigs {
+  [key: string]: boolean;
+}
+
+export interface IProjectConfigs {
+  legendConfigs: ILegendConfigs;
+  scopeConfigs: IScopeConfigs;
+}
