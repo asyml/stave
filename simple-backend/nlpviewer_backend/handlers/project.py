@@ -11,6 +11,7 @@ from guardian.shortcuts import get_objects_for_user
 
 @require_login
 def listAll(request):
+    #TODO - not called before, thus not completed and verified
     """
     list all projects from the databse.
     accessible for user with 'view' permission
@@ -26,20 +27,35 @@ def list_user_projects(request):
     """
     list all projects of the current user.
     """
-    projects = request.user.projects.all().values()
-    # projects_view = list(get_objects_for_user(request.user, 'nlpviewer_backend.view_project').all().values())
-    # projects_user = list(request.user.projects.all().values())
-    # projects_edit = list(get_objects_for_user(request.user, 'nlpviewer_backend.change_project').all().values())
-    # projects_list = [projects_view, projects_user, projects_edit]
-    # print(type(projects_user[0]))
+    projects = request.user.projects.all().values('id', 'name')
+    projects_view = list(get_objects_for_user(request.user, 'nlpviewer_backend.viewer_project').all().values('id', 'name'))
+    projects_user = list(request.user.projects.all().values('id', 'name'))
+    projects_edit = list(get_objects_for_user(request.user, 'nlpviewer_backend.editor_project').all().values('id', 'name'))
 
-    # projects = set().union(projects_user, projects_view, projects_edit)
+    print(projects_view)
+    print(projects_edit)
+    print(projects_user)
+
+    #print(projects_user)
+    projects_list = projects_view + projects_user + projects_edit
+    # print(projects_list)
+    # print(list(projects))
+    # print(json.dumps(projects_view))
+    # print(projects_list)
+    # # print(type(projects_user[0]))
+    # print(projects_list)
+    # projects = set().union(projects_list)
+    
+    # print(projects)
+    #projects = set(projects_list)
     # print(type(projects_user))
     # print(type(projects_view))
 
-    # print(projects)
+    #print(projects)
+    # print(type(projects))
+    # print(json.dumps(list(projects)))
 
-    return JsonResponse(list(projects), safe=False)
+    return JsonResponse(projects_list, safe=False)
 
 
 
@@ -70,6 +86,7 @@ def edit(request, project_id):
     edit a project, query by id.
     accessible for users with 'change' permission and the owner of the project.
     """
+    #TODO - not called before, thus not completed and verified
     # if project doen't exist
     try:
         project = Project.objects.get(pk=project_id)
@@ -96,7 +113,7 @@ def query(request, project_id):
     query a project by id.
     accessible for users with 'view' permission and the owner of the project.
     """
-
+    #TODO - not called before, thus not completed and verified
     # if project doen't exist
     try:
         project = Project.objects.get(pk=project_id)
@@ -121,7 +138,9 @@ def query_docs(request, project_id):
         return HttpResponse('not found', status=404)
     
     # check permissions
-    if not request.user.has_perm('nlpviewer_backend.view_project') and request.user != project.user:
+    if (not request.user.has_perm('nlpviewer_backend.viewer_project', project) and
+     not request.user.has_perm('nlpviewer_backend.editor_project', project) and
+     request.user != project.user):
         return HttpResponse('forbidden', status=403)
     
     docs = project.documents.all().values()

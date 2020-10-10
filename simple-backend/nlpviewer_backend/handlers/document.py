@@ -29,7 +29,7 @@ def listAll(request):
          ...
         ]
     """
-    if not request.user.has_perm('nlpviewer_backend.view_document'):
+    if not request.user.has_perm('nlpviewer_backend.viewer_document'):
         return HttpResponse('forbidden', status=403)
     
     documents = Document.objects.all().values()
@@ -74,7 +74,7 @@ def edit(request, document_id):
     """Edits a document, queried by id.
     
     Edits a document, queried by id.
-    The function is accessible for users with 'change' permission of the project and the owner of the project
+    The function is accessible for users with 'editor' permission of the project and the owner of the project
 
     Args:
         document_id:
@@ -93,7 +93,7 @@ def edit(request, document_id):
         return HttpResponse('not found', status=404)
 
     # check permissions
-    if not request.user.has_perm('nlpviewer_backend.change_project', doc.project) and request.user != doc.project.user:
+    if not request.user.has_perm('nlpviewer_backend.editor_project', doc.project) and request.user != doc.project.user:
         return HttpResponse('forbidden', status=403)
     
     received_json_data = json.loads(request.body)
@@ -131,7 +131,7 @@ def query(request, document_id):
     """Retrieves a document by id.
     
     Retrieves a document by id.
-    The function is accessible for users with 'view' permission of the project and the owner of the project.
+    The function is accessible for users with 'view' or 'editor' permission of the project and the owner of the project.
 
     Args:
         document_id:
@@ -150,7 +150,9 @@ def query(request, document_id):
         return HttpResponse('not found', status=404)
 
     # check permissions
-    if not request.user.has_perm('nlpviewer_backend.view_project', doc.project) and request.user != doc.project.user:
+    if (not request.user.has_perm('nlpviewer_backend.viewer_project', doc.project) and
+     not request.user.has_perm('nlpviewer_backend.editor_project', doc.project) and
+     request.user != doc.project.user):
         return HttpResponse('forbidden', status=403)
 
     docJson = model_to_dict(
@@ -193,7 +195,7 @@ def edit_text(request, document_id):
     """Edits the text pack of a document, queried by id.
     
     Edits the text pack of a document, queried by id.
-    The function is accessible for users with 'change' permission of the project and the owner of the project.
+    The function is accessible for users with 'editor' permission of the project and the owner of the project.
     Args:
         document_id:
             The id of the document.
@@ -208,7 +210,7 @@ def edit_text(request, document_id):
         return HttpResponse('not found', status=404)
 
     # check permissions
-    if not request.user.has_perm('nlpviewer_backend.change_project', doc.project) and request.user != doc.project.user:
+    if not request.user.has_perm('nlpviewer_backend.editor_project', doc.project) and request.user != doc.project.user:
         return HttpResponse('forbidden', status=403)
 
     data = json.loads(request.body)
@@ -227,7 +229,7 @@ def new_annotation(request, document_id):
     """Adds a annotation, queried by document id.
     
     Edits the text pack of a document, queried by id.
-    The function is accessible for users with 'change' permission of the project and the owner of the project.
+    The function is accessible for users with 'editor' permission of the project and the owner of the project.
     Args:
         document_id:
             The id of the document.
@@ -268,7 +270,7 @@ def new_annotation(request, document_id):
         return HttpResponse('not found', status=404)
 
     # check permissions
-    if not request.user.has_perm('nlpviewer_backend.change_project', doc.project) and request.user != doc.project.user:
+    if not request.user.has_perm('nlpviewer_backend.editor_project', doc.project) and request.user != doc.project.user:
         return HttpResponse('forbidden', status=403)
 
 
@@ -305,7 +307,7 @@ def edit_annotation(request, document_id, annotation_id):
     """Edits an annotation, queried by document id and annotation id.
     
     Edits an annotation, queried by document id and annotation id.
-    The function is accessible for users with 'change' permission of the project and the owner of the project.
+    The function is accessible for users with 'editor' permission of the project and the owner of the project.
 
     Args:
         document_id:
@@ -323,7 +325,7 @@ def edit_annotation(request, document_id, annotation_id):
         return HttpResponse('not found', status=404)
 
     # check permissions
-    if not request.user.has_perm('nlpviewer_backend.change_project', doc.project) and request.user != doc.project.user:
+    if not request.user.has_perm('nlpviewer_backend.editor_project', doc.project) and request.user != doc.project.user:
         return HttpResponse('forbidden', status=403)
 
 
@@ -347,7 +349,7 @@ def delete_annotation(request, document_id, annotation_id):
     """Deletes an annotation, queried by document id and annotation id.
     
     Deletes an annotation, queried by document id and annotation id.
-    The function is accessible for users with 'change' permission of the project and the owner of the project.
+    The function is accessible for users with 'editor' permission of the project and the owner of the project.
 
     Args:
         document_id:
@@ -395,7 +397,7 @@ def new_link(request, document_id):
     """Adds a link, query by document id.
     
     Adds a link, query by document id.
-    The function is accessible for users with 'change' permission of the project and the owner of the project.
+    The function is accessible for users with 'editor' permission of the project and the owner of the project.
 
     Args:
         document_id:
@@ -433,7 +435,7 @@ def new_link(request, document_id):
         return HttpResponse('not found', status=404)
 
     # check permissions
-    if not request.user.has_perm('nlpviewer_backend.change_project', doc.project) and request.user != doc.project.user:
+    if not request.user.has_perm('nlpviewer_backend.editor_project', doc.project) and request.user != doc.project.user:
         return HttpResponse('forbidden', status=403)
 
     received_json_data = json.loads(request.body)
@@ -456,7 +458,7 @@ def edit_link(request, document_id, link_id):
     """Edits a link, queried by document id and link id.
     
     Edits a link, queried by document id and link id.
-    The function is accessible for users with 'change' permission of the project and the owner of the project.
+    The function is accessible for users with 'editor' permission of the project and the owner of the project.
 
     Args:
         document_id:
@@ -474,7 +476,7 @@ def edit_link(request, document_id, link_id):
         return HttpResponse('not found', status=404)
 
     # check permissions
-    if not request.user.has_perm('nlpviewer_backend.change_project', doc.project) and request.user != doc.project.user:
+    if not request.user.has_perm('nlpviewer_backend.editor_project', doc.project) and request.user != doc.project.user:
         return HttpResponse('forbidden', status=403)
 
     received_json_data = json.loads(request.body)
@@ -498,7 +500,7 @@ def delete_link(request, document_id, link_id):
     """Deletes a link, queried by document id and link id.
     
     Deletes a link, queried by document id and link id.
-    The function is accessible for users with 'change' permission of the project and the owner of the project.
+    The function is accessible for users with 'editor' permission of the project and the owner of the project.
 
     Args:
         document_id:
@@ -516,7 +518,7 @@ def delete_link(request, document_id, link_id):
         return HttpResponse('not found', status=404)
 
     # check permissions
-    if not request.user.has_perm('nlpviewer_backend.change_project', doc.project) and request.user != doc.project.user:
+    if not request.user.has_perm('nlpviewer_backend.editor_project', doc.project) and request.user != doc.project.user:
         return HttpResponse('forbidden', status=403)
 
     docJson = model_to_dict(doc)
@@ -538,7 +540,7 @@ def get_doc_ontology_pack(request, document_id):
     """Gets document pack + ontology by document id
     
     Deletes a link, queried by document id and link id.
-    The function is accessible for users with 'view' permission of the project and the owner of the project.
+    The function is accessible for users with 'view' or 'editor' permission of the project and the owner of the project.
 
     Args:
         document_id:
@@ -561,7 +563,9 @@ def get_doc_ontology_pack(request, document_id):
         return HttpResponse('not found', status=404)
 
     # check permissions
-    if not request.user.has_perm('nlpviewer_backend.view_project', doc.project) and request.user != doc.project.user:
+    if (not request.user.has_perm('nlpviewer_backend.viewer_project', doc.project) and
+     not request.user.has_perm('nlpviewer_backend.editor_project', doc.project) and
+     request.user != doc.project.user):
         return HttpResponse('forbidden', status=403)
 
 
@@ -578,7 +582,7 @@ def get_next_document_id(request, document_id):
     """Gets the id of the next document, by the current document's id
     
     Gets the id of the next document, by the current document's id
-    The function is accessible for users with 'view' permission of the project and the owner of the project.
+    The function is accessible for users with 'view' or 'editor' permission of the project and the owner of the project.
 
     Args:
         document_id:
@@ -601,7 +605,9 @@ def get_next_document_id(request, document_id):
         return HttpResponse('not found', status=404)
 
     # check permissions
-    if not request.user.has_perm('nlpviewer_backend.view_project', doc.project) and request.user != doc.project.user:
+    if (not request.user.has_perm('nlpviewer_backend.viewer_project', doc.project) and
+     not request.user.has_perm('nlpviewer_backend.editor_project', doc.project) and
+     request.user != doc.project.user):
         return HttpResponse('forbidden', status=403)
 
     docs = project.documents
@@ -638,6 +644,12 @@ def get_prev_document_id(request, document_id):
         project = doc.project
     except ObjectDoesNotExist: 
         return HttpResponse('not found', status=404)
+    
+    # check permissions
+    if (not request.user.has_perm('nlpviewer_backend.viewer_project', doc.project) and
+      not request.user.has_perm('nlpviewer_backend.editor_project', doc.project) and
+      request.user != doc.project.user):
+        return HttpResponse('forbidden', status=403)
 
     docs = project.documents
     prev_doc = docs.filter(id__lt=document_id).last()
