@@ -32,28 +32,7 @@ def list_user_projects(request):
     projects_user = list(request.user.projects.all().values('id', 'name'))
     projects_edit = list(get_objects_for_user(request.user, 'nlpviewer_backend.editor_project').all().values('id', 'name'))
 
-    print(projects_view)
-    print(projects_edit)
-    print(projects_user)
-
-    #print(projects_user)
-    projects_list = projects_view + projects_user + projects_edit
-    # print(projects_list)
-    # print(list(projects))
-    # print(json.dumps(projects_view))
-    # print(projects_list)
-    # # print(type(projects_user[0]))
-    # print(projects_list)
-    # projects = set().union(projects_list)
-    
-    # print(projects)
-    #projects = set(projects_list)
-    # print(type(projects_user))
-    # print(type(projects_view))
-
-    #print(projects)
-    # print(type(projects))
-    # print(json.dumps(list(projects)))
+    projects_list = projects_user + projects_view +  projects_edit
 
     return JsonResponse(projects_list, safe=False)
 

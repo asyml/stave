@@ -68,7 +68,7 @@ def create(request):
 
     return JsonResponse({"id": doc.id}, safe=False)
 
-
+# TODO - not called, thus not verified
 @require_login
 def edit(request, document_id):
     """Edits a document, queried by id.
@@ -105,7 +105,7 @@ def edit(request, document_id):
     docJson = model_to_dict(doc)
     return JsonResponse(docJson, safe=False)
 
-# TODO - need rewrite 
+# TODO - need rewrite and not called
 @require_login
 def edit_ontology(request, document_id):
     try:
@@ -292,7 +292,7 @@ def new_annotation(request, document_id):
 
     return JsonResponse({"id": annotation_id}, safe=False)
 
-
+# TODO - not called, thus not verified
 @require_login
 def edit_annotation(request, document_id, annotation_id):
     received_json_data = json.loads(request.body)
