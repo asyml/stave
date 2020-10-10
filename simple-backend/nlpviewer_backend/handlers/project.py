@@ -22,6 +22,7 @@ def listAll(request):
     projects = Project.objects.all().values()
     return JsonResponse(list(projects), safe=False)
 
+# TODO - may be separated into 3 functions in the future.
 @require_login
 def list_user_projects(request):
     """
@@ -58,14 +59,14 @@ def create(request):
 
     return JsonResponse({"id": project.id}, safe=False)
 
-
+#TODO - not called before, thus not completed and verified
 @require_login
 def edit(request, project_id):
     """
     edit a project, query by id.
     accessible for users with 'change' permission and the owner of the project.
     """
-    #TODO - not called before, thus not completed and verified
+    
     # if project doen't exist
     try:
         project = Project.objects.get(pk=project_id)
@@ -85,14 +86,14 @@ def edit(request, project_id):
     docJson = model_to_dict(project)
     return JsonResponse(docJson, safe=False)
 
-
+#TODO - not called before, thus not completed and verified
 @require_login
 def query(request, project_id):
     """
     query a project by id.
     accessible for users with 'view' permission and the owner of the project.
     """
-    #TODO - not called before, thus not completed and verified
+    
     # if project doen't exist
     try:
         project = Project.objects.get(pk=project_id)
