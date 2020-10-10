@@ -7,6 +7,7 @@ import uuid
 import json
 from ..models import Project, Document, User
 from ..lib.require_login import require_login, require_admin
+from guardian.shortcuts import get_objects_for_user
 
 @require_login
 def listAll(request):
@@ -26,6 +27,18 @@ def list_user_projects(request):
     list all projects of the current user.
     """
     projects = request.user.projects.all().values()
+    # projects_view = list(get_objects_for_user(request.user, 'nlpviewer_backend.view_project').all().values())
+    # projects_user = list(request.user.projects.all().values())
+    # projects_edit = list(get_objects_for_user(request.user, 'nlpviewer_backend.change_project').all().values())
+    # projects_list = [projects_view, projects_user, projects_edit]
+    # print(type(projects_user[0]))
+
+    # projects = set().union(projects_user, projects_view, projects_edit)
+    # print(type(projects_user))
+    # print(type(projects_view))
+
+    # print(projects)
+
     return JsonResponse(list(projects), safe=False)
 
 

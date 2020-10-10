@@ -18,6 +18,12 @@ class Project(models.Model):
         blank=True        
     )
 
+    # class Meta:
+    #     permissions = (
+    #         ('viewer_project', 'Can view project'),
+    #         ('editor_project', 'Can edit project'),
+    #     )
+
 class Document(models.Model):
     # content: textPack: text body + annotation
 
