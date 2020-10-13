@@ -15,11 +15,9 @@ export function transformPack(
     constraints: [],
     ...camelCaseDeep(config),
   };
-
   const formatedAnnotations = annotations
     .map((a: any) => {
       const legendName = getLegendName(a);
-
       return {
         span: {
           begin: a['py/state']._span.begin,
@@ -31,11 +29,9 @@ export function transformPack(
       };
     })
     .filter(Boolean);
-
   const links = packData.links
     .map((link: any) => {
       const legendName = getLegendName(link);
-
       return {
         id: link['py/state']._tid + '',
         fromEntryId: link['py/state']._parent + '',
@@ -65,7 +61,6 @@ export function transformPack(
     groups: groups,
     attributes: packData.meta,
   };
-
   return [pack, configTransformed] as any;
 }
 

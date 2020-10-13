@@ -49,8 +49,11 @@ urlpatterns = [
          document.delete_link),
 
     path('api/crossdocs', crossdoc.listAll),
-    path('api/crossdocs/<int:crossDoc_id>', crossdoc.query),
-    path('api/crossdocs/<int:crossDoc_id>/links/new', crossdoc.new_cross_doc_link),
-    path('api/crossdocs/<int:crossDoc_id>/links/<int:link_id>/delete', crossdoc.delete_cross_doc_link),
+    path('api/crossdocs/next-crossdoc', crossdoc.next_crossdoc),
+    path('api/crossdocs/<str:crossDoc_Hash>', crossdoc.query),
+    path('api/crossdocs/<str:crossDoc_Hash>/links/new', crossdoc.new_cross_doc_link),
+    path('api/crossdocs/<str:crossDoc_Hash>/links/<int:link_id>/delete', crossdoc.delete_cross_doc_link),
+    
+
     path('admin/', admin.site.urls),
 ]

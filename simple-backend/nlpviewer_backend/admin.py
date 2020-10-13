@@ -1,6 +1,6 @@
 from django.contrib import admin
-from nlpviewer_backend.models import User, Document, CrossDoc, CrossDocAnnotation
+from nlpviewer_backend.models import User, Document, CrossDoc, AnnotationLog
 admin.site.register(User)
 admin.site.register(Document)
 admin.site.register(CrossDoc)
-admin.site.register(CrossDocAnnotation)
+admin.site.register(AnnotationLog)

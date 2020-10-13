@@ -18,7 +18,9 @@ function LoginAmazonTurk() {
     e.preventDefault();
     loginTurk(turkID)
       .then(json_data => {
-        history.push( '/crossdocs/'+json_data.id);
+        history.push( {
+          pathname: '/crossdocs/'+json_data.id,
+        });
       })
       .catch(e => {
         setError('You are not assigned to any tasks');

@@ -15,7 +15,8 @@
 .text_node_container {
   white-space: pre-wrap;
   position: relative;
-  line-height: 20px;
+  line-height: 25px;
+  font-size: 1.1rem;
 }
 
 .annotation_line_toggle {

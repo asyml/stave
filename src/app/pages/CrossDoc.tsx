@@ -12,7 +12,7 @@ import {
   addCrossLink,
   deleteCrossLink,
   fetchCrossDoc,
-  updateCrossLink
+  updateCrossLink, nextCrossDoc
 } from '../lib/api';
 
 
@@ -23,7 +23,7 @@ function CrossDoc() {
   const [multiPack, setMultiPack] = useState<IMultiPack|null>(null);
   const [multiPackQuestion, setMultiPackQuestion] = useState<IMultiPackQuestion|null>(null);
   const [forteID, setForteID]  = useState<string>("");
-  const [nextID, setNextID] = useState<string>("None");
+  const [finished, setFinished] = useState<boolean>(false);
   const [secretCode, setSecretCode] = useState<string>("");
   const history = useHistory();
   useEffect(() => {
@@ -45,7 +45,7 @@ function CrossDoc() {
         setMultiPack(MultiPack);
         // const MultiPackOntology = transformMultiPackOntology(data.crossDocPack.ontology);
         setMultiPackQuestion(MultiPackQuestion);
-        setNextID(data.nextID);
+        // setNextID(data.nextID);
         setSecretCode(data.secret_code);
       });
     }
@@ -62,7 +62,7 @@ function CrossDoc() {
       textPackB={packB}
       multiPack={multiPack}
       multiPackQuestion={multiPackQuestion}
-      nextID = {nextID}
+      finished = {finished}
       secretCode = {secretCode}
       onEvent={event => {
         if (!id) return;
@@ -86,6 +86,19 @@ function CrossDoc() {
           updateCrossLink(id, finalAPIData).then((return_object ) => {
             setMultiPack(transformMultiPack(return_object.crossDocPack.textPack, forteID));
           });
+        } else if (event.type == 'next-crossdoc') {
+          nextCrossDoc()
+            .then(json_data => {
+              if (!json_data.finished) {
+                history.push('/crossdocs/' + json_data.id);
+              } else {
+                setSecretCode(json_data.secret_code);
+                setFinished(true);
+              }
+            })
+            .catch(e => {
+              console.log("error in next cross doc");
+            });
         }
 
       }}

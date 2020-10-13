@@ -3,7 +3,7 @@ from django.urls import include, path
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.forms import model_to_dict
 import json
-from ..models import User, CrossDoc, CrossDocAnnotation
+from ..models import User, CrossDoc
 from collections import defaultdict
 
 def login(request):
@@ -35,32 +35,31 @@ def logout(request):
 
 
 #### only for cross doc login
-
 def login_amazon_turk(request):
 
-    # # this is only for testing !!!
-    # request.session["tasks"] = "1-2"
+    # this is only for testing !!!
+    for key in list(request.session.keys()):
+        del request.session[key]
+    idHashs = CrossDoc.objects.all()[:2]
+    idHashs = [item.idHash for item in idHashs]
+    request.session["tasks"] = idHashs[0] + "-" + idHashs[1]
+
     passed = check_url_parameters(request.session["tasks"])
 
     if not passed:
         return bad_request(request, None, template_name='400.html')
 
-    # debug need to comment out when in production
     print(request.body)
     received_json_data = json.loads(request.body)
     turkID = received_json_data.get('turkID')
     request.session['forteID'] = "stave."+turkID
 
-    # pk = get_min_count_cross_doc(request.session['forteID'])
     request.session["current_task_index"] = 0
-    pk = request.session["tasks"].split("-")[0]
+    current_task = request.session["tasks"].split("-")[0]
 
-    print("get pk", pk)
+    print("now working on:", current_task)
 
-    # if pk == -1:
-    #     return HttpResponseBadRequest()
-
-    to_return = {"id": str(pk)}
+    to_return = {"id": str(current_task), "forteID":request.session['forteID']}
 
     return JsonResponse(to_return, safe=False)    
 
@@ -87,18 +86,9 @@ def get_min_count_cross_doc(forteID):
         if len(mapping) < 3 and forteID not in mapping:
             return item.pk
     return -1
-    # min_count = 2**14
-    # min_name = None
-    # for name in template_names:
-    #     mylist = CrossDocAnnotation.objects.filter(name = name, turkID=turkID)
-    #     anno_before = True if len(mylist)>0 else False
-    #     print(name, anno_before)
-    #     if (not anno_before) and (annotated_count[name] < min_count):
-    #         min_count = annotated_count[name]
-    #         min_name = name
-    # return min_name
 
-# check parameters are integers
+
+# check parameters are sha256 hash (64 characters)
 def check_url_parameters(tasks):
     print(tasks)
     if len(tasks) == 0:
@@ -106,7 +96,8 @@ def check_url_parameters(tasks):
     tasks = tasks.split("-")
     try:
         for task in tasks:
-            temp = int(task)
+            if len(task) != 64:
+                return False
     except:
         print(tasks)
         return False

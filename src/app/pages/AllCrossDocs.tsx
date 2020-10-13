@@ -44,7 +44,7 @@ function AllCrossDocs() {
         {docs.map(d => (
           <ul key={d.id}>
             <li>
-              <Link to={`/crossdocsviewer/${d.id}`}>{d.name}</Link>{' '}
+              <Link to={`/crossdocsviewer/${d.nameHash}`}>{d.name}</Link>{' '}
               {/*<button onClick={() => handleDelete(d.id)}>X</button>*/}
             </li>
           </ul>

@@ -187,6 +187,10 @@ export function fetchCrossDoc(id: string): Promise<APICrossDoc>  {
   return fetch(`/api/crossdocs/${id}`).then(r => r.json());
 }
 
+export function nextCrossDoc() {
+  return postData(`/api/crossdocs/next-crossdoc`, {}).then(r => r.json());
+}
+
 
 let w: any = window;
 

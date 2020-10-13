@@ -28,7 +28,7 @@ export interface CrossDocProp {
   nextID: string;
   secretCode: string;
 }
-export default function AnnotationViewer(props: CrossDocProp) {
+export default function IndexAnnotationViewer(props: CrossDocProp) {
 
   const history = useHistory();
 
@@ -52,8 +52,8 @@ export default function AnnotationViewer(props: CrossDocProp) {
 
   const all_events_A : IAnnotation[] = annotationsA.filter((entry:IAnnotation)=>entry.legendId === cross_doc_event_legend);
   const all_events_B : IAnnotation[] = annotationsB.filter((entry:IAnnotation)=> entry.legendId === cross_doc_event_legend);
-  textPackA.annotations = all_events_A;
-  textPackB.annotations = all_events_B;
+  // textPackA.annotations = all_events_A;
+  // textPackB.annotations = all_events_B;
 
 
   const [AnowOnEventIndex, setANowOnEventIndex] =  useState<number>(0);
@@ -170,7 +170,9 @@ export default function AnnotationViewer(props: CrossDocProp) {
 
             <div className={`${style.text_area_container}`}>
               <TextAreaA
-                  textPack={textPackA}
+                  text = {textPackA.text}
+                  annotations={all_events_A}
+                  NER={[]}
                   AnowOnEventIndex={AnowOnEventIndex}
               />
             </div>
@@ -181,7 +183,9 @@ export default function AnnotationViewer(props: CrossDocProp) {
           >
             <div className={`${style.text_area_container}`}>
               <TextAreaB
-                  textPack={textPackB}
+                  text = {textPackB.text}
+                  annotations={all_events_B}
+                  NER = {[]}
                   AnowOnEventIndex={AnowOnEventIndex}
                   BnowOnEventIndex={-1}
                   BSelectedIndex={BSelectedIndex}

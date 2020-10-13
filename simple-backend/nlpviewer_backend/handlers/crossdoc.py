@@ -5,13 +5,14 @@ from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.forms import model_to_dict
 import uuid
 import json
-from ..models import Document, User, CrossDocAnnotation, CrossDoc
+from ..models import Document, User, CrossDoc, AnnotationLog
 from ..lib.require_login import require_login
 import os
 import re
-from ..apps import read_index_file, pack_index_path
+from ..apps import pack_index_path
 from copy import deepcopy
-from ..utils import gen_secret_code
+from ..utils import gen_secret_code, read_index_file
+from datetime import datetime
 
 
 default_type = "edu.cmu.CrossEventRelation"
@@ -109,9 +110,9 @@ def extract_doc_id_from_crossdoc(cross_doc):
     doc_external_ids = text_pack["py/state"]["_pack_ref"]
     doc_external_id_0 = doc_external_ids[0]
     doc_external_id_1 = doc_external_ids[1]
-    extid_to_name = read_index_file(pack_index_path)
-    doc_0 = Document.objects.get(name=extid_to_name[doc_external_id_0])
-    doc_1 = Document.objects.get(name=extid_to_name[doc_external_id_1])
+    # extid_to_name = read_index_file(pack_index_path)
+    doc_0 = Document.objects.get(packID=doc_external_id_0)
+    doc_1 = Document.objects.get(packID=doc_external_id_1)
     return doc_0, doc_1
 
 
@@ -121,99 +122,48 @@ def listAll(request):
 
 
 
-# def query(request, crossDocAnno_id):
-#     cross_doc = CrossDocAnnotation.objects.get(pk=crossDocAnno_id)
-#     doc_0, doc_1 = extract_doc_id_from_crossdoc(cross_doc)
 
-#     # next_cross_doc = CrossDoc.objects.filter(pk__gt=crossDoc_id).order_by('pk').first()
-#     # if next_cross_doc == None:
-#     #     next_cross_doc_id = "-1"
-#     # else:
-#     #     next_cross_doc_id = str(next_cross_doc.pk)
-#     to_return = {"crossDocPack":model_to_dict(cross_doc),"_parent": model_to_dict(doc_0), "_child":model_to_dict(doc_1)}
-
-#     return JsonResponse(to_return, safe=False)
-
-def query(request, crossDoc_id):
-    cross_doc = CrossDoc.objects.get(pk=crossDoc_id)
+def query(request, crossDoc_Hash):
+    cross_doc = CrossDoc.objects.get(idHash=crossDoc_Hash)
     doc_0, doc_1 = extract_doc_id_from_crossdoc(cross_doc)
-    secret_code = ""
-    forteID = ""
-    next_pk = -1
+    forteID = request.session.get('forteID', "admin_viewer")
     if "forteID" in request.session:
-        forteID = request.session.get('forteID', "admin_viewer")
-        print(forteID)
-        secret_code = ""
-        if len(request.session["tasks"].split("-")) > int(request.session["current_task_index"])+1:
-            next_pk = request.session["tasks"].split("-")[int(request.session["current_task_index"])+1]
-            request.session["current_task_index"] += 1
-        else:
-            next_pk = "None"
-            secret_code = gen_secret_code(request.session["tasks"])
-    # next_cross_doc = CrossDoc.objects.filter(pk__gt=crossDoc_id).order_by('pk').first()
-    # if next_cross_doc == None:
-    #     next_cross_doc_id = "-1"
-    # else:
-    #     next_cross_doc_id = str(next_cross_doc.pk)
-    to_return = {"crossDocPack":model_to_dict(cross_doc),"_parent": model_to_dict(doc_0), "_child":model_to_dict(doc_1), "forteID":forteID, "nextID":str(next_pk), "secret_code":secret_code}
+        request.session["startTime"] = str(datetime.now())
+    to_return = {"crossDocPack":model_to_dict(cross_doc),"_parent": model_to_dict(doc_0), "_child":model_to_dict(doc_1), "forteID":forteID}
+    return JsonResponse(to_return, safe=False)
 
+# called only when user click next event
+def next_crossdoc(request):
+    current_task = request.session["tasks"].split("-")[request.session["current_task_index"]]
+    cross_doc = CrossDoc.objects.get(idHash=current_task)
+    startTime = datetime.fromisoformat(request.session["startTime"])
+    endTime = datetime.now()
+    totalTime = (endTime-startTime).total_seconds()
+    log = AnnotationLog(forteID = request.session["forteID"], crossDocName = cross_doc.name, \
+        startTime = startTime, endTime = endTime, totalTime =  totalTime)
+    log.save()
+
+    secret_code = ""
+    finished = None
+    print(request.session["tasks"], request.session["current_task_index"])
+    if len(request.session["tasks"].split("-"))-1 > int(request.session["current_task_index"]):
+        next_pk = request.session["tasks"].split("-")[int(request.session["current_task_index"])+1]
+        request.session["current_task_index"] += 1
+        finished = False
+    else:
+        next_pk = "None"
+        secret_code = gen_secret_code(request.session["tasks"])
+        finished = True
+    to_return = {"finished": finished, "secret_code":secret_code, "id":str(next_pk)}
     return JsonResponse(to_return, safe=False)
 
 
 
-# @require_login
-# def new_cross_doc_link(request, crossDoc_id):
-
-#     crossDoc = CrossDoc.objects.get(pk=crossDoc_id)
-#     docJson = model_to_dict(crossDoc)
-#     textPackJson = json.loads(docJson['textPack'])
-    
-
-#     received_json_data = json.loads(request.body)
-#     link = received_json_data.get('data')
-#     print(link)
-#     link_id = find_next_tid(textPackJson)
-#     link = format_cross_doc_helper(link, link_id)
-
-#     textPackJson['py/state']['links'].append(link)
-#     crossDoc.textPack = json.dumps(textPackJson)
-#     crossDoc.save()
-#     print(link_id)
-#     return JsonResponse({"id": link_id}, safe=False)
 
 
+def new_cross_doc_link(request, crossDoc_Hash):
 
-# def new_cross_doc_link(request, crossDocAnno_id):
-
-#     crossDoc = CrossDocAnnotation.objects.get(pk=crossDocAnno_id)
-#     docJson = model_to_dict(crossDoc)
-#     textPackJson = json.loads(docJson['textPack'])
-    
-
-#     received_json_data = json.loads(request.body)
-#     data = received_json_data.get('data')
-#     link = data["link"]
-#     print(link)
-
-#     link_id = find_and_advance_next_tid(textPackJson)
-#     link = format_cross_doc_helper(link, link_id)
-
-#     # delete possible duplicate link before
-#     parent_event_id = link["py/state"]["_parent"]["py/tuple"][1]
-#     child_event_id = link["py/state"]["_child"]["py/tuple"][1]
-#     delete_link(textPackJson, parent_event_id, child_event_id)
-
-#     # append it to the database
-#     textPackJson['py/state']['links'].append(link)
-#     crossDoc.textPack = json.dumps(textPackJson)
-#     crossDoc.save()
-#     print(link_id)
-#     return JsonResponse({"crossDocPack": model_to_dict(crossDoc)}, safe=False)
-
-
-def new_cross_doc_link(request, crossDoc_id):
-
-    crossDoc = CrossDoc.objects.get(pk=crossDoc_id)
+    crossDoc = CrossDoc.objects.get(idHash=crossDoc_Hash)
     docJson = model_to_dict(crossDoc)
     textPackJson = json.loads(docJson['textPack'])
     forteID = request.session['forteID']
@@ -246,39 +196,14 @@ def new_cross_doc_link(request, crossDoc_id):
     return JsonResponse({"crossDocPack": model_to_dict(crossDoc)}, safe=False)
 
 
-# def update_cross_doc_link(request, crossDocAnno_id):
-
-#     success = False
-
-#     crossDoc = CrossDocAnnotation.objects.get(pk=crossDocAnno_id)
-#     docJson = model_to_dict(crossDoc)
-#     textPackJson = json.loads(docJson['textPack'])
-    
-
-#     received_json_data = json.loads(request.body)
-#     data = received_json_data.get('data')
-#     link = data["link"]
-#     if ("_tid" not in link["py/state"] or link["py/state"]["_tid"] is None):
-#         success = False
-#     else:
-#         for i in range(len(textPackJson['py/state']['links'])):
-#             previous_link = textPackJson['py/state']['links'][i]
-#             if link['py/state']["_tid"] == previous_link['py/state']["_tid"]:
-#                 textPackJson['py/state']['links'][i] = link
-#                 crossDoc.textPack = json.dumps(textPackJson)
-#                 crossDoc.save()
-#                 success = True
-#     return JsonResponse({"crossDocPack": model_to_dict(crossDoc), "update_success": success}, safe=False)
 
 
-
-
-def delete_cross_doc_link(request, crossDoc_id, link_id):
+def delete_cross_doc_link(request, crossDoc_Hash, link_id):
     """
     request handler, delete by tid
     """
 
-    crossDoc = CrossDoc.objects.get(pk=crossDoc_id)
+    crossDoc = CrossDoc.objects.get(idHash=crossDoc_Hash)
     docJson = model_to_dict(crossDoc)
     textPackJson = json.loads(docJson['textPack'])
     forteID = request.session['forteID']

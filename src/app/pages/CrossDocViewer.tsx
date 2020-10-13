@@ -8,7 +8,7 @@ import {useParams, useHistory} from 'react-router-dom';
 import {
   fetchCrossDoc,
 } from '../lib/api';
-import AnnotationViewer from "../../crossviewer/AnnotationViewer";
+import IndexAnnotationViewer from "../../crossviewer/indexAnnotationViewer";
 
 
 function CrossDocViewer() {
@@ -34,14 +34,11 @@ function CrossDocViewer() {
             data._child.ontology
         );
         setPackB(singlePackFromAPI1);
-        setForteID(data.forteID);
         const MultiPack = transformMultiPackAnnoViewer(data.crossDocPack.textPack);
         const MultiPackQuestion = transformMultiPackQuestion(data.crossDocPack.textPack);
         setMultiPack(MultiPack);
         // const MultiPackOntology = transformMultiPackOntology(data.crossDocPack.ontology);
         setMultiPackQuestion(MultiPackQuestion);
-        setNextID(data.nextID);
-        setSecretCode(data.secret_code);
       });
     }
   }, [id]);
@@ -51,7 +48,7 @@ function CrossDocViewer() {
   }
 
   return (
-    <AnnotationViewer
+    <IndexAnnotationViewer
       key={id}
       textPackA={packA}
       textPackB={packB}

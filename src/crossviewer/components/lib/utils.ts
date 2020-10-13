@@ -20,7 +20,6 @@ export function transformMultiPackQuestion(rawOntology: string): IMultiPackQuest
         return question
         });
 
-    console.log(data['py/state']["generics"]);
     //@ts-ignore
     const suggest_questions =  data['py/state']["generics"].filter(item => item["py/object"] === suggest_question_entry_name).map(raw_question => {
         const question : IQuestion = {
@@ -45,13 +44,11 @@ export function transformMultiPack (rawPack: string, forteID: string): IMultiPac
     const data = JSON.parse(rawPack);
     const packData = data['py/state'];
     const [doc0, doc1] = packData['_pack_ref'];
-    console.log(forteID);
 
     var annotated_tids : number[] = [];
     if (forteID in packData['creation_records']) {
         annotated_tids = packData['creation_records'][forteID]["py/set"];
     }
-    console.log(annotated_tids);
 
     const linkData = packData['links'];
     const crossLinks :ICrossDocLink[]= linkData.flatMap((a: any)=> {
@@ -93,8 +90,7 @@ export function transformMultiPack (rawPack: string, forteID: string): IMultiPac
             return [];
         }
     });
-    console.log(crossLinks);
-    console.log(suggestedLinks);
+
     return {
         _parent_doc: doc0,
         _child_doc: doc1,

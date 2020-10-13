@@ -35,7 +35,6 @@ export interface ISinglePack {
   annotations: IAnnotation[];
   links: ILink[];
   groups: IGroup[];
-
   attributes: IAttributes;
 }
 

@@ -52,3 +52,10 @@ export interface IAllRangesForOneType {
     parent_ranges: IRange[];
     child_ranges: IRange[];
 }
+
+export interface I {
+    evidenceTypeID: number;
+    evidenceTypeName: string;
+    parent_ranges: IRange[];
+    child_ranges: IRange[];
+}

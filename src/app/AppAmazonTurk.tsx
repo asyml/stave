@@ -18,7 +18,7 @@ import { ontology } from './mock-config-data';
 import NLPViewer from '../nlpviewer';
 import groupPlugin from '../plugins/Group';
 import AllCrossDocs from "./pages/AllCrossDocs";
-import AnnotationViewer from "../crossviewer/AnnotationViewer";
+import IndexAnnotationViewer from "../crossviewer/indexAnnotationViewer";
 import CrossDocViewer from "./pages/CrossDocViewer";
 
 function AppAmazonTurk() {

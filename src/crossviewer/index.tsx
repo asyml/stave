@@ -12,7 +12,7 @@ import {
   ICrossDocLink,
   IMultiPack, IMultiPackQuestion,
 } from "./components/lib/interfaces";
-import {cross_doc_event_legend} from "./components/lib/definitions";
+import {cross_doc_event_legend, ner_legend} from "./components/lib/definitions";
 // @ts-ignore
 import { useAlert } from 'react-alert'
 import {useHistory} from "react-router";
@@ -25,16 +25,15 @@ export interface CrossDocProp {
   multiPack: IMultiPack;
   multiPackQuestion:  IMultiPackQuestion;
   onEvent: OnEventType;
-  nextID: string;
+  finished: boolean;
   secretCode: string;
 }
 export default function CrossViewer(props: CrossDocProp) {
 
   const history = useHistory();
 
-  const {textPackA, textPackB, multiPack, multiPackQuestion, onEvent, nextID, secretCode} = props;
+  const {textPackA, textPackB, multiPack, multiPackQuestion, onEvent, finished, secretCode} = props;
 
-  console.log(nextID);
 
   let annotationsA = textPackA.annotations;
   let annotationsB = textPackB.annotations;
@@ -43,8 +42,10 @@ export default function CrossViewer(props: CrossDocProp) {
 
   const all_events_A : IAnnotation[] = annotationsA.filter((entry:IAnnotation)=>entry.legendId === cross_doc_event_legend);
   const all_events_B : IAnnotation[] = annotationsB.filter((entry:IAnnotation)=>entry.legendId === cross_doc_event_legend);
-  textPackA.annotations = all_events_A;
-  textPackB.annotations = all_events_B;
+  const all_NER_A : IAnnotation[] = annotationsA.filter((entry:IAnnotation)=>entry.legendId === ner_legend);
+  const all_NER_B : IAnnotation[] = annotationsB.filter((entry:IAnnotation)=>entry.legendId === ner_legend);
+  // textPackA.annotations = all_events_A;
+  // textPackB.annotations = all_events_B;
 
 
   const [AnowOnEventIndex, setANowOnEventIndex] =  useState<number>(0);
@@ -61,14 +62,14 @@ export default function CrossViewer(props: CrossDocProp) {
     return conditionB;
   });
 
-  console.log("suggested here",all_suggested_events_B);
+  // console.log("suggested here",all_suggested_events_B);
 
   const [nowSuggestedQuestionIndex, setNowSuggestedQuestionIndex] =  useState<number>(-1);
   const now_suggested_question = nowSuggestedQuestionIndex >=0 ? multiPackQuestion.suggest_questions[nowSuggestedQuestionIndex] : undefined;
   const [currentSuggestedAnswers, setCurrentSuggestedAnswers] = useState<number []>([]);
   const [stillSuggesting, setStillSuggesting] = useState<boolean>(false);
   if (stillSuggesting && (BnowOnEventIndex === -1 || +all_events_B[BnowOnEventIndex].id !== all_suggested_events_B[0]._child_token)){
-    console.log("haha");
+    // console.log("haha");
     setBNowOnEventIndex(all_events_B.findIndex(event => +event.id === all_suggested_events_B[0]._child_token));
     setNowSuggestedQuestionIndex(0);
   }
@@ -94,7 +95,6 @@ export default function CrossViewer(props: CrossDocProp) {
   const nextEventEnable:boolean = AnowOnEventIndex < all_events_A.length && BnowOnEventIndex === -1;
   const progress_percent = Math.floor(AnowOnEventIndex / all_events_A.length * 100);
 
-  const [finished, setFinished] = useState<boolean>(false);
 
 
   const alert = useAlert();
@@ -140,12 +140,9 @@ export default function CrossViewer(props: CrossDocProp) {
     if (all_suggested_events_B.length <= 0) {
       setStillSuggesting(false);
       if (AnowOnEventIndex === all_events_A.length-1) {
-        if (nextID !== "None"){
-          history.push('/crossdocs/'+nextID);
-        }
-        else {
-          setFinished(true);
-        }
+        onEvent({
+          type:"next-crossdoc",
+        });
       } else {
         setANowOnEventIndex(AnowOnEventIndex + 1);
       }
@@ -206,12 +203,9 @@ export default function CrossViewer(props: CrossDocProp) {
       if (all_suggested_events_B.length === 1) {
         setStillSuggesting(false);
         if (AnowOnEventIndex === all_events_A.length-1) {
-          if (nextID !== "None"){
-            history.push('/crossdocs/'+nextID);
-          }
-          else {
-            setFinished(true);
-          }
+          onEvent({
+            type:"next-crossdoc",
+          });
         } else {
           setANowOnEventIndex(AnowOnEventIndex + 1);
         }
@@ -346,7 +340,9 @@ export default function CrossViewer(props: CrossDocProp) {
 
             <div className={`${style.text_area_container}`}>
               <TextAreaA
-                  textPack={textPackA}
+                  text = {textPackA.text}
+                  annotations={all_events_A}
+                  NER = {all_NER_A}
                   AnowOnEventIndex={AnowOnEventIndex}
               />
             </div>
@@ -357,7 +353,9 @@ export default function CrossViewer(props: CrossDocProp) {
           >
             <div className={`${style.text_area_container}`}>
               <TextAreaB
-                  textPack={textPackB}
+                  text = {textPackB.text}
+                  annotations={all_events_B}
+                  NER = {all_NER_B}
                   AnowOnEventIndex={AnowOnEventIndex}
                   BnowOnEventIndex={BnowOnEventIndex}
                   BSelectedIndex={BSelectedIndex}
