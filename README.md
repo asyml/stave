@@ -44,7 +44,7 @@ yarn 1.22.4
 #### Start the Front End
 After the server starts, then simply 
 - yarn && yarn start
-- go to http://127.0.0.1:8000/documents
+- go to http://127.0.0.1:8000
 
 The default username/password for the demonstration data is admin/admin
 
@@ -52,7 +52,7 @@ The default username/password for the demonstration data is admin/admin
 
 [Apache License 2.0](./LICENSE)
 
-### Companies and Universities Supporting Forte
+### Companies and Universities Supporting Stave
 <p float="left">
    <img src="./docs/_static/img/Petuum.png" width="200" align="top">
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
