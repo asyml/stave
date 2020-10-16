@@ -7,20 +7,21 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/asyml/stave/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/asyml/stave.svg?branch=master)](https://travis-ci.org/asyml/stave)
 
-This project is currently under incubation.
+This project is currently under development.
 
-**Stave** is a fast, light-weight, extensible web-based annotation and visualization system designed to support a wide range of text data and tasks. Rooting on modularized interface components and a syntax-rich serializable data format, Stave offers the following:
-  - Off-the-shelf support to a wide range of NLP task
-  - Extensible with plugins
-  - Customizable data types
-  - Multi-document Support
-  - Integration to data science workflow
-  - Universal and Safe Serialization
+**Stave** is a fast, lightweight, extensible web-based text annotation and visualization tool designed to support a wide range of data types and NLP tasks. Stave offers the following features:
+  
+- **Semantic Annotation**: supports both template and custom data types
+- **Multi-document Annotation**: supports cross-document annotations and coreference
+- **Customizable Interface**: supports creation of task-specific interface with independently developed plugins
+- **Machine-Human Collaboration**: keeps human in the loop to verify and correct machine suggestions 
+- **Easy Integration**: supports seamless integration with pre-built NLP workflows 
+- **Safe Data Serialization**: supports a JSON-serializable format for easy data saving, loading and distribution 
 
 Stave was originally developed and is actively contributed by [Petuum](https://petuum.com/) in collaboration with other institutes. A mirror of this repository is maintained by [Petuum Open Source](https://github.com/petuum).
 
 ## Get Started
-Packaging coming soon ...
+Packages coming soon ...
 
 ## Developer Quick Start
 #### Environment
@@ -41,7 +42,7 @@ yarn 1.22.4
   - This script will use the example db: `mv db.sqlite3.example db.sqlite3`
 
 
-#### Start the Front End
+#### Start the Frontend
 After the server starts, then simply 
 - yarn && yarn start
 - go to http://127.0.0.1:8000
