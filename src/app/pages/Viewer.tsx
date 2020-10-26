@@ -63,19 +63,28 @@ function Viewer() {
 
         if (event.type === 'annotation-add') {
           const { type, ...annotation } = event;
-          const annotationAPIData = transformBackAnnotation(annotation);
 
-          addAnnotation(id, annotationAPIData).then(({ id }) => {
-            annotation.id = id;
+          const b = annotation.span.begin;
+          const e = annotation.span.end;
 
-            setPack({
-              singlePack: {
-                ...pack.singlePack,
-                annotations: [...pack.singlePack.annotations, annotation],
-              },
-              ontology: pack.ontology,
+          // Validate Span before adding.
+          if (b < e && b >= 0 && e <= pack.singlePack.text.length){
+            const annotationAPIData = transformBackAnnotation(annotation);
+
+            addAnnotation(id, annotationAPIData).then(({ id }) => {
+              annotation.id = id;
+
+              setPack({
+                singlePack: {
+                  ...pack.singlePack,
+                  annotations: [...pack.singlePack.annotations, annotation],
+                },
+                ontology: pack.ontology,
+              });
             });
-          });
+          }else{
+            console.error(`Will not add annotation with span [${b}:${e}], which is considered invalid`);
+          }
         } else if (event.type === 'annotation-delete') {
           deleteAnnotation(id, event.annotationId).then(() => {
             setPack({

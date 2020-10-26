@@ -284,7 +284,23 @@ function textViewerReducer(state: State, action: Action): State {
       return {
         ...state,
         ...initialSpacingState,
-        textPack: action.textPack,
+        // textPack: action.textPack,
+        textPack: {
+          ...action.textPack,
+
+          // Validate spans.
+          annotations: action.textPack.annotations.map((anno) =>{
+            let text = action.textPack.text;
+
+            let begin = Math.min(text.length, Math.max(0, anno.span.begin));
+            let end = Math.min(text.length, Math.max(0, anno.span.end));
+
+            return {
+              ...anno,
+              span: {begin, end},
+            };
+          }),
+        },
 
         // // TODO: remove the following test code
         selectedLegendIds: state.textPack

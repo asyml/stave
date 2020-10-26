@@ -734,7 +734,7 @@ export function shouldMultiLineGoLeft(
  *
  * restore new annotation position to original position based
  * on a map of [end ot original annotation position ] to
- * [number of charactors to move]
+ * [number of characters to move]
  *
  */
 export function restorePos(
@@ -768,6 +768,9 @@ export function restorePos(
     accumulatedMove += annoMove;
     lastAnnoEnd = annoEnd;
   }
+
+  actualBegin = actualBegin === -1 ? begin : actualBegin;
+  actualEnd = actualEnd === -1 ? end : actualEnd;
 
   return [actualBegin, actualEnd];
 }
