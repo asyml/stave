@@ -8,7 +8,7 @@ import {
   IAnnotation,
   ILink,
 } from '../lib/interfaces';
-import { calcuateLinesLevels, calcuateLinkHeight } from '../lib/utils';
+import { calculateLinesLevels, calculateLinkHeight } from '../lib/utils';
 import {
   spaceOutText,
   mergeLinkWithPosition,
@@ -41,9 +41,9 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
     selectedLegendIds,
     selectedLegendAttributeIds,
 
-    spacingCalcuated,
+    spacingCalculated,
     spacedText,
-    collpasedLineIndexes,
+    collapsedLineIndexes,
     annotationPositions,
     textNodeWidth,
 
@@ -105,10 +105,10 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
       links: ILink[],
       selectedLegendIds: string[],
       selectedLegendAttributeIds: string[],
-      spacingCalcuated: boolean,
-      collpasedLinesIndex: number[]
+      spacingCalculated: boolean,
+      collapsedLinesIndex: number[]
     ) {
-      if (!spacingCalcuated) {
+      if (!spacingCalculated) {
         const {
           spacedText,
           charMoveMap,
@@ -120,7 +120,7 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
           links,
           selectedLegendIds,
           selectedLegendAttributeIds,
-          collpasedLinesIndex
+          collapsedLinesIndex
         );
 
         dispatch({
@@ -145,11 +145,11 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
       links,
       selectedLegendIds,
       selectedLegendAttributeIds,
-      spacingCalcuated,
-      collpasedLineIndexes
+      spacingCalculated,
+      collapsedLineIndexes
     );
 
-    if (spacingCalcuated && jumpToAnnotation !== null) {
+    if (spacingCalculated && jumpToAnnotation !== null) {
       const el = document.querySelector(
         `[data-annotation-id="${jumpToAnnotation}"]`
       );
@@ -174,9 +174,9 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
     links,
     selectedLegendIds,
     selectedLegendAttributeIds,
-    spacingCalcuated,
+    spacingCalculated,
     dispatch,
-    collpasedLineIndexes,
+    collapsedLineIndexes,
     jumpToAnnotation,
   ]);
 
@@ -197,11 +197,11 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
   const linkGap = 8;
 
   const linesLevels = useMemo(() => {
-    return calcuateLinesLevels(linksWithPos, lineStartX, lineWidth);
+    return calculateLinesLevels(linksWithPos, lineStartX, lineWidth);
   }, [linksWithPos, lineStartX, lineWidth]);
 
   const linkHeight = useMemo(() => {
-    return calcuateLinkHeight(linesLevels, linkGap);
+    return calculateLinkHeight(linesLevels, linkGap);
   }, [linesLevels, linkGap]);
 
   const lineHeights = Object.keys(linesLevels).map((l) => +l);
@@ -387,16 +387,16 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
               lineIndex: i,
             });
           }
-          const isCollpased = collpasedLineIndexes.indexOf(i) > -1;
+          const isCollapsed = collapsedLineIndexes.indexOf(i) > -1;
 
           return (
             <button
               key={i}
-              onClick={isCollpased ? uncollapse : collapse}
+              onClick={isCollapsed ? uncollapse : collapse}
               className={style.annotation_line_toggle}
               style={{ top: lineHeight }}
             >
-              {isCollpased ? '+' : '-'}
+              {isCollapsed ? '+' : '-'}
             </button>
           );
         })}
@@ -438,7 +438,7 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
           if (linkPos.fromLinkY === linkPos.toLinkY) {
             const lineIndex = lineHeights.indexOf(linkPos.fromLinkY);
             const isLineCollapsed =
-              collpasedLineIndexes.indexOf(lineIndex) !== -1;
+              collapsedLineIndexes.indexOf(lineIndex) !== -1;
 
             return (
               <LinkSingleLine
@@ -460,7 +460,7 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
                 isHightlighted={isLinkHightlighted}
                 linkHeight={linkHeight}
                 selectedLegendAttributeIds={selectedLegendAttributeIds}
-                collpasedLineIndexes={collpasedLineIndexes}
+                collapsedLineIndexes={collapsedLineIndexes}
                 lineHeights={lineHeights}
                 lineStartX={lineStartX}
                 lineWidth={lineWidth}

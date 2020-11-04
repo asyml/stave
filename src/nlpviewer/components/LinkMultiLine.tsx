@@ -25,7 +25,7 @@ export interface LinkMultiLineProp {
   linkHeight: Record<string, Record<string, number>>;
   selectedLegendAttributeIds: string[];
   lineHeights: number[];
-  collpasedLineIndexes: number[];
+  collapsedLineIndexes: number[];
   lineStartX: number;
   lineWidth: number;
 }
@@ -42,7 +42,7 @@ function LinkMultiLine({
   linkHeight,
   lineHeights,
   selectedLegendAttributeIds,
-  collpasedLineIndexes,
+  collapsedLineIndexes,
   lineStartX,
   lineWidth,
 }: LinkMultiLineProp) {
@@ -61,14 +61,14 @@ function LinkMultiLine({
   const borderWidth = isSelected || isHightlighted ? '2px' : '1px';
   const zIndex = isSelected || isHightlighted ? 1 : 0;
   const fromLineIndex = lineHeights.indexOf(linkWithPosition.fromLinkY);
-  const fromLineCollapsed = collpasedLineIndexes.indexOf(fromLineIndex) !== -1;
+  const fromLineCollapsed = collapsedLineIndexes.indexOf(fromLineIndex) !== -1;
   const fromLineHeight = fromLineCollapsed
     ? textLinkDistance
     : textLinkDistance +
       linkHeight[linkWithPosition.link.id][linkWithPosition.fromLinkY];
 
   const toLineIndex = lineHeights.indexOf(linkWithPosition.toLinkY);
-  const toLineCollapsed = collpasedLineIndexes.indexOf(toLineIndex) !== -1;
+  const toLineCollapsed = collapsedLineIndexes.indexOf(toLineIndex) !== -1;
   const toLineHeight = toLineCollapsed
     ? textLinkDistance
     : textLinkDistance +

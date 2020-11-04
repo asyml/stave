@@ -40,7 +40,7 @@ export function spaceOutText(
   links: ILink[],
   selectedLegendIds: string[],
   selectedLegendAttributeIds: string[],
-  collpasedLinesIndex: number[]
+  collapsedLinesIndex: number[]
 ): SpacedText {
   const existSpaceEl = document.getElementById('text-spacer');
   if (existSpaceEl) {
@@ -131,18 +131,18 @@ export function spaceOutText(
     (link) => selectedLegendIds.indexOf(link.link.legendId) > -1
   );
 
-  const spaceMap: ISpaceMap = calcuateSpaceMap(
+  const spaceMap: ISpaceMap = calculateSpaceMap(
     annotationsWithPos,
     linksWithPos,
     selectedLegendAttributeIds
   );
 
   const [
-    caculcatedSpacedTextWithEmptySpace,
-    caculcatedSpacedAnnotationSpanWithEmptySpace,
+    calculatedSpacedTextWithEmptySpace,
+    calculatedSpacedAnnotationSpanWithEmptySpace,
   ] = calculateNewText(annotations, text, spaceMap, ' ');
 
-  textNodeEl.textContent = caculcatedSpacedTextWithEmptySpace;
+  textNodeEl.textContent = calculatedSpacedTextWithEmptySpace;
 
   const textAreaRectWithEmptySpace = textNodeEl.getBoundingClientRect();
   const textNodeWithEmptySpace =
@@ -153,11 +153,11 @@ export function spaceOutText(
 
     range.setStart(
       textNodeWithEmptySpace,
-      caculcatedSpacedAnnotationSpanWithEmptySpace[anno.id].begin
+      calculatedSpacedAnnotationSpanWithEmptySpace[anno.id].begin
     );
     range.setEnd(
       textNodeWithEmptySpace,
-      caculcatedSpacedAnnotationSpanWithEmptySpace[anno.id].end
+      calculatedSpacedAnnotationSpanWithEmptySpace[anno.id].end
     );
     const rects = Array.from(range.getClientRects() as DOMRectList);
 
@@ -190,7 +190,7 @@ export function spaceOutText(
 
   const linesLevelsWithNewline = {
     ...getLevelsFromJustAnnotations(annotationsWithPosWithEmptySpaces),
-    ...calcuateLinesLevels(
+    ...calculateLinesLevels(
       linksWithPosWithEmptySpaces,
       lineStartXWithEmptySpace,
       lineWidthWithEmptySpace
@@ -218,11 +218,11 @@ export function spaceOutText(
           ...firstAnnotation.annotation,
           span: {
             begin:
-              caculcatedSpacedAnnotationSpanWithEmptySpace[
+              calculatedSpacedAnnotationSpanWithEmptySpace[
                 firstAnnotation.annotation.id
               ].begin,
             end:
-              caculcatedSpacedAnnotationSpanWithEmptySpace[
+              calculatedSpacedAnnotationSpanWithEmptySpace[
                 firstAnnotation.annotation.id
               ].end,
           },
@@ -230,18 +230,18 @@ export function spaceOutText(
       },
       spaceToMove: fullOfInvisible
         ? 0
-        : calcuateLinesToInsertByLevelNum(collpasedLinesIndex, i, levelNum),
+        : calculateLinesToInsertByLevelNum(collapsedLinesIndex, i, levelNum),
     };
   });
 
   const updatedTextPackWithNewline = {
-    text: caculcatedSpacedTextWithEmptySpace,
+    text: calculatedSpacedTextWithEmptySpace,
     annotations: annotations.map((ann) => {
       return {
         ...ann,
         span: {
-          begin: caculcatedSpacedAnnotationSpanWithEmptySpace[ann.id].begin,
-          end: caculcatedSpacedAnnotationSpanWithEmptySpace[ann.id].end,
+          begin: calculatedSpacedAnnotationSpanWithEmptySpace[ann.id].begin,
+          end: calculatedSpacedAnnotationSpanWithEmptySpace[ann.id].end,
         },
       };
     }),
@@ -334,9 +334,9 @@ export function mergeAnnotationWithPosition(
 
 /**
  *
- * merge link data with the cooresponding annotation
+ * merge link data with the corresponding annotation
  * data and their position, also calculate the link's
- * position based on their cooresponding annotation
+ * position based on their corresponding annotation
  *
  * so it's easy to access both data
  *
@@ -384,9 +384,9 @@ export function mergeLinkWithPosition(
 /**
  *
  * given a map of [each annotation] to
- * [number empty space need to insert], calcuate
+ * [number empty space need to insert], calculate
  * the new text after inserting those empty
- * spaces. Meanwhile, also calcuate a map of
+ * spaces. Meanwhile, also calculate a map of
  * [each annotation] to [their position in the new text]
  *
  */
@@ -501,7 +501,7 @@ function calculateNewText(
  *   |‾‾|‾‾‾‾‾‾| |‾‾‾‾|‾‾| |‾|‾‾‾‾|      |
  *   *  *      * *    *  * * *    *      *
  */
-function calcuateLinesLevels(
+function calculateLinesLevels(
   linksWithPos: ILinkWithPos[],
   lineStartX: number,
   lineWidth: number
@@ -538,7 +538,7 @@ function calcuateLinesLevels(
   /**
    *
    * go through each level from top
-   * - if no overlap with any link in current lavel, push to same level
+   * - if no overlap with any link in current level, push to same level
    * - if there is overlap but only super set, insert a level above, and push to it
    * - if reach the end, insert a new level below then push to it
    * - otherwise, check lower level.
@@ -589,12 +589,12 @@ function calcuateLinesLevels(
   }
 
   // go through each level from bottom to top
-  // - if the link can be push down, move the link to the lower level, until we cann't
-  //   - to check if the link can be push down, check lower level has intersetps
+  // - if the link can be push down, move the link to the lower level, until we can't
+  //   - to check if the link can be push down, check lower level has intersects
   function pushDownLinksInLevels(levels: ILinkWithPos[][]) {
     for (let i = levels.length - 2; i >= 0; i--) {
       const level = levels[i];
-      const linkstoPush: number[][] = [];
+      const linksToPush: number[][] = [];
 
       for (let j = 0; j < level.length; j++) {
         const link = level[j];
@@ -607,14 +607,14 @@ function calcuateLinesLevels(
           }
         }
         if (levelToPush !== -1) {
-          linkstoPush.push([j, levelToPush]);
+          linksToPush.push([j, levelToPush]);
         }
       }
 
       levels[i] = level.filter(
-        (_, i) => linkstoPush.map((l) => l[0]).indexOf(i) === -1
+        (_, i) => linksToPush.map((l) => l[0]).indexOf(i) === -1
       );
-      linkstoPush.forEach(([linkIndex, levelIndex]) => {
+      linksToPush.forEach(([linkIndex, levelIndex]) => {
         levels[levelIndex].push(level[linkIndex]);
       });
     }
@@ -696,7 +696,7 @@ function calcuateLinesLevels(
  * to display all the levels above each line.
  *
  */
-export function calcuateLinkHeight(
+export function calculateLinkHeight(
   linkLevels: Record<string, ILinkWithPos[][]>,
   gap: number
 ) {
@@ -733,7 +733,7 @@ export function shouldMultiLineGoLeft(
 /**
  *
  * restore new annotation position to original position based
- * on a map of [end ot original annotation position ] to
+ * on a map of [end of original annotation position ] to
  * [number of characters to move]
  *
  */
@@ -747,42 +747,74 @@ export function restorePos(
   let accumulatedMove = 0;
 
   const entries = Array.from(charMoveMap.entries()).sort((a, b) => a[0] - b[0]);
-  let lastAnnoEnd = -1;
+  let previousAnnoEnd = -1;
 
   for (let [annoEnd, annoMove] of entries) {
     if (annoEnd + accumulatedMove >= begin && actualBegin === -1) {
-      if (lastAnnoEnd !== -1 && lastAnnoEnd + accumulatedMove >= begin) {
-        actualBegin = lastAnnoEnd + 1;
+      if (previousAnnoEnd !== -1 && previousAnnoEnd + accumulatedMove >= begin) {
+        actualBegin = previousAnnoEnd + 1;
       } else {
         actualBegin = begin - accumulatedMove;
       }
     }
 
     if (annoEnd + accumulatedMove >= end && actualEnd === -1) {
-      if (lastAnnoEnd !== -1 && lastAnnoEnd + accumulatedMove >= end) {
-        actualEnd = lastAnnoEnd;
+      if (previousAnnoEnd !== -1 && previousAnnoEnd + accumulatedMove >= end) {
+        actualEnd = previousAnnoEnd;
       } else {
         actualEnd = end - accumulatedMove;
       }
     }
     accumulatedMove += annoMove;
-    lastAnnoEnd = annoEnd;
+    previousAnnoEnd = annoEnd;
   }
 
-  actualBegin = actualBegin === -1 ? begin : actualBegin;
-  actualEnd = actualEnd === -1 ? end : actualEnd;
+  // The procedures above are intended to fix annotations inserted in between existing annotations.
+  // If we have a new mention that the offset is larger than all existing annotations, then the
+  // procedures above will not be activated (since annoEnd + accumulatedMove < begin or end)
+  //
+  // For these annotation, there begin and end should still be adjusted by the accumulatedMove amount.
+  // The following procedures try to achieve this.
+
+  // First check for undefined actualBegin (i.e. actualBegin === -1).
+  if (actualBegin === -1 ) { // If actualBegin is not defined.
+    let lastAnnoEnd = entries[entries.length - 1][0];
+    if (begin > lastAnnoEnd + accumulatedMove){ // If the new annotation is after those 
+      actualBegin = begin - accumulatedMove;
+    } else {
+      console.error(
+        `Unknown causes for undefined actualBegin of surface begin 
+        at ${begin}. Offset calculation may be wrong.`);
+        actualBegin = begin;
+    }
+  }
+
+  // Then check for undefined actualEnd (i.e. actualEnd === -1).
+  // We check these separately, since there might be cases where the actualBegin is defined but the
+  //  actualEnd is not.
+  if (actualEnd === -1){
+    let lastAnnoEnd = entries[entries.length - 1][0];
+    if (end > lastAnnoEnd + accumulatedMove){
+      actualEnd = end - accumulatedMove;
+    } else {
+      console.error(
+        `Unknown causes for undefined actualBegin of surface begin 
+        at ${begin}. Offset calculation may be wrong.`);
+        actualEnd = end;
+    }
+  }
 
   return [actualBegin, actualEnd];
 }
 
 /**
  *
- * calcuate how many empty space need to insert for
+ * calculate how many empty space need to insert for
  * each annotation, so that there is enough space
- * to show the annoataion label and link label.
+ * to show the annotation label and link label.
  *
  */
-function calcuateSpaceMap(
+function calculateSpaceMap(
   annotationWithPosition: {
     position: IAnnotationPosition;
     annotation: IAnnotation;
@@ -884,13 +916,13 @@ function getLevelsFromJustAnnotations(
  * translate to number of new lines.
  *
  */
-function calcuateLinesToInsertByLevelNum(
-  collpasedLinesIndex: number[],
+function calculateLinesToInsertByLevelNum(
+  collapsedLinesIndex: number[],
   lineIndex: number,
   levelNum: number
 ) {
   return (
-    (collpasedLinesIndex.indexOf(lineIndex) === -1
+    (collapsedLinesIndex.indexOf(lineIndex) === -1
       ? Math.ceil(levelNum / 4)
       : 0) + (lineIndex === 0 ? 1 : 3)
   );

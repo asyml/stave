@@ -83,7 +83,7 @@ function Viewer() {
               });
             });
           }else{
-            console.error(`Will not add annotation with span [${b}:${e}], which is considered invalid`);
+            console.error(`Will not add annotation with span [${b}:${e}] in a document of length ${pack.singlePack.text.length}, which is considered invalid`);
           }
         } else if (event.type === 'annotation-delete') {
           deleteAnnotation(id, event.annotationId).then(() => {

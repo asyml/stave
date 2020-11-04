@@ -26,10 +26,10 @@ export type State = {
   halfSelectedLinkIds: string[]; // indicate a state that link is keep highlighted when annotation is selected
   highlightedLinkIds: string[];
 
-  spacingCalcuated: boolean;
+  spacingCalculated: boolean;
   spacedText: string | null;
   charMoveMap: Map<number, number>;
-  collpasedLineIndexes: number[];
+  collapsedLineIndexes: number[];
   annotationPositions: IAnnotationPosition[];
   textNodeWidth: number;
 
@@ -51,7 +51,7 @@ export type State = {
 };
 
 const initialSpacingState = {
-  spacingCalcuated: false,
+  spacingCalculated: false,
   spacedText: null,
   spacedAnnotationSpan: {},
   charMoveMap: new Map(),
@@ -91,7 +91,7 @@ const initialState: State = {
   selectedLegendIds: [],
   selectedLegendAttributeIds: [],
 
-  collpasedLineIndexes: [],
+  collapsedLineIndexes: [],
 
   ...initialUserSelectState,
   ...initialLinkEditState,
@@ -337,7 +337,7 @@ function textViewerReducer(state: State, action: Action): State {
 
         // selectedAnnotationId: '5',
         // selectedGroupIds: action.textPack.groups.map(g => g.id),
-        // collpasedLineIndexes: [],
+        // collapsedLineIndexes: [],
 
         // test linkEditIsCreating
         // linkEditFromEntryId:
@@ -357,10 +357,7 @@ function textViewerReducer(state: State, action: Action): State {
       };
 
     case 'select-legend':
-      if (state.selectedLegendIds.indexOf(action.legendId) === -1) {
-        console.log('update legend')
-        console.log(action.legendId)
-  
+      if (state.selectedLegendIds.indexOf(action.legendId) === -1) {  
         return {
           ...state,
           ...initialSpacingState,
@@ -610,7 +607,7 @@ function textViewerReducer(state: State, action: Action): State {
     case 'set-spaced-annotation-span':
       return {
         ...state,
-        spacingCalcuated: true,
+        spacingCalculated: true,
         spacedText: action.spacedText,
         charMoveMap: action.charMoveMap,
         annotationPositions: action.annotationPositions,
@@ -618,23 +615,23 @@ function textViewerReducer(state: State, action: Action): State {
       };
 
     case 'collapse-line':
-      if (state.collpasedLineIndexes.indexOf(action.lineIndex) > -1) {
+      if (state.collapsedLineIndexes.indexOf(action.lineIndex) > -1) {
         return state;
       }
       return {
         ...state,
         ...initialSpacingState,
-        collpasedLineIndexes: [...state.collpasedLineIndexes, action.lineIndex],
+        collapsedLineIndexes: [...state.collapsedLineIndexes, action.lineIndex],
       };
 
     case 'uncollapse-line':
-      if (state.collpasedLineIndexes.indexOf(action.lineIndex) === -1) {
+      if (state.collapsedLineIndexes.indexOf(action.lineIndex) === -1) {
         return state;
       }
       return {
         ...state,
         ...initialSpacingState,
-        collpasedLineIndexes: state.collpasedLineIndexes.filter(
+        collapsedLineIndexes: state.collapsedLineIndexes.filter(
           (i) => i !== action.lineIndex
         ),
       };

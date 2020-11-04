@@ -87,7 +87,7 @@ export function notNullOrUndefined<T>(x: T | null | undefined): x is T {
 }
 
  */
-export function calcuateLinesLevels(
+export function calculateLinesLevels(
   linksWithPos: ILinkWithPos[],
   lineStartX: number,
   lineWidth: number
@@ -175,8 +175,8 @@ export function calcuateLinesLevels(
   }
 
   // go through each level from bottom to top
-  // - if the link can be push down, move the link to the lower level, until it cann't
-  //   - to check if the link can be push down, check lower level has intersetps
+  // - if the link can be push down, move the link to the lower level, until it can't
+  //   - to check if the link can be push down, check lower level has intercepts.
   function projectDownLinksInLevels(levels: ILinkWithPos[][]) {
     for (let i = levels.length - 2; i >= 0; i--) {
       const level = levels[i];
@@ -261,7 +261,7 @@ export function calcuateLinesLevels(
   }
 }
 
-export function calcuateLinkHeight(
+export function calculateLinkHeight(
   linkLevels: Record<string, ILinkWithPos[][]>,
   gap: number
 ) {
