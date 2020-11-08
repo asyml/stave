@@ -60,3 +60,12 @@ The default username/password for the demonstration data is admin/admin
    <img src="https://asyml.io/assets/institutions/cmu.png", width="200" align="top">
 </p>
 
+
+## An urgent NOTE to Developers who join before Nov 8, 2020 ##
+**We unfortunately have to purge some large files introduced due to some unexpected PRs before. New merges may bring these files back. To avoid any merge action to introduce them back, we have closed all current PRs**
+
+**Probably take the following step will create the least amount of issues:**
+1. **Please re-fork the repository.**
+1. **For any branches that you have already created from the old history, you may need to rebase (not merge) with upstream master. Or better, since you just re-fork the repo, you can create a new branch and start to move your work manually.**
+
+For more details about this problem, read here: https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/removing-sensitive-data-from-a-repository
