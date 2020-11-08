@@ -39,7 +39,7 @@ yarn 1.22.4
 - make sure django is installded, or install it by:
   - `python -m pip install Django`
 - `./start-dev.sh`
-  - This script will use the example db: `mv db.sqlite3.example db.sqlite3`
+  - This script will create an example sqlite3 DB from SQL: `db.sqlite3`
 
 
 #### Start the Frontend
