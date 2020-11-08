@@ -1,11 +1,12 @@
 from django.db import models
 
 class Project(models.Model):
-    # project: name, ontology
+    # project: name, ontology, config
     # realtionship: Project.document
 
     name = models.CharField(max_length=200)
     ontology = models.TextField(default='')
+    config = models.TextField(default='')
 
 class Document(models.Model):
     # content: textPack: text body + annotation

@@ -18,6 +18,13 @@ import DialogContent from '@material-ui/core/DialogContent';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import PostAddSharpIcon from '@material-ui/icons/PostAddSharp';
+import { 
+  ILegendAttributeConfig, 
+  ILegendConfig, 
+  IProjectConfigs,
+  IOntology,
+} from '../../nlpviewer';
+import { isEntryAnnotation, camelCaseDeep } from '../../nlpviewer/lib/utils';
 
 const useStyles = makeStyles({
   root: {
@@ -36,6 +43,7 @@ function Projects() {
   const [projects, setProjects] = useState<any[]>([]);
   const [name, setName] = useState<string>('');
   const [ontology, setOntology] = useState<string>('');
+  const [config, setConfig] = useState<string>('');
   const history = useHistory();
   const [open, setOpen] = React.useState(false);
 
@@ -67,8 +75,8 @@ function Projects() {
   }
 
   function handleAdd() {
-    if (name && ontology){
-      createProject(name, ontology).then(() =>{
+    if (name && ontology && config){
+      createProject(name, ontology, config).then(() =>{
         updateProjects();
       });
     } else{
@@ -87,10 +95,38 @@ function Projects() {
       const reader = new FileReader();
       reader.readAsText(acceptedFiles[0]);
       reader.onload = function() {
-        setOntology(reader.result as string);        
+        setOntology(reader.result as string);  
+        const defaultConfig = createDefaultConfig(reader.result as string); 
+        setConfig(JSON.stringify(defaultConfig, null, 2));    
       }
     }
-  }  
+  }
+  
+  function createDefaultConfig(ontology: string) {
+    const ontologyJson = JSON.parse(ontology);
+    const ontologyObject : IOntology = camelCaseDeep(ontologyJson);
+    let config : IProjectConfigs = {legendConfigs: {}, scopeConfigs: {}};
+    for (const entry of ontologyJson.definitions) {
+      const entryName = entry.entry_name;
+      // Scope configs should contain annotations only.
+      if (isEntryAnnotation(ontologyObject, entryName)) {
+        config['scopeConfigs'][entryName] = false;
+      }
+      
+      let legendConfig : ILegendConfig = {is_selected: false};
+      config['legendConfigs'][entryName] = legendConfig;
+      if (entry.attributes && entry.attributes.length > 0) {
+        let attributeConfig : ILegendAttributeConfig = {};
+        config['legendConfigs'][entryName]['attributes'] = attributeConfig;
+        for (const attribute of entry.attributes) {
+          if (attribute.type === 'str') {
+            attributeConfig[attribute.name] = false;
+          }
+        }
+      }
+    }
+    return config;
+  }
 
   return (
     <div className={classes.root}>
@@ -164,6 +200,18 @@ function Projects() {
                       label="Ontology Body"
                       value={ontology}
                       onChange={e => setOntology(e.target.value)}
+                      multiline
+                      rows={10}
+                      variant="outlined"
+                      fullWidth
+                      margin="normal"
+                      />
+                    </div>
+                    <div>
+                      <TextField
+                      label="Config"
+                      value={config}
+                      onChange={e => setConfig(e.target.value)}
                       multiline
                       rows={10}
                       variant="outlined"

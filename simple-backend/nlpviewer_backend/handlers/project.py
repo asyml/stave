@@ -20,7 +20,8 @@ def create(request):
 
     project = Project(
         name=received_json_data.get('name'),
-        ontology=received_json_data.get('ontology')
+        ontology=received_json_data.get('ontology'),
+        config=received_json_data.get('config')
     )
 
     project.save()
@@ -61,4 +62,3 @@ def delete(request, project_id):
     project.delete()
 
     return HttpResponse('ok')
-    

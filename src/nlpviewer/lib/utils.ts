@@ -441,3 +441,28 @@ export function getGroupType(groupEntryName: string, config: IOntology) {
     throw new Error('unknow group entry ' + groupEntryName);
   }
 }
+
+export function camelCaseDeep(obj: any): any {
+  if (Array.isArray(obj)) {
+    return obj.map(camelCaseDeep);
+  } else if (typeof obj === 'object') {
+    const camelCaseObj: any = {};
+    Object.keys(obj).forEach(key => {
+      let camelKey = key.replace(/_\w/g, function(match, offset, string) {
+        if (offset === 0) {
+          return match;
+        } else {
+          return match[1].toUpperCase();
+        }
+      });
+
+      if (camelKey === 'parentEntry') {
+        camelKey = 'parentEntryName';
+      }
+      camelCaseObj[camelKey] = camelCaseDeep(obj[key]);
+    });
+    return camelCaseObj;
+  } else {
+    return obj;
+  }
+}
