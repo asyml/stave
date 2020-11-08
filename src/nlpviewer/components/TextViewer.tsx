@@ -1,7 +1,11 @@
 import React from 'react';
 import Tab from './Tab';
 import style from '../styles/TextViewer.module.css';
-import { IAnnotation, IPlugin, ILayout } from '../lib/interfaces';
+import { 
+  IAnnotation, 
+  IPlugin, 
+  ILayout, 
+  IProjectConfigs, } from '../lib/interfaces';
 import {
   applyColorToLegend,
   isEntryAnnotation,
@@ -22,7 +26,6 @@ import AnnotationCreateBox from './AnnotationCreateBox';
 import groupPlugin from '../../plugins/group/Group';
 import {nextDocument, prevDocument} from '../../app/lib/api';
 import {useState} from 'react';
-import {projectConfig} from '../../app/project_config';
 
 export type OnEventType = (event: any) => void;
 
@@ -30,10 +33,11 @@ export interface TextViewerProp {
   plugins: IPlugin[];
   onEvent?: OnEventType;
   layout: ILayout;
+  projectConfig: IProjectConfigs;
 }
 
 
-function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
+function TextViewer({ plugins, onEvent, layout, projectConfig }: TextViewerProp) {
 
   const appState = useTextViewerState();
   const dispatch = useTextViewerDispatch();
@@ -60,7 +64,7 @@ function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
     selectedScopeIndex,
   } = appState;
 
-  if (!textPack || !ontology) return null;
+  if (!textPack || !ontology || !projectConfig) return null;
 
   let doc_id = window.location.pathname.split("/").pop() !;
   nextDocument(doc_id).then(data => setNext(data.id));
@@ -267,7 +271,7 @@ function TextViewer({ plugins, onEvent, layout }: TextViewerProp) {
 
   function ToolBar(){
     if (typeof layout['center-middle'] === 'undefined' || layout['center-middle'] === 'default-nlp'){
-      if (textPack && ontology){
+      if (textPack && ontology && projectConfig){
         return(
           <div className={style.tool_bar_container}>
           <div className={style.add_annotation_container}>

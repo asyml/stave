@@ -1,4 +1,10 @@
-import { ISinglePack, IOntology, IAnnotation, ILink } from './interfaces';
+import { 
+  ISinglePack, 
+  IOntology, 
+  IAnnotation, 
+  ILink, 
+  IProjectConfigs, 
+} from './interfaces';
 import { isEntryAnnotation, isEntryLink, camelCaseDeep } from './utils';
 
 export function transformPack(
@@ -134,5 +140,13 @@ export function transformBackLink(link: ILink): any {
       _tid: link.id,
       ...link.attributes,
     },
+  };
+}
+
+export function transformProjectConfig(rawConfig: string): IProjectConfigs {
+  const config = JSON.parse(rawConfig);
+  return {
+    legendConfigs: config ? config.legendConfigs : {},
+    scopeConfigs: config ? config.scopeConfigs : {},
   };
 }

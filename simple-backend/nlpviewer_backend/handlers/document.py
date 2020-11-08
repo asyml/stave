@@ -279,6 +279,19 @@ def get_doc_ontology_pack(request, document_id):
     return JsonResponse(docJson, safe=False)
 
 @require_login
+def get_doc_project_config(request, document_id):
+    
+    doc = Document.objects.get(pk=document_id)
+    project = doc.project
+
+    docJson = {
+        'id': document_id,
+        'config': project.config
+    }
+
+    return JsonResponse(docJson, safe=False)
+
+@require_login
 def get_next_document_id(request, document_id):
 
     doc = Document.objects.get(pk=document_id) 

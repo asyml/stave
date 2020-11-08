@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import NLPViewer, {
   ISinglePack,
   IOntology,
+  IProjectConfigs,
   transformPack,
   transformBackAnnotation,
   transformBackLink,
+  transformProjectConfig,
 } from '../../nlpviewer';
 import groupPlugin from '../../plugins/group/Group';
 import {layout} from '../layout';
@@ -12,11 +14,11 @@ import dialoguePlugin from '../../plugins/dialogue_box/DialogueBox';
 import { useParams } from 'react-router-dom';
 import {
   fetchDocOntology,
+  fetchDocProjectConfig,
   addAnnotation,
   deleteAnnotation,
   addLink,
   deleteLink,
-
 } from '../lib/api';
 
 interface WholePack {
@@ -24,9 +26,14 @@ interface WholePack {
   ontology: IOntology;
 }
 
+interface ProjectConfig {
+  config: IProjectConfigs;
+}
+
 function Viewer() {
   let { id } = useParams();
   const [pack, setPack] = useState<WholePack | null>(null);
+  const [config, setConfig] = useState<ProjectConfig | null>(null);
 
   useEffect(() => {
     if (id) {
@@ -42,10 +49,16 @@ function Viewer() {
           ontology: ontologyFromAPI,
         });
       });
+
+      fetchDocProjectConfig(id).then(data => {
+        setConfig({
+          config: transformProjectConfig(data.config),
+        });
+      });
     }
   }, [id]);
 
-  if (!pack) {
+  if (!pack || !config) {
     return <div>Loading...</div>;
   }
 
@@ -53,6 +66,7 @@ function Viewer() {
     <NLPViewer
       textPack={pack.singlePack}
       ontology={pack.ontology}
+      projectConfig = {config.config}
       // plugins={[groupPlugin]}
       plugins={[groupPlugin, dialoguePlugin]}
       layout={layout}

@@ -10,6 +10,11 @@ export interface APIDocOntology {
   ontology: string;
 }
 
+export interface APIDocConfig {
+  id: string;
+  config: string;
+}
+
 export function fetchDocuments(): Promise<any> {
   return fetch(`/api/documents`).then(r => r.json());
 }
@@ -24,6 +29,10 @@ export function fetchDocument(id: string): Promise<APIDocument> {
 
 export function fetchDocOntology(id: string): Promise<APIDocOntology> {
   return fetch(`/api/ontology_from_doc/${id}`).then(r => r.json());
+}
+
+export function fetchDocProjectConfig(id: string): Promise<APIDocConfig> {
+  return fetch(`/api/config_from_doc/${id}`).then(r => r.json());
 }
 
 export function nextDocument(id: string): Promise<any> {
