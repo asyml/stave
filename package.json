@@ -24,6 +24,7 @@
     "@types/react-select": "^3.0.5",
     "@types/styled-components": "^5.1.2",
     "http-proxy-middleware": "^0.20.0",
+    "identity-obj-proxy": "^3.0.0",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-router-dom": "^5.1.2",
@@ -59,7 +60,10 @@
   "jest": {
     "transformIgnorePatterns": [
       "<rootDir>/node_modules/(?!lodash-es/.*)"
-    ]
+    ],
+    "moduleNameMapper": {
+      "\\.(css|less|scss|sass)$": "identity-obj-proxy"
+    }
   },
   "prettier": {
     "singleQuote": true,
