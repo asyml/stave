@@ -113,7 +113,7 @@ function Projects() {
         config['scopeConfigs'][entryName] = false;
       }
       
-      let legendConfig : ILegendConfig = {is_selected: false};
+      let legendConfig : ILegendConfig = {is_selected: false, is_shown: true};
       config['legendConfigs'][entryName] = legendConfig;
       if (entry.attributes && entry.attributes.length > 0) {
         let attributeConfig : ILegendAttributeConfig = {};
