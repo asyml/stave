@@ -189,12 +189,13 @@ export interface ILayout {
   [position: string] : string;
 }
 
-export interface ILegendAttributeConfig{
+export interface ILegendAttributeConfig {
   [attribute: string]: boolean;
 }
 
-export interface ILegendConfig{
+export interface ILegendConfig {
   is_selected: boolean;
+  is_shown: boolean;
   attributes?: ILegendAttributeConfig;
 }
 
