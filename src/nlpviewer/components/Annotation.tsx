@@ -89,7 +89,7 @@ function Annotation({
                     : undefined,
               }}
               draggable={true}
-              onDragStart={e => {
+              onDragStart={(e) => {
                 e.dataTransfer.dropEffect = 'move';
                 e.dataTransfer.setData(
                   'text/plain',

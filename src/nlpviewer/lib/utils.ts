@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   IEntryDefinition,
   ILinkWithPos,
@@ -20,53 +21,53 @@ export function applyColorToLegend(
 }
 
 export function displayAttributeInline(attr_value: any) {
-  const attr_type:string = (typeof attr_value)
-  
+  const attr_type: string = typeof attr_value;
+
   // The way that we display null value and other objects will leave an empty box.
   // We can probably use the ontology to filter out some of these.
 
-  if (attr_type === 'boolean'){
-    return attr_value.toString()
-  } else if (attr_type === 'string'){
-    return attr_value.substring(0,3)
-  }else if (attr_type === 'number'){
-    return attr_value.toString()
-  }else if (attr_value === null){
-    return ''
-  }else{
-    return '-'
+  if (attr_type === 'boolean') {
+    return attr_value.toString();
+  } else if (attr_type === 'string') {
+    return attr_value.substring(0, 3);
+  } else if (attr_type === 'number') {
+    return attr_value.toString();
+  } else if (attr_value === null) {
+    return '';
+  } else {
+    return '-';
   }
 }
 
-export function displayAttributeFloating(attr_value: any){
-  const attr_type:string = (typeof attr_value)
+export function displayAttributeFloating(attr_value: any) {
+  const attr_type: string = typeof attr_value;
 
-  if (attr_type === 'boolean'){
-    return attr_value.toString()
-  } else if (attr_type === 'string'){
-    return attr_value.substring(0,3)
-  }else if (attr_type === 'number'){
-    return attr_value.toString()
-  }else if (attr_value === null){
-    return 'N/A'
-  }else{
-    return 'complex object'
+  if (attr_type === 'boolean') {
+    return attr_value.toString();
+  } else if (attr_type === 'string') {
+    return attr_value.substring(0, 3);
+  } else if (attr_type === 'number') {
+    return attr_value.toString();
+  } else if (attr_value === null) {
+    return 'N/A';
+  } else {
+    return 'complex object';
   }
 }
 
-export function displayAttributeSidebar(attr_value: any){
-  const attr_type:string = (typeof attr_value)
+export function displayAttributeSidebar(attr_value: any) {
+  const attr_type: string = typeof attr_value;
 
-  if (attr_type === 'boolean'){
-    return attr_value.toString()
-  } else if (attr_type === 'string'){
-    return attr_value.substring(0,3)
-  }else if (attr_type === 'number'){
-    return attr_value.toString()
-  }else if (attr_value === null){
-    return 'N/A'
-  }else{
-    return 'complex object'
+  if (attr_type === 'boolean') {
+    return attr_value.toString();
+  } else if (attr_type === 'string') {
+    return attr_value.substring(0, 3);
+  } else if (attr_type === 'number') {
+    return attr_value.toString();
+  } else if (attr_value === null) {
+    return 'N/A';
+  } else {
+    return 'complex object';
   }
 }
 
@@ -93,7 +94,7 @@ export function calculateLinesLevels(
   lineWidth: number
 ): Record<string, ILinkWithPos[][]> {
   const lineMap: any = {};
-  linksWithPos.forEach(link => {
+  linksWithPos.forEach((link) => {
     if (link.fromLinkY === link.toLinkY) {
       lineMap[link.fromLinkY] = lineMap[link.fromLinkY] || [];
       lineMap[link.fromLinkY].push(link);
@@ -115,7 +116,7 @@ export function calculateLinesLevels(
     }
   });
 
-  Object.keys(lineMap).forEach(key => {
+  Object.keys(lineMap).forEach((key) => {
     lineMap[key] = calculateLevelForSingleLine(lineMap[key]);
   });
 
@@ -137,7 +138,7 @@ export function calculateLinesLevels(
     links: ILinkWithPos[]
   ): ILinkWithPos[][] {
     const levels: ILinkWithPos[][] = [];
-    links.forEach(link => {
+    links.forEach((link) => {
       let insertLevel = -1;
       let pushLevel = -1;
       for (let i = 0; i < levels.length; i++) {
@@ -171,7 +172,7 @@ export function calculateLinesLevels(
     });
 
     projectDownLinksInLevels(levels);
-    return levels.filter(l => l.length);
+    return levels.filter((l) => l.length);
   }
 
   // go through each level from bottom to top
@@ -198,7 +199,7 @@ export function calculateLinesLevels(
       }
 
       levels[i] = level.filter(
-        (_, i) => linkstoProject.map(l => l[0]).indexOf(i) === -1
+        (_, i) => linkstoProject.map((l) => l[0]).indexOf(i) === -1
       );
       linkstoProject.forEach(([linkIndex, levelIndex]) => {
         levels[levelIndex].push(level[linkIndex]);
@@ -267,9 +268,9 @@ export function calculateLinkHeight(
 ) {
   const linksHeightMap: Record<string, Record<string, number>> = {};
 
-  Object.keys(linkLevels).forEach(y => {
+  Object.keys(linkLevels).forEach((y) => {
     linkLevels[y].forEach((links, i, arr) => {
-      links.forEach(link => {
+      links.forEach((link) => {
         linksHeightMap[link.link.id] = linksHeightMap[link.link.id] || {};
         linksHeightMap[link.link.id][y] = (arr.length - 1 - i) * gap;
       });
@@ -343,11 +344,11 @@ export function getMemberInGroup(
   }
 
   const groups = textPack.groups.filter(
-    g => groupIds.includes(g.id) && g.memberType === memberType
+    (g) => groupIds.includes(g.id) && g.memberType === memberType
   );
 
   if (groups.length) {
-    return groups.find(group => group.members.includes(memberId)) || null;
+    return groups.find((group) => group.members.includes(memberId)) || null;
   } else {
     return null;
   }
@@ -372,13 +373,13 @@ export function getMemberInGroup(
 //   }
 // }
 
-export function isAvailableScope(config: IScopeConfigs, entryName: string){
+export function isAvailableScope(config: IScopeConfigs, entryName: string) {
   return entryName in config;
 }
 
-export function isAvailableLegend(config: ILegendConfigs, entryName: string){
+export function isAvailableLegend(config: ILegendConfigs, entryName: string) {
   // Show all legends if no configuration is provided.
-  if (Object.keys(config).length === 0){
+  if (Object.keys(config).length === 0) {
     return true;
   }
   return entryName in config;
@@ -409,9 +410,7 @@ function findEntryNameMatchDeep(
     return true;
   }
 
-  const entry = config.definitions.find(
-    ent => ent.entryName === entryName
-  );
+  const entry = config.definitions.find((ent) => ent.entryName === entryName);
 
   if (!entry) {
     return false;
@@ -426,7 +425,7 @@ function findEntryNameMatchDeep(
 
 export function getGroupType(groupEntryName: string, config: IOntology) {
   const entry = config.definitions.find(
-    ent => ent.entryName === groupEntryName
+    (ent) => ent.entryName === groupEntryName
   );
 
   if (!entry) {
@@ -447,8 +446,8 @@ export function camelCaseDeep(obj: any): any {
     return obj.map(camelCaseDeep);
   } else if (typeof obj === 'object') {
     const camelCaseObj: any = {};
-    Object.keys(obj).forEach(key => {
-      let camelKey = key.replace(/_\w/g, function(match, offset, string) {
+    Object.keys(obj).forEach((key) => {
+      let camelKey = key.replace(/_\w/g, (match, offset) => {
         if (offset === 0) {
           return match;
         } else {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { colorPalettes } from './color';
 
 const labels: any = {};

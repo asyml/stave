@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   ISpaceMap,
   ILinkWithPos,
@@ -54,7 +55,7 @@ export function spaceOutText(
 
   textNodeEl.id = 'text-spacer';
   textNodeEl.style.width = `calc(100% - ${otherWidth}px)`;
-  textNodeEl.style.minWidth = `350px`;
+  textNodeEl.style.minWidth = '350px';
   textNodeEl.style.margin = '50px auto';
   textNodeEl.style.whiteSpace = 'pre-wrap';
   textNodeEl.style.lineHeight = '20px';
@@ -87,7 +88,7 @@ export function spaceOutText(
 
   // add invisibleAnnotations for each words,
   // so that long annotation can be broken down
-  let invisibleAnnotations: any[] = [];
+  const invisibleAnnotations: any[] = [];
   let currPosition = -1;
   text.split(/\s/).forEach((text, i) => {
     invisibleAnnotations.push({
@@ -206,8 +207,8 @@ export function spaceOutText(
       +lineHeight
     );
 
-    let firstAnnotation = annotationsAtCurrLine[0];
-    let fullOfInvisible = annotationsAtCurrLine.every(
+    const firstAnnotation = annotationsAtCurrLine[0];
+    const fullOfInvisible = annotationsAtCurrLine.every(
       (ann) => ann.annotation.legendId === 'invisible'
     );
 
@@ -749,9 +750,12 @@ export function restorePos(
   const entries = Array.from(charMoveMap.entries()).sort((a, b) => a[0] - b[0]);
   let previousAnnoEnd = -1;
 
-  for (let [annoEnd, annoMove] of entries) {
+  for (const [annoEnd, annoMove] of entries) {
     if (annoEnd + accumulatedMove >= begin && actualBegin === -1) {
-      if (previousAnnoEnd !== -1 && previousAnnoEnd + accumulatedMove >= begin) {
+      if (
+        previousAnnoEnd !== -1 &&
+        previousAnnoEnd + accumulatedMove >= begin
+      ) {
         actualBegin = previousAnnoEnd + 1;
       } else {
         actualBegin = begin - accumulatedMove;
@@ -777,30 +781,34 @@ export function restorePos(
   // The following procedures try to achieve this.
 
   // First check for undefined actualBegin (i.e. actualBegin === -1).
-  if (actualBegin === -1 ) { // If actualBegin is not defined.
-    let lastAnnoEnd = entries[entries.length - 1][0];
-    if (begin > lastAnnoEnd + accumulatedMove){ // If the new annotation is after those 
+  if (actualBegin === -1) {
+    // If actualBegin is not defined.
+    const lastAnnoEnd = entries[entries.length - 1][0];
+    if (begin > lastAnnoEnd + accumulatedMove) {
+      // If the new annotation is after those
       actualBegin = begin - accumulatedMove;
     } else {
       console.error(
         `Unknown causes for undefined actualBegin of surface begin 
-        at ${begin}. Offset calculation may be wrong.`);
-        actualBegin = begin;
+        at ${begin}. Offset calculation may be wrong.`
+      );
+      actualBegin = begin;
     }
   }
 
   // Then check for undefined actualEnd (i.e. actualEnd === -1).
   // We check these separately, since there might be cases where the actualBegin is defined but the
   //  actualEnd is not.
-  if (actualEnd === -1){
-    let lastAnnoEnd = entries[entries.length - 1][0];
-    if (end > lastAnnoEnd + accumulatedMove){
+  if (actualEnd === -1) {
+    const lastAnnoEnd = entries[entries.length - 1][0];
+    if (end > lastAnnoEnd + accumulatedMove) {
       actualEnd = end - accumulatedMove;
     } else {
       console.error(
         `Unknown causes for undefined actualBegin of surface begin 
-        at ${begin}. Offset calculation may be wrong.`);
-        actualEnd = end;
+        at ${begin}. Offset calculation may be wrong.`
+      );
+      actualEnd = end;
     }
   }
 
@@ -902,7 +910,7 @@ function getLevelsFromJustAnnotations(
   const set = new Set(
     annotationWithPosition.map((ann) => ann.position.rects[0].y)
   );
-  for (let height of Array.from(set)) {
+  for (const height of Array.from(set)) {
     levels[height] = [];
   }
 

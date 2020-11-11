@@ -46,8 +46,8 @@ function LinkEditConnector({
   const isMoved = pos.x !== 0 || pos.y !== 0;
   if (!isMoved) return null;
 
-  let x = position.rects[0].x + position.rects[0].width;
-  let y = position.rects[0].y;
+  const x = position.rects[0].x + position.rects[0].width;
+  const y = position.rects[0].y;
 
   const fromPos = {
     x,

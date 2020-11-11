@@ -8,25 +8,25 @@ import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
 
-function Login() { 
+function Login() {
   const [error, setError] = useState<string>('');
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const history = useHistory();
 
-  function handleLogin(e: any) {
+  function handleLogin() {
     e.preventDefault();
     login(username, password)
-      .then(e => {
+      .then(() => {
         history.push('/projects');
       })
-      .catch(e => {
+      .catch(() => {
         setError('login failed');
       });
   }
 
-  function redirectSignup(e: any) {
-    history.push("/signup") 
+  function redirectSignup() {
+    history.push('/signup');
   }
 
   const useStyles = makeStyles((theme) => ({
@@ -45,66 +45,65 @@ function Login() {
     },
   }));
 
-    const classes = useStyles();
+  const classes = useStyles();
 
   return (
-      <Container component="main" maxWidth="xs">
-        <div className={classes.paper}>
-          <img alt='stave logo' src={process.env.PUBLIC_URL + '/Stave-dark-text@1x.png'}/>
-          <form className={classes.form} noValidate onSubmit={handleLogin}>
+    <Container component="main" maxWidth="xs">
+      <div className={classes.paper}>
+        <img
+          alt="stave logo"
+          src={process.env.PUBLIC_URL + '/Stave-dark-text@1x.png'}
+        />
+        <form className={classes.form} noValidate onSubmit={handleLogin}>
+          <TextField
+            onChange={(e) => setUsername(e.target.value)}
+            value={username}
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="name"
+            label="Username"
+            name="name"
+            autoComplete="name"
+            autoFocus
+          />
 
-                <TextField
-                  onChange={e => setUsername(e.target.value)}
-                  value={username}
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="name"
-                  label="Username"
-                  name="name"
-                  autoComplete="name"
-                  autoFocus
-                />
+          <TextField
+            onChange={(e) => setPassword(e.target.value)}
+            type="password"
+            value={password}
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="password"
+            label="Password"
+            name="password"
+          />
 
-                <TextField
-                  onChange={e => setPassword(e.target.value)}
-                  type="password"
-                  value={password}
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="password"
-                  label="Password"
-                  name="password"
-                />
+          {error ? <div>{error}</div> : null}
 
-            {error ? <div>{error}</div> : null}
-
-            <Button
+          <Button
             type="submit"
             fullWidth
             variant="contained"
             color="primary"
             className={classes.submit}
-            >
-              Sign In
-            </Button>
+          >
+            Sign In
+          </Button>
 
-            <Grid container>
-              <Grid item>
-                <Link 
-                  component="button"
-                  variant="body2"
-                  onClick={redirectSignup} >
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
+          <Grid container>
+            <Grid item>
+              <Link component="button" variant="body2" onClick={redirectSignup}>
+                {"Don't have an account? Sign Up"}
+              </Link>
             </Grid>
-          </form>
-        </div>
-      </Container>
+          </Grid>
+        </form>
+      </div>
+    </Container>
   );
 }
 

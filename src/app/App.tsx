@@ -1,17 +1,12 @@
 import React, { useState } from 'react';
 import './style.css';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import Viewer from './pages/Viewer';
-import Projects from './pages/Projects'
-import Project from './pages/Project'
+import Projects from './pages/Projects';
+import Project from './pages/Project';
 import Users from './pages/Users';
 import BurgerMenu from './components/burgerMenu';
 import { singlePack } from './mock-data-2';
@@ -52,7 +47,7 @@ function App() {
 
           <Route path="/documents/:id">
             <Viewer />
-          </Route>          
+          </Route>
 
           <Route path="/projects">
             <Projects />
@@ -65,7 +60,6 @@ function App() {
           <Route path="/">
             <Projects />
           </Route>
-
         </Switch>
       </div>
     </Router>
@@ -86,6 +80,7 @@ function ViewWithDemoData() {
 
 let EntryComponent = App;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 if (process.env.REACT_APP_IS_DEMO === ('true' as any)) {
   EntryComponent = ViewWithDemoData;
 }

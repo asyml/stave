@@ -43,7 +43,7 @@ function AnnotationLabel({
       style={{
         position: 'absolute',
         zIndex: isSelected ? 30 : 0,
-        transform: `translate(-50%, 0)`,
+        transform: 'translate(-50%, 0)',
         top: position.rects[0].y + 20,
         left: position.rects[0].x + position.rects[0].width / 2,
         fontSize: 10,

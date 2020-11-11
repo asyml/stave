@@ -3,19 +3,20 @@ import { createUser, fetchUsers, deleteUser } from '../lib/api';
 import { useHistory } from 'react-router-dom';
 
 function Users() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [users, setUsers] = useState<any[]>([]);
   const [name, setName] = useState<string>('');
   const [pass, setPass] = useState<string>('');
   const history = useHistory();
 
   useEffect(() => {
-    updateUsers().catch(e => {
+    updateUsers().catch(() => {
       history.push('/login');
     });
   }, [history]);
 
   function updateUsers() {
-    return fetchUsers().then(users => {
+    return fetchUsers().then((users) => {
       setUsers(users);
     });
   }
@@ -38,7 +39,7 @@ function Users() {
     <div className="content">
       <div className="content_left">
         <h2>All users:</h2>
-        {users.map(d => (
+        {users.map((d) => (
           <ul key={d.id}>
             <li>
               {/* 'User detail is not implemented' */}
@@ -56,7 +57,7 @@ function Users() {
           <input
             placeholder="username"
             value={name}
-            onChange={e => setName(e.target.value)}
+            onChange={(e) => setName(e.target.value)}
             name="name"
           />
         </div>
@@ -64,7 +65,7 @@ function Users() {
           <input
             placeholder="password"
             value={pass}
-            onChange={e => setPass(e.target.value)}
+            onChange={(e) => setPass(e.target.value)}
             name="password"
           />
         </div>

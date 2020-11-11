@@ -9,9 +9,7 @@ function Logout() {
       history.push('/login');
     });
   }
-  return (
-    <div onClick={() => handleLogout()}>Logout</div>
-  );
+  return <div onClick={() => handleLogout()}>Logout</div>;
 }
 
 export default Logout;

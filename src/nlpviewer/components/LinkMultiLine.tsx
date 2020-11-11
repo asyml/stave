@@ -111,14 +111,14 @@ function LinkMultiLine({
   };
 
   const linkLabel = Object.keys(linkWithPosition.link.attributes)
-    .filter(attrKey => {
+    .filter((attrKey) => {
       return (
         selectedLegendAttributeIds.indexOf(
           attributeId(linkWithPosition.link.legendId, attrKey)
         ) > -1
       );
     })
-    .map(attrKey => linkWithPosition.link.attributes[attrKey])
+    .map((attrKey) => linkWithPosition.link.attributes[attrKey])
     .join(',');
 
   return (
@@ -339,7 +339,7 @@ function LinkMultiLine({
         <div
           className={style.link_label}
           style={{
-            transform: `translate(-50%)`,
+            transform: 'translate(-50%)',
             position: 'absolute',
             textAlign: goLeft ? 'left' : 'right',
             top: `${fromLinkLabelPosition.y}px`,
@@ -355,7 +355,7 @@ function LinkMultiLine({
         <div
           className={style.link_label}
           style={{
-            transform: `translate(-50%)`,
+            transform: 'translate(-50%)',
             position: 'absolute',
             textAlign: goLeft ? 'left' : 'right',
             top: `${toLinkLabelPosition.y}px`,

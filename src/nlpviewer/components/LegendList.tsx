@@ -55,7 +55,7 @@ export default function LegendList({
 
               {legend.attributes ? (
                 <div className={style.attribute_name_container}>
-                  {legend.attributes.map(attr => {
+                  {legend.attributes.map((attr) => {
                     const isSelected =
                       selectedLegendAttributeIds.indexOf(
                         attributeId(legend.entryName, attr.name)

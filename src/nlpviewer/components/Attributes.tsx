@@ -10,13 +10,11 @@ export type AttributesProp = {
 export default function Attributes({ attributes }: AttributesProp) {
   return (
     <>
-      {Object.keys(attributes).map(key => (
+      {Object.keys(attributes).map((key) => (
         <div className={style.attribute} key={key}>
           <div className={style.attribute_name}>{key}</div>
 
-          {
-            displayAttributeSidebar(attributes[key])
-          }
+          {displayAttributeSidebar(attributes[key])}
         </div>
       ))}
     </>

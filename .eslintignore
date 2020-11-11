@@ -1,0 +1,6 @@
+build/
+raw_data/
+src/__tests__/
+src/declaration.d.ts
+src/serviceWorker.js
+src/setupProxy.js

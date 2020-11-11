@@ -207,6 +207,7 @@ export type Action =
     }
   | {
       type: 'end-create-link';
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       enteredAttributes?: Record<number, any>;
     }
   | {
@@ -289,15 +290,15 @@ function textViewerReducer(state: State, action: Action): State {
           ...action.textPack,
 
           // Validate spans.
-          annotations: action.textPack.annotations.map((anno) =>{
-            let text = action.textPack.text;
+          annotations: action.textPack.annotations.map((anno) => {
+            const text = action.textPack.text;
 
-            let begin = Math.min(text.length, Math.max(0, anno.span.begin));
-            let end = Math.min(text.length, Math.max(0, anno.span.end));
+            const begin = Math.min(text.length, Math.max(0, anno.span.begin));
+            const end = Math.min(text.length, Math.max(0, anno.span.end));
 
             return {
               ...anno,
-              span: {begin, end},
+              span: { begin, end },
             };
           }),
         },
@@ -357,7 +358,7 @@ function textViewerReducer(state: State, action: Action): State {
       };
 
     case 'select-legend':
-      if (state.selectedLegendIds.indexOf(action.legendId) === -1) {  
+      if (state.selectedLegendIds.indexOf(action.legendId) === -1) {
         return {
           ...state,
           ...initialSpacingState,
@@ -436,8 +437,8 @@ function textViewerReducer(state: State, action: Action): State {
       //   }
       // }
 
-      let halfSelectedAnnotationIds: string[] = [];
-      let halfSelectedLinkIds: string[] = [];
+      const halfSelectedAnnotationIds: string[] = [];
+      const halfSelectedLinkIds: string[] = [];
 
       if (state.textPack) {
         state.textPack.links.forEach((link) => {
@@ -472,7 +473,7 @@ function textViewerReducer(state: State, action: Action): State {
         halfSelectedLinkIds: [],
       };
 
-    case 'highlight-annotation':
+    case 'highlight-annotation': {
       if (state.linkEditIsDragging) {
         return {
           ...state,
@@ -480,8 +481,8 @@ function textViewerReducer(state: State, action: Action): State {
         };
       }
 
-      let highlightedAnnotationIds: string[] = [];
-      let highlightedLinkIds: string[] = [];
+      const highlightedAnnotationIds: string[] = [];
+      const highlightedLinkIds: string[] = [];
 
       if (state.textPack) {
         state.textPack.links.forEach((link) => {
@@ -507,6 +508,7 @@ function textViewerReducer(state: State, action: Action): State {
         ],
         highlightedLinkIds: highlightedLinkIds,
       };
+    }
 
     case 'unhighlight-annotation':
       return {
@@ -703,9 +705,7 @@ function textViewerReducer(state: State, action: Action): State {
 
       const groups = state.textPack.groups.map((group) => {
         if (group.memberType === 'link') {
-          const filteredMemberIds = group.members.filter(
-            (id) => !action.linkId
-          );
+          const filteredMemberIds = group.members.filter(() => !action.linkId);
           return {
             ...group,
             members: filteredMemberIds,
@@ -961,7 +961,7 @@ function textViewerReducer(state: State, action: Action): State {
 
 let __currentState: State = initialState;
 
-function storeCurrentStateReducer(state: State, action: Action): State {
+function storeCurrentStateReducer(state: State): State {
   __currentState = state;
   return state;
 }
@@ -979,7 +979,8 @@ function combineReducers(...reducers: Array<typeof textViewerReducer>) {
 function getState() {
   return __currentState;
 }
-let w: any = window;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const w: any = window;
 w.getState = getState;
 
 const [

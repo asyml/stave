@@ -32,7 +32,8 @@ export interface TextAreaProp {
 }
 
 function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
-  let { annotations, text, links } = textPack;
+  let { annotations, text } = textPack;
+  const { links } = textPack;
   const textNodeEl = useRef<HTMLDivElement>(null);
   const textAreaEl = useRef<HTMLDivElement>(null);
 

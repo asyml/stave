@@ -1,9 +1,10 @@
-import { 
-  ISinglePack, 
-  IOntology, 
-  IAnnotation, 
-  ILink, 
-  IProjectConfigs, 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  ISinglePack,
+  IOntology,
+  IAnnotation,
+  ILink,
+  IProjectConfigs,
 } from './interfaces';
 import { isEntryAnnotation, isEntryLink, camelCaseDeep } from './utils';
 
@@ -93,7 +94,7 @@ function getAttrs(config: any, a: any) {
   const attrNames = legend.attributes.map((a: any) => a.name);
   const attrs: any = {};
 
-  Object.keys(a['py/state']).forEach(key => {
+  Object.keys(a['py/state']).forEach((key) => {
     if (attrNames.includes(key)) {
       attrs[key] = a['py/state'][key];
     }

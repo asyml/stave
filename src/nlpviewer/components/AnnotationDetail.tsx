@@ -29,7 +29,7 @@ export default function AnnotationDetail({
     return (
       <div className={style.linked_annotation_container}>
         <strong>{title}</strong>
-        {annotations.map(ann => {
+        {annotations.map((ann) => {
           return (
             <span
               key={ann.id}

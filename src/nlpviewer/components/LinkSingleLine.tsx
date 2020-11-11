@@ -74,19 +74,19 @@ function LinkSingleLine({
   };
 
   const linkLabel = Object.keys(linkWithPosition.link.attributes)
-    .filter(attrKey => {
+    .filter((attrKey) => {
       return (
         selectedLegendAttributeIds.indexOf(
           attributeId(linkWithPosition.link.legendId, attrKey)
         ) > -1
       );
     })
-    .map(attrKey => linkWithPosition.link.attributes[attrKey])
+    .map((attrKey) => linkWithPosition.link.attributes[attrKey])
     .join(',');
 
   return (
     <div
-      className={`single-line-container`}
+      className={'single-line-container'}
       data-from-id={linkWithPosition.link.fromEntryId}
       data-to-id={linkWithPosition.link.toEntryId}
     >
@@ -210,7 +210,7 @@ function LinkSingleLine({
         <div
           className={style.link_label}
           style={{
-            transform: `translate(-50%)`,
+            transform: 'translate(-50%)',
             position: 'absolute',
             textAlign: goLeft ? 'left' : 'right',
             top: `${linkLabelPosition.y}px`,

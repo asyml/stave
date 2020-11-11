@@ -3,6 +3,7 @@ import { fetchDocuments, createDocument, deleteDocument } from '../lib/api';
 import { Link, useHistory } from 'react-router-dom';
 
 function Documents() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [docs, setDocs] = useState<any[]>([]);
   const [name, setName] = useState<string>('');
   const [pack, setPack] = useState<string>('');
@@ -10,19 +11,19 @@ function Documents() {
   const history = useHistory();
 
   useEffect(() => {
-    updateDocs().catch(e => {
+    updateDocs().catch(() => {
       history.push('/login');
     });
   }, [history]);
 
   function updateDocs() {
-    return fetchDocuments().then(docs => {
+    return fetchDocuments().then((docs) => {
       setDocs(docs);
     });
   }
 
   function handleAdd() {
-    let project_id = window.location.pathname.split("/").pop() !;
+    const project_id = window.location.pathname.split('/').pop()!;
     createDocument(name, pack, project_id).then(() => {
       updateDocs();
     });
@@ -35,7 +36,7 @@ function Documents() {
   }
 
   if (!docs.length) {
-    console.log('empty result')
+    console.log('empty result');
     return null;
   }
 
@@ -43,7 +44,7 @@ function Documents() {
     <div className="content">
       <div className="content_left">
         <h2>All text packs:</h2>
-        {docs.map(d => (
+        {docs.map((d) => (
           <ul key={d.id}>
             <li>
               <Link to={`/documents/${d.id}`}>{d.name}</Link>{' '}
@@ -59,7 +60,7 @@ function Documents() {
           <input
             placeholder="name"
             value={name}
-            onChange={e => setName(e.target.value)}
+            onChange={(e) => setName(e.target.value)}
             name="name"
           />
         </div>
@@ -67,7 +68,7 @@ function Documents() {
           <textarea
             placeholder="text pack body"
             value={pack}
-            onChange={e => setPack(e.target.value)}
+            onChange={(e) => setPack(e.target.value)}
             name="textpack"
             id=""
             cols={30}
@@ -78,7 +79,7 @@ function Documents() {
           <textarea
             placeholder="ontology body"
             value={ontology}
-            onChange={e => setOntology(e.target.value)}
+            onChange={(e) => setOntology(e.target.value)}
             name="ontology"
             id=""
             cols={30}

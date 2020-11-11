@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface IAttributes {
   [key: string]: any;
 }
@@ -186,14 +187,14 @@ export interface IPlugin {
 }
 
 export interface ILayout {
-  [position: string] : string;
+  [position: string]: string;
 }
 
-export interface ILegendAttributeConfig{
+export interface ILegendAttributeConfig {
   [attribute: string]: boolean;
 }
 
-export interface ILegendConfig{
+export interface ILegendConfig {
   is_selected: boolean;
   attributes?: ILegendAttributeConfig;
 }

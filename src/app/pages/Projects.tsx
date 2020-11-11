@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchProjects, createProject, deleteProject } from '../lib/api';
 import { Link, useHistory } from 'react-router-dom';
-import {FileWithPath} from 'react-dropzone';
+import { FileWithPath } from 'react-dropzone';
 import DropUpload from '../components/dropUpload';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -18,9 +18,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import PostAddSharpIcon from '@material-ui/icons/PostAddSharp';
-import { 
-  ILegendAttributeConfig, 
-  ILegendConfig, 
+import {
+  ILegendAttributeConfig,
+  ILegendConfig,
   IProjectConfigs,
   IOntology,
 } from '../../nlpviewer';
@@ -35,11 +35,11 @@ const useStyles = makeStyles({
   title: {
     fontSize: 14,
   },
-  
 });
 
 function Projects() {
   const classes = useStyles();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [projects, setProjects] = useState<any[]>([]);
   const [name, setName] = useState<string>('');
   const [ontology, setOntology] = useState<string>('');
@@ -47,9 +47,7 @@ function Projects() {
   const history = useHistory();
   const [open, setOpen] = React.useState(false);
 
-
   const handleClickOpen = () => {
-
     setOpen(true);
   };
 
@@ -63,24 +61,24 @@ function Projects() {
   };
 
   useEffect(() => {
-    updateProjects().catch(e => {
+    updateProjects().catch(() => {
       history.push('/login');
     });
   }, [history]);
 
   function updateProjects() {
-    return fetchProjects().then(projects => {
+    return fetchProjects().then((projects) => {
       setProjects(projects);
     });
   }
 
   function handleAdd() {
-    if (name && ontology && config){
-      createProject(name, ontology, config).then(() =>{
+    if (name && ontology && config) {
+      createProject(name, ontology, config).then(() => {
         updateProjects();
       });
-    } else{
-      alert("Please fill in project name and upload ontology file.");
+    } else {
+      alert('Please fill in project name and upload ontology file.');
     }
   }
 
@@ -91,32 +89,32 @@ function Projects() {
   }
 
   function userAddFiles(acceptedFiles: FileWithPath[]) {
-    if (acceptedFiles.length > 0){    
+    if (acceptedFiles.length > 0) {
       const reader = new FileReader();
       reader.readAsText(acceptedFiles[0]);
-      reader.onload = function() {
-        setOntology(reader.result as string);  
-        const defaultConfig = createDefaultConfig(reader.result as string); 
-        setConfig(JSON.stringify(defaultConfig, null, 2));    
-      }
+      reader.onload = function () {
+        setOntology(reader.result as string);
+        const defaultConfig = createDefaultConfig(reader.result as string);
+        setConfig(JSON.stringify(defaultConfig, null, 2));
+      };
     }
   }
-  
+
   function createDefaultConfig(ontology: string) {
     const ontologyJson = JSON.parse(ontology);
-    const ontologyObject : IOntology = camelCaseDeep(ontologyJson);
-    let config : IProjectConfigs = {legendConfigs: {}, scopeConfigs: {}};
+    const ontologyObject: IOntology = camelCaseDeep(ontologyJson);
+    const config: IProjectConfigs = { legendConfigs: {}, scopeConfigs: {} };
     for (const entry of ontologyJson.definitions) {
       const entryName = entry.entry_name;
       // Scope configs should contain annotations only.
       if (isEntryAnnotation(ontologyObject, entryName)) {
         config['scopeConfigs'][entryName] = false;
       }
-      
-      let legendConfig : ILegendConfig = {is_selected: false};
+
+      const legendConfig: ILegendConfig = { is_selected: false };
       config['legendConfigs'][entryName] = legendConfig;
       if (entry.attributes && entry.attributes.length > 0) {
-        let attributeConfig : ILegendAttributeConfig = {};
+        const attributeConfig: ILegendAttributeConfig = {};
         config['legendConfigs'][entryName]['attributes'] = attributeConfig;
         for (const attribute of entry.attributes) {
           if (attribute.type === 'str') {
@@ -131,47 +129,50 @@ function Projects() {
   return (
     <div className={classes.root}>
       <div className="content">
-        <Typography variant="h3">
-              All Projects:
-          </Typography>
+        <Typography variant="h3">All Projects:</Typography>
       </div>
       <div className="content">
-        <Grid 
-        container 
-        className={classes.root} 
-        justify="flex-start" 
-        spacing={2}>
-          {projects.map(d => (         
+        <Grid
+          container
+          className={classes.root}
+          justify="flex-start"
+          spacing={2}
+        >
+          {projects.map((d) => (
             <Grid key={d.id} item>
               <Card className={classes.root}>
-                <CardHeader 
-                  title={d.name} 
+                <CardHeader
+                  title={d.name}
                   action={
-                  <IconButton 
-                  onClick={() => handleDelete(d.id)}
-                  aria-label="delet"
-                  >
-                    <DeleteForeverSharpIcon />
-                  </IconButton >
+                    <IconButton
+                      onClick={() => handleDelete(d.id)}
+                      aria-label="delet"
+                    >
+                      <DeleteForeverSharpIcon />
+                    </IconButton>
                   }
                 />
                 {/* CardActionArea part is for adding project introduction in the future */}
                 <CardActionArea>
                   <CardContent>
-                    <Typography variant="body2" color="textSecondary" component="p">
-                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      component="p"
+                    ></Typography>
                   </CardContent>
                 </CardActionArea>
                 <CardActions>
-                  <Button 
-                  component={Link} to={`/project/${d.id}`} 
-                  size="small" 
-                  color="primary"
+                  <Button
+                    component={Link}
+                    to={`/project/${d.id}`}
+                    size="small"
+                    color="primary"
                   >
                     Learn More
                   </Button>
                 </CardActions>
-              </Card>        
+              </Card>
             </Grid>
           ))}
           <Grid item>
@@ -184,72 +185,71 @@ function Projects() {
                 <Dialog open={open} onClose={handleClose}>
                   <DialogContent>
                     <div>
-                      <TextField 
-                      variant="outlined"
-                      label="Project Name"
-                      value={name}
-                      onChange={e => setName(e.target.value)}
-                      autoFocus
-                      fullWidth
-                      margin="normal"
+                      <TextField
+                        variant="outlined"
+                        label="Project Name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        autoFocus
+                        fullWidth
+                        margin="normal"
                       />
                     </div>
                     <div>
                       <TextField
-                      id="outlined-multiline-flexible"
-                      label="Ontology Body"
-                      value={ontology}
-                      onChange={e => setOntology(e.target.value)}
-                      multiline
-                      rows={10}
-                      variant="outlined"
-                      fullWidth
-                      margin="normal"
+                        id="outlined-multiline-flexible"
+                        label="Ontology Body"
+                        value={ontology}
+                        onChange={(e) => setOntology(e.target.value)}
+                        multiline
+                        rows={10}
+                        variant="outlined"
+                        fullWidth
+                        margin="normal"
                       />
                     </div>
                     <div>
                       <TextField
-                      label="Config"
-                      value={config}
-                      onChange={e => setConfig(e.target.value)}
-                      multiline
-                      rows={10}
-                      variant="outlined"
-                      fullWidth
-                      margin="normal"
+                        label="Config"
+                        value={config}
+                        onChange={(e) => setConfig(e.target.value)}
+                        multiline
+                        rows={10}
+                        variant="outlined"
+                        fullWidth
+                        margin="normal"
                       />
-                    </div> 
+                    </div>
                     <div>
                       <DropUpload
                         fileLimit={1048576}
                         fileDropFunc={userAddFiles}
-                        mimeType='application/json'
+                        mimeType="application/json"
                         allowMultiple={false}
                       />
                     </div>
                     <div>
                       <Button
                         onClick={() => {
-                        handleAdd();
-                        handleClose();
-                        clearDialog();
-                        }}  
+                          handleAdd();
+                          handleClose();
+                          clearDialog();
+                        }}
                         color="primary"
-                        size="small" 
+                        size="small"
                         variant="contained"
                         disableElevation
                       >
                         Add
                       </Button>
                     </div>
-
                   </DialogContent>
                 </Dialog>
               </CardActions>
             </Card>
           </Grid>
         </Grid>
-      </div>     
+      </div>
     </div>
   );
 }
