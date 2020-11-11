@@ -382,7 +382,7 @@ export function isAvailableLegend(config: ILegendConfigs, entryName: string) {
   if (Object.keys(config).length === 0) {
     return true;
   }
-  return entryName in config;
+  return entryName in config && config[entryName]['is_shown'];
 }
 
 export function isEntryAnnotation(config: IOntology, entryName: string) {

@@ -196,6 +196,7 @@ export interface ILegendAttributeConfig {
 
 export interface ILegendConfig {
   is_selected: boolean;
+  is_shown: boolean;
   attributes?: ILegendAttributeConfig;
 }
 
