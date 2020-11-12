@@ -1,10 +1,10 @@
-import { IProjectConfigs } from '../nlpviewer';
+import {IProjectConfigs} from '../nlpviewer';
 
 export const projectConfig: IProjectConfigs = {
   legendConfigs: {
-    'edu.cmu.TitleSpan': { is_selected: false, is_shown: true },
-    'edu.cmu.BodySpan': { is_selected: false, is_shown: true },
-    'edu.cmu.EventMention': { is_selected: true, is_shown: true },
+    'edu.cmu.TitleSpan': {is_selected: false, is_shown: true},
+    'edu.cmu.BodySpan': {is_selected: false, is_shown: true},
+    'edu.cmu.EventMention': {is_selected: true, is_shown: true},
     'ft.onto.base_ontology.Token': {
       is_selected: false,
       is_shown: true,

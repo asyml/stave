@@ -25,8 +25,8 @@ import {
 import LinkCreateBox from './LinkCreateBox';
 import AnnotationCreateBox from './AnnotationCreateBox';
 import groupPlugin from '../../plugins/group/Group';
-import { nextDocument, prevDocument } from '../../app/lib/api';
-import { useState } from 'react';
+import {nextDocument, prevDocument} from '../../app/lib/api';
+import {useState} from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type OnEventType = (event: any) => void;
@@ -38,12 +38,7 @@ export interface TextViewerProp {
   projectConfig: IProjectConfigs;
 }
 
-function TextViewer({
-  plugins,
-  onEvent,
-  layout,
-  projectConfig,
-}: TextViewerProp) {
+function TextViewer({plugins, onEvent, layout, projectConfig}: TextViewerProp) {
   const appState = useTextViewerState();
   const dispatch = useTextViewerDispatch();
 
@@ -72,46 +67,46 @@ function TextViewer({
   if (!textPack || !ontology || !projectConfig) return null;
 
   const doc_id = window.location.pathname.split('/').pop()!;
-  nextDocument(doc_id).then((data) => setNext(data.id));
-  prevDocument(doc_id).then((data) => setPrev(data.id));
+  nextDocument(doc_id).then(data => setNext(data.id));
+  prevDocument(doc_id).then(data => setPrev(data.id));
 
-  const { annotations, links, attributes } = textPack;
+  const {annotations, links, attributes} = textPack;
 
   const annotationLegendsWithColor = applyColorToLegend(
     ontology.definitions.filter(
-      (entry) =>
+      entry =>
         isEntryAnnotation(ontology, entry.entryName) &&
         isAvailableLegend(projectConfig['legendConfigs'], entry.entryName)
     )
   );
   const linksLegendsWithColor = applyColorToLegend(
     ontology.definitions.filter(
-      (entry) =>
+      entry =>
         isEntryLink(ontology, entry.entryName) &&
         isAvailableLegend(projectConfig['legendConfigs'], entry.entryName)
     )
   );
 
   const selectedAnnotation =
-    annotations.find((ann) => ann.id === selectedAnnotationId) || null;
+    annotations.find(ann => ann.id === selectedAnnotationId) || null;
   const selectedAnnotationParents: IAnnotation[] = [];
   const selectedAnnotationChildren: IAnnotation[] = [];
 
-  links.forEach((link) => {
+  links.forEach(link => {
     if (link.fromEntryId === selectedAnnotationId) {
-      const anno = annotations.find((ann) => ann.id === link.toEntryId);
+      const anno = annotations.find(ann => ann.id === link.toEntryId);
       if (anno) selectedAnnotationChildren.push(anno);
     } else if (link.toEntryId === selectedAnnotationId) {
-      const anno = annotations.find((ann) => ann.id === link.fromEntryId);
+      const anno = annotations.find(ann => ann.id === link.fromEntryId);
       if (anno) selectedAnnotationParents.push(anno);
     }
   });
 
-  const selectedLink = links.find((link) => link.id === selectedLinkId) || null;
-  const enabledPlugins = plugins.filter((p) => p.enabled(appState));
+  const selectedLink = links.find(link => link.id === selectedLinkId) || null;
+  const enabledPlugins = plugins.filter(p => p.enabled(appState));
 
   const pluginsByName = new Map<string, IPlugin>(
-    enabledPlugins.map((p) => [p.name, p])
+    enabledPlugins.map(p => [p.name, p])
   );
 
   function renderPlugin(p: IPlugin) {
@@ -138,7 +133,7 @@ function TextViewer({
         <div className={style.plugins_container}>No Plugins Configured.</div>
       );
     } else if (enabledPlugins.length > 0) {
-      const tabList = enabledPlugins.map((p) => {
+      const tabList = enabledPlugins.map(p => {
         return {
           title: p.name,
           body: () => renderPlugin(p),
@@ -357,7 +352,7 @@ function TextViewer({
                 <div className={style.scope_nav_container}>
                   <button
                     disabled={selectedScopeIndex === 0}
-                    onClick={() => dispatch({ type: 'prev-scope-item' })}
+                    onClick={() => dispatch({type: 'prev-scope-item'})}
                   >
                     ←
                   </button>
@@ -365,11 +360,11 @@ function TextViewer({
                     disabled={
                       selectedScopeIndex ===
                       textPack.annotations.filter(
-                        (ann) => ann.legendId === selectedScopeId
+                        ann => ann.legendId === selectedScopeId
                       ).length -
                         1
                     }
-                    onClick={() => dispatch({ type: 'next-scope-item' })}
+                    onClick={() => dispatch({type: 'next-scope-item'})}
                   >
                     →
                   </button>

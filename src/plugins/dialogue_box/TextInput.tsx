@@ -1,7 +1,7 @@
 import React from 'react';
 import style from './TextInput.module.css';
-import { ISinglePack } from '../../nlpviewer';
-import { OnEventType } from './DialogueBox';
+import {ISinglePack} from '../../nlpviewer';
+import {OnEventType} from './DialogueBox';
 
 export interface TextInputProp {
   textValue: string;
@@ -18,7 +18,7 @@ function submitUtterance(
   newUtterance: string,
   onEvent?: OnEventType
 ) {
-  let { text } = textPack;
+  let {text} = textPack;
 
   text = text + '\n' + newUtterance;
   const end = text.length;
@@ -51,7 +51,7 @@ class TextInput extends React.Component<TextInputProp, TextInputState> {
   render() {
     return (
       <form
-        onSubmit={(e) => {
+        onSubmit={e => {
           e.preventDefault();
         }}
       >
@@ -60,17 +60,17 @@ class TextInput extends React.Component<TextInputProp, TextInputState> {
             className={style.field}
             type="text"
             value={this.state.textValue}
-            onChange={(e) => {
-              this.setState({ textValue: e.target.value });
+            onChange={e => {
+              this.setState({textValue: e.target.value});
             }}
-            onKeyUp={(e) => {
+            onKeyUp={e => {
               if (e.key === 'Enter') {
                 submitUtterance(
                   this.props.textPack,
                   this.state.textValue,
                   this.props.onEvent
                 );
-                this.setState({ textValue: '' });
+                this.setState({textValue: ''});
               }
             }}
           />
@@ -84,7 +84,7 @@ class TextInput extends React.Component<TextInputProp, TextInputState> {
               this.state.textValue,
               this.props.onEvent
             );
-            this.setState({ textValue: '' });
+            this.setState({textValue: ''});
           }}
         />
       </form>

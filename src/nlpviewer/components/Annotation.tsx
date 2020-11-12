@@ -1,6 +1,6 @@
-import React, { memo } from 'react';
-import { IAnnotation, IAnnotationPosition } from '../lib/interfaces';
-import { useTextViewerDispatch } from '../contexts/text-viewer.context';
+import React, {memo} from 'react';
+import {IAnnotation, IAnnotationPosition} from '../lib/interfaces';
+import {useTextViewerDispatch} from '../contexts/text-viewer.context';
 import style from '../styles/Annotation.module.css';
 
 export interface AnnotationProp {
@@ -89,7 +89,7 @@ function Annotation({
                     : undefined,
               }}
               draggable={true}
-              onDragStart={(e) => {
+              onDragStart={e => {
                 e.dataTransfer.dropEffect = 'move';
                 e.dataTransfer.setData(
                   'text/plain',
@@ -112,11 +112,11 @@ function Annotation({
             >
               <div
                 className={`${style.annotation_inner_left}`}
-                style={{ borderRightColor: legendColor }}
+                style={{borderRightColor: legendColor}}
               ></div>
               <div
                 className={`${style.annotation_inner_right}`}
-                style={{ borderLeftColor: legendColor }}
+                style={{borderLeftColor: legendColor}}
               ></div>
             </div>
             <div
@@ -127,8 +127,8 @@ function Annotation({
                   linkEditFromEntryId === annotation.id ? 'block' : 'none',
               }}
               onMouseDown={() => {
-                dispatch({ type: 'deselect-link' });
-                dispatch({ type: 'deselect-annotation' });
+                dispatch({type: 'deselect-link'});
+                dispatch({type: 'deselect-annotation'});
                 dispatch({
                   type: 'start-create-link',
                   annotationId: annotation.id,

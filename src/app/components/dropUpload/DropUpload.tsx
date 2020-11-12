@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useDropzone, FileWithPath } from 'react-dropzone';
+import React, {useState} from 'react';
+import {useDropzone, FileWithPath} from 'react-dropzone';
 import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 
@@ -14,7 +14,8 @@ export interface DropUploadProp {
   fileDropFunc?: Function;
 }
 
-const getColor = (props: unknown) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getColor = (props: any) => {
   if (props.isDragAccept) {
     return '#00e676';
   }
@@ -35,7 +36,7 @@ export const Container = styled.div`
   padding: 20px;
   border-width: 2px;
   border-radius: 2px;
-  border-color: ${(props) => getColor(props)};
+  border-color: ${props => getColor(props)};
   border-style: dashed;
   background-color: #fafafa;
   color: #bdbdbd;
@@ -61,13 +62,13 @@ function DropUpload({
     isDragAccept,
     isDragReject,
   } = useDropzone({
-    onDrop: (acceptedFiles) => {
+    onDrop: acceptedFiles => {
       if (fileDropFunc && typeof fileDropFunc === 'function') {
         fileDropFunc(acceptedFiles);
       }
-      acceptedFiles.forEach((file) => {
+      acceptedFiles.forEach(file => {
         console.log(file);
-        setFiles((files) => [...files, file]);
+        setFiles(files => [...files, file]);
       });
     },
     accept: mimeType,
@@ -104,9 +105,7 @@ function DropUpload({
 
   return (
     <section className="container">
-      <Container
-        {...getRootProps({ isDragActive, isDragAccept, isDragReject })}
-      >
+      <Container {...getRootProps({isDragActive, isDragAccept, isDragReject})}>
         <input {...getInputProps()} />
         <p>
           {dropZoneText

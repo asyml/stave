@@ -1,8 +1,8 @@
 import React from 'react';
-import { StyledBurger } from './StyledBurger';
-import { StyledMenu } from './StyledMenu';
+import {StyledBurger} from './StyledBurger';
+import {StyledMenu} from './StyledMenu';
 
-class BurgerMenu extends React.Component<{ open: boolean; setOpen: Function }> {
+class BurgerMenu extends React.Component<{open: boolean; setOpen: Function}> {
   private menuRef = React.createRef<HTMLDivElement>();
 
   componentDidMount() {
@@ -27,16 +27,13 @@ class BurgerMenu extends React.Component<{ open: boolean; setOpen: Function }> {
   };
 
   render() {
-    const childrenWithProps = React.Children.map(
-      this.props.children,
-      (child) => {
-        const props = { onClick: () => this.props.setOpen(!this.props.open) };
-        if (React.isValidElement(child)) {
-          return React.cloneElement(child, props);
-        }
-        return child;
+    const childrenWithProps = React.Children.map(this.props.children, child => {
+      const props = {onClick: () => this.props.setOpen(!this.props.open)};
+      if (React.isValidElement(child)) {
+        return React.cloneElement(child, props);
       }
-    );
+      return child;
+    });
 
     return (
       <div ref={this.menuRef}>

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { fetchDocuments, createDocument, deleteDocument } from '../lib/api';
-import { Link, useHistory } from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
+import {fetchDocuments, createDocument, deleteDocument} from '../lib/api';
+import {Link, useHistory} from 'react-router-dom';
 
 function Documents() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -17,7 +17,7 @@ function Documents() {
   }, [history]);
 
   function updateDocs() {
-    return fetchDocuments().then((docs) => {
+    return fetchDocuments().then(docs => {
       setDocs(docs);
     });
   }
@@ -44,7 +44,7 @@ function Documents() {
     <div className="content">
       <div className="content_left">
         <h2>All text packs:</h2>
-        {docs.map((d) => (
+        {docs.map(d => (
           <ul key={d.id}>
             <li>
               <Link to={`/documents/${d.id}`}>{d.name}</Link>{' '}
@@ -60,7 +60,7 @@ function Documents() {
           <input
             placeholder="name"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={e => setName(e.target.value)}
             name="name"
           />
         </div>
@@ -68,7 +68,7 @@ function Documents() {
           <textarea
             placeholder="text pack body"
             value={pack}
-            onChange={(e) => setPack(e.target.value)}
+            onChange={e => setPack(e.target.value)}
             name="textpack"
             id=""
             cols={30}
@@ -79,7 +79,7 @@ function Documents() {
           <textarea
             placeholder="ontology body"
             value={ontology}
-            onChange={(e) => setOntology(e.target.value)}
+            onChange={e => setOntology(e.target.value)}
             name="ontology"
             id=""
             cols={30}

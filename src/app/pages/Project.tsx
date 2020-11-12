@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   createDocument,
   deleteDocument,
   fetchDocumentsProject,
 } from '../lib/api';
-import { Link, useHistory } from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import DropUpload from '../components/dropUpload';
-import { FileWithPath } from 'react-dropzone';
+import {FileWithPath} from 'react-dropzone';
 
 function Docs() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -23,7 +23,7 @@ function Docs() {
   function updateDocs() {
     const project_id = window.location.pathname.split('/').pop()!;
 
-    return fetchDocumentsProject(project_id).then((docs) => {
+    return fetchDocumentsProject(project_id).then(docs => {
       setDocs(docs);
     });
   }
@@ -31,7 +31,7 @@ function Docs() {
   function handleAdd(filesToUpload: FileWithPath[]) {
     const project_id = window.location.pathname.split('/').pop()!;
 
-    filesToUpload.forEach((f) => {
+    filesToUpload.forEach(f => {
       const reader = new FileReader();
       reader.readAsText(f);
       reader.onload = function () {
@@ -53,7 +53,7 @@ function Docs() {
       <div className="content_left">
         <h2>All docs:</h2>
         {docs
-          ? docs.map((d) => (
+          ? docs.map(d => (
               <ul key={d.id}>
                 <li>
                   <Link to={`/documents/${d.id}`}>{d.name}</Link>{' '}

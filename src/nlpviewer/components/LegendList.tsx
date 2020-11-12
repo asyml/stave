@@ -1,12 +1,12 @@
 import React from 'react';
-import { Dispatch } from '../contexts/text-viewer.context';
-import { IEntryDefinition } from '../lib/interfaces';
-import { attributeId } from '../lib/utils';
+import {Dispatch} from '../contexts/text-viewer.context';
+import {IEntryDefinition} from '../lib/interfaces';
+import {attributeId} from '../lib/utils';
 import style from '../styles/LegendList.module.css';
 
 interface LegendListProp {
   title: string;
-  legends: (IEntryDefinition & { color: string })[];
+  legends: (IEntryDefinition & {color: string})[];
   selectedLegendIds: string[];
   selectedLegendAttributeIds: string[];
   dispatch: Dispatch;
@@ -55,7 +55,7 @@ export default function LegendList({
 
               {legend.attributes ? (
                 <div className={style.attribute_name_container}>
-                  {legend.attributes.map((attr) => {
+                  {legend.attributes.map(attr => {
                     const isSelected =
                       selectedLegendAttributeIds.indexOf(
                         attributeId(legend.entryName, attr.name)

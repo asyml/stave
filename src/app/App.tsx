@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import './style.css';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
 
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
@@ -9,10 +9,10 @@ import Projects from './pages/Projects';
 import Project from './pages/Project';
 import Users from './pages/Users';
 import BurgerMenu from './components/burgerMenu';
-import { singlePack } from './mock-data-2';
-import { ontology } from './mock-config-data';
-import { layout } from './layout';
-import { projectConfig } from './project_config';
+import {singlePack} from './mock-data-2';
+import {ontology} from './mock-config-data';
+import {layout} from './layout';
+import {projectConfig} from './project_config';
 import NLPViewer from '../nlpviewer';
 import groupPlugin from '../plugins/group/Group';
 import dialogueBoxPlugin from '../plugins/dialogue_box/DialogueBox';

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import style from './Group.module.css';
-import { IGroup, ISinglePack } from '../../nlpviewer';
-import { PluginComponentProp } from '../lib/interface';
+import {IGroup, ISinglePack} from '../../nlpviewer';
+import {PluginComponentProp} from '../lib/interface';
 
 function Group(props: PluginComponentProp) {
   const [dropGroupId, setDropGroupId] = useState<string | null>(null);
@@ -11,29 +11,29 @@ function Group(props: PluginComponentProp) {
   }
 
   const dispatch = props.dispatch;
-  const { textPack } = props.appState;
-  const { groups } = textPack;
+  const {textPack} = props.appState;
+  const {groups} = textPack;
 
   return (
     <div key={'plugin-group'} className={style.group_name_container}>
-      {groups.map((group) => {
+      {groups.map(group => {
         return (
           <div
             key={group.id}
-            onDragEnter={(event) => {
+            onDragEnter={event => {
               event.preventDefault();
 
               if (dropGroupId !== group.id) {
                 setDropGroupId(group.id);
               }
             }}
-            onDragOver={(event) => {
+            onDragOver={event => {
               event.preventDefault();
             }}
             onDragLeave={() => {
               setDropGroupId(null);
             }}
-            onDrop={(event) => {
+            onDrop={event => {
               event.preventDefault();
 
               const data = JSON.parse(event.dataTransfer.getData('text/plain'));
@@ -82,7 +82,7 @@ function Group(props: PluginComponentProp) {
 
 function getMemberDetail(group: IGroup, member: string, textPack: ISinglePack) {
   if (group.memberType === 'annotation') {
-    const annotation = textPack.annotations.find((ann) => ann.id === member);
+    const annotation = textPack.annotations.find(ann => ann.id === member);
     if (annotation) {
       return textPack.text.substring(
         annotation.span.begin,

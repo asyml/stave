@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import NLPViewer, {
   ISinglePack,
   IOntology,
@@ -9,9 +9,9 @@ import NLPViewer, {
   transformProjectConfig,
 } from '../../nlpviewer';
 import groupPlugin from '../../plugins/group/Group';
-import { layout } from '../layout';
+import {layout} from '../layout';
 import dialoguePlugin from '../../plugins/dialogue_box/DialogueBox';
-import { useParams } from 'react-router-dom';
+import {useParams} from 'react-router-dom';
 import {
   fetchDocOntology,
   fetchDocProjectConfig,
@@ -31,13 +31,13 @@ interface ProjectConfig {
 }
 
 function Viewer() {
-  const { id } = useParams();
+  const {id} = useParams();
   const [pack, setPack] = useState<WholePack | null>(null);
   const [config, setConfig] = useState<ProjectConfig | null>(null);
 
   useEffect(() => {
     if (id) {
-      fetchDocOntology(id).then((data) => {
+      fetchDocOntology(id).then(data => {
         const [singlePackFromAPI, ontologyFromAPI] = transformPack(
           data.textPack,
           data.ontology
@@ -49,7 +49,7 @@ function Viewer() {
         });
       });
 
-      fetchDocProjectConfig(id).then((data) => {
+      fetchDocProjectConfig(id).then(data => {
         setConfig({
           config: transformProjectConfig(data.config),
         });
@@ -69,13 +69,13 @@ function Viewer() {
       // plugins={[groupPlugin]}
       plugins={[groupPlugin, dialoguePlugin]}
       layout={layout}
-      onEvent={(event) => {
+      onEvent={event => {
         if (!id) return;
 
         console.log(event);
 
         if (event.type === 'annotation-add') {
-          const { ...annotation } = event;
+          const {...annotation} = event;
 
           const b = annotation.span.begin;
           const e = annotation.span.end;
@@ -84,7 +84,7 @@ function Viewer() {
           if (b < e && b >= 0 && e <= pack.singlePack.text.length) {
             const annotationAPIData = transformBackAnnotation(annotation);
 
-            addAnnotation(id, annotationAPIData).then(({ id }) => {
+            addAnnotation(id, annotationAPIData).then(({id}) => {
               annotation.id = id;
 
               setPack({
@@ -106,17 +106,17 @@ function Viewer() {
               singlePack: {
                 ...pack.singlePack,
                 annotations: pack.singlePack.annotations.filter(
-                  (a) => a.id !== event.annotationId
+                  a => a.id !== event.annotationId
                 ),
               },
               ontology: pack.ontology,
             });
           });
         } else if (event.type === 'link-add') {
-          const { ...link } = event;
+          const {...link} = event;
           const linkAPIData = transformBackLink(link);
 
-          addLink(id, linkAPIData).then(({ id }) => {
+          addLink(id, linkAPIData).then(({id}) => {
             link.id = id;
             setPack({
               singlePack: {
@@ -131,9 +131,7 @@ function Viewer() {
             setPack({
               singlePack: {
                 ...pack.singlePack,
-                links: pack.singlePack.links.filter(
-                  (a) => a.id !== event.linkId
-                ),
+                links: pack.singlePack.links.filter(a => a.id !== event.linkId),
               },
               ontology: pack.ontology,
             });

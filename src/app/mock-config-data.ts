@@ -1,4 +1,4 @@
-import { IOntology } from '../nlpviewer';
+import {IOntology} from '../nlpviewer';
 
 export const ontology: IOntology = {
   name: 'base_ontology',

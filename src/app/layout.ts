@@ -1,4 +1,4 @@
-import { ILayout } from '../nlpviewer';
+import {ILayout} from '../nlpviewer';
 
 export const layout: ILayout = {
   'center-middle': 'default-nlp',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { IPos } from '../lib/interfaces';
+import {IPos} from '../lib/interfaces';
 import style from '../styles/LineWithArrow.module.css';
 
 export interface LineWithArrowProp {
@@ -7,7 +7,7 @@ export interface LineWithArrowProp {
   toPos: IPos;
 }
 
-export default function LineWithArrow({ fromPos, toPos }: LineWithArrowProp) {
+export default function LineWithArrow({fromPos, toPos}: LineWithArrowProp) {
   const x = fromPos.x;
   const y = fromPos.y;
 

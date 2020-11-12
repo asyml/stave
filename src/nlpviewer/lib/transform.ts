@@ -6,7 +6,7 @@ import {
   ILink,
   IProjectConfigs,
 } from './interfaces';
-import { isEntryAnnotation, isEntryLink, camelCaseDeep } from './utils';
+import {isEntryAnnotation, isEntryLink, camelCaseDeep} from './utils';
 
 export function transformPack(
   rawPack: string,
@@ -94,7 +94,7 @@ function getAttrs(config: any, a: any) {
   const attrNames = legend.attributes.map((a: any) => a.name);
   const attrs: any = {};
 
-  Object.keys(a['py/state']).forEach((key) => {
+  Object.keys(a['py/state']).forEach(key => {
     if (attrNames.includes(key)) {
       attrs[key] = a['py/state'][key];
     }

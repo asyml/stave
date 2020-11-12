@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Select from 'react-select';
 import {
   useTextViewerDispatch,
@@ -12,9 +12,9 @@ import {
   ISelectOption,
   IEntryAttributeDefinition,
 } from '../lib/interfaces';
-import { shortId, isEntryAnnotation } from '../lib/utils';
-import { OnEventType } from './TextViewer';
-import { restorePos } from '../lib/text-spacer';
+import {shortId, isEntryAnnotation} from '../lib/utils';
+import {OnEventType} from './TextViewer';
+import {restorePos} from '../lib/text-spacer';
 
 export interface AnnotationCreateBoxProp {
   cursorBegin: number | null;
@@ -34,7 +34,7 @@ export default function AnnotationCreateBox({
   onEvent,
 }: AnnotationCreateBoxProp) {
   const dispatch = useTextViewerDispatch();
-  const { annoEditSelectedLegendId } = useTextViewerState();
+  const {annoEditSelectedLegendId} = useTextViewerState();
   const [slideInAnimated, setSlideInAnimated] = useState(false);
   const [flashAnimated, setFlashAnimated] = useState(false);
   const [enteredAttribute, setEnteredAttribute] = useState<any>({});
@@ -53,21 +53,21 @@ export default function AnnotationCreateBox({
   }, [cursorEnd]);
 
   const legendTypeOptions = ontology.definitions
-    .filter((entry) => {
+    .filter(entry => {
       return isEntryAnnotation(ontology, entry.entryName);
     })
-    .map((def) => {
+    .map(def => {
       return {
         value: def.entryName,
         label: shortId(def.entryName),
       };
     });
 
-  const selectedLegendDefinition = ontology.definitions.find((def) => {
+  const selectedLegendDefinition = ontology.definitions.find(def => {
     return def.entryName === annoEditSelectedLegendId;
   });
 
-  const selectedLegendTypeOption = legendTypeOptions.find((legendType) => {
+  const selectedLegendTypeOption = legendTypeOptions.find(legendType => {
     return annoEditSelectedLegendId === legendType.value;
   });
 
@@ -87,8 +87,8 @@ export default function AnnotationCreateBox({
       ontology.constraints[selectedLegendDefinition.entryName] || [];
     const attrConstraint: AttrConstraint = {};
 
-    legendConstraint.forEach((cons) => {
-      Object.keys(cons.attributes || {}).forEach((attrName) => {
+    legendConstraint.forEach(cons => {
+      Object.keys(cons.attributes || {}).forEach(attrName => {
         const attrValues = cons.attributes[attrName] as any[];
         attrConstraint[attrName] = attrConstraint[attrName] || new Set<any>();
         attrValues.forEach((v: any) => attrConstraint[attrName].add(v));
@@ -97,7 +97,7 @@ export default function AnnotationCreateBox({
 
     return (
       <div className={style.legend_attributes}>
-        {(selectedLegendDefinition.attributes || []).map((attr) => {
+        {(selectedLegendDefinition.attributes || []).map(attr => {
           return (
             <div className={style.legend_attribute_item} key={attr.name}>
               <div className={style.legend_attribute_item_title}>
@@ -117,13 +117,13 @@ export default function AnnotationCreateBox({
     attrConstraint: AttrConstraint
   ) {
     if (attrConstraint[attr.name]) {
-      const options = Array.from(attrConstraint[attr.name]).map((v) => ({
+      const options = Array.from(attrConstraint[attr.name]).map(v => ({
         value: v,
         label: v,
       }));
 
       const selectedOption = options.find(
-        (o) => o.value === enteredAttribute[attr.name]
+        o => o.value === enteredAttribute[attr.name]
       );
 
       return (
@@ -131,7 +131,7 @@ export default function AnnotationCreateBox({
           <Select
             className={style.input}
             value={selectedOption}
-            onChange={(item) => {
+            onChange={item => {
               setEnteredAttribute({
                 ...enteredAttribute,
                 [attr.name]: (item as ISelectOption).value,
@@ -148,7 +148,7 @@ export default function AnnotationCreateBox({
             type="text"
             className={style.input}
             value={enteredAttribute[attr.name] || ''}
-            onChange={(e) =>
+            onChange={e =>
               setEnteredAttribute({
                 ...enteredAttribute,
                 [attr.name]: e.target.value,
@@ -191,7 +191,7 @@ export default function AnnotationCreateBox({
         <div className={style.legend_type_title}>Legend Type</div>
         <Select
           value={selectedLegendTypeOption}
-          onChange={(item) => {
+          onChange={item => {
             const selectedItem = item as ISelectOption;
             dispatch({
               type: 'annotation-edit-select-legend-type',

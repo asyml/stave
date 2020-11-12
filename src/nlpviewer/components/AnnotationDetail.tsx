@@ -1,10 +1,10 @@
 import React from 'react';
-import { IAnnotation } from '../lib/interfaces';
+import {IAnnotation} from '../lib/interfaces';
 import Attributes from './Attributes';
 import style from '../styles/AnnotationDetail.module.css';
-import { useTextViewerDispatch } from '../contexts/text-viewer.context';
-import { shortId } from '../lib/utils';
-import { OnEventType } from './TextViewer';
+import {useTextViewerDispatch} from '../contexts/text-viewer.context';
+import {shortId} from '../lib/utils';
+import {OnEventType} from './TextViewer';
 
 export interface AnnotationDetailProp {
   annotation: IAnnotation;
@@ -29,7 +29,7 @@ export default function AnnotationDetail({
     return (
       <div className={style.linked_annotation_container}>
         <strong>{title}</strong>
-        {annotations.map((ann) => {
+        {annotations.map(ann => {
           return (
             <span
               key={ann.id}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Select from 'react-select';
 import {
   useTextViewerDispatch,
@@ -12,8 +12,8 @@ import {
   IAnnotation,
   IConstraint,
 } from '../lib/interfaces';
-import { shortId, isEntryLink } from '../lib/utils';
-import { OnEventType } from './TextViewer';
+import {shortId, isEntryLink} from '../lib/utils';
+import {OnEventType} from './TextViewer';
 
 export interface LinkCreateBoxProp {
   fromEntryId: string | null;
@@ -29,7 +29,7 @@ export default function LinkCreateBox({
   onEvent,
 }: LinkCreateBoxProp) {
   const dispatch = useTextViewerDispatch();
-  const { linkEditSelectedLegendId, textPack } = useTextViewerState();
+  const {linkEditSelectedLegendId, textPack} = useTextViewerState();
   const [slideInAnimated, setSlideInAnimated] = useState(false);
   const [flashAnimated, setFlashAnimated] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -49,7 +49,7 @@ export default function LinkCreateBox({
     };
   }, [toEntryId]);
 
-  const selectedLegendDefinition = ontology.definitions.find((def) => {
+  const selectedLegendDefinition = ontology.definitions.find(def => {
     return def.entryName === linkEditSelectedLegendId;
   });
 
@@ -60,35 +60,35 @@ export default function LinkCreateBox({
       return null;
     }
     const fromEntry = textPack.annotations.find(
-      (ann) => ann.id === fromEntryId
+      ann => ann.id === fromEntryId
     ) as IAnnotation;
     const toEntry = textPack.annotations.find(
-      (ann) => ann.id === toEntryId
+      ann => ann.id === toEntryId
     ) as IAnnotation;
 
     const legendTypeOptions = ontology.definitions
-      .filter((entry) => {
+      .filter(entry => {
         return isEntryLink(ontology, entry.entryName);
       })
       // filter by constraint
-      .filter((entry) => {
+      .filter(entry => {
         const constraints = ontology.constraints[entry.entryName];
         if (!constraints) return true;
 
-        const matchedConstraint = constraints.find((constraint) =>
+        const matchedConstraint = constraints.find(constraint =>
           matchLinkConstraint(constraint, fromEntry, toEntry)
         );
 
         return !!matchedConstraint;
       })
-      .map((def) => {
+      .map(def => {
         return {
           value: def.entryName,
           label: shortId(def.entryName),
         };
       });
 
-    const selectedLegendTypeOption = legendTypeOptions.find((legendType) => {
+    const selectedLegendTypeOption = legendTypeOptions.find(legendType => {
       return linkEditSelectedLegendId === legendType.value;
     });
 
@@ -99,7 +99,7 @@ export default function LinkCreateBox({
         {legendTypeOptions.length ? (
           <Select
             value={selectedLegendTypeOption}
-            onChange={(item) => {
+            onChange={item => {
               const selectedItem = item as ISelectOption;
               dispatch({
                 type: 'link-edit-select-legend-type',
@@ -167,7 +167,7 @@ export default function LinkCreateBox({
         selectedLegendDefinition.attributes &&
         selectedLegendDefinition.attributes.length && (
           <div className={style.legend_attributes}>
-            {(selectedLegendDefinition.attributes || []).map((attr) => {
+            {(selectedLegendDefinition.attributes || []).map(attr => {
               return (
                 <div className={style.legend_attribute_item} key={attr.name}>
                   <div className={style.legend_attribute_item_title}>
@@ -177,7 +177,7 @@ export default function LinkCreateBox({
                     <input
                       type="text"
                       value={enteredAttribute[attr.name] || ''}
-                      onChange={(e) =>
+                      onChange={e =>
                         setEnteredAttribute({
                           ...enteredAttribute,
                           [attr.name]: e.target.value,
@@ -246,7 +246,7 @@ function matchLinkConstraint(
 function matchLinkConstraintEntry(entryConstraint: IConstraint, entry: any) {
   let isMatch = true;
 
-  Object.keys(entryConstraint).forEach((propKey) => {
+  Object.keys(entryConstraint).forEach(propKey => {
     const propValues = entryConstraint[propKey];
 
     if (Array.isArray(propValues)) {

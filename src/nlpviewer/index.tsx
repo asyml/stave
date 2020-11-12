@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import TextViewer, { OnEventType } from './components/TextViewer';
+import React, {useEffect} from 'react';
+import TextViewer, {OnEventType} from './components/TextViewer';
 import {
   TextViewerProvider,
   useTextViewerDispatch,

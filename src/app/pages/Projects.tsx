@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { fetchProjects, createProject, deleteProject } from '../lib/api';
-import { Link, useHistory } from 'react-router-dom';
-import { FileWithPath } from 'react-dropzone';
+import React, {useState, useEffect} from 'react';
+import {fetchProjects, createProject, deleteProject} from '../lib/api';
+import {Link, useHistory} from 'react-router-dom';
+import {FileWithPath} from 'react-dropzone';
 import DropUpload from '../components/dropUpload';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -24,7 +24,7 @@ import {
   IProjectConfigs,
   IOntology,
 } from '../../nlpviewer';
-import { isEntryAnnotation, camelCaseDeep } from '../../nlpviewer/lib/utils';
+import {isEntryAnnotation, camelCaseDeep} from '../../nlpviewer/lib/utils';
 
 const useStyles = makeStyles({
   root: {
@@ -67,7 +67,7 @@ function Projects() {
   }, [history]);
 
   function updateProjects() {
-    return fetchProjects().then((projects) => {
+    return fetchProjects().then(projects => {
       setProjects(projects);
     });
   }
@@ -103,7 +103,7 @@ function Projects() {
   function createDefaultConfig(ontology: string) {
     const ontologyJson = JSON.parse(ontology);
     const ontologyObject: IOntology = camelCaseDeep(ontologyJson);
-    const config: IProjectConfigs = { legendConfigs: {}, scopeConfigs: {} };
+    const config: IProjectConfigs = {legendConfigs: {}, scopeConfigs: {}};
     for (const entry of ontologyJson.definitions) {
       const entryName = entry.entry_name;
       // Scope configs should contain annotations only.
@@ -141,7 +141,7 @@ function Projects() {
           justify="flex-start"
           spacing={2}
         >
-          {projects.map((d) => (
+          {projects.map(d => (
             <Grid key={d.id} item>
               <Card className={classes.root}>
                 <CardHeader
@@ -192,7 +192,7 @@ function Projects() {
                         variant="outlined"
                         label="Project Name"
                         value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        onChange={e => setName(e.target.value)}
                         autoFocus
                         fullWidth
                         margin="normal"
@@ -203,7 +203,7 @@ function Projects() {
                         id="outlined-multiline-flexible"
                         label="Ontology Body"
                         value={ontology}
-                        onChange={(e) => setOntology(e.target.value)}
+                        onChange={e => setOntology(e.target.value)}
                         multiline
                         rows={10}
                         variant="outlined"
@@ -215,7 +215,7 @@ function Projects() {
                       <TextField
                         label="Config"
                         value={config}
-                        onChange={(e) => setConfig(e.target.value)}
+                        onChange={e => setConfig(e.target.value)}
                         multiline
                         rows={10}
                         variant="outlined"

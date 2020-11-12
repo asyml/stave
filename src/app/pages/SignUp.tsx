@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { signup } from '../lib/api';
-import { useHistory } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
+import React, {useState} from 'react';
+import {signup} from '../lib/api';
+import {useHistory} from 'react-router-dom';
+import {makeStyles} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
@@ -22,7 +22,8 @@ function SignUp() {
   const [password, setPassword] = useState<string>('');
   const history = useHistory();
 
-  function handleSignUp() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function handleSignUp(e: any) {
     e.preventDefault();
     signup(username, password)
       .then(() => {
@@ -37,7 +38,7 @@ function SignUp() {
     history.push('/login');
   }
 
-  const useStyles = makeStyles((theme) => ({
+  const useStyles = makeStyles(theme => ({
     paper: {
       marginTop: theme.spacing(15),
       display: 'flex',
@@ -78,7 +79,7 @@ function SignUp() {
   });
 
   const handleClickShowPassword = () => {
-    setValues({ ...values, showPassword: !values.showPassword });
+    setValues({...values, showPassword: !values.showPassword});
   };
 
   const handleMouseDownPassword = (
@@ -102,7 +103,7 @@ function SignUp() {
         <form className={classes.form} noValidate onSubmit={handleSignUp}>
           <TextField
             placeholder="username"
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={e => setUsername(e.target.value)}
             value={username}
             name="username"
             variant="outlined"
@@ -125,7 +126,7 @@ function SignUp() {
               label="Your Password"
               type={values.showPassword ? 'text' : 'password'}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={e => setPassword(e.target.value)}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton

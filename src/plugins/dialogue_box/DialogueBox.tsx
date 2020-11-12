@@ -1,20 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   IAnnotation,
   ISinglePack,
   transformBackAnnotation,
   transformPack,
 } from '../../nlpviewer';
-import { PluginComponentProp } from '../lib/interface';
+import {PluginComponentProp} from '../lib/interface';
 import style from './DialogueBox.module.css';
 import TextInput from './TextInput';
-import { useParams } from 'react-router-dom';
-import {
-  editText,
-  addAnnotation,
-  loadNlpModel,
-  runNlp,
-} from '../../app/lib/api';
+import {useParams} from 'react-router-dom';
+import {editText, addAnnotation, loadNlpModel, runNlp} from '../../app/lib/api';
 
 function Cell(cell_text: string, cell_key: string) {
   return <td key={cell_key}>{cell_text}</td>;
@@ -101,7 +96,7 @@ function Utterance(text: string, annotation: IAnnotation) {
 }
 
 function DialogueBox(props: PluginComponentProp) {
-  const { id } = useParams();
+  const {id} = useParams();
 
   // Avoid confusion between doc_id and annotation id.
   const doc_id = id;
@@ -115,7 +110,7 @@ function DialogueBox(props: PluginComponentProp) {
   const model_name = 'content_rewriter';
   useEffect(() => {
     try {
-      loadNlpModel(model_name).then((response) => {
+      loadNlpModel(model_name).then(response => {
         if (response.headers.get('load_success') === 'True') {
           console.log('Model Loaded Successfully.');
           setModelLoaded(true);
@@ -133,13 +128,13 @@ function DialogueBox(props: PluginComponentProp) {
     return null;
   }
 
-  const { annotations, text } = pack;
+  const {annotations, text} = pack;
 
-  const contexts = annotations.filter((ann) => {
+  const contexts = annotations.filter(ann => {
     return ann.legendId === 'ft.onto.base_ontology.UtteranceContext';
   });
 
-  const utterances = annotations.filter((ann) => {
+  const utterances = annotations.filter(ann => {
     // TODO: This did not read the class hierarchy.
     return ann.legendId === 'ft.onto.base_ontology.Utterance';
   });
@@ -147,12 +142,12 @@ function DialogueBox(props: PluginComponentProp) {
   return (
     <div key="plugin-dialogue-box">
       <div key="dialogue-context-container">
-        {contexts.map((ann) => {
+        {contexts.map(ann => {
           return Table(text, ann);
         })}
       </div>
       <div key="dialogue-utterances-container">
-        {utterances.map((ann) => {
+        {utterances.map(ann => {
           return Utterance(text, ann);
         })}
       </div>
@@ -160,13 +155,13 @@ function DialogueBox(props: PluginComponentProp) {
         <TextInput
           textValue="enter text here"
           textPack={pack}
-          onEvent={(event) => {
+          onEvent={event => {
             if (event.type === 'new-utterance') {
-              const { text, ...annotation } = event;
+              const {text, ...annotation} = event;
               const annotationAPIData = transformBackAnnotation(annotation);
 
               editText(doc_id, text).then(() => {
-                addAnnotation(doc_id, annotationAPIData).then(({ id }) => {
+                addAnnotation(doc_id, annotationAPIData).then(({id}) => {
                   // Update the pack, first set the text then, add the new annotation.
                   annotation.id = id;
 
@@ -176,7 +171,7 @@ function DialogueBox(props: PluginComponentProp) {
                     annotations: [...pack.annotations, annotation],
                   });
                   if (modelLoaded) {
-                    runNlp(doc_id, model_name).then((data) => {
+                    runNlp(doc_id, model_name).then(data => {
                       const [singlePackFromAPI] = transformPack(
                         data.textPack,
                         data.ontology

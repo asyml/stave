@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useMemo } from 'react';
+import React, {useRef, useEffect, useMemo} from 'react';
 import style from '../styles/TextArea.module.css';
 import {
   ISinglePack,
@@ -8,7 +8,7 @@ import {
   IAnnotation,
   ILink,
 } from '../lib/interfaces';
-import { calculateLinesLevels, calculateLinkHeight } from '../lib/utils';
+import {calculateLinesLevels, calculateLinkHeight} from '../lib/utils';
 import {
   spaceOutText,
   mergeLinkWithPosition,
@@ -23,17 +23,17 @@ import {
   useTextViewerState,
   useTextViewerDispatch,
 } from '../contexts/text-viewer.context';
-import { debounce } from 'lodash-es';
+import {debounce} from 'lodash-es';
 import LineWithArrow from './LineWithArrow';
 
 export interface TextAreaProp {
   textPack: ISinglePack;
-  annotationLegendsColored: (IEntryDefinition & { color: string })[];
+  annotationLegendsColored: (IEntryDefinition & {color: string})[];
 }
 
-function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
-  let { annotations, text } = textPack;
-  const { links } = textPack;
+function TextArea({textPack, annotationLegendsColored}: TextAreaProp) {
+  let {annotations, text} = textPack;
+  const {links} = textPack;
   const textNodeEl = useRef<HTMLDivElement>(null);
   const textAreaEl = useRef<HTMLDivElement>(null);
 
@@ -73,7 +73,7 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
 
   if (selectedScopeId !== null) {
     const scopeAnnotations = annotations.filter(
-      (ann) => ann.legendId === selectedScopeId
+      ann => ann.legendId === selectedScopeId
     );
     const currScopeAnnotation = scopeAnnotations[selectedScopeIndex];
 
@@ -83,11 +83,11 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
     );
     annotations = annotations
       .filter(
-        (ann) =>
+        ann =>
           ann.span.begin >= currScopeAnnotation.span.begin &&
           ann.span.end <= currScopeAnnotation.span.end
       )
-      .map((ann) => {
+      .map(ann => {
         const scoppedSpan = {
           begin: ann.span.begin - currScopeAnnotation.span.begin,
           end: ann.span.end - currScopeAnnotation.span.begin,
@@ -156,7 +156,7 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
       );
 
       if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.scrollIntoView({behavior: 'smooth', block: 'center'});
       }
 
       dispatch({
@@ -183,13 +183,13 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
 
   const annotationsWithPosition = useMemo(() => {
     return mergeAnnotationWithPosition(annotationPositions, annotations).filter(
-      (ann) => selectedLegendIds.indexOf(ann.annotation.legendId) > -1
+      ann => selectedLegendIds.indexOf(ann.annotation.legendId) > -1
     );
   }, [annotationPositions, annotations, selectedLegendIds]);
 
   const linksWithPos = useMemo(() => {
     return mergeLinkWithPosition(links, annotationsWithPosition).filter(
-      (link) => selectedLegendIds.indexOf(link.link.legendId) > -1
+      link => selectedLegendIds.indexOf(link.link.legendId) > -1
     );
   }, [links, annotationsWithPosition, selectedLegendIds]);
 
@@ -205,7 +205,7 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
     return calculateLinkHeight(linesLevels, linkGap);
   }, [linesLevels, linkGap]);
 
-  const lineHeights = Object.keys(linesLevels).map((l) => +l);
+  const lineHeights = Object.keys(linesLevels).map(l => +l);
 
   const textAreaClass = `text_area_container ${style.text_area_container} ${
     spacedText ? style.text_area_container_visible : ''
@@ -296,7 +296,7 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
       >
         {annotationsWithPosition.map((ann, i) => {
           const legend = annotationLegendsColored.find(
-            (legend) => legend.entryName === ann.annotation.legendId
+            legend => legend.entryName === ann.annotation.legendId
           );
 
           if (!legend) {
@@ -395,7 +395,7 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
               key={i}
               onClick={isCollapsed ? uncollapse : collapse}
               className={style.annotation_line_toggle}
-              style={{ top: lineHeight }}
+              style={{top: lineHeight}}
             >
               {isCollapsed ? '+' : '-'}
             </button>
@@ -409,7 +409,7 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
           pointerEvents: annoEditIsCreating ? 'none' : 'initial',
         }}
       >
-        {annotationsWithPosition.map((ann) => {
+        {annotationsWithPosition.map(ann => {
           const isSelected = ann.annotation.id === selectedAnnotationId;
 
           return (
@@ -430,7 +430,7 @@ function TextArea({ textPack, annotationLegendsColored }: TextAreaProp) {
           pointerEvents: annoEditIsCreating ? 'none' : 'initial',
         }}
       >
-        {linksWithPos.map((linkPos) => {
+        {linksWithPos.map(linkPos => {
           const isLinkSelected = selectedLinkId === linkPos.link.id;
           const isLinkHightlighted =
             highlightedLinkIds.includes(linkPos.link.id) ||
@@ -511,11 +511,11 @@ function LineWithArrowContainer({
     linkEditToEntryId
   ) {
     const startAnnotation = annotationsWithPosition.find(
-      (link) => link.annotation.id === linkEditFromEntryId
+      link => link.annotation.id === linkEditFromEntryId
     );
 
     const endAnnotation = annotationsWithPosition.find(
-      (link) => link.annotation.id === linkEditToEntryId
+      link => link.annotation.id === linkEditToEntryId
     );
 
     if (!startAnnotation || !endAnnotation) return null;
@@ -568,7 +568,7 @@ function ConnectorContainer({
 
   const textNodeRect = textNodeEl.getBoundingClientRect();
   const startAnnotation = annotationsWithPosition.find(
-    (link) => link.annotation.id === linkEditFromEntryId
+    link => link.annotation.id === linkEditFromEntryId
   );
 
   if (!startAnnotation) return null;
@@ -607,7 +607,7 @@ function getTextSelectionIndicators(
     range.setStart(textNode, begin);
     range.setEnd(textNode, end);
     const rects = Array.from(range.getClientRects() as DOMRectList);
-    const annoEditTextSelectionRect = rects.map((rect) => ({
+    const annoEditTextSelectionRect = rects.map(rect => ({
       x: rect.x - textAreaRect.left,
       y: rect.y - textAreaRect.top,
       width: rect.width,

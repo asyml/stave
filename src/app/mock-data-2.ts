@@ -1,4 +1,4 @@
-import { ISinglePack } from '../nlpviewer';
+import {ISinglePack} from '../nlpviewer';
 
 export const singlePack: ISinglePack = {
   text:

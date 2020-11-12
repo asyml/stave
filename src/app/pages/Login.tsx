@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { login } from '../lib/api';
-import { useHistory } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
+import React, {useState} from 'react';
+import {login} from '../lib/api';
+import {useHistory} from 'react-router-dom';
+import {makeStyles} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
@@ -14,7 +14,8 @@ function Login() {
   const [password, setPassword] = useState<string>('');
   const history = useHistory();
 
-  function handleLogin() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function handleLogin(e: any) {
     e.preventDefault();
     login(username, password)
       .then(() => {
@@ -29,7 +30,7 @@ function Login() {
     history.push('/signup');
   }
 
-  const useStyles = makeStyles((theme) => ({
+  const useStyles = makeStyles(theme => ({
     paper: {
       marginTop: theme.spacing(15),
       display: 'flex',
@@ -56,7 +57,7 @@ function Login() {
         />
         <form className={classes.form} noValidate onSubmit={handleLogin}>
           <TextField
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={e => setUsername(e.target.value)}
             value={username}
             variant="outlined"
             margin="normal"
@@ -70,7 +71,7 @@ function Login() {
           />
 
           <TextField
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={e => setPassword(e.target.value)}
             type="password"
             value={password}
             variant="outlined"

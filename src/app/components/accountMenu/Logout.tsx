@@ -1,6 +1,6 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
-import { logout } from '../../lib/api';
+import {useHistory} from 'react-router-dom';
+import {logout} from '../../lib/api';
 
 function Logout() {
   const history = useHistory();
