@@ -1690,9 +1690,9 @@
     "@babel/types" "^7.0.0"
 
 "@types/babel__template@*":
-  version "7.0.3"
-  resolved "https://registry.yarnpkg.com/@types/babel__template/-/babel__template-7.0.3.tgz#b8aaeba0a45caca7b56a5de9459872dde3727214"
-  integrity sha512-uCoznIPDmnickEi6D0v11SBpW0OuVqHJCa7syXqQHy5uktSCreIlt0iglsCnmvz8yCb38hGcWeseA8cWJSwv5Q==
+  version "7.4.0"
+  resolved "https://registry.yarnpkg.com/@types/babel__template/-/babel__template-7.4.0.tgz#0c888dd70b3ee9eebb6e4f200e809da0076262be"
+  integrity sha512-NTPErx4/FiPCGScH7foPyr+/1Dkzkni+rHiYHHoTjvwou7AQzJkNeD60A9CXRy+ZEN2B1bggmkTMCDb+Mv5k+A==
   dependencies:
     "@babel/parser" "^7.1.0"
     "@babel/types" "^7.0.0"
@@ -1883,9 +1883,9 @@
     "@types/react" "*"
 
 "@types/react-select@^3.0.5":
-  version "3.0.25"
-  resolved "https://registry.yarnpkg.com/@types/react-select/-/react-select-3.0.25.tgz#c310852f0b3d14960b480f4b983d09428feea0ec"
-  integrity sha512-Nahnbi2KmsTMYTlBpfSky5O1kXCPsNZfm/RsPddDARNwGNKHxU9LRRnTgoS5ejHCtZx3qYjOd0z0xX3730H9rQ==
+  version "3.0.26"
+  resolved "https://registry.yarnpkg.com/@types/react-select/-/react-select-3.0.26.tgz#f1b1a1e2b624ed9843eb56dda837e7a0f4a76a8f"
+  integrity sha512-rAaiD0SFkBi3PUwp1DrJV04CobPl2LuZXF+kv6MKw8kaeGo82xTOZzjM8DDi4lrdkqGbInZiE2QO9nIJm3bqgw==
   dependencies:
     "@types/react" "*"
     "@types/react-dom" "*"
@@ -2908,7 +2908,7 @@ bn.js@^4.0.0, bn.js@^4.1.0, bn.js@^4.4.0:
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-4.11.9.tgz#26d556829458f9d1e81fc48952493d0ba3507828"
   integrity sha512-E6QoYqCKZfgatHTdHzs1RRKP7ip4vvm+EyRUeE2RF0NblwVvb0p6jSVeNTOFxPn26QXN2o6SMfNxKp6kU8zQaw==
 
-bn.js@^5.1.1:
+bn.js@^5.0.0, bn.js@^5.1.1:
   version "5.1.3"
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-5.1.3.tgz#beca005408f642ebebea80b042b4d18d2ac0ee6b"
   integrity sha512-GkTiFpjFtUzU9CbMeJ5iazkCzGL3jrhzerzZIuqLABjbwRaFt33I9tUdSNryIptM+RxDet6OKm2WnLXzW51KsQ==
@@ -3033,11 +3033,11 @@ browserify-des@^1.0.0:
     safe-buffer "^5.1.2"
 
 browserify-rsa@^4.0.0, browserify-rsa@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/browserify-rsa/-/browserify-rsa-4.0.1.tgz#21e0abfaf6f2029cf2fafb133567a701d4135524"
-  integrity sha1-IeCr+vbyApzy+vsTNWenAdQTVSQ=
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/browserify-rsa/-/browserify-rsa-4.1.0.tgz#b2fd06b5b75ae297f7ce2dc651f918f5be158c8d"
+  integrity sha512-AdEER0Hkspgno2aR97SAf6vi0y0k8NuOpGnVH3O99rcA5Q6sh8QxcngtHuJ6uXwnfAXNM4Gn1Gb7/MV1+Ymbog==
   dependencies:
-    bn.js "^4.1.0"
+    bn.js "^5.0.0"
     randombytes "^2.0.1"
 
 browserify-sign@^4.0.0:
@@ -4527,9 +4527,9 @@ ejs@^2.6.1:
   integrity sha512-7vmuyh5+kuUyJKePhQfRQBhXV5Ce+RnaeeQArKu1EAMpL3WbgMt5WG6uQZpEVvYSSsxMXRKOewtDk9RaTKXRlA==
 
 electron-to-chromium@^1.3.564, electron-to-chromium@^1.3.591:
-  version "1.3.593"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.593.tgz#947ccf6dc8e013e2b053d2463ecd1043c164fcef"
-  integrity sha512-GvO7G1ZxvffnMvPCr4A7+iQPVuvpyqMrx2VWSERAjG+pHK6tmO9XqYdBfMIq9corRyi4bNImSDEiDvIoDb8HrA==
+  version "1.3.594"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.594.tgz#e945aaa38f53d7d97ecc983cc85aa3335b0d3893"
+  integrity sha512-mEax1P0CcoZJtXQU7OA0dO5nHiAQWw8gRGWKhnUyPA9bJW0B/JGiaQB+vtK66Ovm6U9qPxe2iXbO1L+f4jJAiw==
 
 elliptic@^6.5.3:
   version "6.5.3"
@@ -4806,9 +4806,9 @@ eslint-plugin-import@^2.22.1:
     tsconfig-paths "^3.9.0"
 
 eslint-plugin-jest@^24.1.0:
-  version "24.1.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-jest/-/eslint-plugin-jest-24.1.0.tgz#6708037d7602e5288ce877fd0103f329dc978361"
-  integrity sha512-827YJ+E8B9PvXu/0eiVSNFfxxndbKv+qE/3GSMhdorCaeaOehtqHGX2YDW9B85TEOre9n/zscledkFW/KbnyGg==
+  version "24.1.3"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-jest/-/eslint-plugin-jest-24.1.3.tgz#fa3db864f06c5623ff43485ca6c0e8fc5fe8ba0c"
+  integrity sha512-dNGGjzuEzCE3d5EPZQ/QGtmlMotqnYWD/QpCZ1UuZlrMAdhG5rldh0N0haCvhGnUkSeuORS5VNROwF9Hrgn3Lg==
   dependencies:
     "@typescript-eslint/experimental-utils" "^4.0.1"
 
