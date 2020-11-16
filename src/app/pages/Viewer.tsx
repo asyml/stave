@@ -9,7 +9,7 @@ import NLPViewer, {
   transformProjectConfig,
 } from '../../nlpviewer';
 import groupPlugin from '../../plugins/group/Group';
-import {layout} from '../layout';
+//import {layout} from '../layout';
 import dialoguePlugin from '../../plugins/dialogue_box/DialogueBox';
 import { useParams } from 'react-router-dom';
 import {
@@ -69,7 +69,6 @@ function Viewer() {
       projectConfig = {config.config}
       // plugins={[groupPlugin]}
       plugins={[groupPlugin, dialoguePlugin]}
-      layout={layout}
       onEvent={event => {
         if (!id) return;
 
