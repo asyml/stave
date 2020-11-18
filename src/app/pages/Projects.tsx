@@ -25,6 +25,7 @@ import {
   IOntology,
 } from '../../nlpviewer';
 import { isEntryAnnotation, camelCaseDeep } from '../../nlpviewer/lib/utils';
+import JsonEditor from '../components/jsonEditor';
 
 const useStyles = makeStyles({
   root: {
@@ -36,14 +37,17 @@ const useStyles = makeStyles({
     fontSize: 14,
   },
   
+  jsonEditor: {
+    marginBottom: 15,
+  },
 });
 
 function Projects() {
   const classes = useStyles();
   const [projects, setProjects] = useState<any[]>([]);
   const [name, setName] = useState<string>('');
-  const [ontology, setOntology] = useState<string>('');
-  const [config, setConfig] = useState<string>('');
+  const [ontology, setOntology] = useState<string>('{}');
+  const [config, setConfig] = useState<string>('{}');
   const history = useHistory();
   const [open, setOpen] = React.useState(false);
 
@@ -58,7 +62,8 @@ function Projects() {
   };
 
   const clearDialog = () => {
-    setOntology('');
+    setOntology('{}');
+    setConfig('{}');
     setName('');
   };
 
@@ -97,12 +102,12 @@ function Projects() {
       reader.onload = function() {
         setOntology(reader.result as string);  
         const defaultConfig = createDefaultConfig(reader.result as string); 
-        setConfig(JSON.stringify(defaultConfig, null, 2));    
+        setConfig(JSON.stringify(defaultConfig));    
       }
     }
   }
   
-  function createDefaultConfig(ontology: string) {
+  function createDefaultConfig(ontology: string): IProjectConfigs {
     const ontologyJson = JSON.parse(ontology);
     const ontologyObject : IOntology = camelCaseDeep(ontologyJson);
     let config : IProjectConfigs = {legendConfigs: {}, scopeConfigs: {}, layoutConfigs:{}};
@@ -198,31 +203,16 @@ function Projects() {
                       margin="normal"
                       />
                     </div>
-                    <div>
-                      <TextField
-                      id="outlined-multiline-flexible"
-                      label="Ontology Body"
-                      value={ontology}
-                      onChange={e => setOntology(e.target.value)}
-                      multiline
-                      rows={10}
-                      variant="outlined"
-                      fullWidth
-                      margin="normal"
-                      />
-                    </div>
-                    <div>
-                      <TextField
-                      label="Config"
-                      value={config}
-                      onChange={e => setConfig(e.target.value)}
-                      multiline
-                      rows={10}
-                      variant="outlined"
-                      fullWidth
-                      margin="normal"
-                      />
-                    </div> 
+                    <JsonEditor
+                      className={classes.jsonEditor}
+                      jsonText={ontology}
+                      onChangeJsonText={(text: string) => setOntology(text)}
+                    />
+                    <JsonEditor
+                      className={classes.jsonEditor}
+                      jsonText={config}
+                      onChangeJsonText={(text: string) => setConfig(text)}
+                    />
                     <div>
                       <DropUpload
                         fileLimit={1048576}
