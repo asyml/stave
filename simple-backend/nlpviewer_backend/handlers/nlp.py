@@ -29,10 +29,21 @@ def __load_utterance_searcher():
     from examples.clinical_pipeline.utterance_searcher import LastUtteranceSearcher
     from forte.data.readers import RawDataDeserializeReader
 
-    #create the pipeline and add the processor
+    # Load several configuration from environment.
+    stave_db_path = os.environ.get('stave_db_path')
+    url_stub = os.environ.get('url_stub')
+    query_result_project_id = os.environ.get('query_result_project_id')
+
+    #Create the pipeline and add the processor.
     pipeline = Pipeline[DataPack]()
     pipeline.set_reader(RawDataDeserializeReader())
-    pipeline.add(LastUtteranceSearcher())
+    pipeline.add(LastUtteranceSearcher(),
+      config={
+        'stave_db_path': stave_db_path,
+        'url_stub': url_stub,
+        'query_result_project_id': int(query_result_project_id)
+      }
+    )
     
     pipeline.initialize()
     return pipeline
@@ -113,8 +124,6 @@ def run_pipeline(request, document_id, model_name):
   print('print the doc')
   print(docJson)
   pack = json.loads(docJson['textPack'])['py/state']
-  #print(pack['_text'])
-  #print(pack['annotations'])
 
   response: JsonResponse
   if pipeline:
@@ -128,5 +137,4 @@ def run_pipeline(request, document_id, model_name):
       f"loaded, please check the log for possible reasons."
     )
     response = JsonResponse(docJson, safe=False)
-  # TODO: How to tell the front-end that pipeline is not run?
   return response
