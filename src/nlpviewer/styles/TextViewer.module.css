@@ -57,11 +57,11 @@
 }
 
 .text_area_container {
-  padding: 16px;
-  height: 100%;
+  height: 100vh;
   overflow-y: scroll;
   clear: both;
   border-bottom: 1px solid #ccc;
+  padding: 16px;
 }
 
 .button_action_description {

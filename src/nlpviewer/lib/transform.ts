@@ -148,5 +148,6 @@ export function transformProjectConfig(rawConfig: string): IProjectConfigs {
   return {
     legendConfigs: config ? config.legendConfigs : {},
     scopeConfigs: config ? config.scopeConfigs : {},
+    layoutConfigs: config ? config.layoutConfigs : {},
   };
 }

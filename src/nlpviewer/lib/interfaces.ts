@@ -207,7 +207,9 @@ export interface IScopeConfigs {
   [key: string]: boolean;
 }
 
+
 export interface IProjectConfigs {
   legendConfigs: ILegendConfigs;
   scopeConfigs: IScopeConfigs;
+  layoutConfigs: ILayout;
 }

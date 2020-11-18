@@ -110,7 +110,7 @@ function Projects() {
   function createDefaultConfig(ontology: string): IProjectConfigs {
     const ontologyJson = JSON.parse(ontology);
     const ontologyObject : IOntology = camelCaseDeep(ontologyJson);
-    let config : IProjectConfigs = {legendConfigs: {}, scopeConfigs: {}};
+    let config : IProjectConfigs = {legendConfigs: {}, scopeConfigs: {}, layoutConfigs:{}};
     for (const entry of ontologyJson.definitions) {
       const entryName = entry.entry_name;
       // Scope configs should contain annotations only.
@@ -129,6 +129,10 @@ function Projects() {
           }
         }
       }
+      //TODO hard code layoutConfigs -- might need to change
+      config['layoutConfigs']['center-middle'] = 'default-nlp';
+      config['layoutConfigs']['left'] = "default-meta";
+      config['layoutConfigs']['right'] = "default-attribute";
     }
     return config;
   }

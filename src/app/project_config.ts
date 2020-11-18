@@ -1,4 +1,5 @@
 import {IProjectConfigs} from '../nlpviewer'
+//import { layout } from './layout'
 
 export const projectConfig: IProjectConfigs = {
   legendConfigs: {
@@ -39,6 +40,12 @@ export const projectConfig: IProjectConfigs = {
   },
   scopeConfigs: {
     "ft.onto.base_ontology.Sentence": true,
+  },
+
+  layoutConfigs: {
+    "center-middle":"default-nlp",
+    "left":"default-meta",
+    "right":"default-attribute",
   }
 }
 

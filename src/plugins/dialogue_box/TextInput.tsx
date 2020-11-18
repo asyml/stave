@@ -45,15 +45,20 @@ class TextInput extends React.Component<TextInputProp, TextInputState>{
       textValue: ''
     };
   }
-
+  addAIBubble = () => {
+    this.setState({
+    })
+  }
   render(){
     return <form onSubmit={e => {e.preventDefault();}} >
       <label>
-        <input className={style.field} type="text" value={this.state.textValue} onChange={e => {
+        <input className={style.field} type="text" placeholder="Type your query here" value={this.state.textValue} onChange={e => {
           this.setState({textValue: e.target.value})
         }}  
         onKeyUp={e => {
           if (e.key === "Enter"){
+            //temporarily add ai bubble?
+            this.addAIBubble();
             submitUtterance(
               this.props.textPack, 
               this.state.textValue,
@@ -64,7 +69,7 @@ class TextInput extends React.Component<TextInputProp, TextInputState>{
         }}
         />                
       </label>
-      <input type="button" value="Submit" onClick={
+      <input className={style.submit_button} type="button" value="Submit" onClick={
         e => {
           submitUtterance(
             this.props.textPack, 
