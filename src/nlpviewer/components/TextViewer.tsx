@@ -214,7 +214,7 @@ function TextViewer({ plugins, onEvent, projectConfig }: TextViewerProp) {
   function RightArea(){
     const areaName = 'right';
 
-    if (projectConfig['layoutConfigs'][areaName] === 'example' || projectConfig['layoutConfigs'][areaName] === 'default-attribute'){
+    if (typeof projectConfig['layoutConfigs'][areaName] === 'undefined' || projectConfig['layoutConfigs'][areaName] === 'default-attribute'){
       if (textPack && ontology){
         return (
           <div className={style.attributes_side_container}>

@@ -129,10 +129,12 @@ function Projects() {
           }
         }
       }
-      //TODO hard code layoutConfigs -- might need to change
+
+      //TODO hard coded default layoutConfigs -- might need to change
       config['layoutConfigs']['center-middle'] = 'default-nlp';
       config['layoutConfigs']['left'] = "default-meta";
       config['layoutConfigs']['right'] = "default-attribute";
+      config['layoutConfigs']['center-bottom'] = "disable";
     }
     return config;
   }
