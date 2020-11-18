@@ -12,9 +12,7 @@ import {
   ISinglePack, 
   IOntology, 
   IPlugin, 
-  ILayout,
   IProjectConfigs, } from './lib/interfaces';
-import { projectConfig } from '../app/project_config';
 
 export * from './lib/transform';
 export * from './lib/interfaces';

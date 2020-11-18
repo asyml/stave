@@ -21,7 +21,6 @@ import PostAddSharpIcon from '@material-ui/icons/PostAddSharp';
 import { 
   ILegendAttributeConfig, 
   ILegendConfig, 
-  ILayout,
   IProjectConfigs,
   IOntology,
 } from '../../nlpviewer';

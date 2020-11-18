@@ -4,7 +4,6 @@ import style from '../styles/TextViewer.module.css';
 import { 
   IAnnotation, 
   IPlugin, 
-  ILayout, 
   IProjectConfigs, } from '../lib/interfaces';
 import {
   applyColorToLegend,
