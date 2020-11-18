@@ -4,35 +4,48 @@
 .bubble_left {
   font-size: 16px;
   line-height: 1.4;
-  margin: 1px 0;
+  margin: 2px 0;
   padding: 8px 17px 6px 13px;
   max-width: 45%;
   position: relative;
   border-radius: 18px;
   color: black;
   align-self: flex-start;
-  background-color: #1084FF;
+  background-color: #ccc;
+  float: left;
 }
 .bubble_right {
   font-size: 16px;
   line-height: 1.4;
-  margin: 1px 0;
+  margin: 2px 0;
   padding: 8px 17px 6px 13px;
   max-width: 45%;
   position: relative;
-  border-radius: 18px;
-  color: black;
+  border-radius: 10px;
+  color: white;
   align-self: flex-start;
   float: right;
-  background-color: #FABD3A;
+  background-color: #147efb;
 }
+
 .speaker_icon {
   font-size: 20px;
-  display: inline;
+  display: inline-block;
+  line-height: 30px;
+  width: 30px;
+  height: 30px;
+  background-color: #ccc;
+  padding-right: 3px;
+  padding-top: 1px;
+  border-radius: 25px;
+  text-align: center;
+  vertical-align: bottom;
+  float: left;
 }
+
 .table {
   font-family: "Comic Sans MS", cursive, sans-serif;
-  border: 2px solid #4F7849;
+  border: 22px solid #4F7849;
   background-color: #EEEEEE;
   width: 100%;
   text-align: left;
@@ -59,7 +72,90 @@
   background: -webkit-linear-gradient(top, #7b9a76 0%, #60855b 66%, #4F7849 100%);
   background: linear-gradient(to bottom, #7b9a76 0%, #60855b 66%, #4F7849 100%);
   border-top: 1px solid #444444;
+
 }
 .table.comicGreen tfoot td {
   font-size: 21px;
+}
+
+.dialogue_input_container {
+  position: sticky;
+  bottom:0;
+  padding-left: 2%;  
+  padding-right: 2%;
+  padding-top:16px;
+}
+
+.plugin_box {
+  overflow: hidden;
+  padding-right:4%;
+  padding-left:4%;
+  padding-bottom:16px;
+  padding-top:16px;
+}
+
+.dialogue_utterances_container {
+  height:80vh;
+  overflow:scroll;
+}
+
+.hl {
+  border: 1px solid #ccc;
+  height: 1px;
+  margin: auto;
+}
+
+
+
+/* dot flashing take from
+https://codepen.io/nzbin/pen/GGrXbp
+*/
+.dot-flashing {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: #9880ff;
+  color: #9880ff;
+  animation: dotFlashing 1s infinite linear alternate;
+  animation-delay: .5s;
+}
+
+.dot_flashing::before, .dot_flashing::after {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  top: 0;
+}
+
+.dot_flashing::before {
+  left: -15px;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: #9880ff;
+  color: #9880ff;
+  animation: dotFlashing 1s infinite alternate;
+  animation-delay: 0s;
+}
+
+.dot_flashing::after {
+  left: 15px;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: #9880ff;
+  color: #9880ff;
+  animation: dotFlashing 1s infinite alternate;
+  animation-delay: 1s;
+}
+
+@keyframes dotFlashing {
+  0% {
+    background-color: #9880ff;
+  }
+  50%,
+  100% {
+    background-color: #ebe6ff;
+  }
 }

@@ -9,6 +9,7 @@ export const StyledMenu = styled.div<{ open: boolean }>`
   padding: 60px;
   position: absolute;
   top: 0;
+  z-index:20;
   transform: ${({ open }) => open ? 'translateX(0)' : 'translateX(-100%)'};
   transition: transform 0.3s ease-in-out;
   

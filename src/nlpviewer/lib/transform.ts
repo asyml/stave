@@ -1,3 +1,4 @@
+import { ontology } from '../../app/mock-config-data';
 import { 
   ISinglePack, 
   IOntology, 

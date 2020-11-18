@@ -24,6 +24,23 @@ except ImportError:
 
 nlp_models = {}
 
+def __load_utterance_searcher():
+  if forte_installed:
+    from examples.clinical_pipeline.utterance_searcher import LastUtteranceSearcher
+    from forte.data.readers import RawDataDeserializeReader
+
+    #create the pipeline and add the processor
+    pipeline = Pipeline[DataPack]()
+    pipeline.set_reader(RawDataDeserializeReader())
+    pipeline.add(LastUtteranceSearcher())
+    
+    pipeline.initialize()
+    return pipeline
+  else:
+    logging.info(forte_msg)
+    logging.info("Cannot load utterance searcher models.")
+    return None
+
 def __load_content_rewriter():
   if forte_installed:
     from examples.content_rewriter.rewriter import ContentRewriter
@@ -69,6 +86,19 @@ def load_model(request, model_name: str):
       else:
         response = HttpResponse('OK')
         response['load_success'] = False
+  elif (model_name == 'utterance_searcher') :
+    if model_name in nlp_models:
+      response = HttpResponse('OK')
+      response['load_success'] = True
+    else:
+      u = __load_utterance_searcher()
+      if u:
+        nlp_models[model_name] = u
+        response = HttpResponse('OK')
+        response['load_success'] = True
+      else:
+        response = HttpResponse('OK')
+        response['load_success'] = False
   else:
     response =  Http404(f"Cannot find model {model_name}")
   
@@ -79,13 +109,12 @@ def load_model(request, model_name: str):
 def run_pipeline(request, document_id, model_name):
   doc = Document.objects.get(pk=document_id)
   docJson = model_to_dict(doc)
-
   pipeline = nlp_models.get(model_name, None)
-
   print('print the doc')
+  print(docJson)
   pack = json.loads(docJson['textPack'])['py/state']
-  print(pack['_text'])
-  print(pack['annotations'])
+  #print(pack['_text'])
+  #print(pack['annotations'])
 
   response: JsonResponse
   if pipeline:
