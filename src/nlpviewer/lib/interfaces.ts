@@ -211,4 +211,5 @@ export interface IScopeConfigs {
 export interface IProjectConfigs {
   legendConfigs: ILegendConfigs;
   scopeConfigs: IScopeConfigs;
+  layoutConfigs: ILayout;
 }

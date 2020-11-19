@@ -11,7 +11,7 @@ import Users from './pages/Users';
 import BurgerMenu from './components/burgerMenu';
 import {singlePack} from './mock-data-2';
 import {ontology} from './mock-config-data';
-import {layout} from './layout';
+//import { layout } from './layout';
 import {projectConfig} from './project_config';
 import NLPViewer from '../nlpviewer';
 import groupPlugin from '../plugins/group/Group';
@@ -72,7 +72,6 @@ function ViewWithDemoData() {
       textPack={singlePack}
       ontology={ontology}
       plugins={[groupPlugin, dialogueBoxPlugin]}
-      layout={layout}
       projectConfig={projectConfig}
     />
   );

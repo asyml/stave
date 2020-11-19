@@ -1,12 +1,7 @@
 import React from 'react';
 import Tab from './Tab';
 import style from '../styles/TextViewer.module.css';
-import {
-  IAnnotation,
-  IPlugin,
-  ILayout,
-  IProjectConfigs,
-} from '../lib/interfaces';
+import {IAnnotation, IPlugin, IProjectConfigs} from '../lib/interfaces';
 import {
   applyColorToLegend,
   isEntryAnnotation,
@@ -34,11 +29,10 @@ export type OnEventType = (event: any) => void;
 export interface TextViewerProp {
   plugins: IPlugin[];
   onEvent?: OnEventType;
-  layout: ILayout;
   projectConfig: IProjectConfigs;
 }
 
-function TextViewer({plugins, onEvent, layout, projectConfig}: TextViewerProp) {
+function TextViewer({plugins, onEvent, projectConfig}: TextViewerProp) {
   const appState = useTextViewerState();
   const dispatch = useTextViewerDispatch();
 
@@ -153,17 +147,17 @@ function TextViewer({plugins, onEvent, layout, projectConfig}: TextViewerProp) {
     // Rendering based on customized layout setup.
 
     // Disable this area
-    if (layout[areaName] === 'disable') {
+    if (projectConfig['layoutConfigs'][areaName] === 'disable') {
       return null;
     }
 
     // Render Plugins.
-    if (layout[areaName] === 'plugins') {
+    if (projectConfig['layoutConfigs'][areaName] === 'plugins') {
       return renderAllPlugin();
     }
 
-    if (pluginsByName.has(layout[areaName])) {
-      return renderPluginByName(layout[areaName]);
+    if (pluginsByName.has(projectConfig['layoutConfigs'][areaName])) {
+      return renderPluginByName(projectConfig['layoutConfigs'][areaName]);
     }
 
     return <span>Invalid component</span>;
@@ -172,8 +166,8 @@ function TextViewer({plugins, onEvent, layout, projectConfig}: TextViewerProp) {
   function MiddleCenterArea() {
     const areaName = 'center-middle';
     if (
-      typeof layout[areaName] === 'undefined' ||
-      layout[areaName] === 'default-nlp'
+      typeof projectConfig['layoutConfigs'][areaName] === 'undefined' ||
+      projectConfig['layoutConfigs'][areaName] === 'default-nlp'
     ) {
       if (textPack) {
         return (
@@ -191,7 +185,7 @@ function TextViewer({plugins, onEvent, layout, projectConfig}: TextViewerProp) {
   function MiddleBottomArea() {
     const areaName = 'center-bottom';
     // When not specific plugin is defined, center bottom is
-    if (typeof layout[areaName] === 'undefined') {
+    if (typeof projectConfig['layoutConfigs'][areaName] === 'undefined') {
       const Comp = groupPlugin.component;
       return (
         <Comp key={groupPlugin.name} dispatch={dispatch} appState={appState} />
@@ -205,8 +199,8 @@ function TextViewer({plugins, onEvent, layout, projectConfig}: TextViewerProp) {
     const areaName = 'left';
 
     if (
-      typeof layout[areaName] === 'undefined' ||
-      layout[areaName] === 'default-meta'
+      typeof projectConfig['layoutConfigs'][areaName] === 'undefined' ||
+      projectConfig['layoutConfigs'][areaName] === 'default-meta'
     ) {
       if (textPack && ontology) {
         return (
@@ -227,8 +221,8 @@ function TextViewer({plugins, onEvent, layout, projectConfig}: TextViewerProp) {
     const areaName = 'right';
 
     if (
-      layout[areaName] === 'example' ||
-      layout[areaName] === 'default-attribute'
+      typeof projectConfig['layoutConfigs'][areaName] === 'undefined' ||
+      projectConfig['layoutConfigs'][areaName] === 'default-attribute'
     ) {
       if (textPack && ontology) {
         return (
@@ -284,8 +278,8 @@ function TextViewer({plugins, onEvent, layout, projectConfig}: TextViewerProp) {
 
   function ToolBar() {
     if (
-      typeof layout['center-middle'] === 'undefined' ||
-      layout['center-middle'] === 'default-nlp'
+      typeof projectConfig['layoutConfigs']['center-middle'] === 'undefined' ||
+      projectConfig['layoutConfigs']['center-middle'] === 'default-nlp'
     ) {
       if (textPack && ontology && projectConfig) {
         return (
@@ -375,7 +369,7 @@ function TextViewer({plugins, onEvent, layout, projectConfig}: TextViewerProp) {
         );
       }
     }
-    if (layout['center-middle'] === 'example') {
+    if (projectConfig['layoutConfigs']['center-middle'] === 'example') {
       return <span>Example component</span>;
     }
     return <div></div>;

@@ -49,13 +49,22 @@ function Utterance(text: string, annotation: IAnnotation) {
         className={style.bubble_container}
         key={'utterance_container_' + annotation.id}
       >
-        <div
-          className={style.bubble_left}
-          key={'utterance_bubble_' + annotation.id}
-        >
+        <div>
           <div className={style.speaker_icon}>&#x1F916;</div>
-          <div key={'utterance_' + annotation.id}>
-            {text.substring(annotation.span.begin, annotation.span.end)}
+          <div
+            className={style.bubble_left}
+            key={'utterance_bubble_' + annotation.id}
+          >
+            <div key={'utterance_' + annotation.id}>
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: text.substring(
+                    annotation.span.begin,
+                    annotation.span.end
+                  ),
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -70,7 +79,6 @@ function Utterance(text: string, annotation: IAnnotation) {
           className={style.bubble_right}
           key={'utterance_bubble_' + annotation.id}
         >
-          <div className={style.speaker_icon}>&#x1F464;</div>
           <div key={'utterance_' + annotation.id}>
             {text.substring(annotation.span.begin, annotation.span.end)}
           </div>
@@ -107,7 +115,7 @@ function DialogueBox(props: PluginComponentProp) {
   console.log(props.appState.textPack);
 
   // Call API to load the NLP model of name "model_name".
-  const model_name = 'content_rewriter';
+  const model_name = 'utterance_searcher';
   useEffect(() => {
     try {
       loadNlpModel(model_name).then(response => {
@@ -140,18 +148,22 @@ function DialogueBox(props: PluginComponentProp) {
   });
 
   return (
-    <div key="plugin-dialogue-box">
+    <div className={style.plugin_box} key="plugin-dialogue-box">
       <div key="dialogue-context-container">
         {contexts.map(ann => {
           return Table(text, ann);
         })}
       </div>
-      <div key="dialogue-utterances-container">
+      <div
+        className={style.dialogue_utterances_container}
+        key="dialogue-utterances-container"
+      >
         {utterances.map(ann => {
           return Utterance(text, ann);
         })}
       </div>
-      <div key="dialogue-text-input">
+      <div className={style.hl}></div>
+      <div className={style.dialogue_input_container} key="dialogue-text-input">
         <TextInput
           textValue="enter text here"
           textPack={pack}
@@ -174,7 +186,7 @@ function DialogueBox(props: PluginComponentProp) {
                     runNlp(doc_id, model_name).then(data => {
                       const [singlePackFromAPI] = transformPack(
                         data.textPack,
-                        data.ontology
+                        JSON.stringify(props.appState.ontology)
                       );
                       // Just printing the name to avoid "never used" command.
                       setPack({
@@ -202,5 +214,6 @@ const plugin = {
   enabled: enabled,
 };
 
-export type OnEventType = (event: Event) => void;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type OnEventType = (event: any) => void;
 export default plugin;

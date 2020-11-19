@@ -12,7 +12,6 @@ import {
   ISinglePack,
   IOntology,
   IPlugin,
-  ILayout,
   IProjectConfigs,
 } from './lib/interfaces';
 
@@ -24,7 +23,6 @@ export interface NLPViewerProp {
   textPack: ISinglePack;
   ontology: IOntology;
   plugins: IPlugin[];
-  layout: ILayout;
   projectConfig: IProjectConfigs;
   onEvent?: OnEventType;
 }
@@ -56,7 +54,6 @@ function TextViewerFetchContainer(props: NLPViewerProp) {
     <TextViewer
       plugins={props.plugins}
       onEvent={props.onEvent}
-      layout={props.layout}
       projectConfig={props.projectConfig}
     />
   );

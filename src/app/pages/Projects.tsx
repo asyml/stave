@@ -25,6 +25,7 @@ import {
   IOntology,
 } from '../../nlpviewer';
 import {isEntryAnnotation, camelCaseDeep} from '../../nlpviewer/lib/utils';
+import JsonEditor from '../components/jsonEditor';
 
 const useStyles = makeStyles({
   root: {
@@ -35,6 +36,10 @@ const useStyles = makeStyles({
   title: {
     fontSize: 14,
   },
+
+  jsonEditor: {
+    marginBottom: 15,
+  },
 });
 
 function Projects() {
@@ -42,8 +47,8 @@ function Projects() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [projects, setProjects] = useState<any[]>([]);
   const [name, setName] = useState<string>('');
-  const [ontology, setOntology] = useState<string>('');
-  const [config, setConfig] = useState<string>('');
+  const [ontology, setOntology] = useState<string>('{}');
+  const [config, setConfig] = useState<string>('{}');
   const history = useHistory();
   const [open, setOpen] = React.useState(false);
 
@@ -56,7 +61,8 @@ function Projects() {
   };
 
   const clearDialog = () => {
-    setOntology('');
+    setOntology('{}');
+    setConfig('{}');
     setName('');
   };
 
@@ -95,15 +101,19 @@ function Projects() {
       reader.onload = function () {
         setOntology(reader.result as string);
         const defaultConfig = createDefaultConfig(reader.result as string);
-        setConfig(JSON.stringify(defaultConfig, null, 2));
+        setConfig(JSON.stringify(defaultConfig));
       };
     }
   }
 
-  function createDefaultConfig(ontology: string) {
+  function createDefaultConfig(ontology: string): IProjectConfigs {
     const ontologyJson = JSON.parse(ontology);
     const ontologyObject: IOntology = camelCaseDeep(ontologyJson);
-    const config: IProjectConfigs = {legendConfigs: {}, scopeConfigs: {}};
+    const config: IProjectConfigs = {
+      legendConfigs: {},
+      scopeConfigs: {},
+      layoutConfigs: {},
+    };
     for (const entry of ontologyJson.definitions) {
       const entryName = entry.entry_name;
       // Scope configs should contain annotations only.
@@ -125,6 +135,12 @@ function Projects() {
           }
         }
       }
+
+      //TODO hard coded default layoutConfigs -- might need to change
+      config['layoutConfigs']['center-middle'] = 'default-nlp';
+      config['layoutConfigs']['left'] = 'default-meta';
+      config['layoutConfigs']['right'] = 'default-attribute';
+      config['layoutConfigs']['center-bottom'] = 'disable';
     }
     return config;
   }
@@ -198,31 +214,16 @@ function Projects() {
                         margin="normal"
                       />
                     </div>
-                    <div>
-                      <TextField
-                        id="outlined-multiline-flexible"
-                        label="Ontology Body"
-                        value={ontology}
-                        onChange={e => setOntology(e.target.value)}
-                        multiline
-                        rows={10}
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                      />
-                    </div>
-                    <div>
-                      <TextField
-                        label="Config"
-                        value={config}
-                        onChange={e => setConfig(e.target.value)}
-                        multiline
-                        rows={10}
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                      />
-                    </div>
+                    <JsonEditor
+                      className={classes.jsonEditor}
+                      jsonText={ontology}
+                      onChangeJsonText={(text: string) => setOntology(text)}
+                    />
+                    <JsonEditor
+                      className={classes.jsonEditor}
+                      jsonText={config}
+                      onChangeJsonText={(text: string) => setConfig(text)}
+                    />
                     <div>
                       <DropUpload
                         fileLimit={1048576}
