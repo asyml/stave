@@ -1,6 +1,6 @@
-import React, { useReducer, createContext, useContext } from 'react';
+import React, {useReducer, createContext, useContext} from 'react';
 
-export type ContextProviderProps = { children: React.ReactNode };
+export type ContextProviderProps = {children: React.ReactNode};
 
 export function createContextProvider<StateT, ActionT>(
   reducer: (state: StateT, action: ActionT) => StateT,
@@ -11,7 +11,7 @@ export function createContextProvider<StateT, ActionT>(
   const StateContext = createContext<StateT | undefined>(undefined);
   const DispatchContext = createContext<Dispatch | undefined>(undefined);
 
-  function ContextProvider({ children }: ContextProviderProps) {
+  function ContextProvider({children}: ContextProviderProps) {
     const [state, dispatch] = useReducer(reducer, initialState);
 
     return (

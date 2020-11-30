@@ -1,1 +1,1 @@
-export { default } from './JsonEditor';
+export {default} from './JsonEditor';

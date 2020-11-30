@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import TextViewer, { OnEventType } from './components/TextViewer';
+import React, {useEffect} from 'react';
+import TextViewer, {OnEventType} from './components/TextViewer';
 import {
   TextViewerProvider,
   useTextViewerDispatch,
@@ -8,11 +8,12 @@ import {
 import './lib/log';
 import './styles/normalize.css';
 import './styles/global.css';
-import { 
-  ISinglePack, 
-  IOntology, 
-  IPlugin, 
-  IProjectConfigs, } from './lib/interfaces';
+import {
+  ISinglePack,
+  IOntology,
+  IPlugin,
+  IProjectConfigs,
+} from './lib/interfaces';
 
 export * from './lib/transform';
 export * from './lib/interfaces';
@@ -50,8 +51,10 @@ function TextViewerFetchContainer(props: NLPViewerProp) {
   }, [dispatch, props.textPack, props.ontology]);
 
   return (
-    <TextViewer 
-      plugins={props.plugins} 
-      onEvent={props.onEvent} 
-      projectConfig={props.projectConfig}/>);
+    <TextViewer
+      plugins={props.plugins}
+      onEvent={props.onEvent}
+      projectConfig={props.projectConfig}
+    />
+  );
 }

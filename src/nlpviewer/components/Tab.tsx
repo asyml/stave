@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import style from '../styles/Tab.module.css';
 
 type RenderFn = () => JSX.Element;
@@ -13,7 +13,7 @@ export interface TabProp {
   activeTabIndex?: number;
 }
 
-export default function Tab({ tabs, activeTabIndex }: TabProp) {
+export default function Tab({tabs, activeTabIndex}: TabProp) {
   const [state, setState] = useState(activeTabIndex || 0);
 
   return (

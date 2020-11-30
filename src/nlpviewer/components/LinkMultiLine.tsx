@@ -1,7 +1,7 @@
-import React, { memo } from 'react';
-import { ILink, IAnnotation, IAnnotationPosition } from '../lib/interfaces';
-import { attributeId, shouldMultiLineGoLeft } from '../lib/utils';
-import { useTextViewerDispatch } from '../contexts/text-viewer.context';
+import React, {memo} from 'react';
+import {ILink, IAnnotation, IAnnotationPosition} from '../lib/interfaces';
+import {attributeId, shouldMultiLineGoLeft} from '../lib/utils';
+import {useTextViewerDispatch} from '../contexts/text-viewer.context';
 import style from '../styles/Link.module.css';
 
 export interface LinkMultiLineProp {
@@ -194,7 +194,7 @@ function LinkMultiLine({
 
       <div
         onClick={() =>
-          dispatch({ type: 'select-link', linkId: linkWithPosition.link.id })
+          dispatch({type: 'select-link', linkId: linkWithPosition.link.id})
         }
         onMouseEnter={() => {
           dispatch({
@@ -203,7 +203,7 @@ function LinkMultiLine({
           });
         }}
         onMouseLeave={() => {
-          dispatch({ type: 'unhighlight-link' });
+          dispatch({type: 'unhighlight-link'});
         }}
         style={{
           position: 'absolute',
@@ -218,7 +218,7 @@ function LinkMultiLine({
 
       <div
         onClick={() =>
-          dispatch({ type: 'select-link', linkId: linkWithPosition.link.id })
+          dispatch({type: 'select-link', linkId: linkWithPosition.link.id})
         }
         onMouseEnter={() => {
           dispatch({
@@ -227,7 +227,7 @@ function LinkMultiLine({
           });
         }}
         onMouseLeave={() => {
-          dispatch({ type: 'unhighlight-link' });
+          dispatch({type: 'unhighlight-link'});
         }}
         style={{
           position: 'absolute',
@@ -242,7 +242,7 @@ function LinkMultiLine({
 
       <div
         onClick={() =>
-          dispatch({ type: 'select-link', linkId: linkWithPosition.link.id })
+          dispatch({type: 'select-link', linkId: linkWithPosition.link.id})
         }
         onMouseEnter={() => {
           dispatch({
@@ -251,7 +251,7 @@ function LinkMultiLine({
           });
         }}
         onMouseLeave={() => {
-          dispatch({ type: 'unhighlight-link' });
+          dispatch({type: 'unhighlight-link'});
         }}
         style={{
           position: 'absolute',
@@ -266,7 +266,7 @@ function LinkMultiLine({
 
       <div
         onClick={() =>
-          dispatch({ type: 'select-link', linkId: linkWithPosition.link.id })
+          dispatch({type: 'select-link', linkId: linkWithPosition.link.id})
         }
         onMouseEnter={() => {
           dispatch({
@@ -275,7 +275,7 @@ function LinkMultiLine({
           });
         }}
         onMouseLeave={() => {
-          dispatch({ type: 'unhighlight-link' });
+          dispatch({type: 'unhighlight-link'});
         }}
         style={{
           position: 'absolute',
@@ -290,7 +290,7 @@ function LinkMultiLine({
 
       <div
         onClick={() =>
-          dispatch({ type: 'select-link', linkId: linkWithPosition.link.id })
+          dispatch({type: 'select-link', linkId: linkWithPosition.link.id})
         }
         onMouseEnter={() => {
           dispatch({
@@ -299,7 +299,7 @@ function LinkMultiLine({
           });
         }}
         onMouseLeave={() => {
-          dispatch({ type: 'unhighlight-link' });
+          dispatch({type: 'unhighlight-link'});
         }}
         style={{
           height:
@@ -339,7 +339,7 @@ function LinkMultiLine({
         <div
           className={style.link_label}
           style={{
-            transform: `translate(-50%)`,
+            transform: 'translate(-50%)',
             position: 'absolute',
             textAlign: goLeft ? 'left' : 'right',
             top: `${fromLinkLabelPosition.y}px`,
@@ -355,7 +355,7 @@ function LinkMultiLine({
         <div
           className={style.link_label}
           style={{
-            transform: `translate(-50%)`,
+            transform: 'translate(-50%)',
             position: 'absolute',
             textAlign: goLeft ? 'left' : 'right',
             top: `${toLinkLabelPosition.y}px`,

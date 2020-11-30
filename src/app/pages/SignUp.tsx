@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { signup } from '../lib/api';
-import { useHistory } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
+import React, {useState} from 'react';
+import {signup} from '../lib/api';
+import {useHistory} from 'react-router-dom';
+import {makeStyles} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
@@ -22,22 +22,23 @@ function SignUp() {
   const [password, setPassword] = useState<string>('');
   const history = useHistory();
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function handleSignUp(e: any) {
     e.preventDefault();
     signup(username, password)
-      .then(e => {
+      .then(() => {
         history.push('/');
       })
-      .catch(e => {
+      .catch(() => {
         setError('sign up failed');
       });
   }
 
-  function redirectLogin(e: any) {
-    history.push("/login") 
+  function redirectLogin() {
+    history.push('/login');
   }
 
-  const useStyles = makeStyles((theme) => ({
+  const useStyles = makeStyles(theme => ({
     paper: {
       marginTop: theme.spacing(15),
       display: 'flex',
@@ -49,7 +50,7 @@ function SignUp() {
       width: '12%',
     },
     form: {
-      width: '100%', 
+      width: '100%',
       marginTop: theme.spacing(3),
     },
     submit: {
@@ -68,95 +69,102 @@ function SignUp() {
     showPassword: boolean;
   }
 
-    const classes = useStyles();
-    const [values, setValues] = React.useState<State>({
-      amount: '',
-      password: '',
-      weight: '',
-      weightRange: '',
-      showPassword: false,
-    });
+  const classes = useStyles();
+  const [values, setValues] = React.useState<State>({
+    amount: '',
+    password: '',
+    weight: '',
+    weightRange: '',
+    showPassword: false,
+  });
 
-    const handleClickShowPassword = () => {
-      setValues({ ...values, showPassword: !values.showPassword });
-    };
-  
-    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-      event.preventDefault();
-    };
+  const handleClickShowPassword = () => {
+    setValues({...values, showPassword: !values.showPassword});
+  };
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
 
   return (
-      <Container component="main" maxWidth="sm">
-        <div className={classes.paper}>
-          <Typography component="h1" variant="h3"> 
-            Create your &nbsp;
-            <img className={classes.photo} alt= 'stave logo' src={process.env.PUBLIC_URL + '/Stave-graphic@2x.png'}></img>
-            &nbsp; account
-          </Typography>
-          <form className={classes.form} noValidate onSubmit={handleSignUp}>
-                <TextField
-                  placeholder="username"
-                  onChange={e => setUsername(e.target.value)}
-                  value={username}
-                  name="username"
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="name"
-                  label="Your Username"
-                />
-                <FormControl className={classes.form}>
-                  <InputLabel htmlFor="filled-adornment-password" variant="outlined"
-                  required
-                  >Your Password</InputLabel>
-                  <OutlinedInput
-                    id="password"
-                    label="Your Password"
-                    type={values.showPassword ? 'text' : 'password'}
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                          edge="end"
-                        >
-                          {values.showPassword ? <Visibility /> : <VisibilityOff />}
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                  />
-                </FormControl>
+    <Container component="main" maxWidth="sm">
+      <div className={classes.paper}>
+        <Typography component="h1" variant="h3">
+          Create your &nbsp;
+          <img
+            className={classes.photo}
+            alt="stave logo"
+            src={process.env.PUBLIC_URL + '/Stave-graphic@2x.png'}
+          ></img>
+          &nbsp; account
+        </Typography>
+        <form className={classes.form} noValidate onSubmit={handleSignUp}>
+          <TextField
+            placeholder="username"
+            onChange={e => setUsername(e.target.value)}
+            value={username}
+            name="username"
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="name"
+            label="Your Username"
+          />
+          <FormControl className={classes.form}>
+            <InputLabel
+              htmlFor="filled-adornment-password"
+              variant="outlined"
+              required
+            >
+              Your Password
+            </InputLabel>
+            <OutlinedInput
+              id="password"
+              label="Your Password"
+              type={values.showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+          </FormControl>
 
-            {error ? <div>{error}</div> : null}
+          {error ? <div>{error}</div> : null}
 
-            <Button
+          <Button
             type="submit"
             fullWidth
             variant="contained"
             color="primary"
             className={classes.submit}
             onClick={handleSignUp}
-            >
-              Create account
-            </Button>
+          >
+            Create account
+          </Button>
 
-            <Grid container justify="flex-end">
-              <Grid item>
-                <Link 
-                  component="button"
-                  variant="body2"
-                  onClick={redirectLogin} >
-                  {"Already have an account? Sign in"}
-                </Link>
-              </Grid>
+          <Grid container justify="flex-end">
+            <Grid item>
+              <Link component="button" variant="body2" onClick={redirectLogin}>
+                {'Already have an account? Sign in'}
+              </Link>
             </Grid>
-          </form>
-        </div>
-      </Container>
+          </Grid>
+        </form>
+      </div>
+    </Container>
   );
 }
 

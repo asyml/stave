@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import { State } from '../../nlpviewer';
+import React, {useState} from 'react';
 import style from './Group.module.css';
-import { IGroup, ISinglePack } from '../../nlpviewer';
+import {IGroup, ISinglePack} from '../../nlpviewer';
 import {PluginComponentProp} from '../lib/interface';
 
 function Group(props: PluginComponentProp) {
@@ -12,8 +11,8 @@ function Group(props: PluginComponentProp) {
   }
 
   const dispatch = props.dispatch;
-  const { textPack } = props.appState;
-  const { groups } = textPack;
+  const {textPack} = props.appState;
+  const {groups} = textPack;
 
   return (
     <div key={'plugin-group'} className={style.group_name_container}>
@@ -85,7 +84,10 @@ function getMemberDetail(group: IGroup, member: string, textPack: ISinglePack) {
   if (group.memberType === 'annotation') {
     const annotation = textPack.annotations.find(ann => ann.id === member);
     if (annotation) {
-      return textPack.text.substring(annotation.span.begin, annotation.span.end);
+      return textPack.text.substring(
+        annotation.span.begin,
+        annotation.span.end
+      );
     } else {
       return '';
     }
@@ -94,7 +96,7 @@ function getMemberDetail(group: IGroup, member: string, textPack: ISinglePack) {
   }
 }
 
-function enabled(state: State) {
+function enabled() {
   return true;
 }
 

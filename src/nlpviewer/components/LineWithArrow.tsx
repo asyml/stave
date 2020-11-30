@@ -1,5 +1,5 @@
 import React from 'react';
-import { IPos } from '../lib/interfaces';
+import {IPos} from '../lib/interfaces';
 import style from '../styles/LineWithArrow.module.css';
 
 export interface LineWithArrowProp {
@@ -7,12 +7,12 @@ export interface LineWithArrowProp {
   toPos: IPos;
 }
 
-export default function LineWithArrow({ fromPos, toPos }: LineWithArrowProp) {
-  let x = fromPos.x;
-  let y = fromPos.y;
+export default function LineWithArrow({fromPos, toPos}: LineWithArrowProp) {
+  const x = fromPos.x;
+  const y = fromPos.y;
 
-  let width = toPos.x - x;
-  let height = toPos.y - y;
+  const width = toPos.x - x;
+  const height = toPos.y - y;
 
   let rotate = (Math.atan(height / width) * 180) / Math.PI;
   if (width === 0) {
@@ -36,7 +36,7 @@ export default function LineWithArrow({ fromPos, toPos }: LineWithArrowProp) {
         position: 'absolute',
         top: y,
         left: x,
-        transformOrigin: `0 0`,
+        transformOrigin: '0 0',
         transform: `rotate(${rotate}deg)`,
         width: Math.sqrt(width * width + height * height) - 2,
         height: 1,

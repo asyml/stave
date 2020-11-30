@@ -1,11 +1,12 @@
-import { 
-  ISinglePack, 
-  IOntology, 
-  IAnnotation, 
-  ILink, 
-  IProjectConfigs, 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  ISinglePack,
+  IOntology,
+  IAnnotation,
+  ILink,
+  IProjectConfigs,
 } from './interfaces';
-import { isEntryAnnotation, isEntryLink, camelCaseDeep } from './utils';
+import {isEntryAnnotation, isEntryLink, camelCaseDeep} from './utils';
 
 export function transformPack(
   rawPack: string,

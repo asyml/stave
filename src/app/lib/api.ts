@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface APIDocument {
   id: string;
   textPack: string;
@@ -16,11 +17,11 @@ export interface APIDocConfig {
 }
 
 export function fetchDocuments(): Promise<any> {
-  return fetch(`/api/documents`).then(r => r.json());
+  return fetch('/api/documents').then(r => r.json());
 }
 
 export function fetchProjects(): Promise<any> {
-  return fetch(`/api/projects`).then(r => r.json());
+  return fetch('/api/projects').then(r => r.json());
 }
 
 export function fetchDocument(id: string): Promise<APIDocument> {
@@ -61,22 +62,18 @@ export function createDocument(
   textPack: string,
   project_id: string
 ) {
-  return postData(`/api/documents/new`, {
+  return postData('/api/documents/new', {
     name: name,
     textPack: textPack,
-    project_id: project_id
+    project_id: project_id,
   }).then(r => r.json());
 }
 
-export function createProject(
-  name: string,
-  ontology: string,
-  config: string
-) {
-  return postData(`/api/projects/new`, {
+export function createProject(name: string, ontology: string, config: string) {
+  return postData('/api/projects/new', {
     name: name,
     ontology: ontology,
-    config: config
+    config: config,
   }).then(r => r.json());
 }
 
@@ -88,7 +85,7 @@ export function deleteProject(id: string) {
   return postData(`/api/projects/${id}/delete`);
 }
 
-export function fetchDocumentsProject(id: string){
+export function fetchDocumentsProject(id: string) {
   return postData(`/api/projects/${id}/docs`).then(r => r.json());
 }
 
@@ -97,7 +94,7 @@ export function fetchDocumentsProject(id: string){
 // }
 
 export function fetchUsers() {
-  return fetch(`/api/users`).then(r => r.json());
+  return fetch('/api/users').then(r => r.json());
 }
 
 export function fetchUser(id: string) {
@@ -116,15 +113,15 @@ export function deleteUser(id: string) {
 }
 
 export function createUser(name: string, password: string) {
-  return postData(`/api/users/new`, {
+  return postData('/api/users/new', {
     name,
     password,
   }).then(r => r.json());
 }
 
-export function editText(documentId: string, new_text: string){
-  return postData(`/api/documents/${documentId}/text/edit`,{
-    new_text
+export function editText(documentId: string, new_text: string) {
+  return postData(`/api/documents/${documentId}/text/edit`, {
+    new_text,
   });
 }
 
@@ -170,30 +167,35 @@ export function deleteLink(documentId: string, linkId: string) {
   return postData(`/api/documents/${documentId}/links/${linkId}/delete`, {});
 }
 
-export function loadNlpModel(modelName: string){
-  return postData(`/api/nlp/load/${modelName}`, {})
+export function loadNlpModel(modelName: string) {
+  return postData(`/api/nlp/load/${modelName}`, {});
 }
 
-export function runNlp(documentId: string, modelName: string): Promise<APIDocument>{
-  return postData(`/api/nlp/${documentId}/${modelName}`, {}).then(r => r.json());
+export function runNlp(
+  documentId: string,
+  modelName: string
+): Promise<APIDocument> {
+  return postData(`/api/nlp/${documentId}/${modelName}`, {}).then(r =>
+    r.json()
+  );
 }
 
 export function login(name: string, password: string) {
-  return postData(`/api/login`, {
+  return postData('/api/login', {
     name,
     password,
   });
 }
 
 export function signup(name: string, password: string) {
-  return postData(`/api/signup`, {
+  return postData('/api/signup', {
     name,
     password,
   });
 }
 
 export function logout() {
-  return fetch(`/api/logout`);
+  return fetch('/api/logout');
 }
 
 async function postData(url = '', data = {}) {
@@ -219,6 +221,6 @@ async function postData(url = '', data = {}) {
   }
 }
 
-let w: any = window;
+const w: any = window;
 
 w.postData = postData;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface IAttributes {
   [key: string]: any;
 }
@@ -186,7 +187,7 @@ export interface IPlugin {
 }
 
 export interface ILayout {
-  [position: string] : string;
+  [position: string]: string;
 }
 
 export interface ILegendAttributeConfig {
@@ -206,7 +207,6 @@ export interface ILegendConfigs {
 export interface IScopeConfigs {
   [key: string]: boolean;
 }
-
 
 export interface IProjectConfigs {
   legendConfigs: ILegendConfigs;

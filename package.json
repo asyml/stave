@@ -10,6 +10,7 @@
     "object-path": "0.11.5",
     "react-dropzone": "^11.0.3",
     "react-is": "^17.0.1",
+    "react-router-dom": "^5.2.0",
     "react-select": "^3.0.8",
     "styled-components": "^5.1.1"
   },
@@ -20,15 +21,16 @@
     "@types/node": "^12.7.12",
     "@types/react": "^16.9.5",
     "@types/react-dom": "^16.9.1",
-    "@types/react-router-dom": "^5.1.3",
+    "@types/react-router-dom": "^5.1.6",
     "@types/react-select": "^3.0.5",
     "@types/styled-components": "^5.1.2",
+    "eslint": "^7.13.0",
+    "gts": "^3.0.2",
     "http-proxy-middleware": "^0.20.0",
     "identity-obj-proxy": "^3.0.0",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
-    "react-router-dom": "^5.1.2",
-    "react-scripts": "3.4.4",
+    "react-scripts": "^4.0.0",
     "typescript": "~3.6.4"
   },
   "peerDependencies": {
@@ -40,10 +42,11 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy-demo": "REACT_APP_IS_DEMO=true react-scripts build && scp -r build/* ubuntu@fe.int.petuum.com:/var/www/html/nlp-viewer"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
+    "deploy-demo": "REACT_APP_IS_DEMO=true react-scripts build && scp -r build/* ubuntu@fe.int.petuum.com:/var/www/html/nlp-viewer",
+    "lint": "gts lint",
+    "clean": "gts clean",
+    "compile": "tsc",
+    "fix": "gts fix"
   },
   "browserslist": {
     "production": [
@@ -64,10 +67,6 @@
     "moduleNameMapper": {
       "\\.(css|less|scss|sass)$": "identity-obj-proxy"
     }
-  },
-  "prettier": {
-    "singleQuote": true,
-    "trailingComma": "es5"
   },
   "homepage": "."
 }

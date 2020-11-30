@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import NLPViewer, {
   ISinglePack,
   IOntology,
@@ -11,7 +11,7 @@ import NLPViewer, {
 import groupPlugin from '../../plugins/group/Group';
 //import {layout} from '../layout';
 import dialoguePlugin from '../../plugins/dialogue_box/DialogueBox';
-import { useParams } from 'react-router-dom';
+import {useParams} from 'react-router-dom';
 import {
   fetchDocOntology,
   fetchDocProjectConfig,
@@ -31,13 +31,12 @@ interface ProjectConfig {
 }
 
 function Viewer() {
-  let { id } = useParams();
+  const {id} = useParams();
   const [pack, setPack] = useState<WholePack | null>(null);
   const [config, setConfig] = useState<ProjectConfig | null>(null);
 
   useEffect(() => {
     if (id) {
-
       fetchDocOntology(id).then(data => {
         const [singlePackFromAPI, ontologyFromAPI] = transformPack(
           data.textPack,
@@ -66,7 +65,7 @@ function Viewer() {
     <NLPViewer
       textPack={pack.singlePack}
       ontology={pack.ontology}
-      projectConfig = {config.config}
+      projectConfig={config.config}
       // plugins={[groupPlugin]}
       plugins={[groupPlugin, dialoguePlugin]}
       onEvent={event => {
@@ -75,16 +74,16 @@ function Viewer() {
         console.log(event);
 
         if (event.type === 'annotation-add') {
-          const { type, ...annotation } = event;
+          const {...annotation} = event;
 
           const b = annotation.span.begin;
           const e = annotation.span.end;
 
           // Validate Span before adding.
-          if (b < e && b >= 0 && e <= pack.singlePack.text.length){
+          if (b < e && b >= 0 && e <= pack.singlePack.text.length) {
             const annotationAPIData = transformBackAnnotation(annotation);
 
-            addAnnotation(id, annotationAPIData).then(({ id }) => {
+            addAnnotation(id, annotationAPIData).then(({id}) => {
               annotation.id = id;
 
               setPack({
@@ -95,8 +94,10 @@ function Viewer() {
                 ontology: pack.ontology,
               });
             });
-          }else{
-            console.error(`Will not add annotation with span [${b}:${e}] in a document of length ${pack.singlePack.text.length}, which is considered invalid`);
+          } else {
+            console.error(
+              `Will not add annotation with span [${b}:${e}] in a document of length ${pack.singlePack.text.length}, which is considered invalid`
+            );
           }
         } else if (event.type === 'annotation-delete') {
           deleteAnnotation(id, event.annotationId).then(() => {
@@ -111,10 +112,10 @@ function Viewer() {
             });
           });
         } else if (event.type === 'link-add') {
-          const { type, ...link } = event;
+          const {...link} = event;
           const linkAPIData = transformBackLink(link);
 
-          addLink(id, linkAPIData).then(({ id }) => {
+          addLink(id, linkAPIData).then(({id}) => {
             link.id = id;
             setPack({
               singlePack: {

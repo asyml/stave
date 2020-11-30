@@ -1,5 +1,5 @@
-import React, { memo } from 'react';
-import { IAnnotationPosition, IAnnotation } from '../lib/interfaces';
+import React, {memo} from 'react';
+import {IAnnotationPosition, IAnnotation} from '../lib/interfaces';
 import style from '../styles/AnnotationLabel.module.css';
 import {
   attributeId,
@@ -20,7 +20,7 @@ function AnnotationLabel({
   isSelected,
   selectedLegendAttributeIds,
 }: AnnotationLabelProp) {
-  const attrKeys = Object.keys(annotation.attributes).filter((attrKey) => {
+  const attrKeys = Object.keys(annotation.attributes).filter(attrKey => {
     if (isSelected) {
       return true;
     } else {
@@ -43,7 +43,7 @@ function AnnotationLabel({
       style={{
         position: 'absolute',
         zIndex: isSelected ? 30 : 0,
-        transform: `translate(-50%, 0)`,
+        transform: 'translate(-50%, 0)',
         top: position.rects[0].y + 20,
         left: position.rects[0].x + position.rects[0].width / 2,
         fontSize: 10,

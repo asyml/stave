@@ -1,7 +1,7 @@
-import React, { memo } from 'react';
-import { ILink, IAnnotation, IAnnotationPosition } from '../lib/interfaces';
-import { attributeId } from '../lib/utils';
-import { useTextViewerDispatch } from '../contexts/text-viewer.context';
+import React, {memo} from 'react';
+import {ILink, IAnnotation, IAnnotationPosition} from '../lib/interfaces';
+import {attributeId} from '../lib/utils';
+import {useTextViewerDispatch} from '../contexts/text-viewer.context';
 import style from '../styles/Link.module.css';
 
 export interface LinkSingleLineProp {
@@ -86,7 +86,7 @@ function LinkSingleLine({
 
   return (
     <div
-      className={`single-line-container`}
+      className={'single-line-container'}
       data-from-id={linkWithPosition.link.fromEntryId}
       data-to-id={linkWithPosition.link.toEntryId}
     >
@@ -114,7 +114,7 @@ function LinkSingleLine({
 
       <div
         onClick={() =>
-          dispatch({ type: 'select-link', linkId: linkWithPosition.link.id })
+          dispatch({type: 'select-link', linkId: linkWithPosition.link.id})
         }
         onMouseEnter={() => {
           dispatch({
@@ -123,7 +123,7 @@ function LinkSingleLine({
           });
         }}
         onMouseLeave={() => {
-          dispatch({ type: 'unhighlight-link' });
+          dispatch({type: 'unhighlight-link'});
         }}
         style={{
           position: 'absolute',
@@ -140,7 +140,7 @@ function LinkSingleLine({
 
       <div
         onClick={() =>
-          dispatch({ type: 'select-link', linkId: linkWithPosition.link.id })
+          dispatch({type: 'select-link', linkId: linkWithPosition.link.id})
         }
         onMouseEnter={() => {
           dispatch({
@@ -149,7 +149,7 @@ function LinkSingleLine({
           });
         }}
         onMouseLeave={() => {
-          dispatch({ type: 'unhighlight-link' });
+          dispatch({type: 'unhighlight-link'});
         }}
         style={{
           position: 'absolute',
@@ -166,7 +166,7 @@ function LinkSingleLine({
 
       <div
         onClick={() =>
-          dispatch({ type: 'select-link', linkId: linkWithPosition.link.id })
+          dispatch({type: 'select-link', linkId: linkWithPosition.link.id})
         }
         onMouseEnter={() => {
           dispatch({
@@ -175,7 +175,7 @@ function LinkSingleLine({
           });
         }}
         onMouseLeave={() => {
-          dispatch({ type: 'unhighlight-link' });
+          dispatch({type: 'unhighlight-link'});
         }}
         style={{
           position: 'absolute',
@@ -210,7 +210,7 @@ function LinkSingleLine({
         <div
           className={style.link_label}
           style={{
-            transform: `translate(-50%)`,
+            transform: 'translate(-50%)',
             position: 'absolute',
             textAlign: goLeft ? 'left' : 'right',
             top: `${linkLabelPosition.y}px`,

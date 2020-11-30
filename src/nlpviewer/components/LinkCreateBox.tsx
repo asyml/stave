@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Select from 'react-select';
 import {
   useTextViewerDispatch,
@@ -12,8 +12,8 @@ import {
   IAnnotation,
   IConstraint,
 } from '../lib/interfaces';
-import { shortId, isEntryLink } from '../lib/utils';
-import { OnEventType } from './TextViewer';
+import {shortId, isEntryLink} from '../lib/utils';
+import {OnEventType} from './TextViewer';
 
 export interface LinkCreateBoxProp {
   fromEntryId: string | null;
@@ -29,9 +29,10 @@ export default function LinkCreateBox({
   onEvent,
 }: LinkCreateBoxProp) {
   const dispatch = useTextViewerDispatch();
-  const { linkEditSelectedLegendId, textPack } = useTextViewerState();
+  const {linkEditSelectedLegendId, textPack} = useTextViewerState();
   const [slideInAnimated, setSlideInAnimated] = useState(false);
   const [flashAnimated, setFlashAnimated] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [enteredAttribute, setEnteredAttribute] = useState<any>({});
 
   useEffect(() => {
@@ -168,10 +169,7 @@ export default function LinkCreateBox({
           <div className={style.legend_attributes}>
             {(selectedLegendDefinition.attributes || []).map(attr => {
               return (
-                <div
-                  className={style.legend_attribute_item}
-                  key={attr.name}
-                >
+                <div className={style.legend_attribute_item} key={attr.name}>
                   <div className={style.legend_attribute_item_title}>
                     {attr.name}
                   </div>
@@ -206,7 +204,7 @@ export default function LinkCreateBox({
         <button
           onClick={() => {
             if (onEvent) {
-              let state = getState();
+              const state = getState();
 
               onEvent({
                 type: 'link-add', // TODO: add strick type for event
@@ -244,6 +242,7 @@ function matchLinkConstraint(
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function matchLinkConstraintEntry(entryConstraint: IConstraint, entry: any) {
   let isMatch = true;
 

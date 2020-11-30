@@ -1,1 +1,1 @@
-export { default } from './DropUpload';
+export {default} from './DropUpload';

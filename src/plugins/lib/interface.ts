@@ -1,6 +1,6 @@
-import { Dispatch, State } from '../../nlpviewer';
+import {Dispatch, State} from '../../nlpviewer';
 
 export interface PluginComponentProp {
-    dispatch: Dispatch;
-    appState: State;
+  dispatch: Dispatch;
+  appState: State;
 }

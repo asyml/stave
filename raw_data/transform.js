@@ -12,7 +12,7 @@ function main() {
   const packData = data['py/state'];
 
   const annotationLegendNames = [];
-  packData.annotations.forEach(ann => {
+  packData.annotations.forEach((ann) => {
     const legendName = getLegendName(ann);
     if (annotationLegendNames.indexOf(legendName) === -1) {
       annotationLegendNames.push(legendName);
@@ -27,7 +27,7 @@ function main() {
   });
 
   const linkLegendNames = [];
-  packData.links.forEach(link => {
+  packData.links.forEach((link) => {
     const legendName = getLegendName(link);
     if (linkLegendNames.indexOf(legendName) === -1) {
       linkLegendNames.push(legendName);
@@ -42,7 +42,7 @@ function main() {
   });
 
   const groupLegendNames = [];
-  packData.groups.forEach(group => {
+  packData.groups.forEach((group) => {
     const legendName = getLegendName(group);
     if (groupLegendNames.indexOf(legendName) === -1) {
       groupLegendNames.push(legendName);
@@ -56,9 +56,9 @@ function main() {
     };
   });
 
-  const annotations = packData.annotations.map(a => {
+  const annotations = packData.annotations.map((a) => {
     const legendName = getLegendName(a);
-    const existedLegend = annotationLegends.find(l => l.id === legendName);
+    const existedLegend = annotationLegends.find((l) => l.id === legendName);
     return {
       span: {
         begin: a['py/state']._span.begin,
@@ -70,9 +70,9 @@ function main() {
     };
   });
 
-  const links = packData.links.map(link => {
+  const links = packData.links.map((link) => {
     const legendName = getLegendName(link);
-    const existedLegend = linkLegends.find(l => l.id === legendName);
+    const existedLegend = linkLegends.find((l) => l.id === legendName);
     return {
       id: link['py/state']._tid + '',
       fromEntryId: link['py/state']._parent + '',
@@ -82,12 +82,12 @@ function main() {
     };
   });
 
-  const groups = packData.groups.map(group => {
+  const groups = packData.groups.map((group) => {
     const legendName = getLegendName(group);
-    const existedLegend = groupLegends.find(l => l.id === legendName);
+    const existedLegend = groupLegends.find((l) => l.id === legendName);
     return {
       id: group['py/state']._tid + '',
-      members: group['py/state']['_members']['py/set'].map(i => i + ''),
+      members: group['py/state']['_members']['py/set'].map((i) => i + ''),
       memberType: getGroupType(existedLegend.id, config),
       legendId: existedLegend.id,
       attributes: getAttrs(group),
@@ -142,8 +142,8 @@ function camelCaseDeep(obj) {
     return obj.map(camelCaseDeep);
   } else if (typeof obj === 'object') {
     const camelCaseObj = {};
-    Object.keys(obj).forEach(key => {
-      let camelKey = key.replace(/_\w/g, function(match, offset, string) {
+    Object.keys(obj).forEach((key) => {
+      let camelKey = key.replace(/_\w/g, (match, offset, string) => {
         if (offset === 0) {
           return match;
         } else {
@@ -165,17 +165,17 @@ function camelCaseDeep(obj) {
 function getAttrs(a) {
   const legendName = getLegendName(a);
   const legend = config['entry_definitions'].find(
-    entry => entry.entry_name === legendName
+    (entry) => entry.entry_name === legendName
   );
 
   if (!legend || !legend.attributes) {
     return {};
   }
 
-  const attrNames = legend.attributes.map(a => a.attribute_name);
+  const attrNames = legend.attributes.map((a) => a.attribute_name);
   const attrs = {};
 
-  Object.keys(a['py/state']).forEach(key => {
+  Object.keys(a['py/state']).forEach((key) => {
     if (attrNames.includes(key)) {
       attrs[key] = a['py/state'][key];
     }
@@ -186,7 +186,7 @@ function getAttrs(a) {
 
 function getGroupType(groupEntryName, config) {
   const entry = config.entry_definitions.find(
-    ent => ent.entry_name === groupEntryName
+    (ent) => ent.entry_name === groupEntryName
   );
 
   if (isEntryAnnotation(config, entry.member_type)) {
@@ -220,7 +220,7 @@ function findEntryNameMatchDeep(config, entryName, matchName) {
   }
 
   const entry = config.entry_definitions.find(
-    ent => ent.entry_name === entryName
+    (ent) => ent.entry_name === entryName
   );
 
   if (!entry) {

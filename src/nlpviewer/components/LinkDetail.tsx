@@ -1,15 +1,15 @@
 import React from 'react';
-import { ILink } from '../lib/interfaces';
+import {ILink} from '../lib/interfaces';
 import Attributes from './Attributes';
-import { useTextViewerDispatch } from '../contexts/text-viewer.context';
-import { OnEventType } from './TextViewer';
+import {useTextViewerDispatch} from '../contexts/text-viewer.context';
+import {OnEventType} from './TextViewer';
 
 export interface LinkDetailProp {
   link: ILink | null;
   onEvent?: OnEventType;
 }
 
-export default function LinkDetail({ link, onEvent }: LinkDetailProp) {
+export default function LinkDetail({link, onEvent}: LinkDetailProp) {
   const dispatch = useTextViewerDispatch();
 
   if (link === null) {

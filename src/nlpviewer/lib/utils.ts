@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   IEntryDefinition,
   ILinkWithPos,
@@ -6,11 +7,11 @@ import {
   ILegendConfigs,
   IScopeConfigs,
 } from './interfaces';
-import { colorPalettes } from './color';
+import {colorPalettes} from './color';
 
 export function applyColorToLegend(
   legends: IEntryDefinition[]
-): (IEntryDefinition & { color: string })[] {
+): (IEntryDefinition & {color: string})[] {
   return legends.map((leg, i) => {
     return {
       ...leg,
@@ -20,53 +21,53 @@ export function applyColorToLegend(
 }
 
 export function displayAttributeInline(attr_value: any) {
-  const attr_type:string = (typeof attr_value)
-  
+  const attr_type: string = typeof attr_value;
+
   // The way that we display null value and other objects will leave an empty box.
   // We can probably use the ontology to filter out some of these.
 
-  if (attr_type === 'boolean'){
-    return attr_value.toString()
-  } else if (attr_type === 'string'){
-    return attr_value.substring(0,3)
-  }else if (attr_type === 'number'){
-    return attr_value.toString()
-  }else if (attr_value === null){
-    return ''
-  }else{
-    return '-'
+  if (attr_type === 'boolean') {
+    return attr_value.toString();
+  } else if (attr_type === 'string') {
+    return attr_value.substring(0, 3);
+  } else if (attr_type === 'number') {
+    return attr_value.toString();
+  } else if (attr_value === null) {
+    return '';
+  } else {
+    return '-';
   }
 }
 
-export function displayAttributeFloating(attr_value: any){
-  const attr_type:string = (typeof attr_value)
+export function displayAttributeFloating(attr_value: any) {
+  const attr_type: string = typeof attr_value;
 
-  if (attr_type === 'boolean'){
-    return attr_value.toString()
-  } else if (attr_type === 'string'){
-    return attr_value.substring(0,3)
-  }else if (attr_type === 'number'){
-    return attr_value.toString()
-  }else if (attr_value === null){
-    return 'N/A'
-  }else{
-    return 'complex object'
+  if (attr_type === 'boolean') {
+    return attr_value.toString();
+  } else if (attr_type === 'string') {
+    return attr_value.substring(0, 3);
+  } else if (attr_type === 'number') {
+    return attr_value.toString();
+  } else if (attr_value === null) {
+    return 'N/A';
+  } else {
+    return 'complex object';
   }
 }
 
-export function displayAttributeSidebar(attr_value: any){
-  const attr_type:string = (typeof attr_value)
+export function displayAttributeSidebar(attr_value: any) {
+  const attr_type: string = typeof attr_value;
 
-  if (attr_type === 'boolean'){
-    return attr_value.toString()
-  } else if (attr_type === 'string'){
-    return attr_value.substring(0,3)
-  }else if (attr_type === 'number'){
-    return attr_value.toString()
-  }else if (attr_value === null){
-    return 'N/A'
-  }else{
-    return 'complex object'
+  if (attr_type === 'boolean') {
+    return attr_value.toString();
+  } else if (attr_type === 'string') {
+    return attr_value.substring(0, 3);
+  } else if (attr_type === 'number') {
+    return attr_value.toString();
+  } else if (attr_value === null) {
+    return 'N/A';
+  } else {
+    return 'complex object';
   }
 }
 
@@ -372,13 +373,13 @@ export function getMemberInGroup(
 //   }
 // }
 
-export function isAvailableScope(config: IScopeConfigs, entryName: string){
+export function isAvailableScope(config: IScopeConfigs, entryName: string) {
   return entryName in config;
 }
 
-export function isAvailableLegend(config: ILegendConfigs, entryName: string){
+export function isAvailableLegend(config: ILegendConfigs, entryName: string) {
   // Show all legends if no configuration is provided.
-  if (Object.keys(config).length === 0){
+  if (Object.keys(config).length === 0) {
     return true;
   }
   return entryName in config && config[entryName]['is_shown'];
@@ -409,9 +410,7 @@ function findEntryNameMatchDeep(
     return true;
   }
 
-  const entry = config.definitions.find(
-    ent => ent.entryName === entryName
-  );
+  const entry = config.definitions.find(ent => ent.entryName === entryName);
 
   if (!entry) {
     return false;
@@ -448,7 +447,7 @@ export function camelCaseDeep(obj: any): any {
   } else if (typeof obj === 'object') {
     const camelCaseObj: any = {};
     Object.keys(obj).forEach(key => {
-      let camelKey = key.replace(/_\w/g, function(match, offset, string) {
+      let camelKey = key.replace(/_\w/g, (match, offset) => {
         if (offset === 0) {
           return match;
         } else {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { IEntryDefinition, IAttributes, IOntology } from '../lib/interfaces';
+import {IEntryDefinition, IAttributes} from '../lib/interfaces';
 import {
   useTextViewerState,
   useTextViewerDispatch,
@@ -10,21 +10,16 @@ import LegendList from './LegendList';
 
 export interface TextDetailProp {
   attributes: IAttributes;
-  annotationLegends: (IEntryDefinition & { color: string })[];
-  linkLegends: (IEntryDefinition & { color: string })[];
-  ontology: IOntology;
+  annotationLegends: (IEntryDefinition & {color: string})[];
+  linkLegends: (IEntryDefinition & {color: string})[];
 }
 
 export default function TextDetail({
   attributes,
   annotationLegends,
   linkLegends,
-  ontology,
 }: TextDetailProp) {
-  const {
-    selectedLegendIds,
-    selectedLegendAttributeIds,
-  } = useTextViewerState();
+  const {selectedLegendIds, selectedLegendAttributeIds} = useTextViewerState();
 
   const dispatch = useTextViewerDispatch();
 

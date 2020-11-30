@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { createUser, fetchUsers, deleteUser } from '../lib/api';
-import { useHistory } from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
+import {createUser, fetchUsers, deleteUser} from '../lib/api';
+import {useHistory} from 'react-router-dom';
 
 function Users() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [users, setUsers] = useState<any[]>([]);
   const [name, setName] = useState<string>('');
   const [pass, setPass] = useState<string>('');
   const history = useHistory();
 
   useEffect(() => {
-    updateUsers().catch(e => {
+    updateUsers().catch(() => {
       history.push('/login');
     });
   }, [history]);

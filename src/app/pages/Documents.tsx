@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { fetchDocuments, createDocument, deleteDocument } from '../lib/api';
-import { Link, useHistory } from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
+import {fetchDocuments, createDocument, deleteDocument} from '../lib/api';
+import {Link, useHistory} from 'react-router-dom';
 
 function Documents() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [docs, setDocs] = useState<any[]>([]);
   const [name, setName] = useState<string>('');
   const [pack, setPack] = useState<string>('');
@@ -10,7 +11,7 @@ function Documents() {
   const history = useHistory();
 
   useEffect(() => {
-    updateDocs().catch(e => {
+    updateDocs().catch(() => {
       history.push('/login');
     });
   }, [history]);
@@ -22,7 +23,7 @@ function Documents() {
   }
 
   function handleAdd() {
-    let project_id = window.location.pathname.split("/").pop() !;
+    const project_id = window.location.pathname.split('/').pop()!;
     createDocument(name, pack, project_id).then(() => {
       updateDocs();
     });
@@ -35,7 +36,7 @@ function Documents() {
   }
 
   if (!docs.length) {
-    console.log('empty result')
+    console.log('empty result');
     return null;
   }
 

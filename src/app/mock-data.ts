@@ -1,10 +1,11 @@
-import { ISinglePack } from '../nlpviewer';
+import {ISinglePack} from '../nlpviewer';
 
 export const singlePack: ISinglePack = {
-  text: `The Indonesian billionaire James Riady has agreed to pay $ 8.5 million and plead guilty to illegally donating money for Bill Clinton 's 1992 presidential campaign . He admits he was trying to influence American policy on China .`,
+  text:
+    "The Indonesian billionaire James Riady has agreed to pay $ 8.5 million and plead guilty to illegally donating money for Bill Clinton 's 1992 presidential campaign . He admits he was trying to influence American policy on China .",
   annotations: [
     {
-      span: { begin: 0, end: 3 },
+      span: {begin: 0, end: 3},
       id: 'OntonotesOntology.Token.0',
       legendId: 'l1',
       attributes: {
@@ -14,7 +15,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 4, end: 14 },
+      span: {begin: 4, end: 14},
       id: 'OntonotesOntology.Token.1',
       legendId: 'l1',
       attributes: {
@@ -24,7 +25,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 4, end: 14 },
+      span: {begin: 4, end: 14},
       id: 'BaseOntology.EntityMention.0',
       legendId: 'l2',
       attributes: {
@@ -33,7 +34,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 15, end: 26 },
+      span: {begin: 15, end: 26},
       id: 'OntonotesOntology.Token.2',
       legendId: 'l1',
       attributes: {
@@ -43,7 +44,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 27, end: 32 },
+      span: {begin: 27, end: 32},
       id: 'OntonotesOntology.Token.3',
       legendId: 'l1',
       attributes: {
@@ -53,7 +54,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 33, end: 38 },
+      span: {begin: 33, end: 38},
       id: 'OntonotesOntology.Token.4',
       legendId: 'l1',
       attributes: {
@@ -63,7 +64,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 27, end: 38 },
+      span: {begin: 27, end: 38},
       id: 'BaseOntology.EntityMention.1',
       legendId: 'l2',
       attributes: {
@@ -72,7 +73,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 0, end: 38 },
+      span: {begin: 0, end: 38},
       id: 'BaseOntology.PredicateArgument.0',
       legendId: 'l5',
       attributes: {
@@ -80,7 +81,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 0, end: 38 },
+      span: {begin: 0, end: 38},
       id: 'BaseOntology.CoreferenceMention.0',
       legendId: 'l6',
       attributes: {
@@ -88,7 +89,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 39, end: 42 },
+      span: {begin: 39, end: 42},
       id: 'OntonotesOntology.Token.5',
       legendId: 'l1',
       attributes: {
@@ -98,7 +99,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 39, end: 42 },
+      span: {begin: 39, end: 42},
       id: 'OntonotesOntology.PredicateMention.0',
       legendId: 'l4',
       attributes: {
@@ -110,7 +111,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 43, end: 49 },
+      span: {begin: 43, end: 49},
       id: 'OntonotesOntology.Token.6',
       legendId: 'l1',
       attributes: {
@@ -120,7 +121,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 43, end: 49 },
+      span: {begin: 43, end: 49},
       id: 'OntonotesOntology.PredicateMention.1',
       legendId: 'l4',
       attributes: {
@@ -132,7 +133,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 50, end: 52 },
+      span: {begin: 50, end: 52},
       id: 'OntonotesOntology.Token.7',
       legendId: 'l1',
       attributes: {
@@ -142,7 +143,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 53, end: 56 },
+      span: {begin: 53, end: 56},
       id: 'OntonotesOntology.Token.8',
       legendId: 'l1',
       attributes: {
@@ -152,7 +153,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 53, end: 56 },
+      span: {begin: 53, end: 56},
       id: 'OntonotesOntology.PredicateMention.2',
       legendId: 'l4',
       attributes: {
@@ -164,7 +165,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 57, end: 58 },
+      span: {begin: 57, end: 58},
       id: 'OntonotesOntology.Token.9',
       legendId: 'l1',
       attributes: {
@@ -174,7 +175,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 59, end: 62 },
+      span: {begin: 59, end: 62},
       id: 'OntonotesOntology.Token.10',
       legendId: 'l1',
       attributes: {
@@ -184,7 +185,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 63, end: 70 },
+      span: {begin: 63, end: 70},
       id: 'OntonotesOntology.Token.11',
       legendId: 'l1',
       attributes: {
@@ -194,7 +195,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 57, end: 70 },
+      span: {begin: 57, end: 70},
       id: 'BaseOntology.EntityMention.2',
       legendId: 'l2',
       attributes: {
@@ -203,7 +204,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 57, end: 70 },
+      span: {begin: 57, end: 70},
       id: 'BaseOntology.PredicateArgument.1',
       legendId: 'l5',
       attributes: {
@@ -211,7 +212,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 71, end: 74 },
+      span: {begin: 71, end: 74},
       id: 'OntonotesOntology.Token.12',
       legendId: 'l1',
       attributes: {
@@ -221,7 +222,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 75, end: 80 },
+      span: {begin: 75, end: 80},
       id: 'OntonotesOntology.Token.13',
       legendId: 'l1',
       attributes: {
@@ -231,7 +232,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 75, end: 80 },
+      span: {begin: 75, end: 80},
       id: 'OntonotesOntology.PredicateMention.3',
       legendId: 'l4',
       attributes: {
@@ -247,7 +248,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 81, end: 87 },
+      span: {begin: 81, end: 87},
       id: 'OntonotesOntology.Token.14',
       legendId: 'l1',
       attributes: {
@@ -257,7 +258,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 81, end: 87 },
+      span: {begin: 81, end: 87},
       id: 'BaseOntology.PredicateArgument.2',
       legendId: 'l5',
       attributes: {
@@ -265,7 +266,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 88, end: 90 },
+      span: {begin: 88, end: 90},
       id: 'OntonotesOntology.Token.15',
       legendId: 'l1',
       attributes: {
@@ -275,7 +276,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 91, end: 100 },
+      span: {begin: 91, end: 100},
       id: 'OntonotesOntology.Token.16',
       legendId: 'l1',
       attributes: {
@@ -285,7 +286,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 91, end: 100 },
+      span: {begin: 91, end: 100},
       id: 'BaseOntology.PredicateArgument.3',
       legendId: 'l5',
       attributes: {
@@ -293,7 +294,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 101, end: 109 },
+      span: {begin: 101, end: 109},
       id: 'OntonotesOntology.Token.17',
       legendId: 'l1',
       attributes: {
@@ -303,7 +304,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 101, end: 109 },
+      span: {begin: 101, end: 109},
       id: 'OntonotesOntology.PredicateMention.4',
       legendId: 'l4',
       attributes: {
@@ -319,7 +320,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 110, end: 115 },
+      span: {begin: 110, end: 115},
       id: 'OntonotesOntology.Token.18',
       legendId: 'l1',
       attributes: {
@@ -329,7 +330,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 110, end: 115 },
+      span: {begin: 110, end: 115},
       id: 'OntonotesOntology.PredicateMention.5',
       legendId: 'l4',
       attributes: {
@@ -341,7 +342,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 110, end: 115 },
+      span: {begin: 110, end: 115},
       id: 'BaseOntology.PredicateArgument.4',
       legendId: 'l5',
       attributes: {
@@ -349,7 +350,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 116, end: 119 },
+      span: {begin: 116, end: 119},
       id: 'OntonotesOntology.Token.19',
       legendId: 'l1',
       attributes: {
@@ -359,7 +360,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 120, end: 124 },
+      span: {begin: 120, end: 124},
       id: 'OntonotesOntology.Token.20',
       legendId: 'l1',
       attributes: {
@@ -369,7 +370,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 125, end: 132 },
+      span: {begin: 125, end: 132},
       id: 'OntonotesOntology.Token.21',
       legendId: 'l1',
       attributes: {
@@ -379,7 +380,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 133, end: 135 },
+      span: {begin: 133, end: 135},
       id: 'OntonotesOntology.Token.22',
       legendId: 'l1',
       attributes: {
@@ -389,7 +390,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 120, end: 135 },
+      span: {begin: 120, end: 135},
       id: 'BaseOntology.EntityMention.3',
       legendId: 'l2',
       attributes: {
@@ -398,7 +399,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 136, end: 140 },
+      span: {begin: 136, end: 140},
       id: 'OntonotesOntology.Token.23',
       legendId: 'l1',
       attributes: {
@@ -408,7 +409,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 136, end: 140 },
+      span: {begin: 136, end: 140},
       id: 'BaseOntology.EntityMention.4',
       legendId: 'l2',
       attributes: {
@@ -417,7 +418,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 141, end: 153 },
+      span: {begin: 141, end: 153},
       id: 'OntonotesOntology.Token.24',
       legendId: 'l1',
       attributes: {
@@ -427,7 +428,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 154, end: 162 },
+      span: {begin: 154, end: 162},
       id: 'OntonotesOntology.Token.25',
       legendId: 'l1',
       attributes: {
@@ -437,7 +438,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 154, end: 162 },
+      span: {begin: 154, end: 162},
       id: 'OntonotesOntology.PredicateMention.6',
       legendId: 'l4',
       attributes: {
@@ -449,7 +450,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 50, end: 162 },
+      span: {begin: 50, end: 162},
       id: 'BaseOntology.PredicateArgument.5',
       legendId: 'l5',
       attributes: {
@@ -457,7 +458,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 88, end: 162 },
+      span: {begin: 88, end: 162},
       id: 'BaseOntology.PredicateArgument.6',
       legendId: 'l5',
       attributes: {
@@ -465,7 +466,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 116, end: 162 },
+      span: {begin: 116, end: 162},
       id: 'BaseOntology.PredicateArgument.7',
       legendId: 'l5',
       attributes: {
@@ -473,7 +474,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 163, end: 164 },
+      span: {begin: 163, end: 164},
       id: 'OntonotesOntology.Token.26',
       legendId: 'l1',
       attributes: {
@@ -483,7 +484,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 0, end: 164 },
+      span: {begin: 0, end: 164},
       id: 'OntonotesOntology.Sentence.0',
       legendId: 'l3',
       attributes: {
@@ -493,7 +494,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 165, end: 167 },
+      span: {begin: 165, end: 167},
       id: 'OntonotesOntology.Token.27',
       legendId: 'l1',
       attributes: {
@@ -503,7 +504,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 165, end: 167 },
+      span: {begin: 165, end: 167},
       id: 'BaseOntology.PredicateArgument.8',
       legendId: 'l5',
       attributes: {
@@ -511,7 +512,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 165, end: 167 },
+      span: {begin: 165, end: 167},
       id: 'BaseOntology.CoreferenceMention.1',
       legendId: 'l6',
       attributes: {
@@ -519,7 +520,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 168, end: 174 },
+      span: {begin: 168, end: 174},
       id: 'OntonotesOntology.Token.28',
       legendId: 'l1',
       attributes: {
@@ -529,7 +530,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 168, end: 174 },
+      span: {begin: 168, end: 174},
       id: 'OntonotesOntology.PredicateMention.7',
       legendId: 'l4',
       attributes: {
@@ -544,7 +545,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 175, end: 177 },
+      span: {begin: 175, end: 177},
       id: 'OntonotesOntology.Token.29',
       legendId: 'l1',
       attributes: {
@@ -554,7 +555,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 175, end: 177 },
+      span: {begin: 175, end: 177},
       id: 'BaseOntology.PredicateArgument.9',
       legendId: 'l5',
       attributes: {
@@ -562,7 +563,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 175, end: 177 },
+      span: {begin: 175, end: 177},
       id: 'BaseOntology.CoreferenceMention.2',
       legendId: 'l6',
       attributes: {
@@ -570,7 +571,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 178, end: 181 },
+      span: {begin: 178, end: 181},
       id: 'OntonotesOntology.Token.30',
       legendId: 'l1',
       attributes: {
@@ -580,7 +581,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 178, end: 181 },
+      span: {begin: 178, end: 181},
       id: 'OntonotesOntology.PredicateMention.8',
       legendId: 'l4',
       attributes: {
@@ -592,7 +593,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 182, end: 188 },
+      span: {begin: 182, end: 188},
       id: 'OntonotesOntology.Token.31',
       legendId: 'l1',
       attributes: {
@@ -602,7 +603,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 182, end: 188 },
+      span: {begin: 182, end: 188},
       id: 'OntonotesOntology.PredicateMention.9',
       legendId: 'l4',
       attributes: {
@@ -617,7 +618,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 189, end: 191 },
+      span: {begin: 189, end: 191},
       id: 'OntonotesOntology.Token.32',
       legendId: 'l1',
       attributes: {
@@ -627,7 +628,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 192, end: 201 },
+      span: {begin: 192, end: 201},
       id: 'OntonotesOntology.Token.33',
       legendId: 'l1',
       attributes: {
@@ -637,7 +638,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 192, end: 201 },
+      span: {begin: 192, end: 201},
       id: 'OntonotesOntology.PredicateMention.10',
       legendId: 'l4',
       attributes: {
@@ -652,7 +653,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 202, end: 210 },
+      span: {begin: 202, end: 210},
       id: 'OntonotesOntology.Token.34',
       legendId: 'l1',
       attributes: {
@@ -662,7 +663,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 202, end: 210 },
+      span: {begin: 202, end: 210},
       id: 'BaseOntology.EntityMention.5',
       legendId: 'l2',
       attributes: {
@@ -671,7 +672,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 211, end: 217 },
+      span: {begin: 211, end: 217},
       id: 'OntonotesOntology.Token.35',
       legendId: 'l1',
       attributes: {
@@ -681,7 +682,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 211, end: 217 },
+      span: {begin: 211, end: 217},
       id: 'OntonotesOntology.PredicateMention.11',
       legendId: 'l4',
       attributes: {
@@ -693,7 +694,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 218, end: 220 },
+      span: {begin: 218, end: 220},
       id: 'OntonotesOntology.Token.36',
       legendId: 'l1',
       attributes: {
@@ -703,7 +704,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 221, end: 226 },
+      span: {begin: 221, end: 226},
       id: 'OntonotesOntology.Token.37',
       legendId: 'l1',
       attributes: {
@@ -713,7 +714,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 221, end: 226 },
+      span: {begin: 221, end: 226},
       id: 'BaseOntology.EntityMention.6',
       legendId: 'l2',
       attributes: {
@@ -722,7 +723,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 175, end: 226 },
+      span: {begin: 175, end: 226},
       id: 'BaseOntology.PredicateArgument.10',
       legendId: 'l5',
       attributes: {
@@ -730,7 +731,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 189, end: 226 },
+      span: {begin: 189, end: 226},
       id: 'BaseOntology.PredicateArgument.11',
       legendId: 'l5',
       attributes: {
@@ -738,7 +739,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 202, end: 226 },
+      span: {begin: 202, end: 226},
       id: 'BaseOntology.PredicateArgument.12',
       legendId: 'l5',
       attributes: {
@@ -746,7 +747,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 227, end: 228 },
+      span: {begin: 227, end: 228},
       id: 'OntonotesOntology.Token.38',
       legendId: 'l1',
       attributes: {
@@ -756,7 +757,7 @@ export const singlePack: ISinglePack = {
       },
     },
     {
-      span: { begin: 165, end: 228 },
+      span: {begin: 165, end: 228},
       id: 'OntonotesOntology.Sentence.1',
       legendId: 'l3',
       attributes: {
@@ -768,7 +769,7 @@ export const singlePack: ISinglePack = {
   ],
   links: [],
   groups: [],
-  attributes: { docid: 'bn/abc/00/abc_0059' },
+  attributes: {docid: 'bn/abc/00/abc_0059'},
   // legends: {
   //   annotations: [
   //     { id: 'l1', name: 'Token' },

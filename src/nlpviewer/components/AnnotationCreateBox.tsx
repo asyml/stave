@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, {useEffect, useState} from 'react';
 import Select from 'react-select';
 import {
   useTextViewerDispatch,
@@ -11,9 +12,9 @@ import {
   ISelectOption,
   IEntryAttributeDefinition,
 } from '../lib/interfaces';
-import { shortId, isEntryAnnotation } from '../lib/utils';
-import { OnEventType } from './TextViewer';
-import { restorePos } from '../lib/text-spacer';
+import {shortId, isEntryAnnotation} from '../lib/utils';
+import {OnEventType} from './TextViewer';
+import {restorePos} from '../lib/text-spacer';
 
 export interface AnnotationCreateBoxProp {
   cursorBegin: number | null;
@@ -33,7 +34,7 @@ export default function AnnotationCreateBox({
   onEvent,
 }: AnnotationCreateBoxProp) {
   const dispatch = useTextViewerDispatch();
-  const { annoEditSelectedLegendId } = useTextViewerState();
+  const {annoEditSelectedLegendId} = useTextViewerState();
   const [slideInAnimated, setSlideInAnimated] = useState(false);
   const [flashAnimated, setFlashAnimated] = useState(false);
   const [enteredAttribute, setEnteredAttribute] = useState<any>({});
@@ -98,10 +99,7 @@ export default function AnnotationCreateBox({
       <div className={style.legend_attributes}>
         {(selectedLegendDefinition.attributes || []).map(attr => {
           return (
-            <div
-              className={style.legend_attribute_item}
-              key={attr.name}
-            >
+            <div className={style.legend_attribute_item} key={attr.name}>
               <div className={style.legend_attribute_item_title}>
                 {attr.name}
               </div>
@@ -219,7 +217,7 @@ export default function AnnotationCreateBox({
         <button
           onClick={() => {
             if (onEvent) {
-              let state = getState();
+              const state = getState();
 
               if (
                 state.annoEditCursorBegin === null ||

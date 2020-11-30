@@ -1,6 +1,6 @@
-import React, { useState, useEffect, memo } from 'react';
-import { IAnnotationPosition } from '../lib/interfaces';
-import { useTextViewerDispatch } from '../contexts/text-viewer.context';
+import React, {useState, useEffect, memo} from 'react';
+import {IAnnotationPosition} from '../lib/interfaces';
+import {useTextViewerDispatch} from '../contexts/text-viewer.context';
 import LineWithArrow from './LineWithArrow';
 
 export interface LinkEditConnectorProp {
@@ -26,12 +26,12 @@ function LinkEditConnector({
     function updatePos(e: MouseEvent) {
       moved = true;
       requestAnimationFrame(() => {
-        setPos({ x: e.clientX, y: e.clientY });
+        setPos({x: e.clientX, y: e.clientY});
       });
     }
 
     function endMove() {
-      dispatch({ type: 'stop-create-link-dragging', hasMoved: moved });
+      dispatch({type: 'stop-create-link-dragging', hasMoved: moved});
     }
 
     window.addEventListener('mousemove', updatePos);
@@ -46,8 +46,8 @@ function LinkEditConnector({
   const isMoved = pos.x !== 0 || pos.y !== 0;
   if (!isMoved) return null;
 
-  let x = position.rects[0].x + position.rects[0].width;
-  let y = position.rects[0].y;
+  const x = position.rects[0].x + position.rects[0].width;
+  const y = position.rects[0].y;
 
   const fromPos = {
     x,
