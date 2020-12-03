@@ -4,35 +4,90 @@ from django.http import HttpResponse, JsonResponse
 from django.forms import model_to_dict
 import uuid
 import json
+from django.contrib.auth.decorators import permission_required
+from guardian.decorators import permission_required_or_403
 from ..models import Document, User, Project
 from ..lib.require_login import require_login
-
+from ..lib.utils import fetch_doc_check_perm, check_perm_project
 
 @require_login
+@permission_required('nlpviewer_backend.view_document', raise_exception=True)
 def listAll(request):
+    """Lists all documents from the database.
+    
+    Retrieves all documents from the database
+    The function is accessible for user with 'view_document' permission on documents
+
+    Args:
+        None
+
+    Returns:
+        A json response of the list of the documents or forbidden.
+        example:
+
+        [
+         {"id": 42, "name": "project1-doc1-example", "project_id": 5, "textPack": "...", ...},
+         {"id": 43, "name": "project2-doc1-example", "project_id": 9, "textPack": "...", ...},
+         ...
+        ]
+    """
+    print("list all doc")
     documents = Document.objects.all().values()
     return JsonResponse(list(documents), safe=False)
 
 
 @require_login
 def create(request):
+    """Creates a new document.
+    
+    Creates a new document.
+    The function is accessible for users with 'new_project' permission of the project.
+
+    Args:
+        None
+
+    Returns:
+        A json response of the id of the newly created document or forbidden.
+        example:
+
+            {"id": 4}
+    """
+
     received_json_data = json.loads(request.body)
+    project_id = received_json_data.get('project_id')
+    project = Project.objects.get(id=project_id)
+    check_perm_project(project, request.user, 'nlpviewer_backend.new_project')
 
     doc = Document(
         name=received_json_data.get('name'),
         textPack=received_json_data.get('textPack'),
         project = Project.objects.get(
-            pk=received_json_data.get('project_id')
+            pk=project_id
         )
     )
     doc.save()
 
     return JsonResponse({"id": doc.id}, safe=False)
 
-
 @require_login
 def edit(request, document_id):
-    doc = Document.objects.get(pk=document_id)
+    """Edits a document, queried by id.
+    
+    Edits a document, queried by id.
+    The function is accessible for users with 'edit_text' permission of the project
+
+    Args:
+        document_id:
+            The id of the document.
+
+    Returns:
+        A json response of the modified document or forbidden or not found.
+        example:
+
+            {"id": 42, "name": "project1-doc1-example", "project_id": 5, "textPack": "...", ...}    
+    """
+    doc = fetch_doc_check_perm(document_id, request.user, "nlpviewer_backend.edit_text")
+    
     received_json_data = json.loads(request.body)
 
     doc.name = received_json_data.get('name')
@@ -42,7 +97,7 @@ def edit(request, document_id):
     docJson = model_to_dict(doc)
     return JsonResponse(docJson, safe=False)
 
-# need rewrite 
+# TODO - need rewrite and not called
 @require_login
 def edit_ontology(request, document_id):
     try:
@@ -65,14 +120,44 @@ def edit_ontology(request, document_id):
 
 @require_login
 def query(request, document_id):
+    """Retrieves a document by id.
+    
+    Retrieves a document by id.
+    The function is accessible for users with 'read_project' permission of the project and the owner of the project.
+
+    Args:
+        document_id:
+            The id of the document.
+
+    Returns:
+        A json response of the modified document or forbidden or not found.
+        example:
+
+            {"id": 42, "name": "project1-doc1-example", "project_id": 5, "textPack": "...", ...}    
+    """
+    doc = fetch_doc_check_perm(document_id, request.user, "nlpviewer_backend.read_project")
+
     docJson = model_to_dict(
-        Document.objects.get(pk=document_id))
+        doc)
     return JsonResponse(docJson, safe=False)
 
 
 @require_login
 def delete(request, document_id):
-    doc = Document.objects.get(pk=document_id)
+    """Deletes a document by id.
+    
+    Deletes a document by id.
+    The function is accessible for users with 'remove_project' permission of the project and the owner of the project.
+
+    Args:
+        document_id:
+            The id of the document.
+
+    Returns:
+        ok if succeeded, otherwise forbidden or not found    
+    """
+    
+    doc = fetch_doc_check_perm(document_id, request.user, "nlpviewer_backend.remove_project")
     doc.delete()
 
     return HttpResponse('ok')
@@ -80,8 +165,20 @@ def delete(request, document_id):
 
 @require_login
 def edit_text(request, document_id):
+    """Edits the text pack of a document, queried by id.
+    
+    Edits the text pack of a document, queried by id.
+    The function is accessible for users with 'edit_text' permission of the project and the owner of the project.
+    Args:
+        document_id:
+            The id of the document.
+
+    Returns:
+        ok if succeeded, otherwise forbidden or not found 
+    """
+    doc = fetch_doc_check_perm(document_id, request.user, "nlpviewer_backend.edit_text")
+
     data = json.loads(request.body)
-    doc = Document.objects.get(pk=document_id)
     
     docJson = model_to_dict(doc)
     textPackJson = json.loads(docJson['textPack'])
@@ -94,7 +191,19 @@ def edit_text(request, document_id):
 
 @require_login
 def new_annotation(request, document_id):
+    """Adds a annotation, queried by document id.
+    
+    Edits the text pack of a document, queried by id.
+    The function is accessible for users with 'edit_annotation' permission of the project and the owner of the project.
+    Args:
+        document_id:
+            The id of the document.
 
+    Returns:
+        id of the document in json if succeeded, otherwise forbidden or not found 
+        example:
+            {"id": 1}
+    """
     # get pack from db
     # generate a annotation id
     # add id to received annotation data
@@ -118,7 +227,9 @@ def new_annotation(request, document_id):
     #         "ner_type": "DATE"
     #     }
     # }
-    doc = Document.objects.get(pk=document_id)
+
+    doc = fetch_doc_check_perm(document_id, request.user, "nlpviewer_backend.edit_annotation")
+    
     docJson = model_to_dict(doc)
     textPackJson = json.loads(docJson['textPack'])
 
@@ -135,7 +246,6 @@ def new_annotation(request, document_id):
 
     return JsonResponse({"id": annotation_id}, safe=False)
 
-
 @require_login
 def edit_annotation(request, document_id, annotation_id):
     received_json_data = json.loads(request.body)
@@ -147,8 +257,23 @@ def edit_annotation(request, document_id, annotation_id):
     # save to db
     # return OK
 
+    """Edits an annotation, queried by document id and annotation id.
+    
+    Edits an annotation, queried by document id and annotation id.
+    The function is accessible for users with 'edit_annotation' permission of the project and the owner of the project.
+
+    Args:
+        document_id:
+            The id of the document.
+        annotation_id:
+            The id of the annotation.
+
+    Returns:
+       OK if succeeded, otherwise forbidden or not found 
+    """
+    doc = fetch_doc_check_perm(document_id, request.user, "nlpviewer_backend.edit_annotation")
+
     received_json_data = json.loads(request.body)
-    doc = Document.objects.get(pk=document_id)
     annotation = received_json_data.get('data')
 
     docJson = model_to_dict(doc)
@@ -162,18 +287,32 @@ def edit_annotation(request, document_id, annotation_id):
     doc.save()
 
     return HttpResponse('OK')
-    # return JsonResponse(model_to_dict(doc), safe=False)
-
 
 @require_login
 def delete_annotation(request, document_id, annotation_id):
+    """Deletes an annotation, queried by document id and annotation id.
+    
+    Deletes an annotation, queried by document id and annotation id.
+    The function is accessible for users with 'edit_annotation' permission of the project and the owner of the project.
+
+    Args:
+        document_id:
+            The id of the document.
+        annotation_id:
+            The id of the annotation.
+
+    Returns:
+       OK if succeeded, otherwise forbidden or not found 
+    """
 
     # get pack from db
     # remove annotation with id from pack
     # save to db
     # return OK
 
-    doc = Document.objects.get(pk=document_id)
+    # if doc doen't exist
+    doc = fetch_doc_check_perm(document_id, request.user, "nlpviewer_backend.edit_annotation")
+
     docJson = model_to_dict(doc)
     textPackJson = json.loads(docJson['textPack'])
 
@@ -192,6 +331,21 @@ def delete_annotation(request, document_id, annotation_id):
 
 @require_login
 def new_link(request, document_id):
+    """Adds a link, query by document id.
+    
+    Adds a link, query by document id.
+    The function is accessible for users with 'edit_annotation' permission of the project and the owner of the project.
+
+    Args:
+        document_id:
+            The id of the document.
+
+    Returns:
+       id of the new annotation if succeeded, otherwise forbidden or not found.
+       example:
+
+        {"id": 1}
+    """
 
     # get pack from db
     # generate a link id
@@ -211,8 +365,9 @@ def new_link(request, document_id):
     #     }
     #   }
 
+    doc = fetch_doc_check_perm(document_id, request.user, "nlpviewer_backend.edit_annotation")
+
     received_json_data = json.loads(request.body)
-    doc = Document.objects.get(pk=document_id)
 
     link_id = str(uuid.uuid1())
     link = received_json_data.get('data')
@@ -229,8 +384,23 @@ def new_link(request, document_id):
 
 @require_login
 def edit_link(request, document_id, link_id):
+    """Edits a link, queried by document id and link id.
+    
+    Edits a link, queried by document id and link id.
+    The function is accessible for users with 'edit_annotation' permission of the project and the owner of the project.
+
+    Args:
+        document_id:
+            The id of the document.
+        link_id:
+            The id of the link.
+
+    Returns:
+       OK if succeeded, otherwise forbidden or not found.
+    """
+    doc = fetch_doc_check_perm(document_id, request.user, "nlpviewer_backend.edit_annotation")
+
     received_json_data = json.loads(request.body)
-    doc = Document.objects.get(pk=document_id)
     link = received_json_data.get('data')
 
     docJson = model_to_dict(doc)
@@ -248,8 +418,22 @@ def edit_link(request, document_id, link_id):
 
 @require_login
 def delete_link(request, document_id, link_id):
+    """Deletes a link, queried by document id and link id.
+    
+    Deletes a link, queried by document id and link id.
+    The function is accessible for users with 'edit_annotation' permission of the project and the owner of the project.
 
-    doc = Document.objects.get(pk=document_id)
+    Args:
+        document_id:
+            The id of the document.
+        link_id:
+            The id of the link.
+
+    Returns:
+       OK if succeeded, otherwise forbidden or not found.
+    """
+    doc = fetch_doc_check_perm(document_id, request.user, "nlpviewer_backend.edit_annotation")
+
     docJson = model_to_dict(doc)
     textPackJson = json.loads(docJson['textPack'])
 
@@ -266,37 +450,75 @@ def delete_link(request, document_id, link_id):
 
 @require_login
 def get_doc_ontology_pack(request, document_id):
+    """Gets document pack + ontology by document id
     
-    doc = Document.objects.get(pk=document_id)
-    project = doc.project
+    Deletes a link, queried by document id and link id.
+    The function is accessible for users with 'read_project' permission of the project and the owner of the project.
+
+    Args:
+        document_id:
+            The id of the document.
+        link_id:
+            The id of the link.
+
+    Returns:
+       json of the doc if succeeded, otherwise forbidden or not found.
+
+       example:
+
+            {"id":1 , 'textPack': "sample", "ontology": "sample"}
+    """
+    doc = fetch_doc_check_perm(document_id, request.user, "nlpviewer_backend.read_project")
 
     docJson = {
         'id': document_id,
         'textPack': doc.textPack,
-        'ontology': project.ontology
+        'ontology': doc.project.ontology
     }
 
     return JsonResponse(docJson, safe=False)
 
 @require_login
 def get_doc_project_config(request, document_id):
-    
+
     doc = Document.objects.get(pk=document_id)
     project = doc.project
 
+    cfg = project.config
+    if cfg == '':
+        cfg = None
+
     docJson = {
         'id': document_id,
-        'config': project.config
+        'config': cfg
     }
+    print(docJson)
 
     return JsonResponse(docJson, safe=False)
 
 @require_login
 def get_next_document_id(request, document_id):
+    """Gets the id of the next document, by the current document's id
+    
+    Gets the id of the next document, by the current document's id
+    The function is accessible for users with 'read_project' permission of the project and the owner of the project.
 
-    doc = Document.objects.get(pk=document_id) 
-    project = doc.project
-    docs = project.documents
+    Args:
+        document_id:
+            The id of the document.
+
+    Returns:
+       If there is no next document, returns the current document id, else returns the next id.
+       The return value is converted to string.
+       Or forbidden or not found.
+
+       example:
+
+            {"id": "1"}
+    """
+    doc = fetch_doc_check_perm(document_id, request.user, "nlpviewer_backend.read_project")
+    docs = doc.project.documents
+
     next_doc = docs.filter(id__gt=document_id).first()
     if next_doc:
         next_id = next_doc.id
@@ -306,10 +528,27 @@ def get_next_document_id(request, document_id):
 
 @require_login
 def get_prev_document_id(request, document_id):
+    """Gets the id of the previous document, by the current document's id
+    
+    Gets the id of the previous document, by the current document's id
+    The function is accessible for users with 'read_project' permission of the project and the owner of the project.
 
-    doc = Document.objects.get(pk=document_id) 
-    project = doc.project
-    docs = project.documents
+    Args:
+        document_id:
+            The id of the document.
+
+    Returns:
+       If there is no previous document, returns the current document id, else returns the previous id.
+       The return value is converted to string.
+       Or forbidden or not found.
+
+       example:
+
+            {"id": "1"}
+    """
+    doc = fetch_doc_check_perm(document_id, request.user, "nlpviewer_backend.read_project")
+    docs = doc.project.documents
+    
     prev_doc = docs.filter(id__lt=document_id).last()
     if prev_doc:
         prev_id = prev_doc.id
