@@ -31,7 +31,6 @@ def listAll(request):
          ...
         ]
     """
-    print("list all doc")
     documents = Document.objects.all().values()
     return JsonResponse(list(documents), safe=False)
 
@@ -492,7 +491,6 @@ def get_doc_project_config(request, document_id):
         'id': document_id,
         'config': cfg
     }
-    print(docJson)
 
     return JsonResponse(docJson, safe=False)
 

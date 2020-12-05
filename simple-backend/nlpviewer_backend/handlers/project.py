@@ -22,7 +22,7 @@ def listAll(request):
     projects = Project.objects.all().values()
     return JsonResponse(list(projects), safe=False)
 
-# TODO - may be separated into 3 functions in the future.
+# TODO - how to fetch projects may be changed in the future
 @require_login
 def list_user_projects(request):
     """
@@ -33,7 +33,6 @@ def list_user_projects(request):
     projects_user = list(request.user.projects.all().values('id', 'name'))
 
     projects_list = projects_user + projects_read
-    print(projects_list)
 
     return JsonResponse(projects_list, safe=False)
 
