@@ -115,7 +115,8 @@ function DialogueBox(props: PluginComponentProp) {
   console.log(props.appState.textPack);
 
   // Call API to load the NLP model of name "model_name".
-  const model_name = 'utterance_searcher';
+  //  TODO: currently, we hard coded `eliza` as the example.
+  const model_name = 'eliza';
   useEffect(() => {
     try {
       loadNlpModel(model_name).then(response => {
