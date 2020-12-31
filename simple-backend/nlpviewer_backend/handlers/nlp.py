@@ -130,43 +130,7 @@ def load_model(request, model_name: str):
       response['load_success'] = False
   else:
     logging.error(f"Cannot find model {model_name}")
-    response =  Http404(f"Cannot find model {model_name}")  
-
-  # if model_name == 'content_rewriter':
-  #   if model_name in nlp_models:
-  #     response = HttpResponse('OK')
-  #     response['load_success'] = True
-  #   else:
-  #     m = __load_content_rewriter()
-  #     if m:
-  #       nlp_models[model_name]
-  #       response = HttpResponse('OK')
-  #       response['load_success'] = True
-  #     else:
-  #       response = HttpResponse('OK')
-  #       response['load_success'] = False
-  # elif (model_name == 'utterance_searcher'):
-  #   if model_name in nlp_models:
-  #     response = HttpResponse('OK')
-  #     response['load_success'] = True
-  #   else:
-  #     m = __load_utterance_searcher()
-  #     if m:
-  #       nlp_models[model_name] = m
-  #       response = HttpResponse('OK')
-  #       response['load_success'] = True
-  #     else:
-  #       response = HttpResponse('OK')
-  #       response['load_success'] = False
-  # elif (model_name == 'eliza'):
-  #   if model_name in nlp_models:
-  #     response = HttpResponse('OK')
-  #     response['load_success'] = True
-  #   else:
-  #     m = __load_eliza
-  # else:
-  #   response =  Http404(f"Cannot find model {model_name}")
-  
+    response =  Http404(f"Cannot find model {model_name}")    
   return response
 
 
