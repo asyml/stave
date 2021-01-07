@@ -23,6 +23,7 @@ yarn-debug.log*
 yarn-error.log*
 
 .vscode/settings.json
+.vscode/
 *.pyc
 venv
 simple-backend/db.sqlite3
