@@ -6,7 +6,7 @@ An example database is provided for users to get familiar with Stave. [Go to exa
 
 This chapter is to familiarize users with the permission system in Stave.
 
-With permission system, the user will be able to assign permission **per project**, **per project**. For example, user Joe could be allowed to edit project A but not project B. 
+With permission system, the user will be able to assign permission **per project**, **per user**. For example, user Joe could be allowed to edit project A but not project B. 
 
 
 
