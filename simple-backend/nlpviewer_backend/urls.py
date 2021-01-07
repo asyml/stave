@@ -50,7 +50,8 @@ urlpatterns = [
     path('next_doc/<int:document_id>', document.get_next_document_id),
     path('prev_doc/<int:document_id>', document.get_prev_document_id),
 
-    path('projects', project.listAll),
+    path('projects/all', project.listAll),
+    path('projects', project.list_user_projects),
     path('projects/new', project.create),
     path('projects/<int:project_id>', project.query),
     path('projects/<int:project_id>/docs', project.query_docs),
