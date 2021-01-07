@@ -39912,563 +39912,1113 @@ INSERT INTO "nlpviewer_backend_document" ("id","name","textPack","project_id") V
     }
   }
 }',5),
- (44,'project2-doc1-example','{"py/object": "forte.data.data_pack.DataPack", "py/state": {"_text": "During the annual Boston Marathon on April 15, 2013, two homemade pressure cooker bombs detonated 14 seconds and 210 yards (190 m) apart at 2:49 p.m., near the finish line of the race, killing three people and injuring several hundred others, including 16 who lost limbs.\n\nThree days later, the Federal Bureau of Investigation (FBI) released images of two suspects, who were later identified as Chechen Kyrgyzstani-American brothers Dzhokhar Tsarnaev and Tamerlan Tsarnaev. They killed an MIT policeman, kidnapped a man in his car, and had a shootout with the police in nearby Watertown, during which two officers were severely injured, one of whom died a year later. Tamerlan was shot several times, and his brother ran him over while escaping in the stolen car; Tamerlan died soon after.\n\nAn unprecedented manhunt for Dzhokhar ensued on April 19, with thousands of law enforcement officers searching a 20-block area of Watertown; residents of Watertown and surrounding communities were asked to stay indoors, and the transportation system and most businesses and public places closed. Around 6:00 p.m., a Watertown resident discovered Dzhokhar hiding in a boat in his backyard. He was shot and wounded by police before being taken into custody.\n\nDuring questioning, Dzhokhar said that he and his brother were motivated by extremist Islamist beliefs and the wars in Iraq and Afghanistan, that they were self-radicalized and unconnected to any outside terrorist groups, and that he was following his brother''s lead. He said they learned to build explosive devices from an online magazine of the al-Qaeda affiliate in Yemen. He also said they had intended to travel to New York City to bomb Times Square. On April 8, 2015, he was convicted of 30 charges, including use of a weapon of mass destruction and malicious destruction of property resulting in death. Two months later, he was sentenced to death.", "annotations": [{"py/object": "edu.cmu.EventMention", "py/state": {"_embedding": [], "_span": {"begin": 88, "end": 97, "py/object": "forte.data.span.Span"}, "_tid": 0, "event_type": "bombing", "is_valid": null}}, {"py/object": "edu.cmu.EventMention", "py/state": {"_span": {"begin": 185, "end": 192, "py/object": "forte.data.base.Span"}, "is_valid": "True", "_tid": "b5c2a8e8-8048-11ea-8ece-820f078f24c0"}}], "creation_records": {"readers.event_reader.TwoDocumentEventReader": {"py/set": [0]}}, "field_records": {"readers.event_reader.TwoDocumentEventReader": {"py/set": [{"py/tuple": [0, "_event_type"]}]}}, "generics": [], "groups": [], "links": [], "meta": {"py/object": "forte.data.data_pack.Meta", "py/state": {"_pack_id": 1, "doc_id": "00_Abstract", "language": "eng", "span_unit": "character"}}, "orig_text_len": 1902, "processed_original_spans": [], "replace_back_operations": [], "serialization": {"next_id": 3}}}',7);
+ (44,'project2-doc1-example','{"py/object": "forte.data.data_pack.DataPack", "py/state": {"_text": "During the annual Boston Marathon on April 15, 2013, two homemade pressure cooker bombs detonated 14 seconds and 210 yards (190 m) apart at 2:49 p.m., near the finish line of the race, killing three people and injuring several hundred others, including 16 who lost limbs.\n\nThree days later, the Federal Bureau of Investigation (FBI) released images of two suspects, who were later identified as Chechen Kyrgyzstani-American brothers Dzhokhar Tsarnaev and Tamerlan Tsarnaev. They killed an MIT policeman, kidnapped a man in his car, and had a shootout with the police in nearby Watertown, during which two officers were severely injured, one of whom died a year later. Tamerlan was shot several times, and his brother ran him over while escaping in the stolen car; Tamerlan died soon after.\n\nAn unprecedented manhunt for Dzhokhar ensued on April 19, with thousands of law enforcement officers searching a 20-block area of Watertown; residents of Watertown and surrounding communities were asked to stay indoors, and the transportation system and most businesses and public places closed. Around 6:00 p.m., a Watertown resident discovered Dzhokhar hiding in a boat in his backyard. He was shot and wounded by police before being taken into custody.\n\nDuring questioning, Dzhokhar said that he and his brother were motivated by extremist Islamist beliefs and the wars in Iraq and Afghanistan, that they were self-radicalized and unconnected to any outside terrorist groups, and that he was following his brother''s lead. He said they learned to build explosive devices from an online magazine of the al-Qaeda affiliate in Yemen. He also said they had intended to travel to New York City to bomb Times Square. On April 8, 2015, he was convicted of 30 charges, including use of a weapon of mass destruction and malicious destruction of property resulting in death. Two months later, he was sentenced to death.", "annotations": [{"py/object": "edu.cmu.EventMention", "py/state": {"_embedding": [], "_span": {"begin": 88, "end": 97, "py/object": "forte.data.span.Span"}, "_tid": 0, "event_type": "bombing", "is_valid": null}}, {"py/object": "edu.cmu.EventMention", "py/state": {"_span": {"begin": 185, "end": 192, "py/object": "forte.data.span.Span"}, "is_valid": "True", "_tid": "b5c2a8e8-8048-11ea-8ece-820f078f24c0"}}], "creation_records": {"readers.event_reader.TwoDocumentEventReader": {"py/set": [0]}}, "field_records": {"readers.event_reader.TwoDocumentEventReader": {"py/set": [{"py/tuple": [0, "_event_type"]}]}}, "generics": [], "groups": [], "links": [], "meta": {"py/object": "forte.data.data_pack.Meta", "py/state": {"_pack_id": 1, "doc_id": "00_Abstract", "language": "eng", "span_unit": "character"}}, "orig_text_len": 1902, "processed_original_spans": [], "replace_back_operations": [], "serialization": {"next_id": 3}}}',7);
 INSERT INTO "auth_user" ("id","password","last_login","is_superuser","username","last_name","email","is_staff","is_active","date_joined","first_name") VALUES (1,'!UxJj1XC33tta5BGwynr83s3FMVy3PAQGmNDCQV28',NULL,0,'AnonymousUser','','',0,1,'2020-12-03 08:12:09.234988',''),
  (2,'pbkdf2_sha256$180000$s0JH3mcJOxvY$vfOaYjGRjSsGTQ1br2cyq4BJ4kD7OHXuBnKg1gqOwg0=','2020-12-03 08:14:07.372065',1,'admin','','admin@stave.com',1,1,'2020-12-03 08:13:23.439785',''),
  (3,'pbkdf2_sha256$180000$If72pDVs3GxT$RJPLri7XBHtswSvnvfgeUp0WyMY/7KvbVUfvC6QkFG4=','2020-12-03 08:20:05.805555',0,'normal1','','',0,1,'2020-12-03 08:14:34.947900',''),
  (4,'pbkdf2_sha256$180000$OWJVlQn3xT6q$1AeGLAr46ZhpMjVsJVl+MTOZdXLYMtF/f/kuxRqQ1m0=',NULL,0,'normal2','','',0,1,'2020-12-03 08:14:52.948312','');
 INSERT INTO "guardian_userobjectpermission" ("id","object_pk","content_type_id","permission_id","user_id") VALUES (1,'7',9,37,3);
-INSERT INTO "nlpviewer_backend_project" ("id","name","ontology","user_id","config") VALUES (5,'project-1-example','{
-  "name": "base_ontology",
-  "definitions": [
-    {
-      "entry_name": "ft.onto.base_ontology.Token",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation :class:`Token`, used to represent a token or a word.",
-      "attributes": [
-        {
-          "name": "pos",
-          "type": "str"
-        },
-        {
-          "name": "ud_xpos",
-          "type": "str",
-          "description": "Language specific pos tag. Used in CoNLL-U Format. Refer to https://universaldependencies.org/format.html"
-        },
-        {
-          "name": "lemma",
-          "type": "str",
-          "description": "Lemma or stem of word form."
-        },
-        {
-          "name": "chunk",
-          "type": "str"
-        },
-        {
-          "name": "ner",
-          "type": "str"
-        },
-        {
-          "name": "sense",
-          "type": "str"
-        },
-        {
-          "name": "is_root",
-          "type": "bool"
-        },
-        {
-          "name": "ud_features",
-          "type": "Dict",
-          "key_type": "str",
-          "value_type": "str"
-        },
-        {
-          "name": "ud_misc",
-          "type": "Dict",
-          "key_type": "str",
-          "value_type": "str"
-        }
-      ]
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.Document",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation `Document`, normally used to represent a document."
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.Sentence",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation `Sentence`, normally used to represent a sentence.",
-      "attributes": [
-        {
-          "name": "speaker",
-          "type": "str"
-        },
-        {
-          "name": "part_id",
-          "type": "int"
-        },
-        {
-          "name": "sentiment",
-          "type": "Dict",
-          "key_type": "str",
-          "value_type": "float"
-        }
-      ]
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.Phrase",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation `Phrase`.",
-      "attributes": [
-        {
-          "name": "phrase_type",
-          "type": "str"
-        }
-      ]
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.Utterance",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation `Utterance`, normally used to represent an utterance in dialogue."
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.PredicateArgument",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation `PredicateArgument`, normally used to represent an argument of a predicate, can be linked to the predicate via the predicate link.",
-      "attributes": [
-        {
-          "name": "ner_type",
-          "type": "str"
-        },
-        {
-          "name": "predicate_lemma",
-          "type": "str"
-        },
-        {
-          "name": "is_verb",
-          "type": "bool"
-        }
-      ]
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.EntityMention",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation `EntityMention`, normally used to represent an Entity Mention in a piece of text.",
-      "attributes": [
-        {
-          "name": "ner_type",
-          "type": "str"
-        }
-      ]
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.EventMention",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation `EventMention`, used to refer to a mention of an event.",
-      "attributes": [
-        {
-          "name": "event_type",
-          "type": "str"
-        }
-      ]
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.PredicateMention",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation `PredicateMention`, normally used to represent a predicate (normally verbs) in a piece of text.",
-      "attributes": [
-        {
-          "name": "predicate_lemma",
-          "type": "str"
-        },
-        {
-          "name": "framenet_id",
-          "type": "str"
-        },
-        {
-          "name": "is_verb",
-          "type": "bool"
-        }
-      ]
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.PredicateLink",
-      "parent_entry": "forte.data.ontology.top.Link",
-      "description": "A `Link` type entry which represent a semantic role link between a predicate and its argument.",
-      "attributes": [
-        {
-          "name": "arg_type",
-          "type": "str",
-          "description": "The predicate link type."
-        }
-      ],
-      "parent_type": "ft.onto.base_ontology.PredicateMention",
-      "child_type": "ft.onto.base_ontology.PredicateArgument"
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.Dependency",
-      "parent_entry": "forte.data.ontology.top.Link",
-      "description": "A `Link` type entry which represent a syntactic dependency.",
-      "attributes": [
-        {
-          "name": "dep_label",
-          "type": "str",
-          "description": "The dependency label."
-        },
-        {
-          "name": "rel_type",
-          "type": "str"
-        }
-      ],
-      "parent_type": "ft.onto.base_ontology.Token",
-      "child_type": "ft.onto.base_ontology.Token"
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.EnhancedDependency",
-      "parent_entry": "forte.data.ontology.top.Link",
-      "description": "A `Link` type entry which represent a enhanced dependency: \n https://universaldependencies.org/u/overview/enhanced-syntax.html",
-      "attributes": [
-        {
-          "name": "dep_label",
-          "type": "str",
-          "description": "The enhanced dependency label in Universal Dependency."
-        }
-      ],
-      "parent_type": "ft.onto.base_ontology.Token",
-      "child_type": "ft.onto.base_ontology.Token"
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.RelationLink",
-      "parent_entry": "forte.data.ontology.top.Link",
-      "description": "A `Link` type entry which represent a relation between two entity mentions",
-      "attributes": [
-        {
-          "name": "rel_type",
-          "type": "str",
-          "description": "The type of the relation."
-        }
-      ],
-      "parent_type": "ft.onto.base_ontology.EntityMention",
-      "child_type": "ft.onto.base_ontology.EntityMention"
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.CrossDocEntityRelation",
-      "parent_entry": "forte.data.ontology.top.MultiPackLink",
-      "description": "A `Link` type entry which represent a relation between two entity mentions across the packs.",
-      "attributes": [
-        {
-          "name": "rel_type",
-          "type": "str",
-          "description": "The type of the relation."
-        }
-      ],
-      "parent_type": "ft.onto.base_ontology.EntityMention",
-      "child_type": "ft.onto.base_ontology.EntityMention"
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.CoreferenceGroup",
-      "parent_entry": "forte.data.ontology.top.Group",
-      "description": "A group type entry that take `EntityMention`, as members, used to represent coreferent group of entities.",
-      "member_type": "ft.onto.base_ontology.EntityMention"
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.EventRelation",
-      "parent_entry": "forte.data.ontology.top.Link",
-      "description": "A `Link` type entry which represent a relation between two event mentions.",
-      "attributes": [
-        {
-          "name": "rel_type",
-          "type": "str",
-          "description": "The type of the relation."
-        }
-      ],
-      "parent_type": "ft.onto.base_ontology.EventMention",
-      "child_type": "ft.onto.base_ontology.EventMention"
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.CrossDocEventRelation",
-      "parent_entry": "forte.data.ontology.top.MultiPackLink",
-      "description": "A `Link` type entry which represent a relation between two event mentions across the packs.",
-      "attributes": [
-        {
-          "name": "rel_type",
-          "type": "str",
-          "description": "The type of the relation."
-        }
-      ],
-      "parent_type": "ft.onto.base_ontology.EventMention",
-      "child_type": "ft.onto.base_ontology.EventMention"
-    }
-  ]
+INSERT INTO "nlpviewer_backend_project" ("id","name","ontology","user_id","config") VALUES (5,'project-1-example','{
+
+  "name": "base_ontology",
+
+  "definitions": [
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.Token",
+
+      "parent_entry": "forte.data.ontology.top.Annotation",
+
+      "description": "A span based annotation :class:`Token`, used to represent a token or a word.",
+
+      "attributes": [
+
+        {
+
+          "name": "pos",
+
+          "type": "str"
+
+        },
+
+        {
+
+          "name": "ud_xpos",
+
+          "type": "str",
+
+          "description": "Language specific pos tag. Used in CoNLL-U Format. Refer to https://universaldependencies.org/format.html"
+
+        },
+
+        {
+
+          "name": "lemma",
+
+          "type": "str",
+
+          "description": "Lemma or stem of word form."
+
+        },
+
+        {
+
+          "name": "chunk",
+
+          "type": "str"
+
+        },
+
+        {
+
+          "name": "ner",
+
+          "type": "str"
+
+        },
+
+        {
+
+          "name": "sense",
+
+          "type": "str"
+
+        },
+
+        {
+
+          "name": "is_root",
+
+          "type": "bool"
+
+        },
+
+        {
+
+          "name": "ud_features",
+
+          "type": "Dict",
+
+          "key_type": "str",
+
+          "value_type": "str"
+
+        },
+
+        {
+
+          "name": "ud_misc",
+
+          "type": "Dict",
+
+          "key_type": "str",
+
+          "value_type": "str"
+
+        }
+
+      ]
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.Document",
+
+      "parent_entry": "forte.data.ontology.top.Annotation",
+
+      "description": "A span based annotation `Document`, normally used to represent a document."
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.Sentence",
+
+      "parent_entry": "forte.data.ontology.top.Annotation",
+
+      "description": "A span based annotation `Sentence`, normally used to represent a sentence.",
+
+      "attributes": [
+
+        {
+
+          "name": "speaker",
+
+          "type": "str"
+
+        },
+
+        {
+
+          "name": "part_id",
+
+          "type": "int"
+
+        },
+
+        {
+
+          "name": "sentiment",
+
+          "type": "Dict",
+
+          "key_type": "str",
+
+          "value_type": "float"
+
+        }
+
+      ]
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.Phrase",
+
+      "parent_entry": "forte.data.ontology.top.Annotation",
+
+      "description": "A span based annotation `Phrase`.",
+
+      "attributes": [
+
+        {
+
+          "name": "phrase_type",
+
+          "type": "str"
+
+        }
+
+      ]
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.Utterance",
+
+      "parent_entry": "forte.data.ontology.top.Annotation",
+
+      "description": "A span based annotation `Utterance`, normally used to represent an utterance in dialogue."
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.PredicateArgument",
+
+      "parent_entry": "forte.data.ontology.top.Annotation",
+
+      "description": "A span based annotation `PredicateArgument`, normally used to represent an argument of a predicate, can be linked to the predicate via the predicate link.",
+
+      "attributes": [
+
+        {
+
+          "name": "ner_type",
+
+          "type": "str"
+
+        },
+
+        {
+
+          "name": "predicate_lemma",
+
+          "type": "str"
+
+        },
+
+        {
+
+          "name": "is_verb",
+
+          "type": "bool"
+
+        }
+
+      ]
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.EntityMention",
+
+      "parent_entry": "forte.data.ontology.top.Annotation",
+
+      "description": "A span based annotation `EntityMention`, normally used to represent an Entity Mention in a piece of text.",
+
+      "attributes": [
+
+        {
+
+          "name": "ner_type",
+
+          "type": "str"
+
+        }
+
+      ]
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.EventMention",
+
+      "parent_entry": "forte.data.ontology.top.Annotation",
+
+      "description": "A span based annotation `EventMention`, used to refer to a mention of an event.",
+
+      "attributes": [
+
+        {
+
+          "name": "event_type",
+
+          "type": "str"
+
+        }
+
+      ]
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.PredicateMention",
+
+      "parent_entry": "forte.data.ontology.top.Annotation",
+
+      "description": "A span based annotation `PredicateMention`, normally used to represent a predicate (normally verbs) in a piece of text.",
+
+      "attributes": [
+
+        {
+
+          "name": "predicate_lemma",
+
+          "type": "str"
+
+        },
+
+        {
+
+          "name": "framenet_id",
+
+          "type": "str"
+
+        },
+
+        {
+
+          "name": "is_verb",
+
+          "type": "bool"
+
+        }
+
+      ]
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.PredicateLink",
+
+      "parent_entry": "forte.data.ontology.top.Link",
+
+      "description": "A `Link` type entry which represent a semantic role link between a predicate and its argument.",
+
+      "attributes": [
+
+        {
+
+          "name": "arg_type",
+
+          "type": "str",
+
+          "description": "The predicate link type."
+
+        }
+
+      ],
+
+      "parent_type": "ft.onto.base_ontology.PredicateMention",
+
+      "child_type": "ft.onto.base_ontology.PredicateArgument"
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.Dependency",
+
+      "parent_entry": "forte.data.ontology.top.Link",
+
+      "description": "A `Link` type entry which represent a syntactic dependency.",
+
+      "attributes": [
+
+        {
+
+          "name": "dep_label",
+
+          "type": "str",
+
+          "description": "The dependency label."
+
+        },
+
+        {
+
+          "name": "rel_type",
+
+          "type": "str"
+
+        }
+
+      ],
+
+      "parent_type": "ft.onto.base_ontology.Token",
+
+      "child_type": "ft.onto.base_ontology.Token"
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.EnhancedDependency",
+
+      "parent_entry": "forte.data.ontology.top.Link",
+
+      "description": "A `Link` type entry which represent a enhanced dependency: \n https://universaldependencies.org/u/overview/enhanced-syntax.html",
+
+      "attributes": [
+
+        {
+
+          "name": "dep_label",
+
+          "type": "str",
+
+          "description": "The enhanced dependency label in Universal Dependency."
+
+        }
+
+      ],
+
+      "parent_type": "ft.onto.base_ontology.Token",
+
+      "child_type": "ft.onto.base_ontology.Token"
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.RelationLink",
+
+      "parent_entry": "forte.data.ontology.top.Link",
+
+      "description": "A `Link` type entry which represent a relation between two entity mentions",
+
+      "attributes": [
+
+        {
+
+          "name": "rel_type",
+
+          "type": "str",
+
+          "description": "The type of the relation."
+
+        }
+
+      ],
+
+      "parent_type": "ft.onto.base_ontology.EntityMention",
+
+      "child_type": "ft.onto.base_ontology.EntityMention"
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.CrossDocEntityRelation",
+
+      "parent_entry": "forte.data.ontology.top.MultiPackLink",
+
+      "description": "A `Link` type entry which represent a relation between two entity mentions across the packs.",
+
+      "attributes": [
+
+        {
+
+          "name": "rel_type",
+
+          "type": "str",
+
+          "description": "The type of the relation."
+
+        }
+
+      ],
+
+      "parent_type": "ft.onto.base_ontology.EntityMention",
+
+      "child_type": "ft.onto.base_ontology.EntityMention"
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.CoreferenceGroup",
+
+      "parent_entry": "forte.data.ontology.top.Group",
+
+      "description": "A group type entry that take `EntityMention`, as members, used to represent coreferent group of entities.",
+
+      "member_type": "ft.onto.base_ontology.EntityMention"
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.EventRelation",
+
+      "parent_entry": "forte.data.ontology.top.Link",
+
+      "description": "A `Link` type entry which represent a relation between two event mentions.",
+
+      "attributes": [
+
+        {
+
+          "name": "rel_type",
+
+          "type": "str",
+
+          "description": "The type of the relation."
+
+        }
+
+      ],
+
+      "parent_type": "ft.onto.base_ontology.EventMention",
+
+      "child_type": "ft.onto.base_ontology.EventMention"
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.CrossDocEventRelation",
+
+      "parent_entry": "forte.data.ontology.top.MultiPackLink",
+
+      "description": "A `Link` type entry which represent a relation between two event mentions across the packs.",
+
+      "attributes": [
+
+        {
+
+          "name": "rel_type",
+
+          "type": "str",
+
+          "description": "The type of the relation."
+
+        }
+
+      ],
+
+      "parent_type": "ft.onto.base_ontology.EventMention",
+
+      "child_type": "ft.onto.base_ontology.EventMention"
+
+    }
+
+  ]
+
 }',3,''),
- (7,'project-2-example','{
-  "name": "all_ontology",
-  "definitions": [
-    {
-      "entry_name": "ft.onto.base_ontology.Token",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation :class:`Token`, used to represent a token or a word.",
-      "attributes": [
-        {
-          "name": "pos",
-          "type": "str"
-        },
-        {
-          "name": "ud_xpos",
-          "type": "str",
-          "description": "Language specific pos tag. Used in CoNLL-U Format. Refer to https://universaldependencies.org/format.html"
-        },
-        {
-          "name": "lemma",
-          "type": "str",
-          "description": "Lemma or stem of word form."
-        },
-        {
-          "name": "chunk",
-          "type": "str"
-        },
-        {
-          "name": "ner",
-          "type": "str"
-        },
-        {
-          "name": "sense",
-          "type": "str"
-        },
-        {
-          "name": "is_root",
-          "type": "bool"
-        },
-        {
-          "name": "ud_features",
-          "type": "Dict",
-          "key_type": "str",
-          "value_type": "str"
-        },
-        {
-          "name": "ud_misc",
-          "type": "Dict",
-          "key_type": "str",
-          "value_type": "str"
-        }
-      ]
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.Document",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation `Document`, normally used to represent a document."
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.Sentence",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation `Sentence`, normally used to represent a sentence.",
-      "attributes": [
-        {
-          "name": "speaker",
-          "type": "str"
-        },
-        {
-          "name": "part_id",
-          "type": "int"
-        },
-        {
-          "name": "sentiment",
-          "type": "Dict",
-          "key_type": "str",
-          "value_type": "float"
-        }
-      ]
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.Phrase",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation `Phrase`.",
-      "attributes": [
-        {
-          "name": "phrase_type",
-          "type": "str"
-        }
-      ]
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.Utterance",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation `Utterance`, normally used to represent an utterance in dialogue."
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.PredicateArgument",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation `PredicateArgument`, normally used to represent an argument of a predicate, can be linked to the predicate via the predicate link.",
-      "attributes": [
-        {
-          "name": "ner_type",
-          "type": "str"
-        },
-        {
-          "name": "predicate_lemma",
-          "type": "str"
-        },
-        {
-          "name": "is_verb",
-          "type": "bool"
-        }
-      ]
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.EntityMention",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation `EntityMention`, normally used to represent an Entity Mention in a piece of text.",
-      "attributes": [
-        {
-          "name": "ner_type",
-          "type": "str"
-        }
-      ]
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.EventMention",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation `EventMention`, used to refer to a mention of an event.",
-      "attributes": [
-        {
-          "name": "event_type",
-          "type": "str"
-        }
-      ]
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.PredicateMention",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation `PredicateMention`, normally used to represent a predicate (normally verbs) in a piece of text.",
-      "attributes": [
-        {
-          "name": "predicate_lemma",
-          "type": "str"
-        },
-        {
-          "name": "framenet_id",
-          "type": "str"
-        },
-        {
-          "name": "is_verb",
-          "type": "bool"
-        }
-      ]
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.PredicateLink",
-      "parent_entry": "forte.data.ontology.top.Link",
-      "description": "A `Link` type entry which represent a semantic role link between a predicate and its argument.",
-      "attributes": [
-        {
-          "name": "arg_type",
-          "type": "str",
-          "description": "The predicate link type."
-        }
-      ],
-      "parent_type": "ft.onto.base_ontology.PredicateMention",
-      "child_type": "ft.onto.base_ontology.PredicateArgument"
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.Dependency",
-      "parent_entry": "forte.data.ontology.top.Link",
-      "description": "A `Link` type entry which represent a syntactic dependency.",
-      "attributes": [
-        {
-          "name": "dep_label",
-          "type": "str",
-          "description": "The dependency label."
-        },
-        {
-          "name": "rel_type",
-          "type": "str"
-        }
-      ],
-      "parent_type": "ft.onto.base_ontology.Token",
-      "child_type": "ft.onto.base_ontology.Token"
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.EnhancedDependency",
-      "parent_entry": "forte.data.ontology.top.Link",
-      "description": "A `Link` type entry which represent a enhanced dependency: \n https://universaldependencies.org/u/overview/enhanced-syntax.html",
-      "attributes": [
-        {
-          "name": "dep_label",
-          "type": "str",
-          "description": "The enhanced dependency label in Universal Dependency."
-        }
-      ],
-      "parent_type": "ft.onto.base_ontology.Token",
-      "child_type": "ft.onto.base_ontology.Token"
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.RelationLink",
-      "parent_entry": "forte.data.ontology.top.Link",
-      "description": "A `Link` type entry which represent a relation between two entity mentions",
-      "attributes": [
-        {
-          "name": "rel_type",
-          "type": "str",
-          "description": "The type of the relation."
-        }
-      ],
-      "parent_type": "ft.onto.base_ontology.EntityMention",
-      "child_type": "ft.onto.base_ontology.EntityMention"
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.CrossDocEntityRelation",
-      "parent_entry": "forte.data.ontology.top.MultiPackLink",
-      "description": "A `Link` type entry which represent a relation between two entity mentions across the packs.",
-      "attributes": [
-        {
-          "name": "rel_type",
-          "type": "str",
-          "description": "The type of the relation."
-        }
-      ],
-      "parent_type": "ft.onto.base_ontology.EntityMention",
-      "child_type": "ft.onto.base_ontology.EntityMention"
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.CoreferenceGroup",
-      "parent_entry": "forte.data.ontology.top.Group",
-      "description": "A group type entry that take `EntityMention`, as members, used to represent coreferent group of entities.",
-      "member_type": "ft.onto.base_ontology.EntityMention"
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.EventRelation",
-      "parent_entry": "forte.data.ontology.top.Link",
-      "description": "A `Link` type entry which represent a relation between two event mentions.",
-      "attributes": [
-        {
-          "name": "rel_type",
-          "type": "str",
-          "description": "The type of the relation."
-        }
-      ],
-      "parent_type": "ft.onto.base_ontology.EventMention",
-      "child_type": "ft.onto.base_ontology.EventMention"
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.CrossDocEventRelation",
-      "parent_entry": "forte.data.ontology.top.MultiPackLink",
-      "description": "A `Link` type entry which represent a relation between two event mentions across the packs.",
-      "attributes": [
-        {
-          "name": "rel_type",
-          "type": "str",
-          "description": "The type of the relation."
-        }
-      ],
-      "parent_type": "ft.onto.base_ontology.EventMention",
-      "child_type": "ft.onto.base_ontology.EventMention"
-    },
-    {
-      "entry_name": "edu.cmu.EventMention",
-      "parent_entry": "ft.onto.base_ontology.EventMention",
-      "description": "A span based annotation `EventMention`, used to refer to a mention of an event.",
-      "attributes": [
-        {
-          "name": "is_valid",
-          "type": "bool"
-        }
-      ]
-    },
-    {
-      "entry_name": "edu.cmu.CrossEventRelation",
-      "parent_entry": "ft.onto.base_ontology.CrossDocEventRelation",
-      "description": "Represent relation cross documents.",
-      "attributes": [
-        {
-          "name": "evidence",
-          "type": "str"
-        }
-      ],
-      "parent_type": "edu.cmu.EventMention",
-      "child_type": "edu.cmu.EventMention"
-    }
-  ]
+ (7,'project-2-example','{
+
+  "name": "all_ontology",
+
+  "definitions": [
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.Token",
+
+      "parent_entry": "forte.data.ontology.top.Annotation",
+
+      "description": "A span based annotation :class:`Token`, used to represent a token or a word.",
+
+      "attributes": [
+
+        {
+
+          "name": "pos",
+
+          "type": "str"
+
+        },
+
+        {
+
+          "name": "ud_xpos",
+
+          "type": "str",
+
+          "description": "Language specific pos tag. Used in CoNLL-U Format. Refer to https://universaldependencies.org/format.html"
+
+        },
+
+        {
+
+          "name": "lemma",
+
+          "type": "str",
+
+          "description": "Lemma or stem of word form."
+
+        },
+
+        {
+
+          "name": "chunk",
+
+          "type": "str"
+
+        },
+
+        {
+
+          "name": "ner",
+
+          "type": "str"
+
+        },
+
+        {
+
+          "name": "sense",
+
+          "type": "str"
+
+        },
+
+        {
+
+          "name": "is_root",
+
+          "type": "bool"
+
+        },
+
+        {
+
+          "name": "ud_features",
+
+          "type": "Dict",
+
+          "key_type": "str",
+
+          "value_type": "str"
+
+        },
+
+        {
+
+          "name": "ud_misc",
+
+          "type": "Dict",
+
+          "key_type": "str",
+
+          "value_type": "str"
+
+        }
+
+      ]
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.Document",
+
+      "parent_entry": "forte.data.ontology.top.Annotation",
+
+      "description": "A span based annotation `Document`, normally used to represent a document."
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.Sentence",
+
+      "parent_entry": "forte.data.ontology.top.Annotation",
+
+      "description": "A span based annotation `Sentence`, normally used to represent a sentence.",
+
+      "attributes": [
+
+        {
+
+          "name": "speaker",
+
+          "type": "str"
+
+        },
+
+        {
+
+          "name": "part_id",
+
+          "type": "int"
+
+        },
+
+        {
+
+          "name": "sentiment",
+
+          "type": "Dict",
+
+          "key_type": "str",
+
+          "value_type": "float"
+
+        }
+
+      ]
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.Phrase",
+
+      "parent_entry": "forte.data.ontology.top.Annotation",
+
+      "description": "A span based annotation `Phrase`.",
+
+      "attributes": [
+
+        {
+
+          "name": "phrase_type",
+
+          "type": "str"
+
+        }
+
+      ]
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.Utterance",
+
+      "parent_entry": "forte.data.ontology.top.Annotation",
+
+      "description": "A span based annotation `Utterance`, normally used to represent an utterance in dialogue."
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.PredicateArgument",
+
+      "parent_entry": "forte.data.ontology.top.Annotation",
+
+      "description": "A span based annotation `PredicateArgument`, normally used to represent an argument of a predicate, can be linked to the predicate via the predicate link.",
+
+      "attributes": [
+
+        {
+
+          "name": "ner_type",
+
+          "type": "str"
+
+        },
+
+        {
+
+          "name": "predicate_lemma",
+
+          "type": "str"
+
+        },
+
+        {
+
+          "name": "is_verb",
+
+          "type": "bool"
+
+        }
+
+      ]
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.EntityMention",
+
+      "parent_entry": "forte.data.ontology.top.Annotation",
+
+      "description": "A span based annotation `EntityMention`, normally used to represent an Entity Mention in a piece of text.",
+
+      "attributes": [
+
+        {
+
+          "name": "ner_type",
+
+          "type": "str"
+
+        }
+
+      ]
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.EventMention",
+
+      "parent_entry": "forte.data.ontology.top.Annotation",
+
+      "description": "A span based annotation `EventMention`, used to refer to a mention of an event.",
+
+      "attributes": [
+
+        {
+
+          "name": "event_type",
+
+          "type": "str"
+
+        }
+
+      ]
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.PredicateMention",
+
+      "parent_entry": "forte.data.ontology.top.Annotation",
+
+      "description": "A span based annotation `PredicateMention`, normally used to represent a predicate (normally verbs) in a piece of text.",
+
+      "attributes": [
+
+        {
+
+          "name": "predicate_lemma",
+
+          "type": "str"
+
+        },
+
+        {
+
+          "name": "framenet_id",
+
+          "type": "str"
+
+        },
+
+        {
+
+          "name": "is_verb",
+
+          "type": "bool"
+
+        }
+
+      ]
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.PredicateLink",
+
+      "parent_entry": "forte.data.ontology.top.Link",
+
+      "description": "A `Link` type entry which represent a semantic role link between a predicate and its argument.",
+
+      "attributes": [
+
+        {
+
+          "name": "arg_type",
+
+          "type": "str",
+
+          "description": "The predicate link type."
+
+        }
+
+      ],
+
+      "parent_type": "ft.onto.base_ontology.PredicateMention",
+
+      "child_type": "ft.onto.base_ontology.PredicateArgument"
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.Dependency",
+
+      "parent_entry": "forte.data.ontology.top.Link",
+
+      "description": "A `Link` type entry which represent a syntactic dependency.",
+
+      "attributes": [
+
+        {
+
+          "name": "dep_label",
+
+          "type": "str",
+
+          "description": "The dependency label."
+
+        },
+
+        {
+
+          "name": "rel_type",
+
+          "type": "str"
+
+        }
+
+      ],
+
+      "parent_type": "ft.onto.base_ontology.Token",
+
+      "child_type": "ft.onto.base_ontology.Token"
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.EnhancedDependency",
+
+      "parent_entry": "forte.data.ontology.top.Link",
+
+      "description": "A `Link` type entry which represent a enhanced dependency: \n https://universaldependencies.org/u/overview/enhanced-syntax.html",
+
+      "attributes": [
+
+        {
+
+          "name": "dep_label",
+
+          "type": "str",
+
+          "description": "The enhanced dependency label in Universal Dependency."
+
+        }
+
+      ],
+
+      "parent_type": "ft.onto.base_ontology.Token",
+
+      "child_type": "ft.onto.base_ontology.Token"
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.RelationLink",
+
+      "parent_entry": "forte.data.ontology.top.Link",
+
+      "description": "A `Link` type entry which represent a relation between two entity mentions",
+
+      "attributes": [
+
+        {
+
+          "name": "rel_type",
+
+          "type": "str",
+
+          "description": "The type of the relation."
+
+        }
+
+      ],
+
+      "parent_type": "ft.onto.base_ontology.EntityMention",
+
+      "child_type": "ft.onto.base_ontology.EntityMention"
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.CrossDocEntityRelation",
+
+      "parent_entry": "forte.data.ontology.top.MultiPackLink",
+
+      "description": "A `Link` type entry which represent a relation between two entity mentions across the packs.",
+
+      "attributes": [
+
+        {
+
+          "name": "rel_type",
+
+          "type": "str",
+
+          "description": "The type of the relation."
+
+        }
+
+      ],
+
+      "parent_type": "ft.onto.base_ontology.EntityMention",
+
+      "child_type": "ft.onto.base_ontology.EntityMention"
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.CoreferenceGroup",
+
+      "parent_entry": "forte.data.ontology.top.Group",
+
+      "description": "A group type entry that take `EntityMention`, as members, used to represent coreferent group of entities.",
+
+      "member_type": "ft.onto.base_ontology.EntityMention"
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.EventRelation",
+
+      "parent_entry": "forte.data.ontology.top.Link",
+
+      "description": "A `Link` type entry which represent a relation between two event mentions.",
+
+      "attributes": [
+
+        {
+
+          "name": "rel_type",
+
+          "type": "str",
+
+          "description": "The type of the relation."
+
+        }
+
+      ],
+
+      "parent_type": "ft.onto.base_ontology.EventMention",
+
+      "child_type": "ft.onto.base_ontology.EventMention"
+
+    },
+
+    {
+
+      "entry_name": "ft.onto.base_ontology.CrossDocEventRelation",
+
+      "parent_entry": "forte.data.ontology.top.MultiPackLink",
+
+      "description": "A `Link` type entry which represent a relation between two event mentions across the packs.",
+
+      "attributes": [
+
+        {
+
+          "name": "rel_type",
+
+          "type": "str",
+
+          "description": "The type of the relation."
+
+        }
+
+      ],
+
+      "parent_type": "ft.onto.base_ontology.EventMention",
+
+      "child_type": "ft.onto.base_ontology.EventMention"
+
+    },
+
+    {
+
+      "entry_name": "edu.cmu.EventMention",
+
+      "parent_entry": "ft.onto.base_ontology.EventMention",
+
+      "description": "A span based annotation `EventMention`, used to refer to a mention of an event.",
+
+      "attributes": [
+
+        {
+
+          "name": "is_valid",
+
+          "type": "bool"
+
+        }
+
+      ]
+
+    },
+
+    {
+
+      "entry_name": "edu.cmu.CrossEventRelation",
+
+      "parent_entry": "ft.onto.base_ontology.CrossDocEventRelation",
+
+      "description": "Represent relation cross documents.",
+
+      "attributes": [
+
+        {
+
+          "name": "evidence",
+
+          "type": "str"
+
+        }
+
+      ],
+
+      "parent_type": "edu.cmu.EventMention",
+
+      "child_type": "edu.cmu.EventMention"
+
+    }
+
+  ]
+
 }',4,'');
 CREATE UNIQUE INDEX IF NOT EXISTS "auth_group_permissions_group_id_permission_id_0cd325b0_uniq" ON "auth_group_permissions" (
 	"group_id",
