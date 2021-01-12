@@ -18,6 +18,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import PostAddSharpIcon from '@material-ui/icons/PostAddSharp';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import {
   ILegendAttributeConfig,
   ILegendConfig,
@@ -26,6 +28,7 @@ import {
 } from '../../nlpviewer';
 import {isEntryAnnotation, camelCaseDeep} from '../../nlpviewer/lib/utils';
 import JsonEditor from '../components/jsonEditor';
+import {InputLabel} from '@material-ui/core';
 
 const useStyles = makeStyles({
   root: {
@@ -41,6 +44,7 @@ const useStyles = makeStyles({
     marginBottom: 15,
   },
 });
+const PROJECT_TYPES = ['indoc', 'crossdoc'];
 
 function Projects() {
   const classes = useStyles();
@@ -48,9 +52,12 @@ function Projects() {
   const [projects, setProjects] = useState<any[]>([]);
   const [name, setName] = useState<string>('');
   const [ontology, setOntology] = useState<string>('{}');
+  const [multiOntology, setMultiOntology] = useState<string>('{}');
   const [config, setConfig] = useState<string>('{}');
   const history = useHistory();
   const [open, setOpen] = React.useState(false);
+
+  const [projectType, setProjectType] = useState<string>('single_pack');
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -62,6 +69,7 @@ function Projects() {
 
   const clearDialog = () => {
     setOntology('{}');
+    setMultiOntology('{}');
     setConfig('{}');
     setName('');
   };
@@ -79,10 +87,22 @@ function Projects() {
   }
 
   function handleAdd() {
-    if (name && ontology && config) {
-      createProject(name, ontology, config).then(() => {
+    if (projectType === 'indoc' && name && ontology !== '{}' && config) {
+      createProject(projectType, name, ontology, config).then(() => {
         updateProjects();
       });
+    } else if (
+      projectType === 'crossdoc' &&
+      name &&
+      ontology !== '{}' &&
+      multiOntology !== '{}' &&
+      config
+    ) {
+      createProject(projectType, name, ontology, config, multiOntology).then(
+        () => {
+          updateProjects();
+        }
+      );
     } else {
       alert('Please fill in project name and upload ontology file.');
     }
@@ -94,20 +114,32 @@ function Projects() {
     });
   }
 
-  function userAddFiles(acceptedFiles: FileWithPath[]) {
+  function handleProjectTypeChange(event: any) {
+    setProjectType(event.target.value);
+  }
+
+  function userAddFiles(
+    acceptedFiles: FileWithPath[],
+    file_type = 'single_pack'
+  ) {
     if (acceptedFiles.length > 0) {
       const reader = new FileReader();
       reader.readAsText(acceptedFiles[0]);
       reader.onload = function () {
-        setOntology(reader.result as string);
-        const defaultConfig = createDefaultConfig(reader.result as string);
-        setConfig(JSON.stringify(defaultConfig));
+        if (file_type === 'single_pack') {
+          setOntology(reader.result as string);
+          const defaultConfig = createDefaultConfig(reader.result as string);
+          setConfig(JSON.stringify(defaultConfig));
+        } else if (file_type === 'multi_pack') {
+          setMultiOntology(reader.result as string);
+        }
       };
     }
   }
 
   function createDefaultConfig(ontology: string): IProjectConfigs {
     const ontologyJson = JSON.parse(ontology);
+    console.log(ontologyJson);
     const ontologyObject: IOntology = camelCaseDeep(ontologyJson);
     const config: IProjectConfigs = {
       legendConfigs: {},
@@ -201,52 +233,123 @@ function Projects() {
                 <IconButton onClick={handleClickOpen}>
                   <PostAddSharpIcon fontSize="large" />
                 </IconButton>
-                <Dialog open={open} onClose={handleClose}>
+                <Dialog
+                  open={open}
+                  onClose={handleClose}
+                  fullWidth={true}
+                  maxWidth={'md'}
+                >
                   <DialogContent>
-                    <div>
-                      <TextField
-                        variant="outlined"
-                        label="Project Name"
-                        value={name}
-                        onChange={e => setName(e.target.value)}
-                        autoFocus
-                        fullWidth
-                        margin="normal"
-                      />
-                    </div>
-                    <JsonEditor
-                      className={classes.jsonEditor}
-                      jsonText={ontology}
-                      onChangeJsonText={(text: string) => setOntology(text)}
-                    />
-                    <JsonEditor
-                      className={classes.jsonEditor}
-                      jsonText={config}
-                      onChangeJsonText={(text: string) => setConfig(text)}
-                    />
-                    <div>
-                      <DropUpload
-                        fileLimit={1048576}
-                        fileDropFunc={userAddFiles}
-                        mimeType="application/json"
-                        allowMultiple={false}
-                      />
-                    </div>
-                    <div>
-                      <Button
-                        onClick={() => {
-                          handleAdd();
-                          handleClose();
-                          clearDialog();
-                        }}
-                        color="primary"
-                        size="small"
-                        variant="contained"
-                        disableElevation
+                    <Grid>
+                      <InputLabel id="label">Project Type:</InputLabel>
+                      <Select
+                        labelId="label"
+                        id="select"
+                        value={projectType}
+                        onChange={handleProjectTypeChange}
                       >
-                        Add
-                      </Button>
-                    </div>
+                        {PROJECT_TYPES.map(d => (
+                          <MenuItem value={d}>{d}</MenuItem>
+                        ))}
+                      </Select>
+                    </Grid>
+                    {projectType === 'single_pack' ? (
+                      <div>
+                        <div>
+                          <TextField
+                            variant="outlined"
+                            label="Project Name"
+                            value={name}
+                            onChange={e => setName(e.target.value)}
+                            autoFocus
+                            fullWidth
+                            margin="normal"
+                          />
+                        </div>
+                        <JsonEditor
+                          className={classes.jsonEditor}
+                          jsonText={ontology}
+                          onChangeJsonText={(text: string) => setOntology(text)}
+                        />
+                        <JsonEditor
+                          className={classes.jsonEditor}
+                          jsonText={config}
+                          onChangeJsonText={(text: string) => setConfig(text)}
+                        />
+                        <div>
+                          <DropUpload
+                            fileLimit={1048576}
+                            fileDropFunc={userAddFiles}
+                            mimeType="application/json"
+                            allowMultiple={false}
+                          />
+                        </div>
+                        <div>
+                          <Button
+                            onClick={() => {
+                              handleAdd();
+                              handleClose();
+                              clearDialog();
+                            }}
+                            color="primary"
+                            size="small"
+                            variant="contained"
+                            disableElevation
+                          >
+                            Add
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <div>
+                          <TextField
+                            variant="outlined"
+                            label="Project Name"
+                            value={name}
+                            onChange={e => setName(e.target.value)}
+                            autoFocus
+                            fullWidth
+                            margin="normal"
+                          />
+                        </div>
+                        <div>
+                          <DropUpload
+                            fileLimit={1048576}
+                            fileDropFunc={(file: any) =>
+                              userAddFiles(file, 'single_pack')
+                            }
+                            mimeType="application/json"
+                            allowMultiple={false}
+                          />
+                        </div>
+                        <div>
+                          <DropUpload
+                            fileLimit={1048576}
+                            fileDropFunc={(file: any) =>
+                              userAddFiles(file, 'multi_pack')
+                            }
+                            mimeType="application/json"
+                            allowMultiple={false}
+                          />
+                        </div>
+                        <div>
+                          <Button
+                            onClick={() => {
+                              handleAdd();
+                              handleClose();
+                              clearDialog();
+                            }}
+                            color="primary"
+                            size="small"
+                            variant="contained"
+                            disableElevation
+                          >
+                            Add
+                          </Button>
+                        </div>
+                      </div>
+                    )}
                   </DialogContent>
                 </Dialog>
               </CardActions>
