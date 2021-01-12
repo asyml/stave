@@ -120,6 +120,15 @@ def query_crossdocs(request, project_id):
     return JsonResponse(response, safe=False)
 
 @require_login
+def query_crossdocs(request, project_id):
+    project = Project.objects.get(pk=project_id)
+    docs = project.documents.all().values()
+    crossdocs = project.crossdocs.all().values()
+    response = {"docs": list(docs), "crossdocs": list(crossdocs)}
+
+    return JsonResponse(response, safe=False)
+
+@require_login
 def delete(request, project_id):
     
     project = fetch_project_check_perm(project_id, request.user, "nlpviewer_backend.remove_project")
