@@ -71,6 +71,7 @@ export function transformPack(
     links: links,
     groups: groups,
     attributes:
+      // Backward compatibility with Forte formats.
       'meta' in packData
         ? packData.meta['py/state']
         : packData._meta['py/state'],
