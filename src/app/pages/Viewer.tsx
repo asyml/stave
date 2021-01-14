@@ -38,7 +38,6 @@ function Viewer() {
   useEffect(() => {
     if (id) {
       fetchDocOntology(id).then(data => {
-        console.log(data.textPack);
         const [singlePackFromAPI, ontologyFromAPI] = transformPack(
           data.textPack,
           data.ontology
@@ -71,8 +70,6 @@ function Viewer() {
       plugins={[groupPlugin, dialoguePlugin]}
       onEvent={event => {
         if (!id) return;
-
-        console.log(event);
 
         if (event.type === 'annotation-add') {
           const {...annotation} = event;
