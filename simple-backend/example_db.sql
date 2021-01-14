@@ -27,8 +27,8 @@ CREATE TABLE IF NOT EXISTS "auth_user_user_permissions" (
 	"user_id"	integer NOT NULL,
 	"permission_id"	integer NOT NULL,
 	PRIMARY KEY("id" AUTOINCREMENT),
-	FOREIGN KEY("permission_id") REFERENCES "auth_permission"("id") DEFERRABLE INITIALLY DEFERRED,
-	FOREIGN KEY("user_id") REFERENCES "auth_user"("id") DEFERRABLE INITIALLY DEFERRED
+	FOREIGN KEY("user_id") REFERENCES "auth_user"("id") DEFERRABLE INITIALLY DEFERRED,
+	FOREIGN KEY("permission_id") REFERENCES "auth_permission"("id") DEFERRABLE INITIALLY DEFERRED
 );
 CREATE TABLE IF NOT EXISTS "django_admin_log" (
 	"id"	integer NOT NULL,
@@ -40,8 +40,8 @@ CREATE TABLE IF NOT EXISTS "django_admin_log" (
 	"user_id"	integer NOT NULL,
 	"action_flag"	smallint unsigned NOT NULL CHECK("action_flag" >= 0),
 	PRIMARY KEY("id" AUTOINCREMENT),
-	FOREIGN KEY("user_id") REFERENCES "auth_user"("id") DEFERRABLE INITIALLY DEFERRED,
-	FOREIGN KEY("content_type_id") REFERENCES "django_content_type"("id") DEFERRABLE INITIALLY DEFERRED
+	FOREIGN KEY("content_type_id") REFERENCES "django_content_type"("id") DEFERRABLE INITIALLY DEFERRED,
+	FOREIGN KEY("user_id") REFERENCES "auth_user"("id") DEFERRABLE INITIALLY DEFERRED
 );
 CREATE TABLE IF NOT EXISTS "django_content_type" (
 	"id"	integer NOT NULL,
@@ -62,12 +62,6 @@ CREATE TABLE IF NOT EXISTS "auth_group" (
 	"name"	varchar(150) NOT NULL UNIQUE,
 	PRIMARY KEY("id" AUTOINCREMENT)
 );
-CREATE TABLE IF NOT EXISTS "nlpviewer_backend_user" (
-	"id"	integer NOT NULL,
-	"name"	varchar(200) NOT NULL,
-	"password"	varchar(200) NOT NULL,
-	PRIMARY KEY("id" AUTOINCREMENT)
-);
 CREATE TABLE IF NOT EXISTS "django_session" (
 	"session_key"	varchar(40) NOT NULL,
 	"session_data"	text NOT NULL,
@@ -82,13 +76,6 @@ CREATE TABLE IF NOT EXISTS "nlpviewer_backend_document" (
 	PRIMARY KEY("id" AUTOINCREMENT),
 	FOREIGN KEY("project_id") REFERENCES "nlpviewer_backend_project"("id") DEFERRABLE INITIALLY DEFERRED
 );
-CREATE TABLE IF NOT EXISTS "nlpviewer_backend_project" (
-	"id"	integer NOT NULL,
-	"ontology"	text NOT NULL,
-	"name"	varchar(200) NOT NULL,
-	"config"	text,
-	PRIMARY KEY("id" AUTOINCREMENT)
-);
 CREATE TABLE IF NOT EXISTS "auth_user" (
 	"id"	integer NOT NULL,
 	"password"	varchar(128) NOT NULL,
@@ -102,6 +89,37 @@ CREATE TABLE IF NOT EXISTS "auth_user" (
 	"date_joined"	datetime NOT NULL,
 	"first_name"	varchar(150) NOT NULL,
 	PRIMARY KEY("id" AUTOINCREMENT)
+);
+CREATE TABLE IF NOT EXISTS "guardian_groupobjectpermission" (
+	"id"	integer NOT NULL,
+	"object_pk"	varchar(255) NOT NULL,
+	"content_type_id"	integer NOT NULL,
+	"group_id"	integer NOT NULL,
+	"permission_id"	integer NOT NULL,
+	PRIMARY KEY("id" AUTOINCREMENT),
+	FOREIGN KEY("content_type_id") REFERENCES "django_content_type"("id") DEFERRABLE INITIALLY DEFERRED,
+	FOREIGN KEY("permission_id") REFERENCES "auth_permission"("id") DEFERRABLE INITIALLY DEFERRED,
+	FOREIGN KEY("group_id") REFERENCES "auth_group"("id") DEFERRABLE INITIALLY DEFERRED
+);
+CREATE TABLE IF NOT EXISTS "guardian_userobjectpermission" (
+	"id"	integer NOT NULL,
+	"object_pk"	varchar(255) NOT NULL,
+	"content_type_id"	integer NOT NULL,
+	"permission_id"	integer NOT NULL,
+	"user_id"	integer NOT NULL,
+	PRIMARY KEY("id" AUTOINCREMENT),
+	FOREIGN KEY("content_type_id") REFERENCES "django_content_type"("id") DEFERRABLE INITIALLY DEFERRED,
+	FOREIGN KEY("permission_id") REFERENCES "auth_permission"("id") DEFERRABLE INITIALLY DEFERRED,
+	FOREIGN KEY("user_id") REFERENCES "auth_user"("id") DEFERRABLE INITIALLY DEFERRED
+);
+CREATE TABLE IF NOT EXISTS "nlpviewer_backend_project" (
+	"id"	integer NOT NULL,
+	"name"	varchar(200) NOT NULL,
+	"ontology"	text NOT NULL,
+	"user_id"	integer,
+	"config"	text,
+	PRIMARY KEY("id" AUTOINCREMENT),
+	FOREIGN KEY("user_id") REFERENCES "auth_user"("id") DEFERRABLE INITIALLY DEFERRED
 );
 INSERT INTO "django_migrations" ("id","app","name","applied") VALUES (1,'contenttypes','0001_initial','2020-01-07 19:27:22.589475'),
  (2,'auth','0001_initial','2020-01-07 19:27:22.611116'),
@@ -125,7 +143,19 @@ INSERT INTO "django_migrations" ("id","app","name","applied") VALUES (1,'content
  (20,'nlpviewer_backend','0003_auto_20200712_0421','2020-07-12 08:22:23.104887'),
  (21,'nlpviewer_backend','0004_auto_20200712_0957','2020-07-12 13:57:31.846937'),
  (22,'nlpviewer_backend','0005_remove_document_ontology','2020-07-23 01:45:42.882931'),
- (23,'auth','0012_alter_user_first_name_max_length','2020-11-09 04:16:47.025873');
+ (23,'auth','0012_alter_user_first_name_max_length','2020-11-09 04:16:47.025873'),
+ (24,'guardian','0001_initial','2020-12-03 08:12:09.051445'),
+ (25,'guardian','0002_generic_permissions_index','2020-12-03 08:12:09.085970'),
+ (26,'nlpviewer_backend','0006_auto_20201203_0206','2020-12-03 08:12:09.117618'),
+ (27,'nlpviewer_backend','0007_project_config','2020-12-03 08:12:09.148072'),
+ (28,'nlpviewer_backend','0008_auto_20201203_0317','2020-12-03 08:18:01.070955'),
+ (29,'nlpviewer_backend','0009_auto_20201203_0318','2020-12-03 08:18:56.952573');
+INSERT INTO "django_admin_log" ("id","action_time","object_id","object_repr","change_message","content_type_id","user_id","action_flag") VALUES (1,'2020-12-03 08:14:35.172359','3','normal1','[{"added": {}}]',6,2,1),
+ (2,'2020-12-03 08:14:53.318030','4','normal2','[{"added": {}}]',6,2,1),
+ (3,'2020-12-03 08:19:18.753114','7','project-2-example','[{"changed": {"fields": ["Ontology", "User"]}}]',9,2,2),
+ (4,'2020-12-03 08:19:29.136667','5','project-1-example','[{"changed": {"fields": ["Ontology", "User"]}}]',9,2,2),
+ (5,'2020-12-03 08:26:57.041031','7','project-2-example','[{"changed": {"fields": ["Config"]}}]',9,2,2),
+ (6,'2020-12-03 08:27:01.086126','5','project-1-example','[{"changed": {"fields": ["Config"]}}]',9,2,2);
 INSERT INTO "django_content_type" ("id","app_label","model") VALUES (1,'nlpviewer_backend','document'),
  (2,'nlpviewer_backend','user'),
  (3,'admin','logentry'),
@@ -134,7 +164,9 @@ INSERT INTO "django_content_type" ("id","app_label","model") VALUES (1,'nlpviewe
  (6,'auth','user'),
  (7,'contenttypes','contenttype'),
  (8,'sessions','session'),
- (9,'nlpviewer_backend','project');
+ (9,'nlpviewer_backend','project'),
+ (10,'guardian','groupobjectpermission'),
+ (11,'guardian','userobjectpermission');
 INSERT INTO "auth_permission" ("id","content_type_id","codename","name") VALUES (1,1,'add_document','Can add document'),
  (2,1,'change_document','Can change document'),
  (3,1,'delete_document','Can delete document'),
@@ -170,8 +202,21 @@ INSERT INTO "auth_permission" ("id","content_type_id","codename","name") VALUES 
  (33,9,'add_project','Can add project'),
  (34,9,'change_project','Can change project'),
  (35,9,'delete_project','Can delete project'),
- (36,9,'view_project','Can view project');
-INSERT INTO "nlpviewer_backend_user" ("id","name","password") VALUES (1,'admin','admin');
+ (36,9,'view_project','Can view project'),
+ (37,9,'read_project','Can read the project'),
+ (38,9,'edit_annotation','Can edit annotation'),
+ (39,9,'edit_text','Can edit the document'),
+ (40,9,'edit_project','Can edit the project'),
+ (41,9,'remove_project','Can remove the project'),
+ (42,9,'new_project','Can create in the project'),
+ (43,10,'add_groupobjectpermission','Can add group object permission'),
+ (44,10,'change_groupobjectpermission','Can change group object permission'),
+ (45,10,'delete_groupobjectpermission','Can delete group object permission'),
+ (46,10,'view_groupobjectpermission','Can view group object permission'),
+ (47,11,'add_userobjectpermission','Can add user object permission'),
+ (48,11,'change_userobjectpermission','Can change user object permission'),
+ (49,11,'delete_userobjectpermission','Can delete user object permission'),
+ (50,11,'view_userobjectpermission','Can view user object permission');
 INSERT INTO "django_session" ("session_key","session_data","expire_date") VALUES ('5bci17hbl1zmdrcfn96d2uoqtt6rw3cx','YmE5N2EzNTcwZDYxMzI4NmZkYmVkN2UyMDczMzQ2MDJmYzgyMDc3NTp7InVzZXJfaWQiOjF9','2020-01-21 19:29:33.805122'),
  ('c88qh9fgmv09kxr97fzjpti7t88jl9kp','NzYzMTIyYmEzNDNmYTU2MDBhNTFhODczM2IyYTA5MmU2NzNjMzQ5ODp7InVzZXJfaWQiOiJhYmMifQ==','2020-01-23 16:56:15.090902'),
  ('j9uydmx4kul9uuy52sb9oouuougbuinz','NzYzMTIyYmEzNDNmYTU2MDBhNTFhODczM2IyYTA5MmU2NzNjMzQ5ODp7InVzZXJfaWQiOiJhYmMifQ==','2020-01-23 16:56:33.775621'),
@@ -179,7 +224,8 @@ INSERT INTO "django_session" ("session_key","session_data","expire_date") VALUES
  ('w1c15cm5449zer7f6eiusui9gej90l5p','YmE5N2EzNTcwZDYxMzI4NmZkYmVkN2UyMDczMzQ2MDJmYzgyMDc3NTp7InVzZXJfaWQiOjF9','2020-04-01 20:27:17.150025'),
  ('4kvq3b9jtktfk7kxikvy7pm3fy4191gg','YmE5N2EzNTcwZDYxMzI4NmZkYmVkN2UyMDczMzQ2MDJmYzgyMDc3NTp7InVzZXJfaWQiOjF9','2020-04-30 16:25:15.692429'),
  ('bpcvhclila60tx8czlj6sgjffsjfquee','YmE5N2EzNTcwZDYxMzI4NmZkYmVkN2UyMDczMzQ2MDJmYzgyMDc3NTp7InVzZXJfaWQiOjF9','2020-08-06 02:14:10.417361'),
- ('2hfot1wxgwu1c0cqexvmea4gpssbo7g5','eyJ1c2VyX2lkIjoxfQ:1kv64y:FUgJJ7zopyLk9IrYz-s9GkY8ugA4ivSlEL6s20mRriA','2021-01-14 22:05:56.027426');
+ ('m1acd0cwcdg0u2ac114y0r93cdjmfcmo','MThkYmI2MGYyNDAyZTIxNjljNDQyNGJmZjExMzhmMzQ3ZWExMzkyZjp7Il9hdXRoX3VzZXJfaWQiOiIyIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIwN2RmMzMwZTNjNDAzYTc1Yzk1NjcyZGVmNDNjODFkM2M0MDI3ZDUxIn0=','2020-12-17 08:14:07.377801'),
+ ('5ei4j6nj5pviy911wbvon0w9cyrqy1vp','OWRkNDhjMTgyMGZmNWE5ZmQ1MmFiZmE1Y2Q2ZTNlMzA4Y2IyMmUwYjp7Il9hdXRoX3VzZXJfaWQiOiIzIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiI1ZGVhN2IwN2FiMDA0ZDdkOGU2NWQ3YzZlNTQxZWIxMGNmYjYwYTk1In0=','2020-12-17 08:20:05.811215');
 INSERT INTO "nlpviewer_backend_document" ("id","name","textPack","project_id") VALUES (42,'project1-doc1-example','{
   "py/object": "forte.data.data_pack.DataPack",
   "py/state": {
@@ -39866,938 +39912,1114 @@ INSERT INTO "nlpviewer_backend_document" ("id","name","textPack","project_id") V
     }
   }
 }',5),
- (44,'project2-doc1-example','{"py/object": "forte.data.data_pack.DataPack", "py/state": {"_text": "During the annual Boston Marathon on April 15, 2013, two homemade pressure cooker bombs detonated 14 seconds and 210 yards (190 m) apart at 2:49 p.m., near the finish line of the race, killing three people and injuring several hundred others, including 16 who lost limbs.\n\nThree days later, the Federal Bureau of Investigation (FBI) released images of two suspects, who were later identified as Chechen Kyrgyzstani-American brothers Dzhokhar Tsarnaev and Tamerlan Tsarnaev. They killed an MIT policeman, kidnapped a man in his car, and had a shootout with the police in nearby Watertown, during which two officers were severely injured, one of whom died a year later. Tamerlan was shot several times, and his brother ran him over while escaping in the stolen car; Tamerlan died soon after.\n\nAn unprecedented manhunt for Dzhokhar ensued on April 19, with thousands of law enforcement officers searching a 20-block area of Watertown; residents of Watertown and surrounding communities were asked to stay indoors, and the transportation system and most businesses and public places closed. Around 6:00 p.m., a Watertown resident discovered Dzhokhar hiding in a boat in his backyard. He was shot and wounded by police before being taken into custody.\n\nDuring questioning, Dzhokhar said that he and his brother were motivated by extremist Islamist beliefs and the wars in Iraq and Afghanistan, that they were self-radicalized and unconnected to any outside terrorist groups, and that he was following his brother''s lead. He said they learned to build explosive devices from an online magazine of the al-Qaeda affiliate in Yemen. He also said they had intended to travel to New York City to bomb Times Square. On April 8, 2015, he was convicted of 30 charges, including use of a weapon of mass destruction and malicious destruction of property resulting in death. Two months later, he was sentenced to death.", "annotations": [{"py/object": "edu.cmu.EventMention", "py/state": {"_embedding": [], "_span": {"begin": 88, "end": 97, "py/object": "forte.data.span.Span"}, "_tid": 0, "event_type": "bombing", "is_valid": null}}, {"py/object": "edu.cmu.EventMention", "py/state": {"_span": {"begin": 185, "end": 192, "py/object": "forte.data.base.Span"}, "is_valid": "True", "_tid": "b5c2a8e8-8048-11ea-8ece-820f078f24c0"}}], "creation_records": {"readers.event_reader.TwoDocumentEventReader": {"py/set": [0]}}, "field_records": {"readers.event_reader.TwoDocumentEventReader": {"py/set": [{"py/tuple": [0, "_event_type"]}]}}, "generics": [], "groups": [], "links": [], "meta": {"py/object": "forte.data.data_pack.Meta", "py/state": {"_pack_id": 1, "doc_id": "00_Abstract", "language": "eng", "span_unit": "character"}}, "orig_text_len": 1902, "processed_original_spans": [], "replace_back_operations": [], "serialization": {"next_id": 3}}}',7),
- (47,'eliza.json','{
-  "py/object": "forte.data.data_pack.DataPack",
-  "py/state": {
-    "creation_records": {},
-    "field_records": {},
-    "links": [],
-    "groups": [],
-    "meta": {
-      "py/object": "forte.data.data_pack.Meta",
-      "py/state": {
-        "pack_name": "query_chatbot",
-        "_pack_id": 3,
-        "language": "eng",
-        "span_unit": "character"
-      }
-    },
-    "_text": "How do you do.  Please tell me your problem.",
-    "annotations": [
-      {
-        "py/object": "ft.onto.base_ontology.Utterance",
-        "py/state": {
-          "_span": {
-            "py/object": "forte.data.span.Span",
-            "begin": 0,
-            "end": 44
-          },
-          "_tid": 0,
-          "speaker": "ai"
-        }
-      }
-    ],
-    "generics": [],
-    "replace_back_operations": [],
-    "processed_original_spans": [],
-    "orig_text_len": 44,
-    "serialization": {
-      "next_id": 1
-    }
-  }
-}',8);
-INSERT INTO "nlpviewer_backend_project" ("id","ontology","name","config") VALUES (5,'{
+ (44,'project2-doc1-example','{"py/object": "forte.data.data_pack.DataPack", "py/state": {"_text": "During the annual Boston Marathon on April 15, 2013, two homemade pressure cooker bombs detonated 14 seconds and 210 yards (190 m) apart at 2:49 p.m., near the finish line of the race, killing three people and injuring several hundred others, including 16 who lost limbs.\n\nThree days later, the Federal Bureau of Investigation (FBI) released images of two suspects, who were later identified as Chechen Kyrgyzstani-American brothers Dzhokhar Tsarnaev and Tamerlan Tsarnaev. They killed an MIT policeman, kidnapped a man in his car, and had a shootout with the police in nearby Watertown, during which two officers were severely injured, one of whom died a year later. Tamerlan was shot several times, and his brother ran him over while escaping in the stolen car; Tamerlan died soon after.\n\nAn unprecedented manhunt for Dzhokhar ensued on April 19, with thousands of law enforcement officers searching a 20-block area of Watertown; residents of Watertown and surrounding communities were asked to stay indoors, and the transportation system and most businesses and public places closed. Around 6:00 p.m., a Watertown resident discovered Dzhokhar hiding in a boat in his backyard. He was shot and wounded by police before being taken into custody.\n\nDuring questioning, Dzhokhar said that he and his brother were motivated by extremist Islamist beliefs and the wars in Iraq and Afghanistan, that they were self-radicalized and unconnected to any outside terrorist groups, and that he was following his brother''s lead. He said they learned to build explosive devices from an online magazine of the al-Qaeda affiliate in Yemen. He also said they had intended to travel to New York City to bomb Times Square. On April 8, 2015, he was convicted of 30 charges, including use of a weapon of mass destruction and malicious destruction of property resulting in death. Two months later, he was sentenced to death.", "annotations": [{"py/object": "edu.cmu.EventMention", "py/state": {"_embedding": [], "_span": {"begin": 88, "end": 97, "py/object": "forte.data.span.Span"}, "_tid": 0, "event_type": "bombing", "is_valid": null}}, {"py/object": "edu.cmu.EventMention", "py/state": {"_span": {"begin": 185, "end": 192, "py/object": "forte.data.span.Span"}, "is_valid": "True", "_tid": "b5c2a8e8-8048-11ea-8ece-820f078f24c0"}}], "creation_records": {"readers.event_reader.TwoDocumentEventReader": {"py/set": [0]}}, "field_records": {"readers.event_reader.TwoDocumentEventReader": {"py/set": [{"py/tuple": [0, "_event_type"]}]}}, "generics": [], "groups": [], "links": [], "meta": {"py/object": "forte.data.data_pack.Meta", "py/state": {"_pack_id": 1, "doc_id": "00_Abstract", "language": "eng", "span_unit": "character"}}, "orig_text_len": 1902, "processed_original_spans": [], "replace_back_operations": [], "serialization": {"next_id": 3}}}',7);
+INSERT INTO "auth_user" ("id","password","last_login","is_superuser","username","last_name","email","is_staff","is_active","date_joined","first_name") VALUES (1,'!UxJj1XC33tta5BGwynr83s3FMVy3PAQGmNDCQV28',NULL,0,'AnonymousUser','','',0,1,'2020-12-03 08:12:09.234988',''),
+ (2,'pbkdf2_sha256$180000$s0JH3mcJOxvY$vfOaYjGRjSsGTQ1br2cyq4BJ4kD7OHXuBnKg1gqOwg0=','2020-12-03 08:14:07.372065',1,'admin','','admin@stave.com',1,1,'2020-12-03 08:13:23.439785',''),
+ (3,'pbkdf2_sha256$180000$If72pDVs3GxT$RJPLri7XBHtswSvnvfgeUp0WyMY/7KvbVUfvC6QkFG4=','2020-12-03 08:20:05.805555',0,'normal1','','',0,1,'2020-12-03 08:14:34.947900',''),
+ (4,'pbkdf2_sha256$180000$OWJVlQn3xT6q$1AeGLAr46ZhpMjVsJVl+MTOZdXLYMtF/f/kuxRqQ1m0=',NULL,0,'normal2','','',0,1,'2020-12-03 08:14:52.948312','');
+INSERT INTO "guardian_userobjectpermission" ("id","object_pk","content_type_id","permission_id","user_id") VALUES (1,'7',9,37,3);
+INSERT INTO "nlpviewer_backend_project" ("id","name","ontology","user_id","config") VALUES (5,'project-1-example','{
+
   "name": "base_ontology",
+
   "definitions": [
+
     {
+
       "entry_name": "ft.onto.base_ontology.Token",
+
       "parent_entry": "forte.data.ontology.top.Annotation",
+
       "description": "A span based annotation :class:`Token`, used to represent a token or a word.",
+
       "attributes": [
+
         {
+
           "name": "pos",
+
           "type": "str"
+
         },
+
         {
+
           "name": "ud_xpos",
+
           "type": "str",
+
           "description": "Language specific pos tag. Used in CoNLL-U Format. Refer to https://universaldependencies.org/format.html"
+
         },
+
         {
+
           "name": "lemma",
+
           "type": "str",
+
           "description": "Lemma or stem of word form."
+
         },
+
         {
+
           "name": "chunk",
+
           "type": "str"
+
         },
+
         {
+
           "name": "ner",
+
           "type": "str"
+
         },
+
         {
+
           "name": "sense",
+
           "type": "str"
+
         },
+
         {
+
           "name": "is_root",
+
           "type": "bool"
+
         },
+
         {
+
           "name": "ud_features",
+
           "type": "Dict",
+
           "key_type": "str",
+
           "value_type": "str"
+
         },
+
         {
+
           "name": "ud_misc",
+
           "type": "Dict",
+
           "key_type": "str",
+
           "value_type": "str"
+
         }
+
       ]
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.Document",
+
       "parent_entry": "forte.data.ontology.top.Annotation",
+
       "description": "A span based annotation `Document`, normally used to represent a document."
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.Sentence",
+
       "parent_entry": "forte.data.ontology.top.Annotation",
+
       "description": "A span based annotation `Sentence`, normally used to represent a sentence.",
+
       "attributes": [
+
         {
+
           "name": "speaker",
+
           "type": "str"
+
         },
+
         {
+
           "name": "part_id",
+
           "type": "int"
+
         },
+
         {
+
           "name": "sentiment",
+
           "type": "Dict",
+
           "key_type": "str",
+
           "value_type": "float"
+
         }
+
       ]
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.Phrase",
+
       "parent_entry": "forte.data.ontology.top.Annotation",
+
       "description": "A span based annotation `Phrase`.",
+
       "attributes": [
+
         {
+
           "name": "phrase_type",
+
           "type": "str"
+
         }
+
       ]
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.Utterance",
+
       "parent_entry": "forte.data.ontology.top.Annotation",
+
       "description": "A span based annotation `Utterance`, normally used to represent an utterance in dialogue."
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.PredicateArgument",
+
       "parent_entry": "forte.data.ontology.top.Annotation",
+
       "description": "A span based annotation `PredicateArgument`, normally used to represent an argument of a predicate, can be linked to the predicate via the predicate link.",
+
       "attributes": [
+
         {
+
           "name": "ner_type",
+
           "type": "str"
+
         },
+
         {
+
           "name": "predicate_lemma",
+
           "type": "str"
+
         },
+
         {
+
           "name": "is_verb",
+
           "type": "bool"
+
         }
+
       ]
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.EntityMention",
+
       "parent_entry": "forte.data.ontology.top.Annotation",
+
       "description": "A span based annotation `EntityMention`, normally used to represent an Entity Mention in a piece of text.",
+
       "attributes": [
+
         {
+
           "name": "ner_type",
+
           "type": "str"
+
         }
+
       ]
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.EventMention",
+
       "parent_entry": "forte.data.ontology.top.Annotation",
+
       "description": "A span based annotation `EventMention`, used to refer to a mention of an event.",
+
       "attributes": [
+
         {
+
           "name": "event_type",
+
           "type": "str"
+
         }
+
       ]
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.PredicateMention",
+
       "parent_entry": "forte.data.ontology.top.Annotation",
+
       "description": "A span based annotation `PredicateMention`, normally used to represent a predicate (normally verbs) in a piece of text.",
+
       "attributes": [
+
         {
+
           "name": "predicate_lemma",
+
           "type": "str"
+
         },
+
         {
+
           "name": "framenet_id",
+
           "type": "str"
+
         },
+
         {
+
           "name": "is_verb",
+
           "type": "bool"
+
         }
+
       ]
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.PredicateLink",
+
       "parent_entry": "forte.data.ontology.top.Link",
+
       "description": "A `Link` type entry which represent a semantic role link between a predicate and its argument.",
+
       "attributes": [
+
         {
+
           "name": "arg_type",
+
           "type": "str",
+
           "description": "The predicate link type."
+
         }
+
       ],
+
       "parent_type": "ft.onto.base_ontology.PredicateMention",
+
       "child_type": "ft.onto.base_ontology.PredicateArgument"
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.Dependency",
+
       "parent_entry": "forte.data.ontology.top.Link",
+
       "description": "A `Link` type entry which represent a syntactic dependency.",
+
       "attributes": [
+
         {
+
           "name": "dep_label",
+
           "type": "str",
+
           "description": "The dependency label."
+
         },
+
         {
+
           "name": "rel_type",
+
           "type": "str"
+
         }
+
       ],
+
       "parent_type": "ft.onto.base_ontology.Token",
+
       "child_type": "ft.onto.base_ontology.Token"
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.EnhancedDependency",
+
       "parent_entry": "forte.data.ontology.top.Link",
+
       "description": "A `Link` type entry which represent a enhanced dependency: \n https://universaldependencies.org/u/overview/enhanced-syntax.html",
+
       "attributes": [
+
         {
+
           "name": "dep_label",
+
           "type": "str",
+
           "description": "The enhanced dependency label in Universal Dependency."
+
         }
+
       ],
+
       "parent_type": "ft.onto.base_ontology.Token",
+
       "child_type": "ft.onto.base_ontology.Token"
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.RelationLink",
+
       "parent_entry": "forte.data.ontology.top.Link",
+
       "description": "A `Link` type entry which represent a relation between two entity mentions",
+
       "attributes": [
+
         {
+
           "name": "rel_type",
+
           "type": "str",
+
           "description": "The type of the relation."
+
         }
+
       ],
+
       "parent_type": "ft.onto.base_ontology.EntityMention",
+
       "child_type": "ft.onto.base_ontology.EntityMention"
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.CrossDocEntityRelation",
+
       "parent_entry": "forte.data.ontology.top.MultiPackLink",
+
       "description": "A `Link` type entry which represent a relation between two entity mentions across the packs.",
+
       "attributes": [
+
         {
+
           "name": "rel_type",
+
           "type": "str",
+
           "description": "The type of the relation."
+
         }
+
       ],
+
       "parent_type": "ft.onto.base_ontology.EntityMention",
+
       "child_type": "ft.onto.base_ontology.EntityMention"
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.CoreferenceGroup",
+
       "parent_entry": "forte.data.ontology.top.Group",
+
       "description": "A group type entry that take `EntityMention`, as members, used to represent coreferent group of entities.",
+
       "member_type": "ft.onto.base_ontology.EntityMention"
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.EventRelation",
+
       "parent_entry": "forte.data.ontology.top.Link",
+
       "description": "A `Link` type entry which represent a relation between two event mentions.",
+
       "attributes": [
+
         {
+
           "name": "rel_type",
+
           "type": "str",
+
           "description": "The type of the relation."
+
         }
+
       ],
+
       "parent_type": "ft.onto.base_ontology.EventMention",
+
       "child_type": "ft.onto.base_ontology.EventMention"
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.CrossDocEventRelation",
+
       "parent_entry": "forte.data.ontology.top.MultiPackLink",
+
       "description": "A `Link` type entry which represent a relation between two event mentions across the packs.",
+
       "attributes": [
+
         {
+
           "name": "rel_type",
+
           "type": "str",
+
           "description": "The type of the relation."
+
         }
+
       ],
+
       "parent_type": "ft.onto.base_ontology.EventMention",
+
       "child_type": "ft.onto.base_ontology.EventMention"
+
     }
+
   ]
-}
-','project-1-example',NULL),
- (7,'{
+
+}',3,''),
+ (7,'project-2-example','{
+
   "name": "all_ontology",
+
   "definitions": [
+
     {
+
       "entry_name": "ft.onto.base_ontology.Token",
+
       "parent_entry": "forte.data.ontology.top.Annotation",
+
       "description": "A span based annotation :class:`Token`, used to represent a token or a word.",
+
       "attributes": [
+
         {
+
           "name": "pos",
+
           "type": "str"
+
         },
+
         {
+
           "name": "ud_xpos",
+
           "type": "str",
+
           "description": "Language specific pos tag. Used in CoNLL-U Format. Refer to https://universaldependencies.org/format.html"
+
         },
+
         {
+
           "name": "lemma",
+
           "type": "str",
+
           "description": "Lemma or stem of word form."
+
         },
+
         {
+
           "name": "chunk",
+
           "type": "str"
+
         },
+
         {
+
           "name": "ner",
+
           "type": "str"
+
         },
+
         {
+
           "name": "sense",
+
           "type": "str"
+
         },
+
         {
+
           "name": "is_root",
+
           "type": "bool"
+
         },
+
         {
+
           "name": "ud_features",
+
           "type": "Dict",
+
           "key_type": "str",
+
           "value_type": "str"
+
         },
+
         {
+
           "name": "ud_misc",
+
           "type": "Dict",
+
           "key_type": "str",
+
           "value_type": "str"
+
         }
+
       ]
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.Document",
+
       "parent_entry": "forte.data.ontology.top.Annotation",
+
       "description": "A span based annotation `Document`, normally used to represent a document."
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.Sentence",
+
       "parent_entry": "forte.data.ontology.top.Annotation",
+
       "description": "A span based annotation `Sentence`, normally used to represent a sentence.",
+
       "attributes": [
+
         {
+
           "name": "speaker",
+
           "type": "str"
+
         },
+
         {
+
           "name": "part_id",
+
           "type": "int"
+
         },
+
         {
+
           "name": "sentiment",
+
           "type": "Dict",
+
           "key_type": "str",
+
           "value_type": "float"
+
         }
+
       ]
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.Phrase",
+
       "parent_entry": "forte.data.ontology.top.Annotation",
+
       "description": "A span based annotation `Phrase`.",
+
       "attributes": [
+
         {
+
           "name": "phrase_type",
+
           "type": "str"
+
         }
+
       ]
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.Utterance",
+
       "parent_entry": "forte.data.ontology.top.Annotation",
+
       "description": "A span based annotation `Utterance`, normally used to represent an utterance in dialogue."
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.PredicateArgument",
+
       "parent_entry": "forte.data.ontology.top.Annotation",
+
       "description": "A span based annotation `PredicateArgument`, normally used to represent an argument of a predicate, can be linked to the predicate via the predicate link.",
+
       "attributes": [
+
         {
+
           "name": "ner_type",
+
           "type": "str"
+
         },
+
         {
+
           "name": "predicate_lemma",
+
           "type": "str"
+
         },
+
         {
+
           "name": "is_verb",
+
           "type": "bool"
+
         }
+
       ]
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.EntityMention",
+
       "parent_entry": "forte.data.ontology.top.Annotation",
+
       "description": "A span based annotation `EntityMention`, normally used to represent an Entity Mention in a piece of text.",
+
       "attributes": [
+
         {
+
           "name": "ner_type",
+
           "type": "str"
+
         }
+
       ]
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.EventMention",
+
       "parent_entry": "forte.data.ontology.top.Annotation",
+
       "description": "A span based annotation `EventMention`, used to refer to a mention of an event.",
+
       "attributes": [
+
         {
+
           "name": "event_type",
+
           "type": "str"
+
         }
+
       ]
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.PredicateMention",
+
       "parent_entry": "forte.data.ontology.top.Annotation",
+
       "description": "A span based annotation `PredicateMention`, normally used to represent a predicate (normally verbs) in a piece of text.",
+
       "attributes": [
+
         {
+
           "name": "predicate_lemma",
+
           "type": "str"
+
         },
+
         {
+
           "name": "framenet_id",
+
           "type": "str"
+
         },
+
         {
+
           "name": "is_verb",
+
           "type": "bool"
+
         }
+
       ]
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.PredicateLink",
+
       "parent_entry": "forte.data.ontology.top.Link",
+
       "description": "A `Link` type entry which represent a semantic role link between a predicate and its argument.",
+
       "attributes": [
+
         {
+
           "name": "arg_type",
+
           "type": "str",
+
           "description": "The predicate link type."
+
         }
+
       ],
+
       "parent_type": "ft.onto.base_ontology.PredicateMention",
+
       "child_type": "ft.onto.base_ontology.PredicateArgument"
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.Dependency",
+
       "parent_entry": "forte.data.ontology.top.Link",
+
       "description": "A `Link` type entry which represent a syntactic dependency.",
+
       "attributes": [
+
         {
+
           "name": "dep_label",
+
           "type": "str",
+
           "description": "The dependency label."
+
         },
+
         {
+
           "name": "rel_type",
+
           "type": "str"
+
         }
+
       ],
+
       "parent_type": "ft.onto.base_ontology.Token",
+
       "child_type": "ft.onto.base_ontology.Token"
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.EnhancedDependency",
+
       "parent_entry": "forte.data.ontology.top.Link",
+
       "description": "A `Link` type entry which represent a enhanced dependency: \n https://universaldependencies.org/u/overview/enhanced-syntax.html",
+
       "attributes": [
+
         {
+
           "name": "dep_label",
+
           "type": "str",
+
           "description": "The enhanced dependency label in Universal Dependency."
+
         }
+
       ],
+
       "parent_type": "ft.onto.base_ontology.Token",
+
       "child_type": "ft.onto.base_ontology.Token"
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.RelationLink",
+
       "parent_entry": "forte.data.ontology.top.Link",
+
       "description": "A `Link` type entry which represent a relation between two entity mentions",
+
       "attributes": [
+
         {
+
           "name": "rel_type",
+
           "type": "str",
+
           "description": "The type of the relation."
+
         }
+
       ],
+
       "parent_type": "ft.onto.base_ontology.EntityMention",
+
       "child_type": "ft.onto.base_ontology.EntityMention"
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.CrossDocEntityRelation",
+
       "parent_entry": "forte.data.ontology.top.MultiPackLink",
+
       "description": "A `Link` type entry which represent a relation between two entity mentions across the packs.",
+
       "attributes": [
+
         {
+
           "name": "rel_type",
+
           "type": "str",
+
           "description": "The type of the relation."
+
         }
+
       ],
+
       "parent_type": "ft.onto.base_ontology.EntityMention",
+
       "child_type": "ft.onto.base_ontology.EntityMention"
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.CoreferenceGroup",
+
       "parent_entry": "forte.data.ontology.top.Group",
+
       "description": "A group type entry that take `EntityMention`, as members, used to represent coreferent group of entities.",
+
       "member_type": "ft.onto.base_ontology.EntityMention"
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.EventRelation",
+
       "parent_entry": "forte.data.ontology.top.Link",
+
       "description": "A `Link` type entry which represent a relation between two event mentions.",
+
       "attributes": [
+
         {
+
           "name": "rel_type",
+
           "type": "str",
+
           "description": "The type of the relation."
+
         }
+
       ],
+
       "parent_type": "ft.onto.base_ontology.EventMention",
+
       "child_type": "ft.onto.base_ontology.EventMention"
+
     },
+
     {
+
       "entry_name": "ft.onto.base_ontology.CrossDocEventRelation",
+
       "parent_entry": "forte.data.ontology.top.MultiPackLink",
+
       "description": "A `Link` type entry which represent a relation between two event mentions across the packs.",
+
       "attributes": [
+
         {
+
           "name": "rel_type",
+
           "type": "str",
+
           "description": "The type of the relation."
+
         }
+
       ],
+
       "parent_type": "ft.onto.base_ontology.EventMention",
+
       "child_type": "ft.onto.base_ontology.EventMention"
+
     },
+
     {
+
       "entry_name": "edu.cmu.EventMention",
+
       "parent_entry": "ft.onto.base_ontology.EventMention",
+
       "description": "A span based annotation `EventMention`, used to refer to a mention of an event.",
+
       "attributes": [
+
         {
+
           "name": "is_valid",
+
           "type": "bool"
+
         }
+
       ]
+
     },
+
     {
+
       "entry_name": "edu.cmu.CrossEventRelation",
+
       "parent_entry": "ft.onto.base_ontology.CrossDocEventRelation",
+
       "description": "Represent relation cross documents.",
+
       "attributes": [
+
         {
+
           "name": "evidence",
+
           "type": "str"
+
         }
+
       ],
+
       "parent_type": "edu.cmu.EventMention",
+
       "child_type": "edu.cmu.EventMention"
+
     }
+
   ]
-}','project-2-example',NULL),
- (8,'{
-  "name": "base_ontology",
-  "definitions": [
-    {
-      "entry_name": "ft.onto.base_ontology.Token",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation :class:`Token`, used to represent a token or a word.",
-      "attributes": [
-        {
-          "name": "pos",
-          "type": "str"
-        },
-        {
-          "name": "ud_xpos",
-          "type": "str",
-          "description": "Language specific pos tag. Used in CoNLL-U Format. Refer to https://universaldependencies.org/format.html"
-        },
-        {
-          "name": "lemma",
-          "type": "str",
-          "description": "Lemma or stem of word form."
-        },
-        {
-          "name": "chunk",
-          "type": "str"
-        },
-        {
-          "name": "ner",
-          "type": "str"
-        },
-        {
-          "name": "sense",
-          "type": "str"
-        },
-        {
-          "name": "is_root",
-          "type": "bool"
-        },
-        {
-          "name": "ud_features",
-          "type": "Dict",
-          "key_type": "str",
-          "value_type": "str"
-        },
-        {
-          "name": "ud_misc",
-          "type": "Dict",
-          "key_type": "str",
-          "value_type": "str"
-        }
-      ]
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.Subword",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "Used to represent subword tokenization results."
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.Document",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation `Document`, normally used to represent a document.",
-      "attributes": [
-        {
-          "name": "document_class",
-          "type": "List",
-          "item_type": "str",
-          "description": "A list of class names that the document belongs to."
-        },
-        {
-          "name": "sentiment",
-          "type": "Dict",
-          "key_type": "str",
-          "value_type": "float"
-        }
-      ]
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.Sentence",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation `Sentence`, normally used to represent a sentence.",
-      "attributes": [
-        {
-          "name": "speaker",
-          "type": "str"
-        },
-        {
-          "name": "part_id",
-          "type": "int"
-        },
-        {
-          "name": "sentiment",
-          "type": "Dict",
-          "key_type": "str",
-          "value_type": "float"
-        }
-      ]
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.Phrase",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation `Phrase`.",
-      "attributes": [
-        {
-          "name": "phrase_type",
-          "type": "str"
-        },
-        {
-          "name": "headword",
-          "type": "ft.onto.base_ontology.Token"
-        }
-      ]
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.UtteranceContext",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "`UtteranceContext` represents the context part in dialogue."
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.Utterance",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation `Utterance`, normally used to represent an utterance in dialogue.",
-      "attributes" : [
-        {
-          "name": "speaker",
-          "type": "str"
-        }
-      ]
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.PredicateArgument",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation `PredicateArgument`, normally used to represent an argument of a predicate, can be linked to the predicate via the predicate link.",
-      "attributes": [
-        {
-          "name": "ner_type",
-          "type": "str"
-        },
-        {
-          "name": "predicate_lemma",
-          "type": "str"
-        },
-        {
-          "name": "is_verb",
-          "type": "bool"
-        }
-      ]
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.EntityMention",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation `EntityMention`, normally used to represent an Entity Mention in a piece of text.",
-      "attributes": [
-        {
-          "name": "ner_type",
-          "type": "str"
-        }
-      ]
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.EventMention",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation `EventMention`, used to refer to a mention of an event.",
-      "attributes": [
-        {
-          "name": "event_type",
-          "type": "str"
-        }
-      ]
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.PredicateMention",
-      "parent_entry": "ft.onto.base_ontology.Phrase",
-      "description": "A span based annotation `PredicateMention`, normally used to represent a predicate (normally verbs) in a piece of text.",
-      "attributes": [
-        {
-          "name": "predicate_lemma",
-          "type": "str"
-        },
-        {
-          "name": "framenet_id",
-          "type": "str"
-        },
-        {
-          "name": "is_verb",
-          "type": "bool"
-        }
-      ]
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.PredicateLink",
-      "parent_entry": "forte.data.ontology.top.Link",
-      "description": "A `Link` type entry which represent a semantic role link between a predicate and its argument.",
-      "attributes": [
-        {
-          "name": "arg_type",
-          "type": "str",
-          "description": "The predicate link type."
-        }
-      ],
-      "parent_type": "ft.onto.base_ontology.PredicateMention",
-      "child_type": "ft.onto.base_ontology.PredicateArgument"
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.Dependency",
-      "parent_entry": "forte.data.ontology.top.Link",
-      "description": "A `Link` type entry which represent a syntactic dependency.",
-      "attributes": [
-        {
-          "name": "dep_label",
-          "type": "str",
-          "description": "The dependency label."
-        },
-        {
-          "name": "rel_type",
-          "type": "str"
-        }
-      ],
-      "parent_type": "ft.onto.base_ontology.Token",
-      "child_type": "ft.onto.base_ontology.Token"
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.EnhancedDependency",
-      "parent_entry": "forte.data.ontology.top.Link",
-      "description": "A `Link` type entry which represent a enhanced dependency: \n https://universaldependencies.org/u/overview/enhanced-syntax.html",
-      "attributes": [
-        {
-          "name": "dep_label",
-          "type": "str",
-          "description": "The enhanced dependency label in Universal Dependency."
-        }
-      ],
-      "parent_type": "ft.onto.base_ontology.Token",
-      "child_type": "ft.onto.base_ontology.Token"
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.RelationLink",
-      "parent_entry": "forte.data.ontology.top.Link",
-      "description": "A `Link` type entry which represent a relation between two entity mentions",
-      "attributes": [
-        {
-          "name": "rel_type",
-          "type": "str",
-          "description": "The type of the relation."
-        }
-      ],
-      "parent_type": "ft.onto.base_ontology.EntityMention",
-      "child_type": "ft.onto.base_ontology.EntityMention"
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.CrossDocEntityRelation",
-      "parent_entry": "forte.data.ontology.top.MultiPackLink",
-      "description": "A `Link` type entry which represent a relation between two entity mentions across the packs.",
-      "attributes": [
-        {
-          "name": "rel_type",
-          "type": "str",
-          "description": "The type of the relation."
-        }
-      ],
-      "parent_type": "ft.onto.base_ontology.EntityMention",
-      "child_type": "ft.onto.base_ontology.EntityMention"
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.CoreferenceGroup",
-      "parent_entry": "forte.data.ontology.top.Group",
-      "description": "A group type entry that take `EntityMention`, as members, used to represent coreferent group of entities.",
-      "member_type": "ft.onto.base_ontology.EntityMention"
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.EventRelation",
-      "parent_entry": "forte.data.ontology.top.Link",
-      "description": "A `Link` type entry which represent a relation between two event mentions.",
-      "attributes": [
-        {
-          "name": "rel_type",
-          "type": "str",
-          "description": "The type of the relation."
-        }
-      ],
-      "parent_type": "ft.onto.base_ontology.EventMention",
-      "child_type": "ft.onto.base_ontology.EventMention"
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.CrossDocEventRelation",
-      "parent_entry": "forte.data.ontology.top.MultiPackLink",
-      "description": "A `Link` type entry which represent a relation between two event mentions across the packs.",
-      "attributes": [
-        {
-          "name": "rel_type",
-          "type": "str",
-          "description": "The type of the relation."
-        }
-      ],
-      "parent_type": "ft.onto.base_ontology.EventMention",
-      "child_type": "ft.onto.base_ontology.EventMention"
-    },
-    {
-     "entry_name": "ft.onto.base_ontology.ConstituentNode",
-     "parent_entry": "forte.data.ontology.top.Annotation",
-     "description": "A span based annotation `ConstituentNode` to represent constituents in constituency parsing. This can also sentiment values annotated on the nodes.",
-     "attributes": [
-       {
-         "name": "label",
-         "type": "str"
-       },
-       {
-         "name": "sentiment",
-         "type": "Dict",
-         "key_type": "str",
-         "value_type": "float"
-       },
-       {
-         "name": "is_root",
-         "type": "bool"
-       },
-       {
-         "name": "is_leaf",
-         "type": "bool"
-       },
-       {
-         "name": "parent_node",
-         "type": "ft.onto.base_ontology.ConstituentNode"
-       },
-       {
-         "name": "children_nodes",
-         "type": "List",
-         "item_type": "ft.onto.base_ontology.ConstituentNode"
-       }
-     ]
-    },
-    {
-      "entry_name": "ft.onto.base_ontology.Title",
-      "parent_entry": "forte.data.ontology.top.Annotation",
-      "description": "A span based annotation `Title`, normally used to represent a title."
-    }
-  ]
-}
-','Eliza','{"legendConfigs":{"ft.onto.base_ontology.Token":{"is_selected":false,"is_shown":true,"attributes":{"pos":false,"ud_xpos":false,"lemma":false,"chunk":false,"ner":false,"sense":false}},"ft.onto.base_ontology.Document":{"is_selected":false,"is_shown":true,"attributes":{}},"ft.onto.base_ontology.Sentence":{"is_selected":false,"is_shown":true,"attributes":{"speaker":false}},"ft.onto.base_ontology.Phrase":{"is_selected":false,"is_shown":true,"attributes":{"phrase_type":false}},"ft.onto.base_ontology.UtteranceContext":{"is_selected":false,"is_shown":true},"ft.onto.base_ontology.Utterance":{"is_selected":false,"is_shown":true,"attributes":{"speaker":false}},"ft.onto.base_ontology.PredicateArgument":{"is_selected":false,"is_shown":true,"attributes":{"ner_type":false,"predicate_lemma":false}},"ft.onto.base_ontology.EntityMention":{"is_selected":false,"is_shown":true,"attributes":{"ner_type":false}},"ft.onto.base_ontology.EventMention":{"is_selected":false,"is_shown":true,"attributes":{"event_type":false}},"ft.onto.base_ontology.PredicateMention":{"is_selected":false,"is_shown":true,"attributes":{"predicate_lemma":false,"framenet_id":false}},"ft.onto.base_ontology.PredicateLink":{"is_selected":false,"is_shown":true,"attributes":{"arg_type":false}},"ft.onto.base_ontology.Dependency":{"is_selected":false,"is_shown":true,"attributes":{"dep_label":false,"rel_type":false}},"ft.onto.base_ontology.EnhancedDependency":{"is_selected":false,"is_shown":true,"attributes":{"dep_label":false}},"ft.onto.base_ontology.RelationLink":{"is_selected":false,"is_shown":true,"attributes":{"rel_type":false}},"ft.onto.base_ontology.CrossDocEntityRelation":{"is_selected":false,"is_shown":true,"attributes":{"rel_type":false}},"ft.onto.base_ontology.CoreferenceGroup":{"is_selected":false,"is_shown":true},"ft.onto.base_ontology.EventRelation":{"is_selected":false,"is_shown":true,"attributes":{"rel_type":false}},"ft.onto.base_ontology.CrossDocEventRelation":{"is_selected":false,"is_shown":true,"attributes":{"rel_type":false}},"ft.onto.base_ontology.Subword":{"is_selected":false,"is_shown":true},"ft.onto.base_ontology.ConstituentNode":{"is_selected":false,"is_shown":true,"attributes":{"label":false}},"ft.onto.base_ontology.Title":{"is_selected":false,"is_shown":true}},"scopeConfigs":{"ft.onto.base_ontology.Token":false,"ft.onto.base_ontology.Document":false,"ft.onto.base_ontology.Sentence":false,"ft.onto.base_ontology.Phrase":false,"ft.onto.base_ontology.UtteranceContext":false,"ft.onto.base_ontology.Utterance":false,"ft.onto.base_ontology.PredicateArgument":false,"ft.onto.base_ontology.EntityMention":false,"ft.onto.base_ontology.EventMention":false,"ft.onto.base_ontology.PredicateMention":false,"ft.onto.base_ontology.Subword":false,"ft.onto.base_ontology.ConstituentNode":false,"ft.onto.base_ontology.Title":false},"layoutConfigs":{"center-middle":"DialogueBox","left":"disable","right":"disable","center-bottom":"disable"}}');
+
+}',4,'');
 CREATE UNIQUE INDEX IF NOT EXISTS "auth_group_permissions_group_id_permission_id_0cd325b0_uniq" ON "auth_group_permissions" (
 	"group_id",
 	"permission_id"
@@ -40850,5 +41072,44 @@ CREATE INDEX IF NOT EXISTS "django_session_expire_date_a5c62663" ON "django_sess
 );
 CREATE INDEX IF NOT EXISTS "nlpviewer_backend_document_project_id_a14a056d" ON "nlpviewer_backend_document" (
 	"project_id"
+);
+CREATE UNIQUE INDEX IF NOT EXISTS "guardian_userobjectpermission_user_id_permission_id_object_pk_b0b3d2fc_uniq" ON "guardian_userobjectpermission" (
+	"user_id",
+	"permission_id",
+	"object_pk"
+);
+CREATE UNIQUE INDEX IF NOT EXISTS "guardian_groupobjectpermission_group_id_permission_id_object_pk_3f189f7c_uniq" ON "guardian_groupobjectpermission" (
+	"group_id",
+	"permission_id",
+	"object_pk"
+);
+CREATE INDEX IF NOT EXISTS "guardian_groupobjectpermission_content_type_id_7ade36b8" ON "guardian_groupobjectpermission" (
+	"content_type_id"
+);
+CREATE INDEX IF NOT EXISTS "guardian_groupobjectpermission_group_id_4bbbfb62" ON "guardian_groupobjectpermission" (
+	"group_id"
+);
+CREATE INDEX IF NOT EXISTS "guardian_groupobjectpermission_permission_id_36572738" ON "guardian_groupobjectpermission" (
+	"permission_id"
+);
+CREATE INDEX IF NOT EXISTS "guardian_userobjectpermission_content_type_id_2e892405" ON "guardian_userobjectpermission" (
+	"content_type_id"
+);
+CREATE INDEX IF NOT EXISTS "guardian_userobjectpermission_permission_id_71807bfc" ON "guardian_userobjectpermission" (
+	"permission_id"
+);
+CREATE INDEX IF NOT EXISTS "guardian_userobjectpermission_user_id_d5c1e964" ON "guardian_userobjectpermission" (
+	"user_id"
+);
+CREATE INDEX IF NOT EXISTS "guardian_gr_content_ae6aec_idx" ON "guardian_groupobjectpermission" (
+	"content_type_id",
+	"object_pk"
+);
+CREATE INDEX IF NOT EXISTS "guardian_us_content_179ed2_idx" ON "guardian_userobjectpermission" (
+	"content_type_id",
+	"object_pk"
+);
+CREATE INDEX IF NOT EXISTS "nlpviewer_backend_project_user_id_da89c05a" ON "nlpviewer_backend_project" (
+	"user_id"
 );
 COMMIT;
