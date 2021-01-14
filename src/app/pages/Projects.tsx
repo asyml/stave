@@ -115,6 +115,7 @@ function Projects() {
   }
 
   function handleProjectTypeChange(event: any) {
+    console.log(event.target.value);
     setProjectType(event.target.value);
   }
 
@@ -253,7 +254,7 @@ function Projects() {
                         ))}
                       </Select>
                     </Grid>
-                    {projectType === 'single_pack' ? (
+                    {projectType === 'indoc' ? (
                       <div>
                         <div>
                           <TextField
