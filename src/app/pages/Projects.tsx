@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, ChangeEvent} from 'react';
 import {fetchProjects, createProject, deleteProject} from '../lib/api';
 import {Link, useHistory} from 'react-router-dom';
 import {FileWithPath} from 'react-dropzone';
@@ -57,7 +57,7 @@ function Projects() {
   const history = useHistory();
   const [open, setOpen] = React.useState(false);
 
-  const [projectType, setProjectType] = useState<string>('single_pack');
+  const [projectType, setProjectType] = useState<string>('indoc');
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -114,9 +114,10 @@ function Projects() {
     });
   }
 
-  function handleProjectTypeChange(event: any) {
-    console.log(event.target.value);
-    setProjectType(event.target.value);
+  function handleProjectTypeChange(event: ChangeEvent) {
+    if (event.target) {
+      setProjectType((event.target as HTMLTextAreaElement).value);
+    }
   }
 
   function userAddFiles(
@@ -317,7 +318,7 @@ function Projects() {
                         <div>
                           <DropUpload
                             fileLimit={1048576}
-                            fileDropFunc={(file: any) =>
+                            fileDropFunc={(file: FileWithPath[]) =>
                               userAddFiles(file, 'single_pack')
                             }
                             mimeType="application/json"
@@ -327,7 +328,7 @@ function Projects() {
                         <div>
                           <DropUpload
                             fileLimit={1048576}
-                            fileDropFunc={(file: any) =>
+                            fileDropFunc={(file: FileWithPath[]) =>
                               userAddFiles(file, 'multi_pack')
                             }
                             mimeType="application/json"

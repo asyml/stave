@@ -15,7 +15,9 @@ import {FileWithPath} from 'react-dropzone';
 function Docs() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [projectInfo, setProjectInfo] = useState<any>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [docs, setDocs] = useState<any[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [crossdocs, setCrossDocs] = useState<any[]>();
 
   const history = useHistory();
@@ -115,7 +117,9 @@ function Docs() {
         <h2>new pack</h2>
         <DropUpload
           fileLimit={5e7}
-          fileActionButtonFunc={(file: any) => handleAdd(file, 'single_pack')}
+          fileActionButtonFunc={(file: FileWithPath[]) =>
+            handleAdd(file, 'single_pack')
+          }
           fileActionButtonText={'ADD'}
           mimeType="application/json"
           // Do not support zip now.
@@ -146,7 +150,9 @@ function Docs() {
           <h2> new multi pack </h2>
           <DropUpload
             fileLimit={5e7}
-            fileActionButtonFunc={(file: any) => handleAdd(file, 'multi_pack')}
+            fileActionButtonFunc={(file: FileWithPath[]) =>
+              handleAdd(file, 'multi_pack')
+            }
             fileActionButtonText={'ADD'}
             mimeType="application/json"
             // Do not support zip now.
