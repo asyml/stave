@@ -28,7 +28,7 @@ nlp_models = {}
 
 def __load_eliza():
   if forte_installed:
-    from forte.processors import ElizaProcessor
+    from forte.processors.eliza_processor import ElizaProcessor
     from forte.data.readers import RawDataDeserializeReader
 
     #Create the pipeline and add the processor.

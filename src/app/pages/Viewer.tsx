@@ -38,6 +38,7 @@ function Viewer() {
   useEffect(() => {
     if (id) {
       fetchDocOntology(id).then(data => {
+        console.log(data.textPack);
         const [singlePackFromAPI, ontologyFromAPI] = transformPack(
           data.textPack,
           data.ontology
