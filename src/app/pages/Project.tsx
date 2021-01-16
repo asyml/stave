@@ -22,77 +22,68 @@ function Docs() {
 
   const history = useHistory();
 
-  useEffect(() => {
-    getProjectInfo().catch(() => {
-      history.push('/login');
-    });
-  }, [history]);
+  const project_id = window.location.pathname.split('/').pop()!;
 
   useEffect(() => {
-    updateDocs();
-  }, [projectInfo]);
+    getProjectInfo();
+    //   .catch(() => {
+    //   history.push('/login');
+    // });
+  }, [history]);
 
   function getProjectInfo() {
     const project_id = window.location.pathname.split('/').pop()!;
     return fetchProject(project_id).then(info => {
       setProjectInfo(info);
+      updateDocs(info);
     });
   }
-  function updateDocs() {
-    if (projectInfo) {
-      const project_id = window.location.pathname.split('/').pop()!;
-      if (projectInfo.project_type === 'indoc') {
-        return fetchDocumentsProject(project_id).then(docs => {
-          setDocs(docs);
-        });
-      } else if (projectInfo.project_type === 'crossdoc') {
-        return fetchDocumentsAndMultiPacksProject(project_id).then(result => {
-          console.log(result);
-          setDocs(result.docs);
-          setCrossDocs(result.crossdocs);
-        });
-      }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function updateDocs(info: any) {
+    if (info.project_type === 'indoc') {
+      return fetchDocumentsProject(project_id).then(docs => {
+        setDocs(docs);
+      });
+    } else if (info.project_type === 'crossdoc') {
+      return fetchDocumentsAndMultiPacksProject(project_id).then(result => {
+        setDocs(result.docs);
+        setCrossDocs(result.crossdocs);
+      });
     }
   }
-  function handleAdd(filesToUpload: FileWithPath[], pack_type = 'single_pack') {
-    const project_id = window.location.pathname.split('/').pop()!;
-    if (pack_type === 'single_pack') {
-      filesToUpload.forEach(f => {
-        const reader = new FileReader();
-        reader.readAsText(f);
-        reader.onload = function () {
-          createDocument(f.name, reader.result as string, project_id).then(
-            () => {
-              updateDocs();
-            }
-          );
-        };
-      });
-    } else if (pack_type === 'multi_pack') {
-      filesToUpload.forEach(f => {
-        const reader = new FileReader();
-        reader.readAsText(f);
-        reader.onload = function () {
-          createCrossDoc(f.name, reader.result as string, project_id).then(
-            () => {
-              updateDocs();
-            }
-          );
-        };
-      });
-    }
+  function handleSinglePackAdd(filesToUpload: FileWithPath[]) {
+    filesToUpload.forEach(f => {
+      const reader = new FileReader();
+      reader.readAsText(f);
+      reader.onload = function () {
+        createDocument(f.name, reader.result as string, project_id).then(() => {
+          updateDocs(projectInfo);
+        });
+      };
+    });
   }
 
-  function handleDelete(id: string, pack_type = 'single_pack') {
-    if (pack_type === 'single_pack') {
-      deleteDocument(id).then(() => {
-        updateDocs();
-      });
-    } else if (pack_type === 'multi_pack') {
-      deleteCrossDoc(id).then(() => {
-        updateDocs();
-      });
-    }
+  function handleMultiPackAdd(filesToUpload: FileWithPath[]) {
+    filesToUpload.forEach(f => {
+      const reader = new FileReader();
+      reader.readAsText(f);
+      reader.onload = function () {
+        createCrossDoc(f.name, reader.result as string, project_id).then(() => {
+          updateDocs(projectInfo);
+        });
+      };
+    });
+  }
+  function handleSinglePackDelete(id: string) {
+    deleteDocument(id).then(() => {
+      updateDocs(projectInfo);
+    });
+  }
+  function handleMultiPackDelete(id: string) {
+    deleteCrossDoc(id).then(() => {
+      updateDocs(projectInfo);
+    });
   }
 
   return (
@@ -104,7 +95,7 @@ function Docs() {
               <ul key={d.id}>
                 <li>
                   <Link to={`/documents/${d.id}`}>{d.name}</Link>{' '}
-                  <button onClick={() => handleDelete(d.id, 'single_pack')}>
+                  <button onClick={() => handleSinglePackDelete(d.id)}>
                     X
                   </button>
                 </li>
@@ -117,9 +108,7 @@ function Docs() {
         <h2>new pack</h2>
         <DropUpload
           fileLimit={5e7}
-          fileActionButtonFunc={(file: FileWithPath[]) =>
-            handleAdd(file, 'single_pack')
-          }
+          fileActionButtonFunc={handleSinglePackAdd}
           fileActionButtonText={'ADD'}
           mimeType="application/json"
           // Do not support zip now.
@@ -128,39 +117,37 @@ function Docs() {
         />
       </div>
 
-      {projectInfo && projectInfo.project_type === 'crossdoc' ? (
-        <div className="content_left" style={{marginLeft: '20px'}}>
-          <h2>All multi docs:</h2>
-          {crossdocs
-            ? crossdocs.map(d => (
-                <ul key={d.id}>
-                  <li>
-                    <Link to={`/crossdocs/${d.id}`}>{d.name}</Link>{' '}
-                    <button onClick={() => handleDelete(d.id, 'multi_pack')}>
-                      X
-                    </button>
-                  </li>
-                </ul>
-              ))
-            : 'Empty'}
-        </div>
-      ) : null}
-      {projectInfo && projectInfo.project_type === 'crossdoc' ? (
-        <div>
-          <h2> new multi pack </h2>
-          <DropUpload
-            fileLimit={5e7}
-            fileActionButtonFunc={(file: FileWithPath[]) =>
-              handleAdd(file, 'multi_pack')
-            }
-            fileActionButtonText={'ADD'}
-            mimeType="application/json"
-            // Do not support zip now.
-            // mimeType='application/json, application/x-rar-compressed, application/octet-stream, application/zip, application/octet-stream, application/x-zip-compressed, multipart/x-zip'
-            allowMultiple={true}
-          />
-        </div>
-      ) : null}
+      {projectInfo && projectInfo.project_type === 'crossdoc'
+        ? [
+            <div className="content_left" style={{marginLeft: '20px'}}>
+              <h2>All multi docs:</h2>
+              {crossdocs
+                ? crossdocs.map(d => (
+                    <ul key={d.id}>
+                      <li>
+                        <Link to={`/crossdocs/${d.id}`}>{d.name}</Link>{' '}
+                        <button onClick={() => handleMultiPackDelete(d.id)}>
+                          X
+                        </button>
+                      </li>
+                    </ul>
+                  ))
+                : 'Empty'}
+            </div>,
+            <div>
+              <h2> new multi pack </h2>
+              <DropUpload
+                fileLimit={5e7}
+                fileActionButtonFunc={handleMultiPackAdd}
+                fileActionButtonText={'ADD'}
+                mimeType="application/json"
+                // Do not support zip now.
+                // mimeType='application/json, application/x-rar-compressed, application/octet-stream, application/zip, application/octet-stream, application/x-zip-compressed, multipart/x-zip'
+                allowMultiple={true}
+              />
+            </div>,
+          ]
+        : null}
     </div>
   );
 }

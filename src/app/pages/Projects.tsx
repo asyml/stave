@@ -114,10 +114,8 @@ function Projects() {
     });
   }
 
-  function handleProjectTypeChange(event: ChangeEvent) {
-    if (event.target) {
-      setProjectType((event.target as HTMLTextAreaElement).value);
-    }
+  function handleProjectTypeChange(type: string) {
+    setProjectType(type);
   }
 
   function userAddFiles(
@@ -141,7 +139,6 @@ function Projects() {
 
   function createDefaultConfig(ontology: string): IProjectConfigs {
     const ontologyJson = JSON.parse(ontology);
-    console.log(ontologyJson);
     const ontologyObject: IOntology = camelCaseDeep(ontologyJson);
     const config: IProjectConfigs = {
       legendConfigs: {},
@@ -248,7 +245,9 @@ function Projects() {
                         labelId="label"
                         id="select"
                         value={projectType}
-                        onChange={handleProjectTypeChange}
+                        onChange={e =>
+                          handleProjectTypeChange(e.target.value as string)
+                        }
                       >
                         {PROJECT_TYPES.map(d => (
                           <MenuItem value={d}>{d}</MenuItem>

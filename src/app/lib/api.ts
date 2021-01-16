@@ -24,7 +24,7 @@ export function fetchProjects(): Promise<any> {
   return fetch('/api/projects').then(r => r.json());
 }
 
-export function fetchProject(id: string) {
+export function fetchProject(id: string): Promise<any> {
   return fetch(`/api/projects/${id}`).then(r => r.json());
 }
 
