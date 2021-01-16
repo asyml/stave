@@ -1,0 +1,109 @@
+.instruction {
+  font-size: 15px;
+}
+
+.text_area_container {
+  position: relative;
+  opacity: 0;
+}
+
+.text_area_container_visible {
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+.text_node_container {
+  white-space: pre-wrap;
+  position: relative;
+  line-height: 25px;
+  font-size: 1.1rem;
+}
+
+.annotation_line_toggle {
+  position: absolute;
+  left: -22px;
+  width: 18px;
+  font-size: 10px;
+  padding: 0px;
+}
+
+.link_edit_container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  transform: translateZ(0);
+}
+
+.ann_edit_rect {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.annotation_text_selection_cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 7;
+}
+
+.cursor {
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-top: 8px solid black;
+  transform: translate(-50%, 0);
+  display: block;
+  margin-top: -8px;
+  animation: floating 0.36s ease-in 0s infinite alternate;
+}
+
+@keyframes floating {
+  from {
+    transform: translate(-50%, -5px);
+  }
+  to {
+    transform: translate(-50%, 0);
+  }
+}
+
+.annotations_container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+}
+
+.links_container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.event_not_selected {
+  border-bottom: 3px solid #ff8b90;
+}
+.event_not_selected_hovered {
+  background-color: #ff8b90;
+  cursor: pointer;
+}
+.event_now_on{
+  border: 3px solid#0071ff;
+  background-color: #a7dcff;
+}
+.event_selected {
+  background-color: #fe346e;
+}
+.event_selected_hovered {
+  background-color: #fe346e;
+  cursor: pointer;
+}
+
+.a_now_event {
+  border: 3px solid #0071ff;
+}
+.a_other_event {
+  border-bottom: 3px solid #0071ff;
+}
+

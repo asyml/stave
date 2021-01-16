@@ -12,6 +12,10 @@
     "react-is": "^17.0.1",
     "react-router-dom": "^5.2.0",
     "react-select": "^3.0.8",
+    "react-modal": "^3.11.2",
+    "react-alert": "^7.0.2",
+    "react-alert-template-basic": "^1.0.0",
+    "react-progressbar": "^15.4.1",
     "styled-components": "^5.1.1"
   },
   "devDependencies": {

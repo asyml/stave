@@ -55,3 +55,11 @@ def fetch_project_check_perm(id, user, perm):
 
     return project
 
+
+def format_forte_id(id):
+    """
+
+    convert the user id (pk) to stave id. Used for crossdoc annotation creation record.
+    """
+    return "stave." + str(id)
+

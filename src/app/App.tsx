@@ -5,6 +5,7 @@ import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import Viewer from './pages/Viewer';
+import CrossDoc from './pages/CrossDoc';
 import Projects from './pages/Projects';
 import Project from './pages/Project';
 import Users from './pages/Users';
@@ -47,6 +48,10 @@ function App() {
 
           <Route path="/documents/:id">
             <Viewer />
+          </Route>
+
+          <Route path="/crossdocs/:id">
+            <CrossDoc />
           </Route>
 
           <Route path="/projects">

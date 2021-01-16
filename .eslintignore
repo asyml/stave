@@ -4,3 +4,5 @@ src/__tests__/
 src/declaration.d.ts
 src/serviceWorker.js
 src/setupProxy.js
+src/crossviewer
+src/app/pages/CrossDoc.tsx
