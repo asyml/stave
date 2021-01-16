@@ -114,10 +114,8 @@ function Projects() {
     });
   }
 
-  function handleProjectTypeChange(event: ChangeEvent) {
-    if (event.target) {
-      setProjectType((event.target as HTMLTextAreaElement).value);
-    }
+  function handleProjectTypeChange(newType: string) {
+    setProjectType(newType);
   }
 
   function userAddFiles(
@@ -248,7 +246,9 @@ function Projects() {
                         labelId="label"
                         id="select"
                         value={projectType}
-                        onChange={handleProjectTypeChange}
+                        onChange={e =>
+                          handleProjectTypeChange(e.target.value as string)
+                        }
                       >
                         {PROJECT_TYPES.map(d => (
                           <MenuItem value={d}>{d}</MenuItem>

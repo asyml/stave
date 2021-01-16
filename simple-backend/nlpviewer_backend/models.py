@@ -39,6 +39,7 @@ class Document(models.Model):
     # content: textPack: text body + annotation
 
     name = models.CharField(max_length=200)
+    packID = models.IntegerField(null=True)
     
     # relationship: project
     project = models.ForeignKey(
@@ -53,8 +54,8 @@ class Document(models.Model):
     textPack = models.TextField()
 
 class CrossDoc(models.Model):
-
     name = models.CharField(max_length=200)
+    packID = models.IntegerField(unique = True, null=True)
 
     # relationship: project
     project = models.ForeignKey(

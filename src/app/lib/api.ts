@@ -16,6 +16,20 @@ export interface APIDocConfig {
   config: string;
 }
 
+interface APICrossDocPack {
+  id: string;
+  textPack: string;
+}
+interface APICrossDoc {
+  crossDocPack: APICrossDocPack;
+  _parent: APIDocument;
+  _child: APIDocument;
+  nextCrossDocId: string;
+  forteID: string;
+  nextID: string;
+  secret_code: string;
+}
+
 export function fetchDocuments(): Promise<any> {
   return fetch('/api/documents').then(r => r.json());
 }
@@ -195,6 +209,25 @@ export function editLink(documentId: string, linkId: string, data: any) {
 
 export function deleteLink(documentId: string, linkId: string) {
   return postData(`/api/documents/${documentId}/links/${linkId}/delete`, {});
+}
+
+export function fetchCrossDoc(id: string): Promise<APICrossDoc> {
+  return fetch(`/api/crossdocs/${id}`).then(r => r.json());
+}
+export function addCrossLink(crossDocID: string, data: any) {
+  return postData(`/api/crossdocs/${crossDocID}/links/new`, {
+    data,
+  }).then(r => r.json());
+}
+
+export function deleteCrossLink(crossDocID: string, linkID: string) {
+  return postData(
+    `/api/crossdocs/${crossDocID}/links/${linkID}/delete`
+  ).then(r => r.json());
+}
+
+export function nextCrossDoc() {
+  return postData(`/api/crossdocs/next-crossdoc`, {}).then(r => r.json());
 }
 
 export function loadNlpModel(modelName: string) {
