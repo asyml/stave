@@ -1,4 +1,4 @@
-import React, {useState, useEffect, ChangeEvent} from 'react';
+import React, {useState, useEffect} from 'react';
 import {fetchProjects, createProject, deleteProject} from '../lib/api';
 import {Link, useHistory} from 'react-router-dom';
 import {FileWithPath} from 'react-dropzone';
