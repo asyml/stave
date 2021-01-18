@@ -47,12 +47,27 @@ def create(request):
     """
  
     received_json_data = json.loads(request.body)
-    project = Project(
-        name=received_json_data.get('name'),
-        ontology=received_json_data.get('ontology'),
-        config=received_json_data.get('config'),
-        user=request.user
-    )
+
+    project_type = received_json_data.get('type', 'indoc')
+
+    if project_type == 'indoc':
+
+        project = Project(
+            project_type = project_type,
+            name=received_json_data.get('name'),
+            ontology=received_json_data.get('ontology'),
+            config=received_json_data.get('config'),
+            user=request.user
+        )
+    elif project_type == 'crossdoc':
+        project = Project(
+            project_type = project_type,
+            name=received_json_data.get('name'),
+            ontology=received_json_data.get('ontology'),
+            multi_ontology = received_json_data.get('multiOntology'),
+            config=received_json_data.get('config'),
+            user=request.user
+        )
 
     project.save()
 
@@ -94,6 +109,15 @@ def query_docs(request, project_id):
     
     docs = project.documents.all().values()
     return JsonResponse(list(docs), safe=False)
+
+@require_login
+def query_crossdocs(request, project_id):
+    project = Project.objects.get(pk=project_id)
+    docs = project.documents.all().values()
+    crossdocs = project.crossdocs.all().values()
+    response = {"docs": list(docs), "crossdocs": list(crossdocs)}
+
+    return JsonResponse(response, safe=False)
 
 @require_login
 def delete(request, project_id):
