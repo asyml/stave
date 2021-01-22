@@ -8,7 +8,10 @@ class Project(models.Model):
     # - User
 
     name = models.CharField(max_length=200)
+    project_type = models.CharField(max_length=100, default='single_pack')
+
     ontology = models.TextField(default='')
+    multi_ontology = models.TextField(default='')
     config = models.TextField(default='', null=True, blank=True)
     user = models.ForeignKey(
         User,
@@ -48,3 +51,19 @@ class Document(models.Model):
     )
 
     textPack = models.TextField()
+
+class CrossDoc(models.Model):
+
+    name = models.CharField(max_length=200)
+
+    # relationship: project
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        default='',
+        related_name='crossdocs',
+        null=True,
+        blank=True
+    )
+    textPack = models.TextField()
+

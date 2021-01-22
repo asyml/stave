@@ -24,6 +24,10 @@ export function fetchProjects(): Promise<any> {
   return fetch('/api/projects').then(r => r.json());
 }
 
+export function fetchProject(id: string): Promise<any> {
+  return fetch(`/api/projects/${id}`).then(r => r.json());
+}
+
 export function fetchDocument(id: string): Promise<APIDocument> {
   return fetch(`/api/documents/${id}`).then(r => r.json());
 }
@@ -69,10 +73,29 @@ export function createDocument(
   }).then(r => r.json());
 }
 
-export function createProject(name: string, ontology: string, config: string) {
+export function createCrossDoc(
+  name: string,
+  textPack: string,
+  project_id: string
+) {
+  return postData('/api/crossdocs/new', {
+    name: name,
+    textPack: textPack,
+    project_id: project_id,
+  }).then(r => r.json());
+}
+export function createProject(
+  type: string,
+  name: string,
+  ontology: string,
+  config: string,
+  multiOntology = '{}'
+) {
   return postData('/api/projects/new', {
+    type: type,
     name: name,
     ontology: ontology,
+    multiOntology: multiOntology,
     config: config,
   }).then(r => r.json());
 }
@@ -81,12 +104,19 @@ export function deleteDocument(id: string) {
   return postData(`/api/documents/${id}/delete`);
 }
 
+export function deleteCrossDoc(id: string) {
+  return postData(`/api/crossdocs/${id}/delete`);
+}
+
 export function deleteProject(id: string) {
   return postData(`/api/projects/${id}/delete`);
 }
 
 export function fetchDocumentsProject(id: string) {
   return postData(`/api/projects/${id}/docs`).then(r => r.json());
+}
+export function fetchDocumentsAndMultiPacksProject(id: string) {
+  return postData(`/api/projects/${id}/crossdocs`).then(r => r.json());
 }
 
 // export function fetchOntologyByDocument(id: string):Promise<APIOntology>{
