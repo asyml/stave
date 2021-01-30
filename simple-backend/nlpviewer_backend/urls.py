@@ -46,6 +46,9 @@ urlpatterns = [
     path('documents/<int:document_id>/links/<int:link_id>/edit', document.edit_link),
     path('documents/<int:document_id>/links/<int:link_id>/delete',
          document.delete_link),
+
+    path('crossdocs/new', crossdoc.create),
+    path('crossdocs/<int:crossdoc_id>/delete', crossdoc.delete),
     
     path('next_doc/<int:document_id>', document.get_next_document_id),
     path('prev_doc/<int:document_id>', document.get_prev_document_id),

@@ -10,6 +10,7 @@ import os
 import re
 from copy import deepcopy
 from datetime import datetime
+
 from ..lib.utils import format_forte_id 
 
 default_type = "edu.cmu.CrossEventRelation"
@@ -96,6 +97,7 @@ def extract_doc_id_from_crossdoc(cross_doc):
     doc_0 = cross_doc.project.documents.get(packID=doc_external_id_0)
     doc_1 = cross_doc.project.documents.get(packID=doc_external_id_1)
     return doc_0, doc_1
+
 
 
 def listAll(request):
