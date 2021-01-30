@@ -1,4 +1,4 @@
-import React, {useState, useEffect, ChangeEvent} from 'react';
+import React, {useState, useEffect} from 'react';
 import {fetchProjects, createProject, deleteProject} from '../lib/api';
 import {Link, useHistory} from 'react-router-dom';
 import {FileWithPath} from 'react-dropzone';
@@ -114,8 +114,8 @@ function Projects() {
     });
   }
 
-  function handleProjectTypeChange(newType: string) {
-    setProjectType(newType);
+  function handleProjectTypeChange(type: string) {
+    setProjectType(type);
   }
 
   function userAddFiles(
@@ -139,7 +139,6 @@ function Projects() {
 
   function createDefaultConfig(ontology: string): IProjectConfigs {
     const ontologyJson = JSON.parse(ontology);
-    console.log(ontologyJson);
     const ontologyObject: IOntology = camelCaseDeep(ontologyJson);
     const config: IProjectConfigs = {
       legendConfigs: {},
