@@ -29,10 +29,10 @@ def list_user_projects(request):
     list all projects of the current user.
     """
     
-    projects_read = list(get_objects_for_user(request.user, 'nlpviewer_backend.read_project').all().values('id', 'name'))
-    projects_user = list(request.user.projects.all().values('id', 'name'))
+    projects_read = get_objects_for_user(request.user, 'nlpviewer_backend.read_project').all().values('id', 'name')
+    projects_user = request.user.projects.all().values('id', 'name')
 
-    projects_list = projects_user + projects_read
+    projects_list = list(projects_user.union(projects_read))
 
     return JsonResponse(projects_list, safe=False)
 

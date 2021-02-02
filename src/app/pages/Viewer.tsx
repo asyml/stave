@@ -71,8 +71,6 @@ function Viewer() {
       onEvent={event => {
         if (!id) return;
 
-        console.log(event);
-
         if (event.type === 'annotation-add') {
           const {...annotation} = event;
 

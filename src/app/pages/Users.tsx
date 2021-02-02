@@ -44,7 +44,7 @@ function Users() {
             <li>
               {/* 'User detail is not implemented' */}
               {/* <Link to={`/documents/${d.id}`}>{d.name}</Link> {d.textPack}{' '} */}
-              <span>{d.name} </span>
+              <span>{d.username} </span>
               <button onClick={() => handleDelete(d.id)}>X</button>
             </li>
           </ul>
