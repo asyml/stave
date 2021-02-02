@@ -30,11 +30,11 @@ export default function ScopeSelector({
     .map(def => {
       return {
         value: def.entryName,
-        label: shortId(def.entryName),
+        label: shortId(def.entryName) || '',
       };
     });
 
-  legendTypeOptions.unshift({value: null, label: 'All'});
+  legendTypeOptions.unshift({value: null, label: 'Full text'});
 
   const selectedLegendTypeOptions = legendTypeOptions.find(legendType => {
     return selectedScopeId === legendType.value;

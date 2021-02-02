@@ -78,6 +78,7 @@ function ViewWithDemoData() {
       ontology={ontology}
       plugins={[groupPlugin, dialogueBoxPlugin]}
       projectConfig={projectConfig}
+      documents={{documents: [{id: 1}]}}
     />
   );
 }

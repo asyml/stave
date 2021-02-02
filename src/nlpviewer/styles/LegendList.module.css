@@ -6,10 +6,13 @@
 }
 
 .list li {
-  margin-bottom: 4px;
+  margin-bottom: 10px;
 }
 
 .lengend_container {
+  display: flex;
+  align-items: center;
+  height: 32px;
   padding: 2px 4px;
 }
 
@@ -47,7 +50,7 @@
 }
 
 .attribute_name {
-  padding: 2px 4px;
+  padding: 2px 4px 2px 14px;
 }
 
 .attribute_name input {
@@ -60,8 +63,8 @@
 }
 
 .annotation_legend_container {
-  border: 1px solid #ccc;
   margin-bottom: 8px;
+  color: #595959;
 }
 
 .annotation_legend_container h2 {

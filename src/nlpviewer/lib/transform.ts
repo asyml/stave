@@ -5,8 +5,11 @@ import {
   IAnnotation,
   ILink,
   IProjectConfigs,
+  IDocuments,
 } from './interfaces';
 import {isEntryAnnotation, isEntryLink, camelCaseDeep} from './utils';
+
+import {APIDoc} from '../../app/lib/api';
 
 export function transformPack(
   rawPack: string,
@@ -154,5 +157,16 @@ export function transformProjectConfig(rawConfig: string): IProjectConfigs {
     legendConfigs: config ? config.legendConfigs : {},
     scopeConfigs: config ? config.scopeConfigs : {},
     layoutConfigs: config ? config.layoutConfigs : {},
+  };
+}
+
+export function transformDocs(docs: APIDoc[]): IDocuments {
+  return {
+    documents: docs.map(doc => {
+      return {
+        id: doc.id,
+        name: doc.name,
+      };
+    }),
   };
 }

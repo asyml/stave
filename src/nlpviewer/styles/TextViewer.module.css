@@ -9,9 +9,11 @@
 }
 
 .metadata_side_container {
+  color: #595959;
   flex: 0 0 250px;
-  padding: 8px 0;
+  padding: 8px 0 8px 10px;
   overflow: hidden;
+  background: #F6F7F9;
 }
 
 .attributes_side_container {
@@ -38,7 +40,6 @@
 .tool_bar_container {
   border-bottom: 1px solid #ccc;
   padding: 8px;
-  background: #f8f8fa;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -52,10 +53,6 @@
   background: rgba(235, 9, 9, 0.05);
 }
 
-.add_annotation_button {
-  margin-right: 8px;
-}
-
 .text_area_container {
   height: 100vh;
   overflow-y: scroll;
@@ -65,7 +62,7 @@
 }
 
 .button_action_description {
-  margin-top: 4px;
+  margin-bottom: 4px;
   font-size: 12px;
   color: #999;
 }
@@ -87,4 +84,10 @@
 
 .scope_nav_container {
   margin-left: 8px;
+}
+
+.anno_legends_heading {
+  font-size: 22px;
+  line-height: 26px;
+  font-weight: 500;
 }

@@ -11,9 +11,20 @@ export interface APIDocOntology {
   ontology: string;
 }
 
+export interface APIDoc {
+  id: number;
+  name: string;
+}
+
+export interface APIDocProject {
+  id: string;
+  name: string;
+  documents: APIDoc[];
+}
 export interface APIDocConfig {
   id: string;
   config: string;
+  project: APIDocProject;
 }
 
 interface APICrossDocPack {

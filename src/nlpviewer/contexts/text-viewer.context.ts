@@ -266,6 +266,10 @@ export type Action =
       type: 'set-scope';
       scopeId: string | null;
     }
+  | {
+      type: 'set-scope-index';
+      scopeIndex: number;
+    }
   | {type: 'prev-scope-item'}
   | {type: 'next-scope-item'};
 
@@ -925,6 +929,14 @@ function textViewerReducer(state: State, action: Action): State {
         ...initialSpacingState,
         selectedScopeIndex: 0,
         selectedScopeId: action.scopeId,
+      };
+    }
+
+    case 'set-scope-index': {
+      return {
+        ...state,
+        ...initialSpacingState,
+        selectedScopeIndex: action.scopeIndex,
       };
     }
 

@@ -3,6 +3,11 @@
   border-bottom: 1px solid #ccc;
   display: flex;
   justify-content: space-between;
+  background: linear-gradient(-28deg,
+    #408FFF 40%,
+    #77CFFF 0, #77CFFF 65%,
+    #A4DDFD 0, #A4DDFD 85%,
+    #D7F0FF 0);
 }
 
 .layout_header span {

@@ -213,3 +213,12 @@ export interface IProjectConfigs {
   scopeConfigs: IScopeConfigs;
   layoutConfigs: ILayout;
 }
+
+export interface IDocument {
+  id: number;
+  name?: string;
+}
+
+export interface IDocuments {
+  documents: IDocument[];
+}

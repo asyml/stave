@@ -1,7 +1,16 @@
 import React from 'react';
+import Checkbox from '@material-ui/core/Checkbox';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import Pagination from '@material-ui/lab/Pagination';
 import Tab from './Tab';
 import style from '../styles/TextViewer.module.css';
-import {IAnnotation, IPlugin, IProjectConfigs} from '../lib/interfaces';
+import {
+  IAnnotation,
+  IPlugin,
+  IProjectConfigs,
+  IDocuments,
+} from '../lib/interfaces';
 import {
   applyColorToLegend,
   isEntryAnnotation,
@@ -20,8 +29,7 @@ import {
 import LinkCreateBox from './LinkCreateBox';
 import AnnotationCreateBox from './AnnotationCreateBox';
 import groupPlugin from '../../plugins/group/Group';
-import {nextDocument, prevDocument} from '../../app/lib/api';
-import {useState} from 'react';
+import {FormControlLabel} from '@material-ui/core';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type OnEventType = (event: any) => void;
@@ -30,14 +38,17 @@ export interface TextViewerProp {
   plugins: IPlugin[];
   onEvent?: OnEventType;
   projectConfig: IProjectConfigs;
+  documents: IDocuments;
 }
 
-function TextViewer({plugins, onEvent, projectConfig}: TextViewerProp) {
+function TextViewer({
+  plugins,
+  onEvent,
+  projectConfig,
+  documents,
+}: TextViewerProp) {
   const appState = useTextViewerState();
   const dispatch = useTextViewerDispatch();
-
-  const [next_id, setNext] = useState<string>('');
-  const [prev_id, setPrev] = useState<string>('');
 
   const {
     textPack,
@@ -57,12 +68,9 @@ function TextViewer({plugins, onEvent, projectConfig}: TextViewerProp) {
     selectedScopeId,
     selectedScopeIndex,
   } = appState;
-
   if (!textPack || !ontology || !projectConfig) return null;
 
   const doc_id = window.location.pathname.split('/').pop()!;
-  nextDocument(doc_id).then(data => setNext(data.id));
-  prevDocument(doc_id).then(data => setPrev(data.id));
 
   const {annotations, links, attributes} = textPack;
 
@@ -205,6 +213,42 @@ function TextViewer({plugins, onEvent, projectConfig}: TextViewerProp) {
       if (textPack && ontology) {
         return (
           <div className={style.metadata_side_container}>
+            <h1 className={style.anno_legends_heading}>Annotation Legends</h1>
+            <div className={style.anno_legends_sub}>
+              <p>
+                See the summary visualiations of annotations and explore them
+                in-situ.
+                <br /> Select edit to change them.
+              </p>
+            </div>
+            <div className={style.add_annotation_container}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+                    checkedIcon={
+                      <CheckBoxIcon fontSize="small" htmlColor="#246ED6" />
+                    }
+                    size="small"
+                    checked={annoEditIsCreating}
+                    onChange={() => {
+                      dispatch({
+                        type: annoEditIsCreating
+                          ? 'exit-annotation-edit'
+                          : 'start-annotation-edit',
+                      });
+                    }}
+                    inputProps={{'aria-label': 'Edit annotations checkbox'}}
+                  />
+                }
+                label="Edit annotations"
+              />
+              {annoEditIsCreating && (
+                <div className={style.button_action_description}>
+                  select text to add annotation
+                </div>
+              )}
+            </div>
             <TextDetail
               annotationLegends={annotationLegendsWithColor}
               linkLegends={linksLegendsWithColor}
@@ -277,6 +321,38 @@ function TextViewer({plugins, onEvent, projectConfig}: TextViewerProp) {
   }
 
   function ToolBar() {
+    let scopeCount = 0;
+    const isFullText = selectedScopeId === null && documents !== null;
+    let paginationIndex = selectedScopeIndex;
+    if (isFullText) {
+      scopeCount = documents.documents.length;
+      paginationIndex = documents.documents.findIndex(
+        x => x.id === parseInt(doc_id)
+      );
+    } else if (textPack) {
+      scopeCount = textPack.annotations.filter(
+        ann => ann.legendId === selectedScopeId
+      ).length;
+    }
+    const handlePageChange = (
+      event: React.ChangeEvent<unknown>,
+      value: number
+    ) => {
+      if (value - 1 === paginationIndex) {
+        return;
+      } else {
+        if (isFullText) {
+          // The scope selected is set to Full Text, so paginate through project's documents
+          window.location.href = `/documents/${
+            documents.documents[value - 1].id
+          }`;
+        } else {
+          // Scope selector was set to a scope other than Full text
+          dispatch({type: 'set-scope-index', scopeIndex: value - 1});
+        }
+      }
+    };
+
     if (
       typeof projectConfig['layoutConfigs']['center-middle'] === 'undefined' ||
       projectConfig['layoutConfigs']['center-middle'] === 'default-nlp'
@@ -284,84 +360,26 @@ function TextViewer({plugins, onEvent, projectConfig}: TextViewerProp) {
       if (textPack && ontology && projectConfig) {
         return (
           <div className={style.tool_bar_container}>
-            <div className={style.add_annotation_container}>
-              <button
-                className={style.add_annotation_button}
-                onClick={() => {
-                  dispatch({
-                    type: annoEditIsCreating
-                      ? 'exit-annotation-edit'
-                      : 'start-annotation-edit',
-                  });
-                }}
-              >
-                {annoEditIsCreating
-                  ? 'Cancel add annotation'
-                  : 'Add annotation'}
-              </button>
-
-              {/* next and prev document */}
-              <button
-                onClick={() => {
-                  if (doc_id !== prev_id) {
-                    const prev_url = '/documents/' + prev_id;
-                    window.location.href = prev_url;
-                  } else {
-                    alert('This is the first document of the project.');
-                  }
-                }}
-              >
-                {'< Previous document'}
-              </button>
-
-              <button
-                onClick={() => {
-                  if (doc_id !== next_id) {
-                    const next_url = '/documents/' + next_id;
-                    window.location.href = next_url;
-                  } else {
-                    alert('This is the last document of the project.');
-                  }
-                }}
-              >
-                {'Next document >'}
-              </button>
-
-              {annoEditIsCreating && (
-                <div className={style.button_action_description}>
-                  select text to add annotation
-                </div>
-              )}
-            </div>
-
             <div className={style.scope_selector_container}>
-              <span>Scope:</span>
               <ScopeSelector
                 ontology={ontology}
                 selectedScopeId={selectedScopeId}
                 scopeConfig={projectConfig.scopeConfigs}
               />
 
-              {selectedScopeId !== null && (
+              {(selectedScopeId !== null ||
+                (selectedScopeId === null &&
+                  documents &&
+                  documents.documents.length > 1)) && (
                 <div className={style.scope_nav_container}>
-                  <button
-                    disabled={selectedScopeIndex === 0}
-                    onClick={() => dispatch({type: 'prev-scope-item'})}
-                  >
-                    ←
-                  </button>
-                  <button
-                    disabled={
-                      selectedScopeIndex ===
-                      textPack.annotations.filter(
-                        ann => ann.legendId === selectedScopeId
-                      ).length -
-                        1
-                    }
-                    onClick={() => dispatch({type: 'next-scope-item'})}
-                  >
-                    →
-                  </button>
+                  <Pagination
+                    page={paginationIndex + 1}
+                    onChange={handlePageChange}
+                    count={scopeCount}
+                    defaultPage={1}
+                    variant="outlined"
+                    shape="rounded"
+                  />
                 </div>
               )}
             </div>

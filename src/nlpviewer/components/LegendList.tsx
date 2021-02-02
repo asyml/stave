@@ -1,11 +1,12 @@
 import React from 'react';
+import IconButton from '@material-ui/core/IconButton';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import {Dispatch} from '../contexts/text-viewer.context';
 import {IEntryDefinition} from '../lib/interfaces';
 import {attributeId} from '../lib/utils';
 import style from '../styles/LegendList.module.css';
 
 interface LegendListProp {
-  title: string;
   legends: (IEntryDefinition & {color: string})[];
   selectedLegendIds: string[];
   selectedLegendAttributeIds: string[];
@@ -13,7 +14,6 @@ interface LegendListProp {
 }
 
 export default function LegendList({
-  title,
   legends,
   selectedLegendIds,
   selectedLegendAttributeIds,
@@ -21,7 +21,6 @@ export default function LegendList({
 }: LegendListProp) {
   return (
     <div className={style.annotation_legend_container}>
-      <h2>{title}</h2>
       <ul className={style.list}>
         {legends.map((legend, i) => {
           const isSelected = selectedLegendIds.indexOf(legend.entryName) > -1;
@@ -43,14 +42,32 @@ export default function LegendList({
                 }}
               >
                 <input type="checkbox" readOnly checked={isSelected} />
-                <span
+                <div
                   style={{
                     backgroundColor: legend.color,
-                    color: 'white',
+                    color: '#595959',
+                    fontWeight: 500,
+                    padding: '5px',
+                    marginLeft: '10px',
+                    minWidth: '193px',
+                    borderTopLeftRadius: '6px',
+                    borderBottomLeftRadius: '6px',
+                    fontSize: '16px',
                   }}
                 >
                   {legend.entryName.split('.').pop()}
-                </span>
+                </div>
+                <div
+                  style={{
+                    position: 'relative',
+                    right: 40,
+                    top: 2,
+                  }}
+                >
+                  <IconButton aria-label="More">
+                    <MoreVertIcon fontSize="small" />
+                  </IconButton>
+                </div>
               </div>
 
               {legend.attributes ? (

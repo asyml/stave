@@ -7,6 +7,7 @@ import NLPViewer, {
   transformBackAnnotation,
   transformBackLink,
   transformProjectConfig,
+  transformDocs,
 } from '../../nlpviewer';
 import groupPlugin from '../../plugins/group/Group';
 //import {layout} from '../layout';
@@ -19,7 +20,10 @@ import {
   deleteAnnotation,
   addLink,
   deleteLink,
+  APIDoc,
 } from '../lib/api';
+
+import {IDocuments} from '../../nlpviewer/lib/interfaces';
 
 interface WholePack {
   singlePack: ISinglePack;
@@ -34,6 +38,7 @@ function Viewer() {
   const {id} = useParams();
   const [pack, setPack] = useState<WholePack | null>(null);
   const [config, setConfig] = useState<ProjectConfig | null>(null);
+  const [documents, setDocuments] = useState<IDocuments>({documents: []});
 
   useEffect(() => {
     if (id) {
@@ -53,6 +58,7 @@ function Viewer() {
         setConfig({
           config: transformProjectConfig(data.config),
         });
+        setDocuments(transformDocs(data.project.documents));
       });
     }
   }, [id]);
@@ -66,6 +72,7 @@ function Viewer() {
       textPack={pack.singlePack}
       ontology={pack.ontology}
       projectConfig={config.config}
+      documents={documents}
       // plugins={[groupPlugin]}
       plugins={[groupPlugin, dialoguePlugin]}
       onEvent={event => {

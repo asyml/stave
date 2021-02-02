@@ -75,28 +75,30 @@ function TextArea({textPack, annotationLegendsColored}: TextAreaProp) {
     const scopeAnnotations = annotations.filter(
       ann => ann.legendId === selectedScopeId
     );
-    const currScopeAnnotation = scopeAnnotations[selectedScopeIndex];
+    if (scopeAnnotations.length > 0) {
+      const currScopeAnnotation = scopeAnnotations[selectedScopeIndex];
 
-    text = text.substring(
-      currScopeAnnotation.span.begin,
-      currScopeAnnotation.span.end
-    );
-    annotations = annotations
-      .filter(
-        ann =>
-          ann.span.begin >= currScopeAnnotation.span.begin &&
-          ann.span.end <= currScopeAnnotation.span.end
-      )
-      .map(ann => {
-        const scoppedSpan = {
-          begin: ann.span.begin - currScopeAnnotation.span.begin,
-          end: ann.span.end - currScopeAnnotation.span.begin,
-        };
-        return {
-          ...ann,
-          span: scoppedSpan,
-        };
-      });
+      text = text.substring(
+        currScopeAnnotation.span.begin,
+        currScopeAnnotation.span.end
+      );
+      annotations = annotations
+        .filter(
+          ann =>
+            ann.span.begin >= currScopeAnnotation.span.begin &&
+            ann.span.end <= currScopeAnnotation.span.end
+        )
+        .map(ann => {
+          const scoppedSpan = {
+            begin: ann.span.begin - currScopeAnnotation.span.begin,
+            end: ann.span.end - currScopeAnnotation.span.begin,
+          };
+          return {
+            ...ann,
+            span: scoppedSpan,
+          };
+        });
+    }
   }
 
   useEffect(() => {

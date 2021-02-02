@@ -13,6 +13,7 @@ import {
   IOntology,
   IPlugin,
   IProjectConfigs,
+  IDocuments,
 } from './lib/interfaces';
 
 export * from './lib/transform';
@@ -24,6 +25,7 @@ export interface NLPViewerProp {
   ontology: IOntology;
   plugins: IPlugin[];
   projectConfig: IProjectConfigs;
+  documents: IDocuments;
   onEvent?: OnEventType;
 }
 
@@ -55,6 +57,7 @@ function TextViewerFetchContainer(props: NLPViewerProp) {
       plugins={props.plugins}
       onEvent={props.onEvent}
       projectConfig={props.projectConfig}
+      documents={props.documents}
     />
   );
 }
