@@ -6,7 +6,7 @@ import TextAreaA from "./components/TextAreaA";
 import TextAreaB from "./components/TextAreaB";
 
 // @ts-ignore
-import Progress from 'react-progressbar';
+import { LinearProgress } from '@material-ui/core';
 import {IAnnotation, ISinglePack,} from '../nlpviewer/lib/interfaces';
 import {
   ICrossDocLink,
@@ -191,7 +191,7 @@ export default function CrossViewer(props: CrossDocProp) {
                     className={style.button_next_event}
             > Next event
             </button>
-            <label><Progress completed={progress_percent} />Progress: {progress_percent}%</label>
+            <label><LinearProgress value={progress_percent} variant="determinate" /> Progress: {progress_percent}%</label>
             {/*<div className={style.button_action_description}>*/}
             {/*  Click next event only if you have finished this event*/}
             {/*</div>*/}
