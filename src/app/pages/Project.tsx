@@ -41,7 +41,7 @@ function Docs() {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function updateDocs(info: any) {
-    if (info.project_type === 'indoc') {
+    if (info.project_type === 'single_pack') {
       return fetchDocumentsProject(project_id).then(docs => {
         setDocs(docs);
       });
