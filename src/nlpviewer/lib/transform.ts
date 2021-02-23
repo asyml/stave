@@ -70,7 +70,11 @@ export function transformPack(
     annotations: formatedAnnotations,
     links: links,
     groups: groups,
-    attributes: packData.meta['py/state'],
+    attributes:
+      // Backward compatibility with Forte formats.
+      'meta' in packData
+        ? packData.meta['py/state']
+        : packData._meta['py/state'],
   };
 
   return [pack, configTransformed] as any;
