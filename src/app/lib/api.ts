@@ -227,7 +227,7 @@ export function deleteCrossLink(crossDocID: string, linkID: string) {
 }
 
 export function nextCrossDoc() {
-  return postData(`/api/crossdocs/next-crossdoc`, {}).then(r => r.json());
+  return postData('/api/crossdocs/next-crossdoc', {}).then(r => r.json());
 }
 
 export function loadNlpModel(modelName: string) {
