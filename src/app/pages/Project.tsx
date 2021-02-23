@@ -137,7 +137,7 @@ function Docs() {
             <div>
               <h2> new multi pack </h2>
               <DropUpload
-                fileLimit={5e7}
+                fileLimit={5e8}
                 fileActionButtonFunc={handleMultiPackAdd}
                 fileActionButtonText={'ADD'}
                 mimeType="application/json"
