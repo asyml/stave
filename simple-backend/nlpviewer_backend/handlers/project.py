@@ -48,10 +48,9 @@ def create(request):
  
     received_json_data = json.loads(request.body)
 
-    project_type = received_json_data.get('type', 'indoc')
+    project_type = received_json_data.get('type', 'single_pack')
 
-    if project_type == 'indoc':
-
+    if project_type == 'single_pack':
         project = Project(
             project_type = project_type,
             name=received_json_data.get('name'),
@@ -59,7 +58,7 @@ def create(request):
             config=received_json_data.get('config'),
             user=request.user
         )
-    elif project_type == 'crossdoc':
+    elif project_type == 'multi_pack':
         project = Project(
             project_type = project_type,
             name=received_json_data.get('name'),

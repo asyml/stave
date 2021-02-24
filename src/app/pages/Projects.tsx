@@ -44,7 +44,7 @@ const useStyles = makeStyles({
     marginBottom: 15,
   },
 });
-const PROJECT_TYPES = ['indoc', 'crossdoc'];
+const PROJECT_TYPES = ['single_pack', 'multi_pack'];
 
 function Projects() {
   const classes = useStyles();
@@ -57,7 +57,7 @@ function Projects() {
   const history = useHistory();
   const [open, setOpen] = React.useState(false);
 
-  const [projectType, setProjectType] = useState<string>('indoc');
+  const [projectType, setProjectType] = useState<string>('single_pack');
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -87,12 +87,12 @@ function Projects() {
   }
 
   function handleAdd() {
-    if (projectType === 'indoc' && name && ontology !== '{}' && config) {
+    if (projectType === 'single_pack' && name && ontology !== '{}' && config) {
       createProject(projectType, name, ontology, config).then(() => {
         updateProjects();
       });
     } else if (
-      projectType === 'crossdoc' &&
+      projectType === 'multi_pack' &&
       name &&
       ontology !== '{}' &&
       multiOntology !== '{}' &&
@@ -250,11 +250,13 @@ function Projects() {
                         }
                       >
                         {PROJECT_TYPES.map(d => (
-                          <MenuItem value={d}>{d}</MenuItem>
+                          <MenuItem value={d} key={d}>
+                            {d}
+                          </MenuItem>
                         ))}
                       </Select>
                     </Grid>
-                    {projectType === 'indoc' ? (
+                    {projectType === 'single_pack' ? (
                       <div>
                         <div>
                           <TextField
