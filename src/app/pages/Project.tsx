@@ -45,7 +45,7 @@ function Docs() {
       return fetchDocumentsProject(project_id).then(docs => {
         setDocs(docs);
       });
-    } else if (info.project_type === 'crossdoc') {
+    } else if (info.project_type === 'multi_pack') {
       return fetchDocumentsAndMultiPacksProject(project_id).then(result => {
         setDocs(result.docs);
         setCrossDocs(result.crossdocs);
@@ -117,7 +117,7 @@ function Docs() {
         />
       </div>
 
-      {projectInfo && projectInfo.project_type === 'crossdoc'
+      {projectInfo && projectInfo.project_type === 'multi_pack'
         ? [
             <div className="content_left" style={{marginLeft: '20px'}}>
               <h2>All multi docs:</h2>
