@@ -63,7 +63,6 @@ def create(request):
             project_type = project_type,
             name=received_json_data.get('name'),
             ontology=received_json_data.get('ontology'),
-            multi_ontology = received_json_data.get('multiOntology'),
             config=received_json_data.get('config'),
             user=request.user
         )
