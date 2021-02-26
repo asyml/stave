@@ -11,7 +11,6 @@ class Project(models.Model):
     project_type = models.CharField(max_length=100, default='single_pack')
 
     ontology = models.TextField(default='')
-    multi_ontology = models.TextField(default='')
     config = models.TextField(default='', null=True, blank=True)
     user = models.ForeignKey(
         User,

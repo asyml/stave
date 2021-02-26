@@ -232,8 +232,7 @@ def new_annotation(request, document_id):
     docJson = model_to_dict(doc)
     textPackJson = json.loads(docJson['textPack'])
 
-    annotation_id = textPackJson['py/state']['serialization']['next_id']
-    textPackJson['py/state']['serialization']['next_id'] = annotation_id + 1
+    annotation_id = uuid.uuid4().int
 
     received_json_data = json.loads(request.body)
     annotation = received_json_data.get('data')
@@ -368,7 +367,7 @@ def new_link(request, document_id):
 
     received_json_data = json.loads(request.body)
 
-    link_id = str(uuid.uuid1())
+    link_id = uuid.uuid4().int
     link = received_json_data.get('data')
     link["py/state"]['_tid'] = link_id
 
