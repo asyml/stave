@@ -14,8 +14,8 @@ A simple backend server application that manage documents and persist data.
 - make sure your `python` command is using python3, or use a virtual env by:
   - `python3 -m venv venv` create virtual env (skip if already created)
   - `. venv/bin/activate` use virtual env
-- make sure django is installed, or install it by:
-  - `python -m pip install Django`
+- make sure dependencies (i.e. django) are installed, or install it by:
+  - `python -m pip install -r requirements.txt`
 - `./start-dev.sh`
   - This script will use the example db: `mv db.sqlite3.example db.sqlite3`
 - go to http://127.0.0.1:8000/documents
