@@ -53,6 +53,12 @@ urlpatterns = [
     path('next_doc/<int:document_id>', document.get_next_document_id),
     path('prev_doc/<int:document_id>', document.get_prev_document_id),
 
+    path('crossdocs/new', crossdoc.create),
+    path('crossdocs/<int:crossdoc_id>/delete', crossdoc.delete),
+    path('crossdocs/<int:crossdoc_id>', crossdoc.query),
+    path('crossdocs/<int:crossdoc_id>/links/new', crossdoc.new_cross_doc_link),
+    path('crossdocs/<int:crossdoc_id>/links/<int:link_id>/delete', crossdoc.delete_cross_doc_link),
+
     path('projects/all', project.listAll),
     path('projects', project.list_user_projects),
     path('projects/new', project.create),

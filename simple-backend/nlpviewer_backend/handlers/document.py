@@ -56,9 +56,11 @@ def create(request):
     project_id = received_json_data.get('project_id')
     project = Project.objects.get(id=project_id)
     check_perm_project(project, request.user, 'nlpviewer_backend.new_project')
-
+    pack_json = json.loads(received_json_data.get('textPack'))
+    pack_id = int(pack_json["py/state"]["meta"]["py/state"]["_pack_id"])
     doc = Document(
         name=received_json_data.get('name'),
+        packID=pack_id,
         textPack=received_json_data.get('textPack'),
         project = Project.objects.get(
             pk=project_id
