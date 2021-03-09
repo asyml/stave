@@ -28,7 +28,6 @@ import {
 } from '../contexts/text-viewer.context';
 import LinkCreateBox from './LinkCreateBox';
 import AnnotationCreateBox from './AnnotationCreateBox';
-import groupPlugin from '../../plugins/group/Group';
 import {FormControlLabel} from '@material-ui/core';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -192,14 +191,6 @@ function TextViewer({
 
   function MiddleBottomArea() {
     const areaName = 'center-bottom';
-    // When not specific plugin is defined, center bottom is
-    if (typeof projectConfig['layoutConfigs'][areaName] === 'undefined') {
-      const Comp = groupPlugin.component;
-      return (
-        <Comp key={groupPlugin.name} dispatch={dispatch} appState={appState} />
-      );
-    }
-
     return customRender(areaName);
   }
 
