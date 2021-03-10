@@ -1,0 +1,90 @@
+{
+  "name": "nlpviewer",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.tsx",
+  "module": "dist/index.es.js",
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.57",
+    "jsoneditor": "^9.1.2",
+    "lodash-es": "^4.17.15",
+    "object-path": "0.11.5",
+    "react-alert": "^7.0.2",
+    "react-alert-template-basic": "^1.0.0",
+    "react-dropzone": "^11.0.3",
+    "react-is": "^17.0.1",
+    "react-modal": "^3.11.2",
+    "react-progressbar": "^15.4.1",
+    "react-router-dom": "^5.2.0",
+    "react-select": "^3.0.8",
+    "styled-components": "^5.1.1"
+  },
+  "devDependencies": {
+    "@babel/helper-call-delegate": "^7.10.4",
+    "@rollup/plugin-typescript": "^8.2.0",
+    "@types/jest": "^24.0.18",
+    "@types/lodash-es": "^4.17.3",
+    "@types/node": "^12.7.12",
+    "@types/react": "^16.9.5",
+    "@types/react-dom": "^16.9.1",
+    "@types/react-router-dom": "^5.1.6",
+    "@types/react-select": "^3.0.5",
+    "@types/styled-components": "^5.1.2",
+    "eslint": "^7.13.0",
+    "gts": "^3.0.2",
+    "http-proxy-middleware": "^0.20.0",
+    "identity-obj-proxy": "^3.0.0",
+    "postcss": "^8.2.8",
+    "react": "^16.10.2",
+    "react-dom": "^16.10.2",
+    "react-scripts": "^4.0.0",
+    "rollup": "^2.41.0",
+    "rollup-plugin-postcss": "^4.0.0",
+    "rollup-plugin-typescript2": "^0.30.0",
+    "tslib": "^2.1.0",
+    "typescript": "^4.2.3"
+  },
+  "peerDependencies": {
+    "react": "^16.10.2",
+    "react-dom": "^16.10.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "deploy-demo": "REACT_APP_IS_DEMO=true react-scripts build && scp -r build/* ubuntu@fe.int.petuum.com:/var/www/html/nlp-viewer",
+    "lint": "gts lint",
+    "clean": "gts clean",
+    "compile": "tsc",
+    "fix": "gts fix",
+    "build": "rollup -c",
+    "watch": "rollup -cw"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "<rootDir>/node_modules/(?!lodash-es/.*)"
+    ],
+    "moduleNameMapper": {
+      "\\.(css|less|scss|sass)$": "identity-obj-proxy"
+    }
+  },
+  "homepage": "."
+}

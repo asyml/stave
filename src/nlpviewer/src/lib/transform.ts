@@ -9,8 +9,10 @@ import {
 } from './interfaces';
 import {isEntryAnnotation, isEntryLink, camelCaseDeep} from './utils';
 
-import {APIDoc} from '../../app/lib/api';
-
+interface APIDoc {
+  id: number;
+  name: string;
+}
 export function transformPack(
   rawPack: string,
   rawOntology: string
