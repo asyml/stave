@@ -14,7 +14,7 @@ import {singlePack} from './mock-data-2';
 import {ontology} from './mock-config-data';
 //import { layout } from './layout';
 import {projectConfig} from './project_config';
-import NLPViewer from '../nlpviewer';
+import NLPViewer from '../nlpviewer/src';
 import groupPlugin from '../plugins/group/Group';
 import dialogueBoxPlugin from '../plugins/dialogue_box/DialogueBox';
 import AccountMenu from './components/accountMenu';

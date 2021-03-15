@@ -8,7 +8,7 @@ import NLPViewer, {
   transformBackLink,
   transformProjectConfig,
   transformDocs,
-} from '../../nlpviewer';
+} from '../../nlpviewer/src';
 import groupPlugin from '../../plugins/group/Group';
 //import {layout} from '../layout';
 import dialoguePlugin from '../../plugins/dialogue_box/DialogueBox';
@@ -20,10 +20,9 @@ import {
   deleteAnnotation,
   addLink,
   deleteLink,
-  APIDoc,
 } from '../lib/api';
 
-import {IDocuments} from '../../nlpviewer/lib/interfaces';
+import {IDocuments} from '../../nlpviewer/src/lib/interfaces';
 
 interface WholePack {
   singlePack: ISinglePack;

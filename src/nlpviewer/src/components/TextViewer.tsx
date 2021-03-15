@@ -29,6 +29,7 @@ import {
 import LinkCreateBox from './LinkCreateBox';
 import AnnotationCreateBox from './AnnotationCreateBox';
 import {FormControlLabel} from '@material-ui/core';
+import { NLPViewerOptions } from '..';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type OnEventType = (event: any) => void;
@@ -38,6 +39,7 @@ export interface TextViewerProp {
   onEvent?: OnEventType;
   projectConfig: IProjectConfigs;
   documents: IDocuments;
+  options?: NLPViewerOptions;
 }
 
 function TextViewer({
@@ -45,6 +47,7 @@ function TextViewer({
   onEvent,
   projectConfig,
   documents,
+  options
 }: TextViewerProp) {
   const appState = useTextViewerState();
   const dispatch = useTextViewerDispatch();
@@ -212,34 +215,36 @@ function TextViewer({
                 <br /> Select edit to change them.
               </p>
             </div>
-            <div className={style.add_annotation_container}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-                    checkedIcon={
-                      <CheckBoxIcon fontSize="small" htmlColor="#246ED6" />
-                    }
-                    size="small"
-                    checked={annoEditIsCreating}
-                    onChange={() => {
-                      dispatch({
-                        type: annoEditIsCreating
-                          ? 'exit-annotation-edit'
-                          : 'start-annotation-edit',
-                      });
-                    }}
-                    inputProps={{'aria-label': 'Edit annotations checkbox'}}
-                  />
-                }
-                label="Edit annotations"
-              />
-              {annoEditIsCreating && (
-                <div className={style.button_action_description}>
-                  select text to add annotation
-                </div>
-              )}
-            </div>
+            {(options && options.allowEditAnnotations) &&  (
+              <div className={style.add_annotation_container}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+                      checkedIcon={
+                        <CheckBoxIcon fontSize="small" htmlColor="#246ED6" />
+                      }
+                      size="small"
+                      checked={annoEditIsCreating}
+                      onChange={() => {
+                        dispatch({
+                          type: annoEditIsCreating
+                            ? 'exit-annotation-edit'
+                            : 'start-annotation-edit',
+                        });
+                      }}
+                      inputProps={{'aria-label': 'Edit annotations checkbox'}}
+                    />
+                  }
+                  label="Edit annotations"
+                />
+                {annoEditIsCreating && (
+                  <div className={style.button_action_description}>
+                    select text to add annotation
+                  </div>
+                )}
+              </div>
+            )}
             <TextDetail
               annotationLegends={annotationLegendsWithColor}
               linkLegends={linksLegendsWithColor}
@@ -392,7 +397,7 @@ function TextViewer({
           className={`${style.center_area_container}
               ${annoEditIsCreating && style.is_adding_annotation}`}
         >
-          <ToolBar />
+          {((options && options.enableScopeSelector) && (<ToolBar />) )}
           <div className={`${style.text_area_container}`}>
             {MiddleCenterArea()}
           </div>

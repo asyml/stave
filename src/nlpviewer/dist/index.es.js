@@ -926,7 +926,7 @@ w.getState = getState;
 var _a = __read(createContextProvider(combineReducers(textViewerReducer, storeCurrentStateReducer), initialState), 3), TextViewerProvider = _a[0], useTextViewerState = _a[1], useTextViewerDispatch = _a[2];
 
 function AnnotationDetail(_a) {
-    var annotation = _a.annotation, parentAnnotations = _a.parentAnnotations, childAnnotations = _a.childAnnotations, onEvent = _a.onEvent;
+    var annotation = _a.annotation, parentAnnotations = _a.parentAnnotations, childAnnotations = _a.childAnnotations, onEvent = _a.onEvent, options = _a.options;
     var dispatch = useTextViewerDispatch();
     function renderLinkedAnnotations(annotations, title) {
         if (!annotations.length) {
@@ -950,7 +950,7 @@ function AnnotationDetail(_a) {
             React.createElement("h2", null, "Attributes"),
             React.createElement("div", { className: style$8.annotation_detail_section_body },
                 React.createElement(Attributes, { attributes: __assign({ id: annotation.id }, annotation.attributes) }))),
-        React.createElement("div", null,
+        (options && options.allowEditAnnotations) && (React.createElement("div", null,
             React.createElement("button", { onClick: function () {
                     if (onEvent) {
                         onEvent({
@@ -962,7 +962,7 @@ function AnnotationDetail(_a) {
                         type: 'delete-annotation',
                         annotationId: annotation.id,
                     });
-                } }, "remove"))));
+                } }, "remove")))));
 }
 
 function LinkDetail(_a) {
@@ -2963,7 +2963,7 @@ function AnnotationCreateBox(_a) {
 }
 
 function TextViewer(_a) {
-    var plugins = _a.plugins, onEvent = _a.onEvent, projectConfig = _a.projectConfig, documents = _a.documents;
+    var plugins = _a.plugins, onEvent = _a.onEvent, projectConfig = _a.projectConfig, documents = _a.documents, options = _a.options;
     var appState = useTextViewerState();
     var dispatch = useTextViewerDispatch();
     var textPack = appState.textPack, ontology = appState.ontology, selectedAnnotationId = appState.selectedAnnotationId, selectedLinkId = appState.selectedLinkId, linkEditFromEntryId = appState.linkEditFromEntryId, linkEditToEntryId = appState.linkEditToEntryId, linkEditIsCreating = appState.linkEditIsCreating, annoEditIsCreating = appState.annoEditIsCreating, annoEditCursorBegin = appState.annoEditCursorBegin, annoEditCursorEnd = appState.annoEditCursorEnd, selectedScopeId = appState.selectedScopeId, selectedScopeIndex = appState.selectedScopeIndex;
@@ -3068,7 +3068,7 @@ function TextViewer(_a) {
                             "See the summary visualiations of annotations and explore them in-situ.",
                             React.createElement("br", null),
                             " Select edit to change them.")),
-                    React.createElement("div", { className: style$a.add_annotation_container },
+                    (options && options.allowEditAnnotations) && (React.createElement("div", { className: style$a.add_annotation_container },
                         React.createElement(FormControlLabel, { control: React.createElement(Checkbox, { icon: React.createElement(CheckBoxOutlineBlankIcon, { fontSize: "small" }), checkedIcon: React.createElement(CheckBoxIcon, { fontSize: "small", htmlColor: "#246ED6" }), size: "small", checked: annoEditIsCreating, onChange: function () {
                                     dispatch({
                                         type: annoEditIsCreating
@@ -3076,7 +3076,7 @@ function TextViewer(_a) {
                                             : 'start-annotation-edit',
                                     });
                                 }, inputProps: { 'aria-label': 'Edit annotations checkbox' } }), label: "Edit annotations" }),
-                        annoEditIsCreating && (React.createElement("div", { className: style$a.button_action_description }, "select text to add annotation"))),
+                        annoEditIsCreating && (React.createElement("div", { className: style$a.button_action_description }, "select text to add annotation")))),
                     React.createElement(TextDetail, { annotationLegends: annotationLegendsWithColor, linkLegends: linksLegendsWithColor, attributes: attributes })));
             }
         }
@@ -3151,7 +3151,7 @@ function TextViewer(_a) {
         React.createElement("main", { className: style$a.layout_container },
             LeftArea(),
             React.createElement("div", { className: style$a.center_area_container + "\n              " + (annoEditIsCreating && style$a.is_adding_annotation) },
-                React.createElement(ToolBar, null),
+                ((options && options.enableScopeSelector) && (React.createElement(ToolBar, null))),
                 React.createElement("div", { className: "" + style$a.text_area_container }, MiddleCenterArea()),
                 MiddleBottomArea()),
             RightArea())));
@@ -3328,7 +3328,7 @@ function TextViewerFetchContainer(props) {
             ontology: props.ontology,
         });
     }, [dispatch, props.textPack, props.ontology]);
-    return (React.createElement(TextViewer, { plugins: props.plugins, onEvent: props.onEvent, projectConfig: props.projectConfig, documents: props.documents }));
+    return (React.createElement(TextViewer, { plugins: props.plugins, onEvent: props.onEvent, projectConfig: props.projectConfig, documents: props.documents, options: props.options }));
 }
 
 export default NLPViewer;

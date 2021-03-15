@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -17,9 +18,19 @@
     "downlevelIteration": true,
     "noFallthroughCasesInSwitch": true
   },
+  "paths": {
+    "@nlpviewer/*": ["src/nlpviewer/dist/*"]
+  },
   "include": [
     "src/**/*.ts",
     "test/**/*.ts",
     "src/**/*.tsx"
+  ],
+  "exclude": [
+    "src/nlpviewer/node_modules",
+    "src/nlpviewer/dist",
+    "src/nlpviewer/rollup.config.js",
+    "src/nlpviewer/package.json",
+    "src/nlpviewer/tsconfig.json"
   ]
 }

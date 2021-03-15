@@ -5,12 +5,14 @@ import style from '../styles/AnnotationDetail.module.css';
 import {useTextViewerDispatch} from '../contexts/text-viewer.context';
 import {shortId} from '../lib/utils';
 import {OnEventType} from './TextViewer';
+import { NLPViewerOptions } from '..';
 
 export interface AnnotationDetailProp {
   annotation: IAnnotation;
   parentAnnotations: IAnnotation[];
   childAnnotations: IAnnotation[];
   onEvent?: OnEventType;
+  options?: NLPViewerOptions;
 }
 
 export default function AnnotationDetail({
@@ -18,6 +20,7 @@ export default function AnnotationDetail({
   parentAnnotations,
   childAnnotations,
   onEvent,
+  options,
 }: AnnotationDetailProp) {
   const dispatch = useTextViewerDispatch();
 
@@ -66,26 +69,27 @@ export default function AnnotationDetail({
           />
         </div>
       </div>
+      {(options && options.allowEditAnnotations) && (
+        <div>
+          <button
+            onClick={() => {
+              if (onEvent) {
+                onEvent({
+                  type: 'annotation-delete',
+                  annotationId: annotation.id,
+                });
+              }
 
-      <div>
-        <button
-          onClick={() => {
-            if (onEvent) {
-              onEvent({
-                type: 'annotation-delete',
+              dispatch({
+                type: 'delete-annotation',
                 annotationId: annotation.id,
               });
-            }
-
-            dispatch({
-              type: 'delete-annotation',
-              annotationId: annotation.id,
-            });
-          }}
-        >
-          remove
-        </button>
-      </div>
+            }}
+          >
+            remove
+          </button>
+        </div>
+      )}
     </div>
   );
 }

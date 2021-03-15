@@ -20,6 +20,10 @@ export * from './lib/transform';
 export * from './lib/interfaces';
 export * from './contexts/text-viewer.context';
 
+export interface NLPViewerOptions {
+  allowEditAnnotations: Boolean; // TODO: document
+  enableScopeSelector: Boolean;
+}
 export interface NLPViewerProp {
   textPack: ISinglePack;
   ontology: IOntology;
@@ -27,6 +31,7 @@ export interface NLPViewerProp {
   projectConfig: IProjectConfigs;
   documents: IDocuments;
   onEvent?: OnEventType;
+  options?: NLPViewerOptions;
 }
 
 export default function NLPViewer(props: NLPViewerProp) {
@@ -58,6 +63,7 @@ function TextViewerFetchContainer(props: NLPViewerProp) {
       onEvent={props.onEvent}
       projectConfig={props.projectConfig}
       documents={props.documents}
+      options={props.options}
     />
   );
 }
