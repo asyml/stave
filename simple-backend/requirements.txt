@@ -1,2 +1,2 @@
-django==3.1.4
+django==3.1.6
 django-guardian==2.3.0
