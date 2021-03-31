@@ -1,7 +1,7 @@
 from django.http import Http404
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import get_object_or_404
-from ..models import Document, Project
+from django.shortcuts import get_object_or_404, get_list_or_404
+from ..models import Document, Project, Job
 
 def check_perm_project(project, user, perm):
     if not user.has_perm(perm, project) and user != project.user:
@@ -55,3 +55,23 @@ def fetch_project_check_perm(id, user, perm):
 
     return project
 
+def fetch_job_check_perm(user, perm):
+    """Fetches a job by id and check the permission.
+    
+    Fetches a job by id and check whether the user has certain permission.
+
+    Args:
+        user:
+            A User instance.
+        perm:
+            Permission to check. Example: "nlpviewer_backend.read_project"
+            
+    Returns:
+        A json response of the or forbidden or not found.
+        
+    """
+    job = get_list_or_404(Job, assignee=user)
+    
+    check_perm_project(job, user, perm)
+
+    return job

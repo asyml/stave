@@ -47,6 +47,8 @@ urlpatterns = [
     path('documents/<int:document_id>/links/<int:link_id>/delete',
          document.delete_link),
 
+    path('documents/<int:document_id>/complete', document.query_job),
+
     path('crossdocs/new', crossdoc.create),
     path('crossdocs/<int:crossdoc_id>/delete', crossdoc.delete),
     

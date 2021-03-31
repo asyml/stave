@@ -66,3 +66,14 @@ class CrossDoc(models.Model):
     )
     textPack = models.TextField()
 
+class Job(models.Model):
+
+    assigner = models.CharField(max_length=200, default='auto')
+    assignee = models.CharField(max_length=200)
+
+    pack_table = models.CharField(
+        max_length=200, default='nlpviewer_backend_document')
+
+    job_content = models.TextField(default='')
+
+    status = models.CharField(max_length=200, default='pending')

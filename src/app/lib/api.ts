@@ -228,6 +228,10 @@ export function logout() {
   return fetch('/api/logout');
 }
 
+export function completeDocument(documentId: string) {
+  return fetch(`/api/documents/${documentId}/complete`);
+}
+
 async function postData(url = '', data = {}) {
   const response = await fetch(url, {
     method: 'POST',
