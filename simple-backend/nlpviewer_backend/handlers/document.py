@@ -8,7 +8,8 @@ from django.contrib.auth.decorators import permission_required
 from guardian.decorators import permission_required_or_403
 from ..models import Document, User, Project, Job
 from ..lib.require_login import require_login
-from ..lib.utils import fetch_doc_check_perm, check_perm_project, fetch_job_check_perm
+from ..lib.utils import fetch_doc_check_perm, check_perm_project,\
+    fetch_job_check_perm, check_perm_project
 
 @require_login
 @permission_required('nlpviewer_backend.view_document', raise_exception=True)
@@ -554,9 +555,9 @@ def get_prev_document_id(request, document_id):
     return JsonResponse({'id': str(prev_id)}, safe=False)
 
 @require_login
-def query_job(request, document_id):
+def query_or_create_job(request, document_id):
     try:
-        jobs = fetch_job_check_perm(request.user, "nlpviewer_backend.new_project")
+        jobs = fetch_job_check_perm(request.user, "nlpviewer_backend.query_job")
 
         for job in jobs:
             job_content = json.loads(job.job_content)
@@ -576,7 +577,14 @@ def query_job(request, document_id):
         status='completed',
         job_content=job_content,
     )
+    check_perm_project(job, request.user, "nlpviewer_backend.create_job")
     job.save()
 
     return JsonResponse({"id": job.id}, safe=False)
 
+
+@require_login
+def query_job(request, document_id):
+
+    jobs = fetch_job_check_perm(request.user, "nlpviewer_backend.query_job")
+    return JsonResponse(list(jobs), safe=False)

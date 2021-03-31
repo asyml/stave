@@ -29,6 +29,9 @@ class Project(models.Model):
             ('edit_project', 'Can edit the project'),
             ('remove_project', 'Can remove the project'),
             ('new_project', 'Can create in the project'),
+            ('create_job', 'Can create a job'),
+            ('query_job', 'Can query jobs'),
+            ('update_job', 'Can update jobs'),
         )
     
     def __str__(self):
