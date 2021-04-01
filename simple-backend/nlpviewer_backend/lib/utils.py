@@ -55,7 +55,7 @@ def fetch_project_check_perm(id, user, perm):
 
     return project
 
-def fetch_job_check_perm(user, perm):
+def fetch_job(user):
     """Fetches a job by id and check the permission.
     
     Fetches a job by id and check whether the user has certain permission.
@@ -63,15 +63,11 @@ def fetch_job_check_perm(user, perm):
     Args:
         user:
             A User instance.
-        perm:
-            Permission to check. Example: "nlpviewer_backend.read_project"
             
     Returns:
         A json response of the or forbidden or not found.
         
     """
-    job = get_list_or_404(Job, assignee=user)
-    
-    check_perm_project(job, user, perm)
+    jobs = get_list_or_404(Job, assignee=user)
 
-    return job
+    return jobs
