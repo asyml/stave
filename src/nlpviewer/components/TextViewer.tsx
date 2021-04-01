@@ -20,7 +20,7 @@ import {
 import LinkCreateBox from './LinkCreateBox';
 import AnnotationCreateBox from './AnnotationCreateBox';
 import groupPlugin from '../../plugins/group/Group';
-import {nextDocument, prevDocument} from '../../app/lib/api';
+import {nextDocument, prevDocument, completeDocument} from '../../app/lib/api';
 import {useState} from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -102,6 +102,10 @@ function TextViewer({plugins, onEvent, projectConfig}: TextViewerProp) {
   const pluginsByName = new Map<string, IPlugin>(
     enabledPlugins.map(p => [p.name, p])
   );
+
+  function handleComplete(id: string) {
+    completeDocument(id);
+  }
 
   function renderPlugin(p: IPlugin) {
     const Comp = p.component;
@@ -319,12 +323,21 @@ function TextViewer({plugins, onEvent, projectConfig}: TextViewerProp) {
                   if (doc_id !== next_id) {
                     const next_url = '/documents/' + next_id;
                     window.location.href = next_url;
-                  } else {
-                    alert('This is the last document of the project.');
                   }
                 }}
               >
                 {'Next document >'}
+              </button>
+
+              <button
+                onClick={() => {
+                  handleComplete(doc_id);
+                  {
+                    alert('Document is completed!');
+                  }
+                }}
+              >
+                {'Complete'}
               </button>
 
               {annoEditIsCreating && (
