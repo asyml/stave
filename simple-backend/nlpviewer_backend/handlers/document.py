@@ -1,14 +1,14 @@
 from django.contrib import admin
 from django.urls import include, path
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, Http404
 from django.forms import model_to_dict
 import uuid
 import json
 from django.contrib.auth.decorators import permission_required
 from guardian.decorators import permission_required_or_403
-from ..models import Document, User, Project
+from ..models import Document, User, Project, Job
 from ..lib.require_login import require_login
-from ..lib.utils import fetch_doc_check_perm, check_perm_project
+from ..lib.utils import fetch_doc_check_perm, check_perm_project, fetch_job
 
 @require_login
 @permission_required('nlpviewer_backend.view_document', raise_exception=True)
@@ -308,7 +308,7 @@ def delete_annotation(request, document_id, annotation_id):
     # save to db
     # return OK
 
-    # if doc doen't exist
+    # if doc doesn't exist
     doc = fetch_doc_check_perm(document_id, request.user, "nlpviewer_backend.edit_annotation")
 
     docJson = model_to_dict(doc)
@@ -545,10 +545,44 @@ def get_prev_document_id(request, document_id):
     """
     doc = fetch_doc_check_perm(document_id, request.user, "nlpviewer_backend.read_project")
     docs = doc.project.documents
-    
+
     prev_doc = docs.filter(id__lt=document_id).last()
     if prev_doc:
         prev_id = prev_doc.id
     else:
         prev_id = document_id
     return JsonResponse({'id': str(prev_id)}, safe=False)
+
+@require_login
+def query_or_create_job(request, document_id):
+    try:
+        jobs = fetch_job(request.user)
+
+        for job in jobs:
+            job_content = json.loads(job.job_content)
+            if job_content['doc_id'] == document_id:
+                return JsonResponse({"id": job.id}, safe=False)
+
+    except Http404:
+        pass
+
+    job_content = json.dumps({
+        "doc_id": document_id,
+        "scope": "all"
+    })
+
+    job = Job(
+        assignee=request.user,
+        status='completed',
+        job_content=job_content,
+    )
+    # Check permission
+    doc = fetch_doc_check_perm(
+        document_id, request.user, "nlpviewer_backend.edit_annotation"
+    )
+    check_perm_project(doc.project, request.user, "nlpviewer_backend.edit_annotation")
+
+    ## TODO: Add permission check for the job creation
+    job.save()
+
+    return JsonResponse({"id": job.id}, safe=False)
