@@ -45,12 +45,12 @@ def __load_eliza():
 def __load_utterance_searcher():
   if forte_installed:
     try:
-      from forte_examples.clinical_pipeline.utterance_searcher import LastUtteranceSearcher
+      from examples.clinical_pipeline.utterance_searcher import LastUtteranceSearcher
       from forte.data.readers import RawDataDeserializeReader
     except ImportError:
       logging.error(
         "Additional Forte examples: "
-        "https://github.com/asyml/forte/tree/master/forte_examples "
+        "https://github.com/asyml/forte/tree/master/examples "
         "needed to be installed to run this example.")
       return None
 
