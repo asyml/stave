@@ -18,7 +18,7 @@ def create(request):
     received_json_data = json.loads(request.body)
 
     user = User.objects.create_user(
-        name=received_json_data.get('name'),
+        username=received_json_data.get('name'),
         password=received_json_data.get('password')
     )
     user.save()
@@ -30,7 +30,7 @@ def signup(request):
     received_json_data = json.loads(request.body)
 
     user = User.objects.create_user(
-        name=received_json_data.get('name'),
+        username=received_json_data.get('name'),
         password=received_json_data.get('password')
     )
     user.save()
