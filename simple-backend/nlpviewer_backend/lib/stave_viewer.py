@@ -113,9 +113,9 @@ class StaveViewer:
 
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
-            self._project_reader: "StaveProjectReader"
+            self._project_reader: StaveProjectReader
 
-        def initialize(self, project_reader: "StaveProjectReader"):
+        def initialize(self, project_reader: StaveProjectReader):
             self._project_reader = project_reader
 
         def set_default_headers(self):
