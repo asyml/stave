@@ -89,7 +89,7 @@ class StaveViewer:
             in_viewer_mode: Enable viewer mode of Stave. If False, StaveViewer
                 will start a standard Stave instance. Default to True.
         """
-        self._project_reader: "StaveProjectReader"
+        self._project_reader: StaveProjectReader
 
         self._project_path: str = project_path
         self._build_path: str = build_path
