@@ -158,7 +158,7 @@ def import_project(request):
         ontology=json.dumps(project_reader.ontology),
         config=json.dumps(project_reader.project_configs) \
                     if project_reader.project_configs \
-                    else '',
+                    else None,
         user=request.user
     )
     project.save()
@@ -211,7 +211,7 @@ def export_project(request, project_id):
         project_name=project.name,
         project_type=project.project_type,
         ontology=json.loads(project.ontology),
-        project_configs=json.loads(project.config or "{}")
+        project_configs=json.loads(project.config or "null")
     )
 
     # Write textpacks

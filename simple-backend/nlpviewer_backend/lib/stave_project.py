@@ -95,26 +95,26 @@ class StaveProjectReader(StaveProject):
             self._project_meta: Dict = json.load(f)
 
     @property
-    def ontology(self):
+    def ontology(self) -> Dict:
         return self._project_meta.get(self.ONTO_FIELD)
 
     @property
-    def project_configs(self):
+    def project_configs(self) -> Union[Dict, None]:
         return self._project_meta.get(self.CONF_FIELD)
 
     @property
-    def project_name(self):
+    def project_name(self) -> str:
         return self._project_meta.get(self.NAME_FIELD)
     
     @property
-    def project_type(self):
+    def project_type(self) -> str:
         return self._project_meta.get(self.TYPE_FIELD)
     
     @property
-    def multi_ontology(self):
+    def multi_ontology(self) -> Dict:
         return self._project_meta.get(self.MULT_FIELD)
     
-    def get_textpack(self, index: int):
+    def get_textpack(self, index: int) -> Dict:
         """
         Get the target textpack based on input index. Will raise an exception
         if the index is invalid or not found.
@@ -129,11 +129,11 @@ class StaveProjectReader(StaveProject):
             textpack = json.load(f)
         return textpack
 
-    def get_textpack_prefix(self, index: int):
+    def get_textpack_prefix(self, index: int) -> str:
         textpack_file = os.path.basename(self.get_textpack_file(index))
         return textpack_file[:-len(f".{index}.json")]
 
-    def get_textpack_file(self, index: int):
+    def get_textpack_file(self, index: int) -> str:
         # TODO: The following implementation uses glob to find target 
         #       textpack. It is easy for maintenance but can be less
         #       efficient in some use cases. May find better way to track
@@ -147,12 +147,12 @@ class StaveProjectReader(StaveProject):
             raise Exception("Duplicate textpack index.")
         return match[0]
 
-    def get_next_index(self, index: int):
+    def get_next_index(self, index: int) -> int:
         match = glob.glob(
             os.path.join(self._project_path, f"*.{index + 1}.json"))
         return index if len(match) == 0 else (index + 1)
     
-    def get_prev_index(self, index: int):
+    def get_prev_index(self, index: int) -> int:
         return max(index - 1, 0)
 
 
@@ -188,7 +188,7 @@ class StaveProjectWriter(StaveProject):
         project_name: str,
         project_type: str,
         ontology: Dict,
-        project_configs: Dict,
+        project_configs: Union[Dict, None] = None,
         multi_ontology: Dict = {}
     ):
         """
@@ -201,6 +201,7 @@ class StaveProjectWriter(StaveProject):
             project_type: single_pack / multi_pack.
             ontology: A dictionary for project ontology.
             project_configs: A dictionary for project configurations.
+                Default to None.
             multi_ontology: A dictionary for multi_pack ontology.
                 Default to {}.
         """
@@ -227,7 +228,7 @@ class StaveProjectWriter(StaveProject):
         logger.info('Project["%s"] is saved under "%s".',
             project_name, self._project_path)
 
-    def write_textpack(self, prefix: Union[int, str], textpack: str):
+    def write_textpack(self, prefix: Union[int, str], textpack: str) -> int:
         """
         Write textpack to the project directory with standard naming scheme.
         It returns the current textpack index to the caller.
