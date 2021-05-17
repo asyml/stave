@@ -156,9 +156,7 @@ def import_project(request):
         project_type = project_reader.project_type,
         name=project_reader.project_name,
         ontology=json.dumps(project_reader.ontology),
-        config=json.dumps(project_reader.project_configs) \
-                    if project_reader.project_configs \
-                    else None,
+        config=json.dumps(project_reader.project_configs),
         user=request.user
     )
     project.save()
