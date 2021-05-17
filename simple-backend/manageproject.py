@@ -1,5 +1,5 @@
 """
-A Stave server side script for admin to import/export project from/to
+A Stave server script for admin to import/export project from/to
 a directory. Expected directory structure:
 
     - project_path/
