@@ -19,50 +19,62 @@ import dialogueBoxPlugin from '../plugins/dialogue_box/DialogueBox';
 import AccountMenu from './components/accountMenu';
 
 function App() {
-  const [open, setOpen] = useState<boolean>(false);
-
   return (
     <Router>
-      <div>
-        <header className="layout_header">
-          <BurgerMenu open={open} setOpen={setOpen}>
-            <Link to="/users">All Users</Link>
-            <Link to="/projects">All Projects</Link>
-          </BurgerMenu>
-          <AccountMenu></AccountMenu>
-        </header>
-
-        <Switch>
-          <Route path="/login">
-            <Login />
-          </Route>
-
-          <Route path="/signup">
-            <SignUp />
-          </Route>
-
-          <Route path="/users">
-            <Users />
-          </Route>
-
-          <Route path="/documents/:id">
-            <Viewer />
-          </Route>
-
-          <Route path="/projects">
-            <Projects />
-          </Route>
-
-          <Route path="/project/:id">
-            <Project />
-          </Route>
-
-          <Route path="/">
-            <Projects />
-          </Route>
-        </Switch>
-      </div>
+      <Switch>
+        <Route path="/viewer/:id">
+          <Viewer />
+        </Route>
+        <Route path="/">
+          <AppWithBurger />
+        </Route>
+      </Switch>
     </Router>
+  );
+}
+
+function AppWithBurger() {
+  const [open, setOpen] = useState<boolean>(false);
+  return (
+    <div>
+      <header className="layout_header">
+        <BurgerMenu open={open} setOpen={setOpen}>
+          <Link to="/users">All Users</Link>
+          <Link to="/projects">All Projects</Link>
+        </BurgerMenu>
+        <AccountMenu></AccountMenu>
+      </header>
+
+      <Switch>
+        <Route path="/login">
+          <Login />
+        </Route>
+
+        <Route path="/signup">
+          <SignUp />
+        </Route>
+
+        <Route path="/users">
+          <Users />
+        </Route>
+
+        <Route path="/documents/:id">
+          <Viewer />
+        </Route>
+
+        <Route path="/projects">
+          <Projects />
+        </Route>
+
+        <Route path="/project/:id">
+          <Project />
+        </Route>
+
+        <Route path="/">
+          <Projects />
+        </Route>
+      </Switch>
+    </div>
   );
 }
 
