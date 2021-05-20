@@ -297,8 +297,8 @@ export function attributeId(legendId: string, attributeId: string) {
   return legendId + '_' + attributeId;
 }
 
-export function shortId(id: string) {
-  return id.replace('forte.data.ontology.', '');
+export function shortId(id: string | number) {
+  return id.toString().replace('forte.data.ontology.', '');
 }
 
 // export function checkAnnotationInGroup(
