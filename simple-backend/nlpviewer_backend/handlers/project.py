@@ -4,11 +4,13 @@ from django.http import HttpResponse, JsonResponse
 from django.forms import model_to_dict
 from django.core.exceptions import ObjectDoesNotExist 
 from django.contrib.auth.decorators import permission_required
+import os
 import uuid
 import json
 from ..models import Project, Document, User
 from ..lib.require_login import require_login, require_admin
 from ..lib.utils import fetch_project_check_perm
+from ..lib.stave_project import StaveProjectReader, StaveProjectWriter
 from guardian.shortcuts import get_objects_for_user
 
 @require_login
@@ -122,5 +124,96 @@ def delete(request, project_id):
     
     project = fetch_project_check_perm(project_id, request.user, "nlpviewer_backend.remove_project")
     project.delete()
+
+    return HttpResponse('ok')
+
+@require_login
+def import_project(request):
+    """
+    Import project from local directory into django database. The project
+    directory must have the following structure:
+
+        - project_path/
+            - PROJECT_META_FILE
+            - *.0.json
+            - *.1.json
+            - *.2.json
+            ...
+
+    Args:
+        request: HTTP post request. Request body must have a field called
+            `project_path` that stores the path to project directory.
+
+    Returns:
+        JsonResponse: A json response with project id.
+    """
+
+    # Create project from import directory
+    received_json_data = json.loads(request.body)
+    project_path = received_json_data.get("project_path")
+    project_reader = StaveProjectReader(project_path=project_path)
+    project = Project(
+        project_type = project_reader.project_type,
+        name=project_reader.project_name,
+        ontology=json.dumps(project_reader.ontology),
+        config=json.dumps(project_reader.project_configs),
+        user=request.user
+    )
+    project.save()
+
+    # Create documents from import directory
+    pack_index = 0
+    while True:
+        doc = Document(
+            name=project_reader.get_textpack_prefix(pack_index),
+            textPack=json.dumps(project_reader.get_textpack(pack_index)),
+            project=project
+        )
+        doc.save()
+        next_index = project_reader.get_next_index(pack_index)
+        if next_index == pack_index:
+            break
+        pack_index = next_index
+
+    return JsonResponse({"id": project.id}, safe=False)
+
+@require_login
+def export_project(request, project_id):
+    """
+    Export a project from django database to local storage. The output
+    directory will have the following structure:
+
+        - project_path/
+            - PROJECT_META_FILE
+            - *.0.json
+            - *.1.json
+            - *.2.json
+            ...
+
+    Args:
+        request: HTTP post request. Request body must have a field called
+            `project_path` that specifies where to export the project.
+        project_id: project id in django databse.
+
+    Returns:
+        HttpResponse: An HTTP request indicating success.
+    """
+
+    received_json_data = json.loads(request.body)
+    project_path = received_json_data.get("project_path")
+
+    # Write project meta data
+    project = fetch_project_check_perm(project_id, request.user, "nlpviewer_backend.read_project")
+    project_writer = StaveProjectWriter(
+        project_path=project_path,
+        project_name=project.name,
+        project_type=project.project_type,
+        ontology=json.loads(project.ontology),
+        project_configs=json.loads(project.config or "null")
+    )
+
+    # Write textpacks
+    for doc in project.documents.all().values():
+        project_writer.write_textpack(doc["name"], doc["textPack"])
 
     return HttpResponse('ok')
