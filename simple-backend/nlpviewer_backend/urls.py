@@ -62,6 +62,8 @@ urlpatterns = [
     path('projects/<int:project_id>/docs', project.query_docs),
     path('projects/<int:project_id>/crossdocs', project.query_crossdocs),
     path('projects/<int:project_id>/delete', project.delete),
+    path('projects/import', project.import_project),
+    path('projects/<int:project_id>/export', project.export_project),
 
     path('documents/<int:document_id>/text/edit', document.edit_text),   
 
