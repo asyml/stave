@@ -19,6 +19,11 @@ import dialogueBoxPlugin from '../plugins/dialogue_box/DialogueBox';
 import AccountMenu from './components/accountMenu';
 
 function App() {
+  /*
+   * Top level router. Switch between viewer mode and full mode.
+   * "viewer" page is the same as the "documents" page except that it
+   * does not have the burger menu.
+   */
   return (
     <Router>
       <Switch>
@@ -26,14 +31,17 @@ function App() {
           <Viewer />
         </Route>
         <Route path="/">
-          <AppWithBurger />
+          <FullMode />
         </Route>
       </Switch>
     </Router>
   );
 }
 
-function AppWithBurger() {
+function FullMode() {
+  /*
+   * Full mode app with burger menu.
+   */
   const [open, setOpen] = useState<boolean>(false);
   return (
     <div>
