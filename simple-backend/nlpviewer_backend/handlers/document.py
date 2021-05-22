@@ -468,6 +468,7 @@ def get_doc_ontology_pack(request, document_id):
     """
     doc = fetch_doc_check_perm(document_id, request.user, "nlpviewer_backend.read_project")
 
+    # Convert annotation uuids to string to prevent precision loss
     textPackJson = json.loads(doc.textPack)
     for annotation in textPackJson['py/state']['annotations']:
         annotation['py/state']['_tid'] = str(annotation['py/state']['_tid'])
