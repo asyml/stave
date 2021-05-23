@@ -30,7 +30,7 @@ import django
 from django.core.wsgi import get_wsgi_application
 
 from tornado.web import FallbackHandler, StaticFileHandler, \
-    RequestHandler, url, Application
+    RequestHandler, RedirectHandler, url, Application
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.wsgi import WSGIContainer
@@ -255,7 +255,7 @@ class StaveViewer:
                 set the url based on `in_viewer_mode`.
         """
         webbrowser.open(url or (
-            f"{self.url}/documents/0" if \
+            f"{self.url}/viewer/0" if \
             self.in_viewer_mode else self.url
         ))
 
@@ -305,7 +305,9 @@ class StaveViewer:
                 url(r"/api/prev_doc/(.*)",
                     self.PrevDocHandler, handler_args),
                 url(r"/api/.*",
-                    self.NonImplementHandler, handler_args)
+                    self.NonImplementHandler, handler_args),
+                url(r"/documents/(\d+)",
+                    RedirectHandler, {"url": "/viewer/{0}"})
             ]
         else:
             router_list = [
