@@ -242,7 +242,7 @@ def new_annotation(request, document_id):
     doc.textPack = json.dumps(textPackJson)
     doc.save()
 
-    return JsonResponse({"id": annotation_id}, safe=False)
+    return JsonResponse({"id": str(annotation_id)}, safe=False)
 
 @require_login
 def edit_annotation(request, document_id, annotation_id):
@@ -377,7 +377,7 @@ def new_link(request, document_id):
     doc.textPack = json.dumps(textPackJson)
     doc.save()
 
-    return JsonResponse({"id": link_id}, safe=False)
+    return JsonResponse({"id": str(link_id)}, safe=False)
 
 
 @require_login
@@ -468,9 +468,14 @@ def get_doc_ontology_pack(request, document_id):
     """
     doc = fetch_doc_check_perm(document_id, request.user, "nlpviewer_backend.read_project")
 
+    # Convert every large integer to string to prevent precision loss
+    # In javascript, integers are accurate up to 15 digits.
+    textPackJson = json.loads(doc.textPack,
+        parse_int=lambda si: int(si) if len(si) < 15 else si)
+
     docJson = {
         'id': document_id,
-        'textPack': doc.textPack,
+        'textPack': json.dumps(textPackJson),
         'ontology': doc.project.ontology
     }
 
