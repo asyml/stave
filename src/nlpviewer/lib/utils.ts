@@ -61,6 +61,9 @@ export function displayAttributeSidebar(attr_value: any) {
   if (attr_type === 'boolean') {
     return attr_value.toString();
   } else if (attr_type === 'string') {
+    // a temporary solution to show uuid
+    const parsed: number = parseInt(attr_value);
+    if (!isNaN(parsed)) return parsed.toString();
     return attr_value.substring(0, 3);
   } else if (attr_type === 'number') {
     return attr_value.toString();
