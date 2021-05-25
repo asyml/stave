@@ -18,7 +18,6 @@ import asyncio
 import threading
 import webbrowser
 from typing import Dict, Set, Any, List
-import requests
 
 import django
 from django.core.wsgi import get_wsgi_application
