@@ -73,13 +73,6 @@ def main(args):
         usage()
     
     sv = StaveViewer(
-        # TODO: Currently assuming "simple_backend/" and "build/" are
-        #   under the same directory "stave/". Need update if file structure
-        #   changes.
-        build_path=os.path.abspath(os.path.join(
-            os.path.dirname(__file__),
-            "../build/"
-        )),
         thread_daemon=not do_open,
         in_viewer_mode=False
     )

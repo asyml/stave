@@ -8,15 +8,9 @@ simple and straightforward for users to boot up Stave for easy-visualization.
 Package Requirements:
     tornado == 6.1
     django == 3.2
-
-Environment:
-    PYTHONPATH: Absolute path (or relative path from PYTHONPATH)
-        to django backend folder should be inserted into PYTHONPATH.
-        Example: "stave/simple-backend/". Deprecated in future update.
 """
 
 import os
-import sys
 import json
 import errno
 import logging
@@ -49,10 +43,7 @@ class StaveViewer:
     StaveViewer allows users to start and control a Stave instance in viewer
     mode. Example usage:
 
-        sv = StaveViewer(
-            build_path = os.path.join(stave_path, "build/")
-            project_path = project_path
-        )
+        sv = StaveViewer(project_path = project_path)
         sv.run()
         sv.open()
 
@@ -67,7 +58,6 @@ class StaveViewer:
     """
 
     def __init__(self,
-        build_path: str,
         project_path: str = '',
         host: str = "localhost",
         port: int = 8888,
@@ -78,8 +68,6 @@ class StaveViewer:
         Initialize StaveViewer with input paramaters.
 
         Args:
-            build_path: Absolute path (or relative path from PYTHONPATH)
-                to stave build folder. Example: "stave/build/".
             project_path: Path to the project directory for rendering.
                 Default to the current path ''.
             host: host name for Stave server. Default value is `localhost`.
@@ -92,7 +80,8 @@ class StaveViewer:
         self._project_reader: StaveProjectReader
 
         self._project_path: str = project_path
-        self._build_path: str = build_path
+        self._build_path: str = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "build")
         
         self._host: str = host
         self._port: int = port
@@ -279,9 +268,6 @@ class StaveViewer:
         # TODO: Find better logic to deal with routing.
         #       The following implementation may miss some corner cases.
         base_list = [
-            url(r'.*/static/(.*)', StaticFileHandler, {
-                "path": self._build_path + "/static/"
-            }),
             url(r'.*/([^/]*\.png)', StaticFileHandler, {
                 "path": self._build_path
             }),
@@ -306,12 +292,18 @@ class StaveViewer:
                     self.PrevDocHandler, handler_args),
                 url(r"/api/.*",
                     self.NonImplementHandler, handler_args),
+                url(r'.*/static/(.*)', StaticFileHandler, {
+                    "path": self._build_path + "/static/"
+                }),
                 url(r"/documents/(\d+)",
                     RedirectHandler, {"url": "/viewer/{0}"})
             ]
         else:
             router_list = [
-                url(r"/api/(.*)", self.ProxyHandler, dict(fallback=wsgi_app))
+                url(r"/api/(.*)", self.ProxyHandler, dict(fallback=wsgi_app)),
+                url(r'.*/static/(.*)', StaticFileHandler, {
+                    "path": self._build_path + "/static/"
+                }),
             ]
 
         return Application(router_list + base_list)
