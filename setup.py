@@ -24,6 +24,7 @@ setuptools.setup(
     platforms='any',
 
     install_requires=[
+        'requests==2.25.1',
         'django>=3.0.4',
         'tornado==6.1'
     ],
