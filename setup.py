@@ -28,7 +28,9 @@ setuptools.setup(
         'django-guardian==2.3.0',
         'tornado==6.1'
     ],
-    extras_require={},
+    extras_require={
+        "forte": ["forte"],
+    },
     entry_points={},
     classifiers=[
         'Intended Audience :: Developers',
