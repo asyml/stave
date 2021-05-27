@@ -249,9 +249,10 @@ class StaveViewer:
 
     def _start_server(self):
         asyncio.set_event_loop(asyncio.new_event_loop())
-        os.environ['DJANGO_SETTINGS_MODULE'] = "nlpviewer_backend.settings"
-        os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
-        django.setup()
+        if not self.in_viewer_mode:
+            os.environ['DJANGO_SETTINGS_MODULE'] = "nlpviewer_backend.settings"
+            os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
+            django.setup()
 
         server = HTTPServer(self._get_application())
         server.listen(self._port)
@@ -262,7 +263,6 @@ class StaveViewer:
         IOLoop.current().start()
 
     def _get_application(self):
-        wsgi_app = WSGIContainer(get_wsgi_application())
 
         # TODO: Find better logic to deal with routing.
         #       The following implementation may miss some corner cases.
@@ -298,6 +298,7 @@ class StaveViewer:
                     RedirectHandler, {"url": "/viewer/{0}"})
             ]
         else:
+            wsgi_app = WSGIContainer(get_wsgi_application())
             router_list = [
                 url(r"/api/(.*)", self.ProxyHandler, dict(fallback=wsgi_app)),
                 url(r'.*/static/(.*)', StaticFileHandler, {
