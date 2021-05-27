@@ -24,6 +24,7 @@ setuptools.setup(
     platforms='any',
 
     install_requires=[
+        'requests==2.25.1',
         'django>=3.0.4',
         'django-guardian==2.3.0',
         'tornado==6.1'
@@ -31,7 +32,12 @@ setuptools.setup(
     extras_require={
         "forte": ["forte"],
     },
-    entry_points={},
+    entry_points={
+        'console_scripts':[
+            'stave = scripts.stave.__main__:main',
+            'manageproject = scripts.manageproject.__main__:main'
+        ]
+    },
     classifiers=[
         'Intended Audience :: Developers',
         'Intended Audience :: Education',

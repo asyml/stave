@@ -41,8 +41,9 @@ def usage():
     sys.exit()
 
 
-def main(args):
-
+def main():
+    
+    args = sys.argv
     if len(args) < 2:
         usage()
     
@@ -104,4 +105,4 @@ def main(args):
         print("Done")
 
 if __name__ == "__main__":
-    main(sys.argv)
+    main()
