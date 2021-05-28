@@ -57,10 +57,10 @@ def usage():
 
 
 def main():
-    
+
     if len(sys.argv) < 2:
         usage()
-    
+
     command = sys.argv[1]
     if command not in (START, LOAD, IMPORT, EXPORT):
         usage()
@@ -97,7 +97,7 @@ def main():
     if (command in (IMPORT, EXPORT) and project_path is None) or \
     (command == EXPORT and project_id is None):
         usage()
-    
+
     in_viewer_mode = (project_path is not None) and (command == START)
     sv = StaveViewer(
         project_path=project_path if in_viewer_mode else '',
