@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+from django.core.management.utils import get_random_secret_key
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 settings_dir = os.path.dirname(os.path.abspath(__file__))
@@ -22,7 +23,8 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '_uc(72pjf1%e_@%)j=pl%ag52_flmv++&e%frth__c%io9bom^'
+SECRET_KEY = os.environ.setdefault(
+                "DJANGO_SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
