@@ -9,7 +9,7 @@ if sys.version_info < (3, 6):
 
 setuptools.setup(
     name="stave",
-    version="0.0.1.dev2",
+    version="0.0.1.dev3",
     url="https://github.com/asyml/stave",
 
     description="Stave is a fast, lightweight, extensible web-based text "
@@ -34,7 +34,7 @@ setuptools.setup(
     },
     entry_points={
         'console_scripts':[
-            'manageproject = nlpviewer_backend.lib.manageproject:main'
+            'stave = nlpviewer_backend.lib.stave_cli:main'
         ]
     },
     classifiers=[

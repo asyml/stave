@@ -13,6 +13,7 @@ Package Requirements:
 import os
 import json
 import errno
+import sqlite3
 import logging
 import asyncio
 import threading
@@ -20,6 +21,7 @@ import webbrowser
 from typing import Dict, Set, Any, List
 
 import django
+from django.core.management import call_command
 from django.core.wsgi import get_wsgi_application
 
 from tornado.web import FallbackHandler, StaticFileHandler, \
@@ -228,9 +230,12 @@ class StaveViewer:
 
         # Wait for server to boot up
         self._barrier.wait()
-
         if not thread.is_alive():
             raise Exception("Stave server not started.")
+
+        # Initialize database for full mode Stave
+        if not self.in_viewer_mode:
+            self.load_database()
         self.server_started = True
 
     def open(self, url=None):
@@ -307,3 +312,50 @@ class StaveViewer:
             ]
 
         return Application(router_list + base_list)
+
+    @classmethod
+    def load_database(cls, 
+        load_auth: bool = False,
+        load_samples: bool = False
+    ):
+        """
+        Initialize sqlite database for django backend.
+
+        Args:
+            load_auth: Insert default user and authentication info to database.
+                Default to False.
+            load_samples: Indicate whether to load sample projects
+                into database. Deafult to False.
+        """
+        dir_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        db_file = os.path.join(dir_path, "db.sqlite3")
+        if not os.path.exists(db_file):
+            call_command("migrate")
+
+        sql_files = []
+        if load_auth:
+            sql_files.extend([
+                "auth_user.sql",
+                "guardian_userobjectpermission.sql"
+            ])
+        if load_samples:
+            sql_files.extend([
+                "nlpviewer_backend_project.sql",
+                "nlpviewer_backend_document.sql"
+            ])
+        if not sql_files:
+            return
+
+        conn = sqlite3.connect(db_file)
+        cur = conn.cursor()
+        try:
+            for sql_file in sql_files:
+                with open(
+                    os.path.join(dir_path, f"sample_sql/{sql_file}"
+                ), 'r') as f:
+                    cur.executescript(f.read())
+            conn.commit()
+        except sqlite3.IntegrityError as err:
+            logger.info("Cannot insert duplicate entries: %s", err)
+        finally:
+            conn.close()
