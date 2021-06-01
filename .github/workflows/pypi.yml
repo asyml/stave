@@ -30,15 +30,12 @@ jobs:
           node-version: '14'
       - name: Build react.js application and move to package path
         run: |
-          npm install
-          npm run build
+          yarn install
+          yarn run build
           mv ./build ./simple-backend/nlpviewer_backend/lib/build
       - name: Copy sql statements to package path
         run: |
           cp -r ./simple-backend/sample_sql ./simple-backend/nlpviewer_backend/sample_sql
-      - name: Replace the repo version of settings.py with package version
-        run: |
-          mv ./scripts/settings.py ./simple-backend/nlpviewer_backend/settings.py
       - name: Build a binary wheel and a source tarball
         run: |
           python -m build --sdist --wheel --outdir dist/ .

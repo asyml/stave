@@ -21,6 +21,7 @@ import webbrowser
 from typing import Dict, Set, Any, List
 
 import django
+from django.conf import settings
 from django.core.management import call_command
 from django.core.wsgi import get_wsgi_application
 
@@ -93,7 +94,7 @@ class StaveViewer:
         self.in_viewer_mode: bool = in_viewer_mode
 
         # Used for sync between threads
-        self._barrier = threading.Barrier(2, timeout=1)
+        self._barrier = threading.Barrier(2, timeout=5)
 
     class ViewerHandler(RequestHandler):
         """
@@ -233,9 +234,6 @@ class StaveViewer:
         if not thread.is_alive():
             raise Exception("Stave server not started.")
 
-        # Initialize database for full mode Stave
-        if not self.in_viewer_mode:
-            self.load_database()
         self.server_started = True
 
     def open(self, url=None):
@@ -258,6 +256,16 @@ class StaveViewer:
             os.environ['DJANGO_SETTINGS_MODULE'] = "nlpviewer_backend.settings"
             os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
             django.setup()
+            # TODO: Database's path needs to be set to the package
+            #   directory, i.e., "nlpviewer_backend/". Though it's not
+            #   recommended to modify django settings at runtime, it's easy
+            #   for code maintaining since it eliminates the need to track two
+            #   different "settings.py" files in the same repo.
+            settings.DATABASES['default']['NAME'] = os.path.join(
+                os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                "db.sqlite3"
+            )
+            self.load_database()
 
         server = HTTPServer(self._get_application())
         server.listen(self._port)
