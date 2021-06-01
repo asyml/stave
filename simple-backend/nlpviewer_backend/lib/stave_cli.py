@@ -14,7 +14,7 @@ Expected directory structure:
 
 import os
 import sys
-import getopt
+import argparse
 import getpass
 import requests
 from nlpviewer_backend.lib.stave_viewer import StaveViewer
@@ -24,94 +24,59 @@ LOAD = "load"
 IMPORT = "import"
 EXPORT = "export"
 
-def usage():
-    print(f"""
-    Commands
-        {START}                 - Start the Stave server
-        {LOAD}                  - Create database and load data
-        {IMPORT}                - Import project from directory
-        {EXPORT}                - Export project to directory
-
-    Common args:
-        --help | -h             - Show usage
-        --open | -o             - Open browser
-        --project-path | -p     - Project path for import/export
-        --project-id | -i       - Project database id to export
-        --load-auth | -a        - Load default user and permission info
-        --load-samples | -s     - Load sample projects into database
-
-    Start Stave Server:
-        stave {START} [-p <project_path>] [-o]
-
-    Create Database:
-        stave {LOAD} [-a] [-s] [-o]
-
-    Import Project:
-        stave {IMPORT} -p <project_path> [-o]
-
-    Export Project:
-        stave {EXPORT} -p <project_path> -i <project_id> [-o]
-
-""")
-    sys.exit()
-
 
 def main():
 
-    if len(sys.argv) < 2:
-        usage()
+    parser = argparse.ArgumentParser(
+        description="A Stave command line interface for users to start "
+            "running Stave, to initialize database for django backend, "
+            "and to import/export project from/to a directory."
+    )
+    parser.add_argument("-o", "--open", action="store_true",
+                                help="Open browser")
+    subparsers = parser.add_subparsers(required=True, dest="command",
+                                help="Valid commands")
+    
+    parser_start = subparsers.add_parser(START, 
+                                help="Start the Stave server")
+    parser_start.add_argument("-p", "--project-path",
+                                help="Project path for viewer mode")
 
-    command = sys.argv[1]
-    if command not in (START, LOAD, IMPORT, EXPORT):
-        usage()
+    parser_load = subparsers.add_parser(LOAD,
+                                help="Create database and load data")
+    parser_load.add_argument("-a", "--load-auth", action="store_true",
+                                help="Load default user and permission info")
+    parser_load.add_argument("-s", "--load-samples", action="store_true",
+                                help="Load sample projects into database")
 
-    try:
-        opts, args = getopt.getopt(sys.argv[2:],
-            "hoasp:i:",
-            ["help", "open", "load-auth", "load-samples",
-            "project-path=", "project-id="]
-        )
-    except Exception as e:
-        print(e)
-        usage()
+    parser_import = subparsers.add_parser(IMPORT,
+                                help="Import project from directory")
+    parser_import.add_argument("project_path", metavar="project-path",
+                                help="Project path for import")
 
-    project_path = None
-    project_id = None
-    do_open = False
-    load_auth = False
-    load_samples = False
-    for option, value in opts:
-        if option in ("-h", "--help"):
-            usage()
-        elif option in ("-p", "--project-path"):
-            project_path = value
-        elif option in ("-i", "--project-id"):
-            project_id = int(value)
-        elif option in ("-o", "--open"):
-            do_open = True
-        elif option in ("-a", "--load-auth"):
-            load_auth = True
-        elif option in ("-s", "--load-samples"):
-            load_samples = True  
+    parser_export = subparsers.add_parser(EXPORT,
+                                help="Export project to directory")
+    parser_export.add_argument("project-path",
+                                help="Project path for export")
+    parser_export.add_argument("project-id", type=int,
+                                help="Database id of project")
 
-    if (command in (IMPORT, EXPORT) and project_path is None) or \
-    (command == EXPORT and project_id is None):
-        usage()
+    args = parser.parse_args()
 
-    in_viewer_mode = (project_path is not None) and (command == START)
+    in_viewer_mode = args.command == START and args.project_path is not None
     sv = StaveViewer(
-        project_path=project_path if in_viewer_mode else '',
-        thread_daemon=not (command == START or do_open),
+        project_path=args.project_path if in_viewer_mode else '',
+        thread_daemon=not (args.command == START or args.open),
         in_viewer_mode=in_viewer_mode
     )
     sv.run()
 
-    if command == LOAD:
+    if args.command == LOAD:
         StaveViewer.load_database(
-            load_auth=load_auth,
-            load_samples=load_samples
+            load_auth=args.load_auth,
+            load_samples=args.load_samples
         )
-    elif command in (IMPORT, EXPORT):
+    elif args.command in (IMPORT, EXPORT):
         with requests.Session() as session:
             # Login with input username and password
             username = input("Username: ")
@@ -126,14 +91,15 @@ def main():
 
             # Post a request to django to import/export project
             post_url = f"{sv.url}/api/projects/" + (
-                f"{project_id}/export" if command == EXPORT else "import")
+                f"{args.project_id}/export" if args.command == EXPORT \
+                else "import")
             response = session.post(
-                post_url, json={"project_path": project_path})
+                post_url, json={"project_path": args.project_path})
             if response.status_code != 200:
-                print(f"[ERROR]: Failed to {command} project.")
+                print(f"[ERROR]: Failed to {args.command} project.")
                 sys.exit()
 
-    if do_open:
+    if args.open:
         sv.open()
 
     print("Done")
