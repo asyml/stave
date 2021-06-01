@@ -8,25 +8,21 @@ simple and straightforward for users to boot up Stave for easy-visualization.
 Package Requirements:
     tornado == 6.1
     django == 3.2
-
-Environment:
-    PYTHONPATH: Absolute path (or relative path from PYTHONPATH)
-        to django backend folder should be inserted into PYTHONPATH.
-        Example: "stave/simple-backend/". Deprecated in future update.
 """
 
 import os
-import sys
 import json
 import errno
+import sqlite3
 import logging
 import asyncio
 import threading
 import webbrowser
 from typing import Dict, Set, Any, List
-import requests
 
 import django
+from django.conf import settings
+from django.core.management import call_command
 from django.core.wsgi import get_wsgi_application
 
 from tornado.web import FallbackHandler, StaticFileHandler, \
@@ -49,10 +45,7 @@ class StaveViewer:
     StaveViewer allows users to start and control a Stave instance in viewer
     mode. Example usage:
 
-        sv = StaveViewer(
-            build_path = os.path.join(stave_path, "build/")
-            project_path = project_path
-        )
+        sv = StaveViewer(project_path = project_path)
         sv.run()
         sv.open()
 
@@ -67,7 +60,6 @@ class StaveViewer:
     """
 
     def __init__(self,
-        build_path: str,
         project_path: str = '',
         host: str = "localhost",
         port: int = 8888,
@@ -78,8 +70,6 @@ class StaveViewer:
         Initialize StaveViewer with input paramaters.
 
         Args:
-            build_path: Absolute path (or relative path from PYTHONPATH)
-                to stave build folder. Example: "stave/build/".
             project_path: Path to the project directory for rendering.
                 Default to the current path ''.
             host: host name for Stave server. Default value is `localhost`.
@@ -92,7 +82,8 @@ class StaveViewer:
         self._project_reader: StaveProjectReader
 
         self._project_path: str = project_path
-        self._build_path: str = build_path
+        self._build_path: str = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "build")
         
         self._host: str = host
         self._port: int = port
@@ -103,7 +94,7 @@ class StaveViewer:
         self.in_viewer_mode: bool = in_viewer_mode
 
         # Used for sync between threads
-        self._barrier = threading.Barrier(2, timeout=1)
+        self._barrier = threading.Barrier(2, timeout=5)
 
     class ViewerHandler(RequestHandler):
         """
@@ -240,9 +231,9 @@ class StaveViewer:
 
         # Wait for server to boot up
         self._barrier.wait()
-
         if not thread.is_alive():
             raise Exception("Stave server not started.")
+
         self.server_started = True
 
     def open(self, url=None):
@@ -261,9 +252,20 @@ class StaveViewer:
 
     def _start_server(self):
         asyncio.set_event_loop(asyncio.new_event_loop())
-        os.environ['DJANGO_SETTINGS_MODULE'] = "nlpviewer_backend.settings"
-        os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
-        django.setup()
+        if not self.in_viewer_mode:
+            os.environ['DJANGO_SETTINGS_MODULE'] = "nlpviewer_backend.settings"
+            os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
+            django.setup()
+            # TODO: Database's path needs to be set to the package
+            #   directory, i.e., "nlpviewer_backend/". Though it's not
+            #   recommended to modify django settings at runtime, it's easy
+            #   for code maintaining since it eliminates the need to track two
+            #   different "settings.py" files in the same repo.
+            settings.DATABASES['default']['NAME'] = os.path.join(
+                os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                "db.sqlite3"
+            )
+            self.load_database()
 
         server = HTTPServer(self._get_application())
         server.listen(self._port)
@@ -274,14 +276,10 @@ class StaveViewer:
         IOLoop.current().start()
 
     def _get_application(self):
-        wsgi_app = WSGIContainer(get_wsgi_application())
 
         # TODO: Find better logic to deal with routing.
         #       The following implementation may miss some corner cases.
         base_list = [
-            url(r'.*/static/(.*)', StaticFileHandler, {
-                "path": self._build_path + "/static/"
-            }),
             url(r'.*/([^/]*\.png)', StaticFileHandler, {
                 "path": self._build_path
             }),
@@ -306,12 +304,66 @@ class StaveViewer:
                     self.PrevDocHandler, handler_args),
                 url(r"/api/.*",
                     self.NonImplementHandler, handler_args),
+                url(r'.*/static/(.*)', StaticFileHandler, {
+                    "path": self._build_path + "/static/"
+                }),
                 url(r"/documents/(\d+)",
                     RedirectHandler, {"url": "/viewer/{0}"})
             ]
         else:
+            wsgi_app = WSGIContainer(get_wsgi_application())
             router_list = [
-                url(r"/api/(.*)", self.ProxyHandler, dict(fallback=wsgi_app))
+                url(r"/api/(.*)", self.ProxyHandler, dict(fallback=wsgi_app)),
+                url(r'.*/static/(.*)', StaticFileHandler, {
+                    "path": self._build_path + "/static/"
+                }),
             ]
 
         return Application(router_list + base_list)
+
+    @classmethod
+    def load_database(cls, 
+        load_auth: bool = False,
+        load_samples: bool = False
+    ):
+        """
+        Initialize sqlite database for django backend.
+
+        Args:
+            load_auth: Insert default user and authentication info to database.
+                Default to False.
+            load_samples: Indicate whether to load sample projects
+                into database. Deafult to False.
+        """
+        dir_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        db_file = os.path.join(dir_path, "db.sqlite3")
+        if not os.path.exists(db_file):
+            call_command("migrate")
+
+        sql_files = []
+        if load_auth:
+            sql_files.extend([
+                "auth_user.sql",
+                "guardian_userobjectpermission.sql"
+            ])
+        if load_samples:
+            sql_files.extend([
+                "nlpviewer_backend_project.sql",
+                "nlpviewer_backend_document.sql"
+            ])
+        if not sql_files:
+            return
+
+        conn = sqlite3.connect(db_file)
+        cur = conn.cursor()
+        try:
+            for sql_file in sql_files:
+                with open(
+                    os.path.join(dir_path, f"sample_sql/{sql_file}"
+                ), 'r') as f:
+                    cur.executescript(f.read())
+            conn.commit()
+        except sqlite3.IntegrityError as err:
+            logger.info("Cannot insert duplicate entries: %s", err)
+        finally:
+            conn.close()

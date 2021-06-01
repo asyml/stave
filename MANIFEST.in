@@ -1,0 +1,2 @@
+recursive-include simple-backend/nlpviewer_backend/sample_sql *
+recursive-include simple-backend/nlpviewer_backend/lib/build *

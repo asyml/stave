@@ -189,7 +189,8 @@ class StaveProjectWriter(StaveProject):
         project_type: str,
         ontology: Dict,
         project_configs: Union[Dict, None] = None,
-        multi_ontology: Dict = {}
+        multi_ontology: Dict = {},
+        allow_overwrite: bool = True
     ):
         """
         Initialize StaveProjectWriter and create the project meta file.
@@ -204,12 +205,15 @@ class StaveProjectWriter(StaveProject):
                 Default to None.
             multi_ontology: A dictionary for multi_pack ontology.
                 Default to {}.
+            allow_overwrite: Allow overwriting textpacks with the same index.
+                Default to True.
         """
         super().__init__(project_path)
 
         if not os.path.isdir(self._project_path):
             os.makedirs(self._project_path)
 
+        self._allow_overwrite: bool = allow_overwrite
         self._textpack_id: int = 0
 
         # Create meta file
@@ -245,6 +249,15 @@ class StaveProjectWriter(StaveProject):
         """
         textpack_id = self._textpack_id
         prefix = str(prefix).replace('/', '_')
+
+        # Delete textpacks with the same textpack_id if allowing overwrite
+        if self._allow_overwrite:
+            match = glob.glob(os.path.join(
+                self._project_path,
+                f"*.{textpack_id}.json"
+            ))
+            for old_textpack in match:
+                os.remove(old_textpack)
 
         with open(os.path.join(
             self._project_path,
