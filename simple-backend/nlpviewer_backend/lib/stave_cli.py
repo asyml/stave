@@ -56,9 +56,9 @@ def main():
 
     parser_export = subparsers.add_parser(EXPORT,
                                 help="Export project to directory")
-    parser_export.add_argument("project-path",
+    parser_export.add_argument("project_path", metavar="project-path",
                                 help="Project path for export")
-    parser_export.add_argument("project-id", type=int,
+    parser_export.add_argument("project_id", type=int, metavar="project-id",
                                 help="Database id of project")
 
     args = parser.parse_args()

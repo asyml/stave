@@ -9,6 +9,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # Upload to PYPI only on tagged commits.
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
     env:
       python-version: 3.7
     steps:
