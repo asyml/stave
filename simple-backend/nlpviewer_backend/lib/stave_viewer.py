@@ -13,7 +13,6 @@ Package Requirements:
 import os
 import json
 import errno
-import sqlite3
 import logging
 import asyncio
 import threading
@@ -22,6 +21,7 @@ from typing import Dict, Set, Any, List
 
 import django
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.core.wsgi import get_wsgi_application
 
@@ -32,6 +32,7 @@ from tornado.ioloop import IOLoop
 from tornado.wsgi import WSGIContainer
 
 from .stave_project import StaveProjectReader
+from .stave_session import StaveSession
 
 logger = logging.getLogger(__name__)
 
@@ -53,11 +54,22 @@ class StaveViewer:
     build path(deprecated in future update) and project path. By calling
     `run()`, StaveViewer starts a tornado server on a newly created thread.
     `open()` method will open the browser with the visualization.
-    
+
     Note: Currently the viewer mode is achieved by rerouting the django
     backend requests and it can be hard to maintain when structure changes
     in Stave. Refactoring is welcome to improve code logic and maintanence.
     """
+
+    ADMIN_USERNAME = "admin"
+    ADMIN_PASSWORD = "admin"
+    CONFIG_PATH = os.path.join(os.path.expanduser('~'), ".stave")
+    CONFIG_FILE = os.path.join(CONFIG_PATH, ".stave.conf")
+    DB_FIELD = "db_file"
+    LOG_FIELD = "log_file"
+    DEFAULT_CONFIG_JSON = {
+        DB_FIELD: os.path.join(CONFIG_PATH, "db.sqlite3"),
+        LOG_FIELD: os.path.join(CONFIG_PATH, "log")
+    }
 
     def __init__(self,
         project_path: str = '',
@@ -84,17 +96,18 @@ class StaveViewer:
         self._project_path: str = project_path
         self._build_path: str = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "build")
-        
+        self._db_file: str = self.db_file
+
         self._host: str = host
         self._port: int = port
         self._thread_daemon: bool = thread_daemon
-        
+
         self.url: str = f"http://{host}:{port}"
         self.server_started: bool = False
         self.in_viewer_mode: bool = in_viewer_mode
 
         # Used for sync between threads
-        self._barrier = threading.Barrier(2, timeout=5)
+        self._barrier = threading.Barrier(2, timeout=10)
 
     class ViewerHandler(RequestHandler):
         """
@@ -234,6 +247,16 @@ class StaveViewer:
         if not thread.is_alive():
             raise Exception("Stave server not started.")
 
+        # TODO: A temporary hacky way to avoid "empty project page" when
+        #   loading webpage. The idea is to prefetch response via API call
+        #   "/api/projects" so that the process is cached beforehand, which
+        #   makes it much faster to load data after "open()" is called.
+        if not self.in_viewer_mode:
+            logging.disable(logging.ERROR)
+            with StaveSession(url=self.url, suppress_err=True) as session:
+                session.get_project_list()
+            logging.disable(logging.NOTSET)
+
         self.server_started = True
 
     def open(self, url=None):
@@ -245,10 +268,93 @@ class StaveViewer:
                 Default to None, which allows StaveViewer to automatically
                 set the url based on `in_viewer_mode`.
         """
-        webbrowser.open(url or (
-            f"{self.url}/viewer/0" if \
-            self.in_viewer_mode else self.url
-        ))
+        webbrowser.open(url or self.default_page)
+
+    @property
+    def default_page(self):
+        return f"{self.url}/viewer/0" if self.in_viewer_mode else self.url
+
+    @property
+    def db_file(self):
+        return self.load_config()[self.DB_FIELD]
+
+    @property
+    def log_file(self):
+        return self.load_config()[self.LOG_FIELD]
+
+    @classmethod
+    def set_config(cls, db_file: str = None, log_file: str = None):
+        """
+        Configure Stave.
+
+        Args:
+            db_file: Path to database. Default to None.
+            log_file: Path to log file. Default to None.
+        """
+        config = cls.load_config()
+        if db_file is not None:
+            config[cls.DB_FIELD] = db_file
+        if log_file is not None:
+            config[cls.LOG_FIELD] = log_file
+        with open(cls.CONFIG_FILE, "w") as f:
+            json.dump(config, f)
+
+    @classmethod
+    def load_config(cls):
+        """
+        Load or create configuration of Stave
+        """
+        if not os.path.isdir(cls.CONFIG_PATH):
+            os.mkdir(cls.CONFIG_PATH)
+
+        if not os.path.exists(cls.CONFIG_FILE):
+            with open(cls.CONFIG_FILE, "w") as f:
+                json.dump(cls.DEFAULT_CONFIG_JSON, f)
+
+        with open(cls.CONFIG_FILE, "r") as f:
+            return json.load(f)
+
+    def load_database(self,
+        load_auth: bool = False,
+        load_samples: bool = False
+    ):
+        """
+        Initialize sqlite database for django backend.
+
+        Args:
+            load_auth: Insert default user and authentication info to database.
+                Default to False.
+            load_samples: Indicate whether to load sample projects
+                into database. Deafult to False.
+        """
+        if not os.path.exists(self._db_file):
+            call_command("migrate")
+
+        if load_auth or load_samples:
+            User = get_user_model()
+            if not User.objects.filter(username=self.ADMIN_USERNAME).exists():
+                User.objects.create_superuser(
+                    self.ADMIN_USERNAME, '', self.ADMIN_PASSWORD)
+
+        if load_samples:
+            sample_path = os.path.join(
+                os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                "sample_projects"
+            )
+            with StaveSession(url=self.url) as session:
+                session.login(
+                    username=self.ADMIN_USERNAME,
+                    password=self.ADMIN_PASSWORD
+                )
+                project_list = session.get_project_list().json()
+                project_names = set(p["name"] for p in project_list)
+                for project_dir in os.listdir(sample_path):
+                    project_path = os.path.join(sample_path, project_dir)
+                    project_reader = StaveProjectReader(project_path)
+                    # Avoid loading duplicate sample projects
+                    if project_reader.project_name in project_names:
+                        continue
+                    session.import_project(project_path)
 
     def _start_server(self):
         asyncio.set_event_loop(asyncio.new_event_loop())
@@ -261,10 +367,7 @@ class StaveViewer:
             #   recommended to modify django settings at runtime, it's easy
             #   for code maintaining since it eliminates the need to track two
             #   different "settings.py" files in the same repo.
-            settings.DATABASES['default']['NAME'] = os.path.join(
-                os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                "db.sqlite3"
-            )
+            settings.DATABASES['default']['NAME'] = self._db_file
             self.load_database()
 
         server = HTTPServer(self._get_application())
@@ -320,50 +423,3 @@ class StaveViewer:
             ]
 
         return Application(router_list + base_list)
-
-    @classmethod
-    def load_database(cls, 
-        load_auth: bool = False,
-        load_samples: bool = False
-    ):
-        """
-        Initialize sqlite database for django backend.
-
-        Args:
-            load_auth: Insert default user and authentication info to database.
-                Default to False.
-            load_samples: Indicate whether to load sample projects
-                into database. Deafult to False.
-        """
-        dir_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        db_file = os.path.join(dir_path, "db.sqlite3")
-        if not os.path.exists(db_file):
-            call_command("migrate")
-
-        sql_files = []
-        if load_auth:
-            sql_files.extend([
-                "auth_user.sql",
-                "guardian_userobjectpermission.sql"
-            ])
-        if load_samples:
-            sql_files.extend([
-                "nlpviewer_backend_project.sql",
-                "nlpviewer_backend_document.sql"
-            ])
-        if not sql_files:
-            return
-
-        conn = sqlite3.connect(db_file)
-        cur = conn.cursor()
-        try:
-            for sql_file in sql_files:
-                with open(
-                    os.path.join(dir_path, f"sample_sql/{sql_file}"
-                ), 'r') as f:
-                    cur.executescript(f.read())
-            conn.commit()
-        except sqlite3.IntegrityError as err:
-            logger.info("Cannot insert duplicate entries: %s", err)
-        finally:
-            conn.close()

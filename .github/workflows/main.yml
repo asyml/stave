@@ -35,9 +35,6 @@ jobs:
           yarn install
           yarn run build
           mv ./build ./simple-backend/nlpviewer_backend/lib/build
-      - name: Copy sql statements to package path
-        run: |
-          cp -r ./simple-backend/sample_sql ./simple-backend/nlpviewer_backend/sample_sql
       - name: Build a binary wheel and a source tarball
         run: |
           python -m build --sdist --wheel --outdir dist/ .
