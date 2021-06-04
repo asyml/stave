@@ -23,18 +23,33 @@ Stave was originally developed and is actively contributed by [Petuum](https://p
 ## Get Started
 #### Installation
 ```bash
-pip3 install stave
+pip install stave
 ```
 #### Quick Start
+ ```bash
+stave load -s
+```
+This will starts the Stave server with example project laoded. You can log in with default user name `admin` and default password `admin`. You can start viewing the projects and some annotations/applications that we have prepared.
+
+Or if you just want to start Stave from scratch, you can:
+
+```bash
+stave start
+```
+You can still log in with default user name `admin` and default password `admin`, which leads you to an empty project page. 
+
+At any time, you can still load the example projects:
+```bash
+stave load -s
+```
+
+The above command starts the server in a headless mode. You can start the server with browser too:
+
 ```bash
 stave -o start
 ```
-This should pop out a webpage with Stave logo. You can log in with default user name `admin` and default password `admin`, which leads you to an empty project page. To help you get familiar with Stave, we provide some example projects for you to play around with. Load the example projects with the command below:
-```bash
-stave -o load -s
-```
-Click around and check out each of the example projects. You can also navigate to the document page to view the annotations.
-#### More
+
+#### More about the command line tool:
 To learn more about Stave CLI, run the following command to see the help message:
 ```bash
 stave -h
