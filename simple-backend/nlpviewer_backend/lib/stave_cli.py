@@ -51,8 +51,6 @@ def get_args():
 
     parser_load = subparsers.add_parser(LOAD,
                                 help="Create database and load data")
-    parser_load.add_argument("-a", "--load-auth", action="store_true",
-                                help="Load default user and permission info")
     parser_load.add_argument("-s", "--load-samples", action="store_true",
                                 help="Load sample projects into database")
 
@@ -132,10 +130,7 @@ def main():
 
     try:
         if args.command == LOAD:
-            sv.load_database(
-                load_auth=args.load_auth,
-                load_samples=args.load_samples
-            )
+            sv.load_database(load_samples=args.load_samples)
             logger.info("Successfully initialize database.")
         elif args.command in (IMPORT, EXPORT):
             with StaveSession(url=sv.url) as session:

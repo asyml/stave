@@ -21,7 +21,24 @@ This project is currently under development.
 Stave was originally developed and is actively contributed by [Petuum](https://petuum.com/) in collaboration with other institutes. A mirror of this repository is maintained by [Petuum Open Source](https://github.com/petuum).
 
 ## Get Started
-Packages coming soon ...
+#### Installation
+```bash
+pip3 install stave
+```
+#### Quick Start
+```bash
+stave -o start
+```
+This should pop out a webpage with Stave logo. You can log in with default user name `admin` and default password `admin`, which leads you to an empty project page. To help you get familiar with Stave, we provide some example projects for you to play around with. Load the example projects with the command below:
+```bash
+stave -o load -s
+```
+Click around and check out each of the example projects. You can also navigate to the document page to view the annotations.
+#### More
+To learn more about Stave CLI, run the following command to see the help message:
+```bash
+stave -h
+```
 
 ## Developer Quick Start
 #### Environment

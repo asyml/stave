@@ -63,7 +63,7 @@ class StaveViewer:
     ADMIN_USERNAME = "admin"
     ADMIN_PASSWORD = "admin"
     CONFIG_PATH = os.path.join(os.path.expanduser('~'), ".stave")
-    CONFIG_FILE = os.path.join(CONFIG_PATH, ".stave.conf")
+    CONFIG_FILE = os.path.join(CONFIG_PATH, "stave.conf")
     DB_FIELD = "db_file"
     LOG_FIELD = "log_file"
     DEFAULT_CONFIG_JSON = {
@@ -314,27 +314,19 @@ class StaveViewer:
         with open(cls.CONFIG_FILE, "r") as f:
             return json.load(f)
 
-    def load_database(self,
-        load_auth: bool = False,
-        load_samples: bool = False
-    ):
+    def load_database(self, load_samples: bool = False):
         """
         Initialize sqlite database for django backend.
 
         Args:
-            load_auth: Insert default user and authentication info to database.
-                Default to False.
             load_samples: Indicate whether to load sample projects
                 into database. Deafult to False.
         """
         if not os.path.exists(self._db_file):
             call_command("migrate")
-
-        if load_auth or load_samples:
             User = get_user_model()
-            if not User.objects.filter(username=self.ADMIN_USERNAME).exists():
-                User.objects.create_superuser(
-                    self.ADMIN_USERNAME, '', self.ADMIN_PASSWORD)
+            User.objects.create_superuser(
+                self.ADMIN_USERNAME, '', self.ADMIN_PASSWORD)
 
         if load_samples:
             sample_path = os.path.join(
