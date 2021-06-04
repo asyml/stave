@@ -3,12 +3,18 @@
 name: PYPI
 
 on:
-  # Only trigger this workflow manually from the Actions tab
+  push:
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # Upload to PYPI only on tagged commits.
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
     env:
       python-version: 3.7
     steps:
@@ -29,9 +35,6 @@ jobs:
           yarn install
           yarn run build
           mv ./build ./simple-backend/nlpviewer_backend/lib/build
-      - name: Copy sql statements to package path
-        run: |
-          cp -r ./simple-backend/sample_sql ./simple-backend/nlpviewer_backend/sample_sql
       - name: Build a binary wheel and a source tarball
         run: |
           python -m build --sdist --wheel --outdir dist/ .
@@ -41,8 +44,8 @@ jobs:
           user: __token__
           repository_url: https://test.pypi.org/legacy/
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-      # - name: Publish Python 🐍 distributions 📦 to PyPI
-      #   uses: pypa/gh-action-pypi-publish@release/v1
-      #   with:
-      #     user: __token__
-      #     password: ${{ secrets.PYPI_API_TOKEN }}
+      - name: Publish Python 🐍 distributions 📦 to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}

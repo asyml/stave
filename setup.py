@@ -9,7 +9,7 @@ if sys.version_info < (3, 6):
 
 setuptools.setup(
     name="stave",
-    version="0.0.1.dev4",
+    version="0.0.1.dev7",
     url="https://github.com/asyml/stave",
 
     description="Stave is a fast, lightweight, extensible web-based text "
@@ -32,7 +32,11 @@ setuptools.setup(
     extras_require={
         "forte": ["forte"],
     },
-    entry_points={},
+    entry_points={
+        'console_scripts':[
+            'stave = nlpviewer_backend.lib.stave_cli:main'
+        ]
+    },
     classifiers=[
         'Intended Audience :: Developers',
         'Intended Audience :: Education',
