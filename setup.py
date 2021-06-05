@@ -9,7 +9,7 @@ if sys.version_info < (3, 6):
 
 setuptools.setup(
     name="stave",
-    version="0.0.1.dev7",
+    version="0.0.1.dev8",
     url="https://github.com/asyml/stave",
 
     description="Stave is a fast, lightweight, extensible web-based text "
