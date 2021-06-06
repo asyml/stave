@@ -90,7 +90,7 @@ class StaveSession(requests.Session):
         """
         Create a document in django database
         """
-        response = session.post(
+        response = self.post(
                         f"{self._url}/api/documents/new", json=document_json)
         if response.status_code != 200:
             raise Exception(f"create_document: Fail to create document.")
