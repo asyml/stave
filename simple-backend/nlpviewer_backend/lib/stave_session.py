@@ -67,6 +67,15 @@ class StaveSession(requests.Session):
             raise Exception("get_project_list: Fail to fetch project list.")
         return response
 
+    def get_document_list(self, project_id: int):
+        """
+        Fetch list of document in a project
+        """
+        response = self.get(f"{self._url}/api/projects/{project_id}/docs")
+        if response.status_code != 200:
+            raise Exception("get_document_list: Fail to fetch document list.")
+        return response
+
     def create_project(self, project_json):
         """
         Create a project in django database
