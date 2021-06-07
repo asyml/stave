@@ -34,12 +34,8 @@ def get_args():
             "running Stave, to initialize database for django backend, "
             "and to import/export project from/to a directory."
     )
-    parser.add_argument("-o", "--open", action="store_true",
-                                help="Open browser")
     parser.add_argument("-v", "--verbose", action="store_true",
                                 help="Increase output verbosity")
-    parser.add_argument("-p", "--port", type=int, default=8888,
-                                help="The port number that server listens to")
     subparsers = parser.add_subparsers(dest="command",
                                 help="Valid commands")
     subparsers.required=True
@@ -48,10 +44,14 @@ def get_args():
                                 help="Start the Stave server")
     parser_start.add_argument("-p", "--project-path",
                                 help="Project path for viewer mode")
+    parser_start.add_argument("-o", "--open", action="store_true",
+                                help="Open browser")
+    parser_start.add_argument("-n", "--port-number", type=int, default=8888,
+                                help="The port number that server listens to")
+    parser_start.add_argument("-l", "--load", action="store_true",
+                                help="Load sample projects into database")
 
     parser_load = subparsers.add_parser(LOAD,
-                                help="Create database and load data")
-    parser_load.add_argument("-s", "--load-samples", action="store_true",
                                 help="Load sample projects into database")
 
     parser_import = subparsers.add_parser(IMPORT,
@@ -67,7 +67,7 @@ def get_args():
                                 help="Database id of project")
 
     parser_config = subparsers.add_parser(CONFIG,
-                                help="Change Stave configuration")
+                                help="Show or change Stave configuration")
     parser_config.add_argument("-s", "--show-config", action="store_true",
                                 help="Display config info")
     parser_config.add_argument("-d", "--db-file",
@@ -102,25 +102,26 @@ def main():
     
     args = get_args()
     in_viewer_mode = args.command == START and args.project_path is not None
-    thread_daemon = not (args.command == START or args.open)
+    thread_daemon = not (args.command == START)
 
     if args.command == CONFIG:
-        if args.show_config:
+        change_config = (args.db_file or args.log_file) is not None
+        if change_config:
+            StaveViewer.set_config(
+                db_file=args.db_file and os.path.abspath(args.db_file),
+                log_file=args.log_file and os.path.abspath(args.log_file)
+            )
+        if args.show_config or (not change_config):
             print(json.dumps(
                 StaveViewer.load_config(),
                 sort_keys=True,
                 indent=4
             ))
-        else:
-            StaveViewer.set_config(
-                db_file=args.db_file and os.path.abspath(args.db_file),
-                log_file=args.log_file and os.path.abspath(args.log_file)
-            )
         sys.exit()
 
     sv = StaveViewer(
         project_path=args.project_path if in_viewer_mode else '',
-        port=args.port,
+        port=args.port_number if args.command == START else 8888,
         thread_daemon=thread_daemon,
         in_viewer_mode=in_viewer_mode
     )
@@ -129,9 +130,15 @@ def main():
     logger = set_logger(verbose=args.verbose, log_file=sv.log_file)
 
     try:
-        if args.command == LOAD:
-            sv.load_database(load_samples=args.load_samples)
-            logger.info("Successfully initialize database.")
+        if args.command == START:
+            if args.load:
+                sv.load_database(load_samples=True)
+                logger.info("Successfully load sample projects.")
+            if args.open:
+                sv.open()
+        elif args.command == LOAD:
+            sv.load_database(load_samples=True)
+            logger.info("Successfully load sample projects.")
         elif args.command in (IMPORT, EXPORT):
             with StaveSession(url=sv.url) as session:
                 # Login with input username and password
@@ -148,8 +155,6 @@ def main():
                     session.export_project(args.project_path, args.project_id)
                     logger.info("Successfully export project[%d] to %s.",
                                     args.project_id, args.project_path)
-        if args.open:
-            sv.open()
     except Exception:
         sys.exit()
     finally:
