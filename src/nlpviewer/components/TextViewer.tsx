@@ -337,7 +337,7 @@ function TextViewer({plugins, onEvent, projectConfig}: TextViewerProp) {
                   }
                 }}
               >
-                {'Complete'}
+                {'Mark as Complete'}
               </button>
 
               {annoEditIsCreating && (

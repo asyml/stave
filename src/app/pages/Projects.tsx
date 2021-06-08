@@ -219,7 +219,7 @@ function Projects() {
                     size="small"
                     color="primary"
                   >
-                    Learn More
+                    View Project
                   </Button>
                 </CardActions>
               </Card>
