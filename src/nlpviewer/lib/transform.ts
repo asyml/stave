@@ -154,5 +154,6 @@ export function transformProjectConfig(rawConfig: string): IProjectConfigs {
     legendConfigs: config ? config.legendConfigs : {},
     scopeConfigs: config ? config.scopeConfigs : {},
     layoutConfigs: config ? config.layoutConfigs : {},
+    pipelineUrl: config ? config.pipelineUrl : null,
   };
 }

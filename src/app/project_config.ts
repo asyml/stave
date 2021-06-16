@@ -46,4 +46,5 @@ export const projectConfig: IProjectConfigs = {
     left: 'default-meta',
     right: 'default-attribute',
   },
+  pipelineUrl: null,
 };

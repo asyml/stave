@@ -10,7 +10,7 @@ from django.http import HttpResponse, JsonResponse
 from django.forms import model_to_dict
 from django.http import Http404
 
-from ..models import Project, Document, User
+from ..models import Document, User
 from ..lib.require_login import require_login
 from ..lib.utils import fetch_doc_check_perm
 
@@ -47,12 +47,11 @@ def load_model(request, document_id: int):
   response: HttpResponse
 
   doc = fetch_doc_check_perm(document_id, request.user, "nlpviewer_backend.read_project")
-  project = doc.project
-  project_configs=json.loads(project.config or "null")
-  model_name = project.name
+  project_configs=json.loads(doc.project.config or "null")
+  model_name = doc.project.name
 
-  if project_configs and "pipeline_url" in project_configs:
-    m = __load_pipeline(url=project_configs.get("pipeline_url"))
+  if project_configs and project_configs.get("pipelineUrl"):
+    m = __load_pipeline(url=project_configs.get("pipelineUrl"))
     if m:
       nlp_models[model_name] = m
       response = HttpResponse('OK')
