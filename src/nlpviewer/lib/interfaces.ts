@@ -212,5 +212,5 @@ export interface IProjectConfigs {
   legendConfigs: ILegendConfigs;
   scopeConfigs: IScopeConfigs;
   layoutConfigs: ILayout;
-  pipelineUrl?: string | null;
+  pipelineUrl?: string;
 }

@@ -144,7 +144,7 @@ function Projects() {
       legendConfigs: {},
       scopeConfigs: {},
       layoutConfigs: {},
-      pipelineUrl: null,
+      pipelineUrl: '',
     };
     for (const entry of ontologyJson.definitions) {
       const entryName = entry.entry_name;
