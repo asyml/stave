@@ -114,12 +114,9 @@ function DialogueBox(props: PluginComponentProp) {
 
   console.log(props.appState.textPack);
 
-  // Call API to load the NLP model of name "model_name".
-  //  TODO: currently, we hard coded `eliza` as the example.
-  const model_name = 'eliza';
   useEffect(() => {
     try {
-      loadNlpModel(model_name).then(response => {
+      loadNlpModel(doc_id).then(response => {
         if (response.headers.get('load_success') === 'True') {
           console.log('Model Loaded Successfully.');
           setModelLoaded(true);
@@ -184,7 +181,7 @@ function DialogueBox(props: PluginComponentProp) {
                     annotations: [...pack.annotations, annotation],
                   });
                   if (modelLoaded) {
-                    runNlp(doc_id, model_name).then(data => {
+                    runNlp(doc_id).then(data => {
                       const [singlePackFromAPI] = transformPack(
                         data.textPack,
                         JSON.stringify(props.appState.ontology)

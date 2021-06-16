@@ -10,8 +10,9 @@ from django.http import HttpResponse, JsonResponse
 from django.forms import model_to_dict
 from django.http import Http404
 
-from ..models import Document, User
+from ..models import Project, Document, User
 from ..lib.require_login import require_login
+from ..lib.utils import fetch_doc_check_perm
 
 forte_msg = "Forte is not installed or imported successfully. To get NLP support from Forte, install it from https://github.com/asyml/forte"
 forte_installed = False
@@ -19,6 +20,8 @@ forte_installed = False
 try:
   from forte.data.data_pack import DataPack
   from forte.pipeline import Pipeline
+  from forte.processors.misc import RemoteProcessor
+  from forte.data.readers import RawDataDeserializeReader
   forte_installed = True
 except ImportError:
   traceback.print_exc()
@@ -31,9 +34,6 @@ def __load_pipeline(url: str = "http://localhost:8008"):
     logging.info(forte_msg)
     return None
 
-  from forte.processors.misc import RemoteProcessor
-  from forte.data.readers import RawDataDeserializeReader
-
   #Create the pipeline and add the processor.
   pipeline = Pipeline[DataPack]()
   pipeline.set_reader(RawDataDeserializeReader())
@@ -41,80 +41,18 @@ def __load_pipeline(url: str = "http://localhost:8008"):
   pipeline.initialize()
   return pipeline
 
-def __load_eliza(url: str = "http://localhost:8009"):
-  """
-  The remote Forte pipeline should look like:
-
-    from forte.processors.eliza_processor import ElizaProcessor
-    from forte.data.readers import RawDataDeserializeReader
-
-    Pipeline[DataPack]() \
-      .set_reader(RawDataDeserializeReader()) \
-      .add(ElizaProcessor()) \
-      .serve(host="localhost", port=8009)
-  """
-  return __load_pipeline(url=url)
-
-
-def __load_utterance_searcher(url: str = "http://localhost:8010"):
-  """
-  The remote Forte pipeline should look like:
-
-    from examples.clinical_pipeline.utterance_searcher import LastUtteranceSearcher
-    from forte.data.readers import RawDataDeserializeReader
-
-    # Load several configuration from environment.
-    stave_db_path = os.environ.get('stave_db_path')
-    url_stub = os.environ.get('url_stub')
-    query_result_project_id = os.environ.get('query_result_project_id')
-
-    Pipeline[DataPack]() \
-      .set_reader(RawDataDeserializeReader()) \
-      .add(LastUtteranceSearcher(),
-        config={
-          'stave_db_path': stave_db_path,
-          'url_stub': url_stub,
-          'query_result_project_id': int(query_result_project_id)
-        }
-      ) \
-      .serve(host="localhost", port=8010)
-  """
-  return __load_pipeline(url=url)
-
-def __load_content_rewriter(url: str = "http://localhost:8011"):
-  """
-  The remote Forte pipeline should look like:
-
-    from forte_examples.content_rewriter.rewriter import ContentRewriter
-    from forte.data.readers import RawDataDeserializeReader
-
-    model_path = os.environ.get('content_rewriter_model_path')
-    if not model_path:
-      logging.error(
-        "Cannot load content rewriter model, set the environment "
-        "variable 'content_rewriter_model_path' that point to the"
-        "model directory."
-        )
-      return None
-    else:
-      Pipeline[DataPack]() \
-        .set_reader(RawDataDeserializeReader()) \
-        .add(ContentRewriter(), config={
-          'model_dir': os.environ.get('content_rewriter_model_path')
-        }) \
-        .serve(host="localhost", port=8011)
-  """
-  return __load_pipeline(url=url)
-
 
 @require_login
-def load_model(request, model_name: str):
+def load_model(request, document_id: int):
   response: HttpResponse
 
-  model_func_name = f'__load_{model_name}'
+  doc = fetch_doc_check_perm(document_id, request.user, "nlpviewer_backend.read_project")
+  project = doc.project
+  project_configs=json.loads(project.config or "null")
+  model_name = project.name
 
-  if model_func_name in globals():
-    m = globals()[model_func_name]()
+  if project_configs and "pipeline_url" in project_configs:
+    m = __load_pipeline(url=project_configs.get("pipeline_url"))
     if m:
       nlp_models[model_name] = m
       response = HttpResponse('OK')
@@ -130,9 +68,10 @@ def load_model(request, model_name: str):
 
 
 @require_login
-def run_pipeline(request, document_id, model_name):
+def run_pipeline(request, document_id):
   doc = Document.objects.get(pk=document_id)
   docJson = model_to_dict(doc)
+  model_name = doc.project.name
   if model_name not in nlp_models:
     logging.error(
       f"Model {model_name} is not loaded at "
