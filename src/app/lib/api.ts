@@ -197,12 +197,15 @@ export function deleteLink(documentId: string, linkId: string) {
   return postData(`/api/documents/${documentId}/links/${linkId}/delete`, {});
 }
 
-export function loadNlpModel(documentId: string) {
-  return postData(`/api/nlp/load/${documentId}`, {});
+export function loadNlpModel(pipelineUrl: string) {
+  return postData('/api/nlp/load', {pipelineUrl});
 }
 
-export function runNlp(documentId: string): Promise<APIDocument> {
-  return postData(`/api/nlp/${documentId}`, {}).then(r => r.json());
+export function runNlp(
+  documentId: string,
+  pipelineUrl: string
+): Promise<APIDocument> {
+  return postData(`/api/nlp/${documentId}`, {pipelineUrl}).then(r => r.json());
 }
 
 export function login(name: string, password: string) {

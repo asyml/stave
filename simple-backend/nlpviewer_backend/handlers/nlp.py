@@ -43,39 +43,39 @@ def __load_pipeline(url: str = "http://localhost:8008"):
 
 
 @require_login
-def load_model(request, document_id: int):
+def load_model(request):
   response: HttpResponse
+  received_json_data = json.loads(request.body)
+  pipeline_url = received_json_data.get("pipelineUrl")
 
-  doc = fetch_doc_check_perm(document_id, request.user, "nlpviewer_backend.read_project")
-  project_configs=json.loads(doc.project.config or "null")
-  model_name = doc.project.name
-
-  if project_configs and project_configs.get("pipelineUrl"):
-    m = __load_pipeline(url=project_configs.get("pipelineUrl"))
+  if pipeline_url:
+    m = __load_pipeline(url=pipeline_url)
     if m:
-      nlp_models[model_name] = m
+      nlp_models[pipeline_url] = m
       response = HttpResponse('OK')
       response['load_success'] = True
-      logging.info(f"Model {model_name} successfully loaded.")
+      logging.info(f"Model {pipeline_url} successfully loaded.")
     else:
       response = HttpResponse('OK')
       response['load_success'] = False
   else:
-    logging.error(f"Cannot find model {model_name}")
-    response =  Http404(f"Cannot find model {model_name}")    
+    logging.error(f"Cannot find model {pipeline_url}")
+    response =  Http404(f"Cannot find model {pipeline_url}")    
   return response
 
 
 @require_login
-def run_pipeline(request, document_id):
+def run_pipeline(request, document_id: int):
   doc = Document.objects.get(pk=document_id)
   docJson = model_to_dict(doc)
-  model_name = doc.project.name
-  if model_name not in nlp_models:
+  received_json_data = json.loads(request.body)
+  pipeline_url = received_json_data.get("pipelineUrl")
+
+  if pipeline_url not in nlp_models:
     logging.error(
-      f"Model {model_name} is not loaded at "
+      f"Model {pipeline_url} is not loaded at "
       "the time of running this pipeline.")
-  pipeline = nlp_models.get(model_name, None)
+  pipeline = nlp_models.get(pipeline_url, None)
   pack = json.loads(docJson['textPack'])['py/state']
 
   response: JsonResponse
@@ -86,7 +86,7 @@ def run_pipeline(request, document_id):
     response = JsonResponse(model_to_dict(doc), safe=False)
   else:
     logging.error(
-      f"The NLP model of name {model_name} is not "
+      f"The NLP model of url {pipeline_url} is not "
       f"loaded, please check the log for possible reasons."
     )
     response = JsonResponse(docJson, safe=False)

@@ -110,7 +110,12 @@ function TextViewer({plugins, onEvent, projectConfig}: TextViewerProp) {
   function renderPlugin(p: IPlugin) {
     const Comp = p.component;
     return (
-      <Comp key={'plugin_' + p.name} dispatch={dispatch} appState={appState} />
+      <Comp
+        key={'plugin_' + p.name}
+        dispatch={dispatch}
+        appState={appState}
+        pipelineUrl={projectConfig.pipelineUrl}
+      />
     );
   }
 
