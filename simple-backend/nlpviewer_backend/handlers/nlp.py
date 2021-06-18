@@ -3,6 +3,7 @@ import json
 import os
 import logging
 import traceback
+from typing import Dict
 
 from django.contrib import admin
 from django.urls import include, path
@@ -29,7 +30,7 @@ except ImportError:
 
 nlp_models = {}
 
-def __load_pipeline(url: str = "http://localhost:8008"):
+def __load_pipeline(remote_configs: Dict):
   if not forte_installed:
     logging.info(forte_msg)
     return None
@@ -37,7 +38,12 @@ def __load_pipeline(url: str = "http://localhost:8008"):
   #Create the pipeline and add the processor.
   pipeline = Pipeline[DataPack]()
   pipeline.set_reader(RawDataDeserializeReader())
-  pipeline.add(RemoteProcessor(), config={"url": url})
+  pipeline.add(RemoteProcessor(), config={
+    "url": remote_configs.get("pipelineUrl"),
+    "do_validation": remote_configs.get("doValidation"),
+    "expected_name": remote_configs.get("expectedName"),
+    "expected_records": json.dumps(remote_configs.get("expectedRecords"))
+  })
   pipeline.initialize()
   return pipeline
 
@@ -46,21 +52,23 @@ def __load_pipeline(url: str = "http://localhost:8008"):
 def load_model(request):
   response: HttpResponse
   received_json_data = json.loads(request.body)
-  pipeline_url = received_json_data.get("pipelineUrl")
+  remote_configs = received_json_data.get("remoteConfigs")
 
-  if pipeline_url:
-    m = __load_pipeline(url=pipeline_url)
+  model_name = remote_configs and (remote_configs.get("expectedName") or \
+      remote_configs.get("pipelineUrl"))
+  if model_name:
+    m = __load_pipeline(remote_configs)
     if m:
-      nlp_models[pipeline_url] = m
+      nlp_models[model_name] = m
       response = HttpResponse('OK')
       response['load_success'] = True
-      logging.info(f"Model {pipeline_url} successfully loaded.")
+      logging.info(f"Model {model_name} successfully loaded.")
     else:
       response = HttpResponse('OK')
       response['load_success'] = False
   else:
-    logging.error(f"Cannot find model {pipeline_url}")
-    response =  Http404(f"Cannot find model {pipeline_url}")    
+    logging.error(f"Cannot find model {model_name}")
+    response =  Http404(f"Cannot find model {model_name}")    
   return response
 
 
@@ -68,14 +76,17 @@ def load_model(request):
 def run_pipeline(request, document_id: int):
   doc = Document.objects.get(pk=document_id)
   docJson = model_to_dict(doc)
-  received_json_data = json.loads(request.body)
-  pipeline_url = received_json_data.get("pipelineUrl")
+  project_configs=json.loads(doc.project.config or "null")
 
-  if pipeline_url not in nlp_models:
+  model_name = pipeline = None
+  try:
+    remote_configs = project_configs["remoteConfigs"]
+    model_name = remote_configs["expectedName"] or remote_configs["pipelineUrl"]
+    pipeline = nlp_models[model_name]
+  except (TypeError, KeyError) as e:
     logging.error(
-      f"Model {pipeline_url} is not loaded at "
+      f"{str(e)}: Model {model_name} is not loaded at "
       "the time of running this pipeline.")
-  pipeline = nlp_models.get(pipeline_url, None)
   pack = json.loads(docJson['textPack'])['py/state']
 
   response: JsonResponse
@@ -86,7 +97,7 @@ def run_pipeline(request, document_id: int):
     response = JsonResponse(model_to_dict(doc), safe=False)
   else:
     logging.error(
-      f"The NLP model of url {pipeline_url} is not "
+      f"The NLP model {model_name} is not "
       f"loaded, please check the log for possible reasons."
     )
     response = JsonResponse(docJson, safe=False)

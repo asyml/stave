@@ -208,9 +208,16 @@ export interface IScopeConfigs {
   [key: string]: boolean;
 }
 
+export interface IRemoteConfigs {
+  pipelineUrl: string;
+  doValidation: boolean;
+  expectedName: string;
+  expectedRecords: {[key: string]: string[]};
+}
+
 export interface IProjectConfigs {
   legendConfigs: ILegendConfigs;
   scopeConfigs: IScopeConfigs;
   layoutConfigs: ILayout;
-  pipelineUrl?: string;
+  remoteConfigs?: IRemoteConfigs;
 }

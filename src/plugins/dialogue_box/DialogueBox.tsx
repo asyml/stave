@@ -116,7 +116,7 @@ function DialogueBox(props: PluginComponentProp) {
 
   useEffect(() => {
     try {
-      loadNlpModel(props.pipelineUrl).then(response => {
+      loadNlpModel(props.remoteConfigs).then(response => {
         if (response.headers.get('load_success') === 'True') {
           console.log('Model Loaded Successfully.');
           setModelLoaded(true);
@@ -181,7 +181,7 @@ function DialogueBox(props: PluginComponentProp) {
                     annotations: [...pack.annotations, annotation],
                   });
                   if (modelLoaded) {
-                    runNlp(doc_id, props.pipelineUrl).then(data => {
+                    runNlp(doc_id).then(data => {
                       const [singlePackFromAPI] = transformPack(
                         data.textPack,
                         JSON.stringify(props.appState.ontology)

@@ -114,7 +114,7 @@ function TextViewer({plugins, onEvent, projectConfig}: TextViewerProp) {
         key={'plugin_' + p.name}
         dispatch={dispatch}
         appState={appState}
-        pipelineUrl={projectConfig.pipelineUrl}
+        remoteConfigs={projectConfig.remoteConfigs}
       />
     );
   }

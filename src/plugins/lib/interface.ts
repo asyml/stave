@@ -1,7 +1,7 @@
-import {Dispatch, State} from '../../nlpviewer';
+import {Dispatch, IRemoteConfigs, State} from '../../nlpviewer';
 
 export interface PluginComponentProp {
   dispatch: Dispatch;
   appState: State;
-  pipelineUrl?: string;
+  remoteConfigs?: IRemoteConfigs;
 }
