@@ -72,21 +72,23 @@ def load_model(request):
   received_json_data = json.loads(request.body)
   remote_configs = received_json_data.get("remoteConfigs")
 
-  model_name = remote_configs and (remote_configs.get("expectedName") or \
-      remote_configs.get("pipelineUrl"))
+  pipeline_url = remote_configs and remote_configs.get("pipelineUrl")
+  model_name = remote_configs and (
+    remote_configs.get("expectedName") or pipeline_url
+  )
   if model_name:
     m = __load_pipeline(remote_configs)
     if m:
-      nlp_models[model_name] = m
+      nlp_models[pipeline_url] = m
       response = HttpResponse('OK')
       response['load_success'] = True
-      logging.info(f"Model {model_name} successfully loaded.")
+      logging.info(f"Pipeline {model_name} is ready.")
     else:
       response = HttpResponse('OK')
       response['load_success'] = False
   else:
     logging.error(f"Cannot find model {model_name}")
-    response =  Http404(f"Cannot find model {model_name}")    
+    response =  Http404(f"Cannot access pipeline service at {pipeline_url}")
   return response
 
 
@@ -100,7 +102,7 @@ def run_pipeline(request, document_id: int):
   try:
     remote_configs = project_configs["remoteConfigs"]
     model_name = remote_configs["expectedName"] or remote_configs["pipelineUrl"]
-    pipeline = nlp_models[model_name]
+    pipeline = nlp_models[remote_configs["pipelineUrl"]]
   except (TypeError, KeyError) as e:
     logging.error(
       f"{str(e)}: Model {model_name} is not loaded at "
