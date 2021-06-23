@@ -21,6 +21,7 @@ forte_installed = False
 try:
   from forte.data.data_pack import DataPack
   from forte.pipeline import Pipeline
+  from forte.processors.base import PackProcessor
   from forte.processors.misc import RemoteProcessor
   from forte.data.readers import RawDataDeserializeReader
   forte_installed = True
@@ -35,15 +36,32 @@ def __load_pipeline(remote_configs: Dict):
     logging.info(forte_msg)
     return None
 
+  class DummyProcessor(PackProcessor):
+    """
+    A dummy processor to check the output records from remote pipeline
+    """
+
+    def _process(self, input_pack: DataPack):
+        pass
+
+    @classmethod
+    def expected_types_and_attributes(cls):
+      return {
+        k: set(v) for k, v in remote_configs.get("expectedRecords").items()
+      }
+
   #Create the pipeline and add the processor.
-  pipeline = Pipeline[DataPack]()
+  pipeline = Pipeline[DataPack](do_init_type_check=True)
   pipeline.set_reader(RawDataDeserializeReader())
   pipeline.add(RemoteProcessor(), config={
     "url": remote_configs.get("pipelineUrl"),
-    "do_validation": remote_configs.get("doValidation"),
-    "expected_name": remote_configs.get("expectedName"),
-    "expected_records": json.dumps(remote_configs.get("expectedRecords"))
+    "validation": {
+      "do_init_type_check": remote_configs.get("doValidation"),
+      "expected_name": remote_configs.get("expectedName"),
+      "input_format": remote_configs.get("inputFormat")
+    }
   })
+  pipeline.add(DummyProcessor())
   pipeline.initialize()
   return pipeline
 

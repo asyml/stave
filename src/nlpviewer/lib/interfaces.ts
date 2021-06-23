@@ -212,6 +212,7 @@ export interface IRemoteConfigs {
   pipelineUrl: string;
   doValidation: boolean;
   expectedName: string;
+  inputFormat: string;
   expectedRecords: {[key: string]: string[]};
 }
 

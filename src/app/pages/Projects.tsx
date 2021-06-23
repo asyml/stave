@@ -148,6 +148,7 @@ function Projects() {
         pipelineUrl: '',
         doValidation: false,
         expectedName: '',
+        inputFormat: 'string',
         expectedRecords: {},
       },
     };
