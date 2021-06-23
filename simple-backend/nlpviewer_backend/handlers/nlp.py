@@ -60,7 +60,7 @@ def load_model(request):
       response['load_success'] = False
   else:
     logging.error(f"Cannot find model {pipeline_url}")
-    response =  Http404(f"Cannot find model {pipeline_url}")    
+    response =  Http404(f"Cannot access pipeline service at {pipeline_url}")    
   return response
 
 
