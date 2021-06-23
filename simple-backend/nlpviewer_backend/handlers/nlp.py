@@ -54,7 +54,7 @@ def load_model(request):
       nlp_models[pipeline_url] = m
       response = HttpResponse('OK')
       response['load_success'] = True
-      logging.info(f"Model {pipeline_url} successfully loaded.")
+      logging.info(f"Pipeline {pipeline_url} is ready.")
     else:
       response = HttpResponse('OK')
       response['load_success'] = False
