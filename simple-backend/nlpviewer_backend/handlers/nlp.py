@@ -76,13 +76,13 @@ def load_model(request):
   model_name = remote_configs and (
     remote_configs.get("expectedName") or pipeline_url
   )
-  if model_name:
+  if pipeline_url:
     m = __load_pipeline(remote_configs)
     if m:
       nlp_models[pipeline_url] = m
       response = HttpResponse('OK')
       response['load_success'] = True
-      logging.info(f"Pipeline {model_name} is ready.")
+      logging.info(f"Pipeline {pipeline_url} is ready.")
     else:
       response = HttpResponse('OK')
       response['load_success'] = False
