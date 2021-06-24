@@ -22,7 +22,7 @@ from nlpviewer_backend.lib.stave_viewer import StaveViewer
 from nlpviewer_backend.lib.stave_session import StaveSession
 
 START = "start"
-LOAD = "load"
+LOAD = "load-samples"
 IMPORT = "import"
 EXPORT = "export"
 CONFIG = "config"
@@ -48,7 +48,7 @@ def get_args():
                                 help="Open browser")
     parser_start.add_argument("-n", "--port-number", type=int, default=8888,
                                 help="The port number that server listens to")
-    parser_start.add_argument("-l", "--load", action="store_true",
+    parser_start.add_argument("-l", "--load-samples", action="store_true",
                                 help="Load sample projects into database")
 
     parser_load = subparsers.add_parser(LOAD,
@@ -131,7 +131,7 @@ def main():
 
     try:
         if args.command == START:
-            if args.load:
+            if args.load_samples:
                 sv.load_database(load_samples=True)
                 logger.info("Successfully load sample projects.")
             if args.open:

@@ -1,3 +1,5 @@
+import {IRemoteConfigs} from '../../nlpviewer';
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface APIDocument {
   id: string;
@@ -197,17 +199,12 @@ export function deleteLink(documentId: string, linkId: string) {
   return postData(`/api/documents/${documentId}/links/${linkId}/delete`, {});
 }
 
-export function loadNlpModel(modelName: string) {
-  return postData(`/api/nlp/load/${modelName}`, {});
+export function loadNlpModel(remoteConfigs: IRemoteConfigs) {
+  return postData('/api/nlp/load', {remoteConfigs});
 }
 
-export function runNlp(
-  documentId: string,
-  modelName: string
-): Promise<APIDocument> {
-  return postData(`/api/nlp/${documentId}/${modelName}`, {}).then(r =>
-    r.json()
-  );
+export function runNlp(documentId: string): Promise<APIDocument> {
+  return postData(`/api/nlp/${documentId}`, {}).then(r => r.json());
 }
 
 export function login(name: string, password: string) {

@@ -144,6 +144,13 @@ function Projects() {
       legendConfigs: {},
       scopeConfigs: {},
       layoutConfigs: {},
+      remoteConfigs: {
+        pipelineUrl: '',
+        doValidation: false,
+        expectedName: '',
+        inputFormat: 'string',
+        expectedRecords: {},
+      },
     };
     for (const entry of ontologyJson.definitions) {
       const entryName = entry.entry_name;

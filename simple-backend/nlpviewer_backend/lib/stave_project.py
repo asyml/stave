@@ -13,7 +13,7 @@ import glob
 import json
 import errno
 import logging
-from typing import Union, Dict, Set, Any, List
+from typing import Union, Dict, Set, Any, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -99,21 +99,21 @@ class StaveProjectReader(StaveProject):
         return self._project_meta.get(self.ONTO_FIELD)
 
     @property
-    def project_configs(self) -> Union[Dict, None]:
+    def project_configs(self) -> Optional[Dict]:
         return self._project_meta.get(self.CONF_FIELD)
 
     @property
     def project_name(self) -> str:
         return self._project_meta.get(self.NAME_FIELD)
-    
+
     @property
     def project_type(self) -> str:
         return self._project_meta.get(self.TYPE_FIELD)
-    
+
     @property
     def multi_ontology(self) -> Dict:
         return self._project_meta.get(self.MULT_FIELD)
-    
+
     def get_textpack(self, index: int) -> Dict:
         """
         Get the target textpack based on input index. Will raise an exception
@@ -188,7 +188,7 @@ class StaveProjectWriter(StaveProject):
         project_name: str,
         project_type: str,
         ontology: Dict,
-        project_configs: Union[Dict, None] = None,
+        project_configs: Optional[Dict] = None,
         multi_ontology: Dict = {},
         allow_overwrite: bool = True
     ):

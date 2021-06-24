@@ -1,16 +1,13 @@
-import uuid
 import json
-import os
 import logging
 import traceback
+from typing import Dict
 
-from django.contrib import admin
-from django.urls import include, path
 from django.http import HttpResponse, JsonResponse
 from django.forms import model_to_dict
 from django.http import Http404
 
-from ..models import Document, User
+from ..models import Document
 from ..lib.require_login import require_login
 
 forte_msg = "Forte is not installed or imported successfully. To get NLP support from Forte, install it from https://github.com/asyml/forte"
@@ -19,6 +16,9 @@ forte_installed = False
 try:
   from forte.data.data_pack import DataPack
   from forte.pipeline import Pipeline
+  from forte.processors.base import PackProcessor
+  from forte.processors.misc import RemoteProcessor
+  from forte.data.readers import RawDataDeserializeReader
   forte_installed = True
 except ImportError:
   traceback.print_exc()
@@ -26,123 +26,82 @@ except ImportError:
 
 nlp_models = {}
 
-def __load_eliza():
-  if forte_installed:
-    from forte.processors.eliza_processor import ElizaProcessor
-    from forte.data.readers import RawDataDeserializeReader
-
-    #Create the pipeline and add the processor.
-    pipeline = Pipeline[DataPack]()
-    pipeline.set_reader(RawDataDeserializeReader())
-    pipeline.add(ElizaProcessor())    
-    pipeline.initialize()
-    return pipeline
-  else:
+def __load_pipeline(remote_configs: Dict):
+  if not forte_installed:
     logging.info(forte_msg)
     return None
 
+  class DummyProcessor(PackProcessor):
+    """
+    A dummy processor to check the output records from remote pipeline
+    """
 
-def __load_utterance_searcher():
-  if forte_installed:
-    try:
-      from examples.clinical_pipeline.utterance_searcher import LastUtteranceSearcher
-      from forte.data.readers import RawDataDeserializeReader
-    except ImportError:
-      logging.error(
-        "Additional Forte examples: "
-        "https://github.com/asyml/forte/tree/master/examples "
-        "needed to be installed to run this example.")
-      return None
+    def _process(self, input_pack: DataPack):
+        pass
 
-    # Load several configuration from environment.
-    stave_db_path = os.environ.get('stave_db_path')
-    url_stub = os.environ.get('url_stub')
-    query_result_project_id = os.environ.get('query_result_project_id')
-
-    #Create the pipeline and add the processor.
-    pipeline = Pipeline[DataPack]()
-    pipeline.set_reader(RawDataDeserializeReader())
-    pipeline.add(LastUtteranceSearcher(),
-      config={
-        'stave_db_path': stave_db_path,
-        'url_stub': url_stub,
-        'query_result_project_id': int(query_result_project_id)
+    @classmethod
+    def expected_types_and_attributes(cls):
+      return {
+        k: set(v) for k, v in remote_configs.get("expectedRecords").items()
       }
-    )
-    
-    pipeline.initialize()
-    return pipeline
-  else:
-    logging.info(forte_msg)
-    return None
 
-def __load_content_rewriter():
-  if forte_installed:
-    try:
-      from forte_examples.content_rewriter.rewriter import ContentRewriter
-      from forte.data.readers import RawDataDeserializeReader
-    except ImportError as e:
-      logging.error(
-        "Additional Forte examples: "
-        "https://github.com/asyml/forte/tree/master/forte_examples "
-        "needed to be installed to run this example.")
-      return None
-
-    model_path = os.environ.get('content_rewriter_model_path')
-    if not model_path:
-      logging.error(
-        "Cannot load content rewriter model, set the environment "
-        "variable 'content_rewriter_model_path' that point to the"
-        "model directory."
-        )
-      return None
-    else:
-      # Create the pipeline and add the processor
-      pipeline = Pipeline[DataPack]()
-      pipeline.set_reader(RawDataDeserializeReader())
-      pipeline.add(ContentRewriter(), config={
-        'model_dir': os.environ.get('content_rewriter_model_path')
-      })
-
-      # Models gets initialize.
-      pipeline.initialize()
-      return pipeline
-  else:
-    logging.info(forte_msg)
-    return None
+  #Create the pipeline and add the processor.
+  pipeline = Pipeline[DataPack](do_init_type_check=True)
+  pipeline.set_reader(RawDataDeserializeReader())
+  pipeline.add(RemoteProcessor(), config={
+    "url": remote_configs.get("pipelineUrl"),
+    "validation": {
+      "do_init_type_check": remote_configs.get("doValidation"),
+      "expected_name": remote_configs.get("expectedName"),
+      "input_format": remote_configs.get("inputFormat")
+    }
+  })
+  pipeline.add(DummyProcessor())
+  pipeline.initialize()
+  return pipeline
 
 
 @require_login
-def load_model(request, model_name: str):
+def load_model(request):
   response: HttpResponse
+  received_json_data = json.loads(request.body)
+  remote_configs = received_json_data.get("remoteConfigs")
 
-  model_func_name = f'__load_{model_name}'
-
-  if model_func_name in globals():
-    m = globals()[model_func_name]()
+  pipeline_url = remote_configs and remote_configs.get("pipelineUrl")
+  model_name = remote_configs and (
+    remote_configs.get("expectedName") or pipeline_url
+  )
+  if pipeline_url:
+    m = __load_pipeline(remote_configs)
     if m:
-      nlp_models[model_name] = m
+      nlp_models[pipeline_url] = m
       response = HttpResponse('OK')
       response['load_success'] = True
-      logging.info(f"Model {model_name} successfully loaded.")
+      logging.info(f"Pipeline {pipeline_url} is ready.")
     else:
       response = HttpResponse('OK')
       response['load_success'] = False
   else:
     logging.error(f"Cannot find model {model_name}")
-    response =  Http404(f"Cannot find model {model_name}")    
+    response =  Http404(f"Cannot access pipeline service at {pipeline_url}")
   return response
 
 
 @require_login
-def run_pipeline(request, document_id, model_name):
+def run_pipeline(request, document_id: int):
   doc = Document.objects.get(pk=document_id)
   docJson = model_to_dict(doc)
-  if model_name not in nlp_models:
+  project_configs=json.loads(doc.project.config or "null")
+
+  model_name = pipeline = None
+  try:
+    remote_configs = project_configs["remoteConfigs"]
+    model_name = remote_configs["expectedName"] or remote_configs["pipelineUrl"]
+    pipeline = nlp_models[remote_configs["pipelineUrl"]]
+  except (TypeError, KeyError) as e:
     logging.error(
-      f"Model {model_name} is not loaded at "
+      f"{str(e)}: Model {model_name} is not loaded at "
       "the time of running this pipeline.")
-  pipeline = nlp_models.get(model_name, None)
   pack = json.loads(docJson['textPack'])['py/state']
 
   response: JsonResponse
