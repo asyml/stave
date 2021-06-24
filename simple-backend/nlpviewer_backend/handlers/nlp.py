@@ -1,19 +1,14 @@
-import uuid
 import json
-import os
 import logging
 import traceback
 from typing import Dict
 
-from django.contrib import admin
-from django.urls import include, path
 from django.http import HttpResponse, JsonResponse
 from django.forms import model_to_dict
 from django.http import Http404
 
-from ..models import Document, User
+from ..models import Document
 from ..lib.require_login import require_login
-from ..lib.utils import fetch_doc_check_perm
 
 forte_msg = "Forte is not installed or imported successfully. To get NLP support from Forte, install it from https://github.com/asyml/forte"
 forte_installed = False
@@ -117,7 +112,7 @@ def run_pipeline(request, document_id: int):
     response = JsonResponse(model_to_dict(doc), safe=False)
   else:
     logging.error(
-      f"The NLP model {model_name} is not "
+      f"The NLP model of name {model_name} is not "
       f"loaded, please check the log for possible reasons."
     )
     response = JsonResponse(docJson, safe=False)
