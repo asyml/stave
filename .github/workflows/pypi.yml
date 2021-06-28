@@ -34,7 +34,7 @@ jobs:
         run: |
           yarn install
           yarn run build
-          mv ./build ./simple-backend/nlpviewer_backend/lib/build
+          mv ./build ./simple-backend/stave_backend/lib/build
       - name: Build a binary wheel and a source tarball
         run: |
           python -m build --sdist --wheel --outdir dist/ .

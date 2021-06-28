@@ -1,5 +1,5 @@
 from django.test import TestCase
-from nlpviewer_backend.models import Document, Project
+from stave_backend.models import Document, Project
 
 class DocumentTestCase(TestCase):
     def setUp(self):

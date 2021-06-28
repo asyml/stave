@@ -34,7 +34,7 @@ setuptools.setup(
     },
     entry_points={
         'console_scripts':[
-            'stave = nlpviewer_backend.lib.stave_cli:main'
+            'stave = stave_backend.lib.stave_cli:main'
         ]
     },
     classifiers=[
