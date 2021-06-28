@@ -71,8 +71,8 @@ stave -h
 The project is tested on:
 
 Python 3.6+
-Django 3.0.4
-yarn 1.22.4
+Django 3.2.4
+yarn 1.22.10
 
 #### Run Django server
 - `cd simple-backend`
