@@ -12,20 +12,34 @@ Expected directory structure:
 
 """
 
-import os
 import sys
-import json
 import argparse
 import getpass
 import logging
 from stave_backend.lib.stave_viewer import StaveViewer
 from stave_backend.lib.stave_session import StaveSession
+from stave_backend.lib.stave_config import StaveConfig
 
 START = "start"
 LOAD = "load-samples"
 IMPORT = "import"
 EXPORT = "export"
 CONFIG = "config"
+
+CONFIG_ARGS = {
+    "django_settings_module": {
+        "name_or_flags": ["-s", "--django-settings-module"],
+        "help": "Module path to settings.py of django project"
+    },
+    "db_file": {
+        "name_or_flags": ["-d", "--db-file"],
+        "help": "Path to database file of Stave"
+    },
+    "log_file": {
+        "name_or_flags": ["-l", "--log-file"],
+        "help": "Path to log file for logging"
+    }
+}
 
 def get_args():
 
@@ -68,56 +82,56 @@ def get_args():
 
     parser_config = subparsers.add_parser(CONFIG,
                                 help="Show or change Stave configuration")
-    parser_config.add_argument("-s", "--show-config", action="store_true",
-                                help="Display config info")
-    parser_config.add_argument("-d", "--db-file",
-                                help="Path to database file of Stave")
-    parser_config.add_argument("-l", "--log-file",
-                                help="Path to log file for logging")
+    for opt in CONFIG_ARGS.values():
+        parser_config.add_argument(*opt["name_or_flags"], help=opt["help"])
 
     return parser.parse_args()
 
-def set_logger(verbose: bool, log_file: str):
+def set_logger_verbose(verbose: bool):
     """
     Set up logging. The implementation is contingent on the LOGGING field
     in "stave_backend/settings.py", so this can only be called after
     the server starts.
     """
     root_logger = logging.getLogger()
-    root_logger.setLevel(logging.NOTSET)
 
-    stream_handler = root_logger.handlers[0]
-    stream_handler.setLevel(logging.INFO if verbose else logging.ERROR)
-
-    file_handler = logging.FileHandler(log_file)
-    file_handler.setLevel(logging.NOTSET)
-    file_handler.setFormatter(stream_handler.formatter)
-
-    root_logger.addHandler(file_handler)
-    logging.getLogger("django").addHandler(file_handler)
+    root_handlers = root_logger.handlers
+    if root_handlers and isinstance(root_handlers[0], logging.StreamHandler):
+        root_handlers[0].setLevel(logging.INFO if verbose else logging.ERROR)
+    else:
+        root_logger.setLevel(logging.NOTSET if verbose else logging.ERROR)
 
     return root_logger
 
 def main():
     
     args = get_args()
+    config = StaveConfig()
     in_viewer_mode = args.command == START and args.project_path is not None
     thread_daemon = not (args.command == START)
 
     if args.command == CONFIG:
-        change_config = (args.db_file or args.log_file) is not None
-        if change_config:
-            StaveViewer.set_config(
-                db_file=args.db_file and os.path.abspath(args.db_file),
-                log_file=args.log_file and os.path.abspath(args.log_file)
-            )
-        if args.show_config or (not change_config):
-            print(json.dumps(
-                StaveViewer.load_config(),
-                sort_keys=True,
-                indent=4
-            ))
+        for field in CONFIG_ARGS.keys():
+            if getattr(args, field) is not None:
+                setattr(config, field, getattr(args, field))
+        config.show_config()
         sys.exit()
+
+    if not config.is_initialized():
+        print(
+            "\nInitialize Stave configuraion\nEnter the entry for each "
+            "prompt below.\nYou may leave empty to accept the default value."
+            "\nNote: If you set the 'django_settings_module' field, the "
+            "other configs (e.g., 'db_file', 'log_file') will be ignored."
+        )
+        for name, opt in CONFIG_ARGS.items():
+            val: str = input(
+                f"\n<argument name: {name}>\n<description: {opt['help']}>\n"
+                f"<default: {getattr(config, name)}>\n> "
+            )
+            if val:
+                setattr(config, name, val)
+        config.show_config()
 
     sv = StaveViewer(
         project_path=args.project_path if in_viewer_mode else '',
@@ -127,7 +141,7 @@ def main():
     )
     sv.run()
 
-    logger = set_logger(verbose=args.verbose, log_file=sv.log_file)
+    logger = set_logger_verbose(verbose=args.verbose)
 
     try:
         if args.command == START:
@@ -158,7 +172,7 @@ def main():
     except Exception:
         sys.exit()
     finally:
-        print(f"For more details, check out log file at {sv.log_file}.")
+        print(f"For more details, check out log file at {config.log_file}.")
         # If the thread is not daemonic, user need to force stop the server
         if not thread_daemon:
             print(f"Starting Stave server at {sv.default_page}.\n"

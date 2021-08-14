@@ -12,17 +12,17 @@ Package Requirements:
 
 import os
 import json
-import errno
 import logging
 import asyncio
 import threading
 import webbrowser
-from typing import Dict, Set, Any, List
+from typing import Optional
 
 import django
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
+from django.core.management.utils import get_random_secret_key
 from django.core.wsgi import get_wsgi_application
 
 from tornado.web import FallbackHandler, StaticFileHandler, \
@@ -33,6 +33,7 @@ from tornado.wsgi import WSGIContainer
 
 from .stave_project import StaveProjectReader
 from .stave_session import StaveSession
+from .stave_config import StaveConfig
 
 logger = logging.getLogger(__name__)
 
@@ -60,17 +61,6 @@ class StaveViewer:
     in Stave. Refactoring is welcome to improve code logic and maintanence.
     """
 
-    ADMIN_USERNAME = "admin"
-    ADMIN_PASSWORD = "admin"
-    CONFIG_PATH = os.path.join(os.path.expanduser('~'), ".stave")
-    CONFIG_FILE = os.path.join(CONFIG_PATH, "stave.conf")
-    DB_FIELD = "db_file"
-    LOG_FIELD = "log_file"
-    DEFAULT_CONFIG_JSON = {
-        DB_FIELD: os.path.join(CONFIG_PATH, "db.sqlite3"),
-        LOG_FIELD: os.path.join(CONFIG_PATH, "log")
-    }
-
     def __init__(self,
         project_path: str = '',
         host: str = "localhost",
@@ -96,7 +86,7 @@ class StaveViewer:
         self._project_path: str = project_path
         self._build_path: str = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "build")
-        self._db_file: str = self.db_file
+        self._config: StaveConfig = StaveConfig()
 
         self._host: str = host
         self._port: int = port
@@ -274,46 +264,6 @@ class StaveViewer:
     def default_page(self):
         return f"{self.url}/viewer/0" if self.in_viewer_mode else self.url
 
-    @property
-    def db_file(self):
-        return self.load_config()[self.DB_FIELD]
-
-    @property
-    def log_file(self):
-        return self.load_config()[self.LOG_FIELD]
-
-    @classmethod
-    def set_config(cls, db_file: str = None, log_file: str = None):
-        """
-        Configure Stave.
-
-        Args:
-            db_file: Path to database. Default to None.
-            log_file: Path to log file. Default to None.
-        """
-        config = cls.load_config()
-        if db_file is not None:
-            config[cls.DB_FIELD] = db_file
-        if log_file is not None:
-            config[cls.LOG_FIELD] = log_file
-        with open(cls.CONFIG_FILE, "w") as f:
-            json.dump(config, f)
-
-    @classmethod
-    def load_config(cls):
-        """
-        Load or create configuration of Stave
-        """
-        if not os.path.isdir(cls.CONFIG_PATH):
-            os.mkdir(cls.CONFIG_PATH)
-
-        if not os.path.exists(cls.CONFIG_FILE):
-            with open(cls.CONFIG_FILE, "w") as f:
-                json.dump(cls.DEFAULT_CONFIG_JSON, f)
-
-        with open(cls.CONFIG_FILE, "r") as f:
-            return json.load(f)
-
     def load_database(self, load_samples: bool = False):
         """
         Initialize sqlite database for django backend.
@@ -322,11 +272,11 @@ class StaveViewer:
             load_samples: Indicate whether to load sample projects
                 into database. Deafult to False.
         """
-        if not os.path.exists(self._db_file):
+        if not os.path.exists(self._config.db_file):
             call_command("migrate")
             User = get_user_model()
             User.objects.create_superuser(
-                self.ADMIN_USERNAME, '', self.ADMIN_PASSWORD)
+                self._config.ADMIN_USERNAME, '', self._config.ADMIN_PASSWORD)
 
         if load_samples:
             sample_path = os.path.join(
@@ -335,8 +285,8 @@ class StaveViewer:
             )
             with StaveSession(url=self.url) as session:
                 session.login(
-                    username=self.ADMIN_USERNAME,
-                    password=self.ADMIN_PASSWORD
+                    username=self._config.ADMIN_USERNAME,
+                    password=self._config.ADMIN_PASSWORD
                 )
                 project_list = session.get_project_list().json()
                 project_names = set(p["name"] for p in project_list)
@@ -351,16 +301,7 @@ class StaveViewer:
     def _start_server(self):
         asyncio.set_event_loop(asyncio.new_event_loop())
         if not self.in_viewer_mode:
-            os.environ['DJANGO_SETTINGS_MODULE'] = "stave_backend.settings"
-            os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
-            django.setup()
-            # TODO: Database's path needs to be set to the package
-            #   directory, i.e., "stave_backend/". Though it's not
-            #   recommended to modify django settings at runtime, it's easy
-            #   for code maintaining since it eliminates the need to track two
-            #   different "settings.py" files in the same repo.
-            settings.DATABASES['default']['NAME'] = self._db_file
-            self.load_database()
+            self._init_django_project()
 
         server = HTTPServer(self._get_application())
         server.listen(self._port)
@@ -369,6 +310,23 @@ class StaveViewer:
         self._barrier.wait()
 
         IOLoop.current().start()
+
+    def _init_django_project(self):
+        """
+        Configure django project's settings.
+        """
+        config_module: Optional[str] = self._config.django_settings_module
+        if config_module or os.environ.get("DJANGO_SETTINGS_MODULE"):
+            os.environ.setdefault("DJANGO_SETTINGS_MODULE", config_module)
+        else:
+            self._config._secret_key = get_random_secret_key()
+            settings.configure(**self._config._django_settings)
+
+        # Allow async operation to integrate django with Tornado
+        os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
+
+        django.setup()
+        self.load_database()
 
     def _get_application(self):
 

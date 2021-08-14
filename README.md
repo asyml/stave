@@ -40,7 +40,7 @@ You can still log in with default user name `admin` and default password `admin`
 
 At any time, you can still load the example projects:
 ```bash
-stave load
+stave load-samples
 ```
 
 #### Stave Configuration

@@ -35,6 +35,8 @@ jobs:
           yarn install
           yarn run build
           mv ./build ./simple-backend/stave_backend/lib/build
+          rm ./simple-backend/stave_backend/settings.py
+          rm ./simple-backend/stave_backend/wsgi.py
       - name: Build a binary wheel and a source tarball
         run: |
           python -m build --sdist --wheel --outdir dist/ .
