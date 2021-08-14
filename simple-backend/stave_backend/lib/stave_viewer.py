@@ -272,7 +272,10 @@ class StaveViewer:
             load_samples: Indicate whether to load sample projects
                 into database. Deafult to False.
         """
-        if not os.path.exists(self._config.db_file):
+        if not os.path.exists(
+            settings.DATABASES.get("default", {}).get("NAME")
+            or self._config.db_file
+        ):
             call_command("migrate")
             User = get_user_model()
             User.objects.create_superuser(
@@ -313,7 +316,11 @@ class StaveViewer:
 
     def _init_django_project(self):
         """
-        Configure django project's settings.
+        Configure django project's settings. If "django_settings_module" is
+        set in StaveConfig, then we simply pass its value to the environment
+        variable "DJANGO_SETTINGS_MODULE" and django will automatically find
+        the settings (only if it's a valid path). Otherwise, we will use
+        "_django_settings" from StaveConfig to configure django.
         """
         config_module: Optional[str] = self._config.django_settings_module
         if config_module or os.environ.get("DJANGO_SETTINGS_MODULE"):

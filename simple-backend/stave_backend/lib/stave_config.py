@@ -16,6 +16,10 @@ __all__ = [
 
 
 class Fields(Enum):
+    """
+    Configurable fields of stave. Those do not start with '_' are treated
+    as public fields that can be showed and configured in CLI.
+    """
     DB_FILE = "db_file"
     LOG_FILE = "log_file"
     DJANGO_SETTINGS_MODULE = "django_settings_module"
@@ -29,8 +33,8 @@ class Fields(Enum):
 
 class StaveConfig:
     """
-    A basic getter/setter interface for all public configurable
-    paramaters of Stave. Example usage:
+    Provide basic getter/setter interfaces for all configurable paramaters
+    of Stave. Example usage:
 
         sc = StaveConfig()
         print(sc.db_file)
@@ -46,6 +50,8 @@ class StaveConfig:
 
     DEFAULT_CONFIG_JSON = {
         Fields.DJANGO_SETTINGS_MODULE.value: None,
+
+        # A basic django settings for Stave to run
         Fields.DJANGO_SETTINGS.value: {
             "ROOT_URLCONF": "stave_backend.urls",
             "INSTALLED_APPS": [
@@ -115,6 +121,10 @@ class StaveConfig:
     }
 
     def __getattr__(self, name: str) -> Any:
+        """
+        Getter for attributes in Fields. It will load from CONFIG_FILE and
+        route to the right config based on attribute name.
+        """
         if name not in Fields.itervalue():
             return self.__getattribute__(name)
 
@@ -133,6 +143,12 @@ class StaveConfig:
             return config.get(name)
 
     def __setattr__(self, name: str, value: Any) -> None:
+        """
+        Setter for attributes in Fields. It will load from CONFIG_FILE,
+        overwrite the corresponding config based on attribute name, and then
+        save it back to CONFIG_FILE. The access pattern of each config here
+        should be equivalent to "__getattr__".
+        """
         if name not in Fields.itervalue():
             return super().__setattr__(name, value)
 
@@ -154,6 +170,13 @@ class StaveConfig:
 
     @classmethod
     def _save_config(cls, config: Dict[str, Any]):
+        """
+        Save the configuration of Stave
+
+        Args:
+            config: A dict of Stave config. It should have the same format
+                with DEFAULT_CONFIG_JSON.
+        """
         if not os.path.isdir(cls.CONFIG_PATH):
             os.mkdir(cls.CONFIG_PATH)
         with open(cls.CONFIG_FILE, "w") as f:
@@ -176,6 +199,9 @@ class StaveConfig:
 
     @classmethod
     def is_initialized(cls) -> bool:
+        """
+        Check if the config file exists.
+        """
         if not os.path.isdir(cls.CONFIG_PATH):
             return False
         return os.path.exists(cls.CONFIG_FILE)

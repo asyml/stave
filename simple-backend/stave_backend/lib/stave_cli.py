@@ -29,7 +29,10 @@ CONFIG = "config"
 CONFIG_ARGS = {
     "django_settings_module": {
         "name_or_flags": ["-s", "--django-settings-module"],
-        "help": "Module path to settings.py of django project"
+        "help": (
+            "Module path to settings.py of django project. "
+            "Once set it will deprecate the other config fields."
+        )
     },
     "db_file": {
         "name_or_flags": ["-d", "--db-file"],
@@ -89,8 +92,8 @@ def get_args():
 
 def set_logger_verbose(verbose: bool):
     """
-    Set up logging. The implementation is contingent on the LOGGING field
-    in "stave_backend/settings.py", so this can only be called after
+    Set up logging verbose at runtime. The implementation is contingent on
+    static LOGGING setting in "stave_config.py". This can only be called after
     the server starts.
     """
     root_logger = logging.getLogger()
@@ -99,7 +102,7 @@ def set_logger_verbose(verbose: bool):
     if root_handlers and isinstance(root_handlers[0], logging.StreamHandler):
         root_handlers[0].setLevel(logging.INFO if verbose else logging.ERROR)
     else:
-        root_logger.setLevel(logging.NOTSET if verbose else logging.ERROR)
+        root_logger.setLevel(logging.INFO if verbose else logging.ERROR)
 
     return root_logger
 
@@ -117,6 +120,7 @@ def main():
         config.show_config()
         sys.exit()
 
+    # Interactively set up the configuration
     if not config.is_initialized():
         print(
             "\nInitialize Stave configuraion\nEnter the entry for each "
@@ -126,7 +130,7 @@ def main():
         )
         for name, opt in CONFIG_ARGS.items():
             val: str = input(
-                f"\n<argument name: {name}>\n<description: {opt['help']}>\n"
+                f"\n<name: {name}>\n<description: {opt['help']}>\n"
                 f"<default: {getattr(config, name)}>\n> "
             )
             if val:
@@ -172,7 +176,9 @@ def main():
     except Exception:
         sys.exit()
     finally:
-        print(f"For more details, check out log file at {config.log_file}.")
+        # log_file only available when django_settings_module is not set
+        if not config.django_settings_module:
+            print(f"For more details, check out log file at {config.log_file}.")
         # If the thread is not daemonic, user need to force stop the server
         if not thread_daemon:
             print(f"Starting Stave server at {sv.default_page}.\n"
