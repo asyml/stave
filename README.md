@@ -27,9 +27,9 @@ pip install stave
 ```
 #### Quick Start
  ```bash
-stave start -l -o
+stave -s start -l -o
 ```
-This will start the Stave server with example project loaded. `-l` will load example projects and `-o` will open a browser window. If you want to start Stave as a headless server, simply remove the `-o` flag. You can log in with default user name `admin` and default password `admin`. You can start viewing the projects and some annotations/applications that we have prepared.
+This will start the Stave server with example project loaded. `-s` allows Stave to run with all the default configuration. `-l` will load example projects and `-o` will open a browser window. If you want to start Stave as a headless server, simply remove the `-o` flag. You can log in with default user name `admin` and default password `admin`. You can start viewing the projects and some annotations/applications that we have prepared.
 
 Or if you just want to start Stave from scratch, you can:
 
@@ -55,7 +55,12 @@ After you start the Stave server, a `.stave/` folder is automatically created un
 - `db.sqlite3` is the default database for Stave server.
 - `log` is the default logging file.
 
-You can view or update the configuration by running the subcommand `config`. For more information, refer to:
+You can view or update the configuration by running the subcommand `config`. 
+You may follow the prompts to interactively set up the configuration:
+```bash
+stave config -i
+```
+For more information, refer to:
 ```bash
 stave config -h
 ```

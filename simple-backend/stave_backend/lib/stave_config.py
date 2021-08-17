@@ -22,6 +22,7 @@ class Fields(Enum):
     """
     DB_FILE = "db_file"
     LOG_FILE = "log_file"
+    ALLOWED_HOSTS = "allowed_hosts"
     DJANGO_SETTINGS_MODULE = "django_settings_module"
     SECRET_KEY = "_secret_key"
     DJANGO_SETTINGS = "_django_settings"
@@ -47,6 +48,7 @@ class StaveConfig:
 
     CONFIG_PATH = os.path.join(os.path.expanduser('~'), ".stave")
     CONFIG_FILE = os.path.join(CONFIG_PATH, "stave.conf")
+    README_FILE = os.path.join(CONFIG_PATH, "README.md")
 
     DEFAULT_CONFIG_JSON = {
         Fields.DJANGO_SETTINGS_MODULE.value: None,
@@ -120,6 +122,32 @@ class StaveConfig:
         }
     }
 
+    README = (
+        "\nStave configuraion\n"
+        "\n- Stave can be configured in two modes:\n"
+        "\t- Simple Mode: You can simply use the default settings and stave "
+        "will take care of most of the configuration tasks for you. You do not"
+        " need to worry about the details about django under the hood. You may"
+        " customize some parameters like database path, log file, allowed "
+        "hosts, etc., but most times you can simply accept all the default "
+        "values and stave will be good to go.\n"
+        "\t- Flexible Mode: If you already have a django project, or you are "
+        "familiar with django and want more flexibility, you may provide your"
+        " own customized settings from a django project. In order to add stave"
+        " into your project, refer to https://github.com/asyml/stave/blob/master/simple-backend/stave_backend/settings.py"
+        " to see how to properly setup your django project to support stave."
+        " After that you may modify the settings at your will.\n"
+        "\n- How to config:\n"
+        "\t- Simple Mode: Leave 'django_settings_module' field empty. If you "
+        "want to swtich to simple mode from flexbile mode, you can set it to "
+        "an empty string '' or None.\n"
+        "\t- Flexible Mode: Set 'django_settings_module' field to the module"
+        "path to your 'settings.py' file. Note that after you set this field,"
+        " the rest of the django configuration of stave will be deprecated "
+        "and all the relevant settings will be routed to the settings "
+        "module you provide."
+    )
+
     def __getattr__(self, name: str) -> Any:
         """
         Getter for attributes in Fields. It will load from CONFIG_FILE and
@@ -129,16 +157,15 @@ class StaveConfig:
             return self.__getattribute__(name)
 
         config: Dict[str, Any] = self._load_config()
+        setting: str = Fields.DJANGO_SETTINGS.value
         if name == Fields.DB_FILE.value:
-            return config[
-                Fields.DJANGO_SETTINGS.value
-            ]["DATABASES"]["default"]["NAME"]
+            return config[setting]["DATABASES"]["default"]["NAME"]
         elif name == Fields.LOG_FILE.value:
-            return config[
-                Fields.DJANGO_SETTINGS.value
-            ]["LOGGING"]["handlers"]["file"]["filename"]
+            return config[setting]["LOGGING"]["handlers"]["file"]["filename"]
         elif name == Fields.SECRET_KEY.value:
-            return config[Fields.DJANGO_SETTINGS.value]["SECRET_KEY"]
+            return config[setting]["SECRET_KEY"]
+        elif name == Fields.ALLOWED_HOSTS.value:
+            return config[setting]["ALLOWED_HOSTS"]
         else:
             return config.get(name)
 
@@ -153,16 +180,17 @@ class StaveConfig:
             return super().__setattr__(name, value)
 
         config: Dict[str, Any] = self._load_config()
+        setting: str = Fields.DJANGO_SETTINGS.value
         if name == Fields.DB_FILE.value:
-            config[
-                Fields.DJANGO_SETTINGS.value
-            ]["DATABASES"]["default"]["NAME"] = value
+            config[setting]["DATABASES"]["default"]["NAME"] = value
         elif name == Fields.LOG_FILE.value:
-            config[
-                Fields.DJANGO_SETTINGS.value
-            ]["LOGGING"]["handlers"]["file"]["filename"] = value
+            config[setting]["LOGGING"]["handlers"]["file"]["filename"] = value
         elif name == Fields.SECRET_KEY.value:
-            config[Fields.DJANGO_SETTINGS.value]["SECRET_KEY"] = value
+            config[setting]["SECRET_KEY"] = value
+        elif name == Fields.ALLOWED_HOSTS.value:
+            config[setting]["ALLOWED_HOSTS"] = (
+                value.split() if isinstance(value, str) else value
+            )
         else:
             config[name] = value
 
@@ -180,20 +208,18 @@ class StaveConfig:
         if not os.path.isdir(cls.CONFIG_PATH):
             os.mkdir(cls.CONFIG_PATH)
         with open(cls.CONFIG_FILE, "w") as f:
-            json.dump(config, f)
+            json.dump(config, f, indent=4)
+        if not os.path.exists(cls.README_FILE):
+            with open(cls.README_FILE, "w") as f:
+                f.write(cls.README)
 
     @classmethod
     def _load_config(cls) -> Dict[str, Any]:
         """
         Load or create configuration of Stave
         """
-        if not os.path.isdir(cls.CONFIG_PATH):
-            os.mkdir(cls.CONFIG_PATH)
-
         if not os.path.exists(cls.CONFIG_FILE):
-            with open(cls.CONFIG_FILE, "w") as f:
-                json.dump(cls.DEFAULT_CONFIG_JSON, f)
-
+            cls._save_config(cls.DEFAULT_CONFIG_JSON)
         with open(cls.CONFIG_FILE, "r") as f:
             return json.load(f)
 

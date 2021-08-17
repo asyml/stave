@@ -16,6 +16,7 @@ import sys
 import argparse
 import getpass
 import logging
+from typing import List, Union
 from stave_backend.lib.stave_viewer import StaveViewer
 from stave_backend.lib.stave_session import StaveSession
 from stave_backend.lib.stave_config import StaveConfig
@@ -29,18 +30,34 @@ CONFIG = "config"
 CONFIG_ARGS = {
     "django_settings_module": {
         "name_or_flags": ["-s", "--django-settings-module"],
-        "help": (
+        "kwargs": {"help": (
             "Module path to settings.py of django project. "
-            "Once set it will deprecate the other config fields."
-        )
+            "If you have not set up any django project, you should leave this "
+            "field empty and stave will use its default configuration. "
+            "To set this field you should already have a django project and "
+            "the 'settings.py' file under your project must be accessible "
+            "from PYTHONPATH so that django can import it as a module. "
+            "Example: 'myproject.settings'"
+        )},
     },
     "db_file": {
         "name_or_flags": ["-d", "--db-file"],
-        "help": "Path to database file of Stave"
+        "kwargs": {"help": "Path to database file of Stave"}
     },
     "log_file": {
         "name_or_flags": ["-l", "--log-file"],
-        "help": "Path to log file for logging"
+        "kwargs": {"help": "Path to log file for logging"}
+    },
+    "allowed_hosts": {
+        "name_or_flags": ["-a", "--allowed-hosts"],
+        "kwargs": {
+            "default": ["localhost"],
+            "nargs": '+',
+            "help": (
+                "A list of strings representing the host/domain names that "
+                "stave can serve."
+            )
+        }
     }
 }
 
@@ -53,6 +70,9 @@ def get_args():
     )
     parser.add_argument("-v", "--verbose", action="store_true",
                                 help="Increase output verbosity")
+    parser.add_argument("-s", "--simple", action="store_true", 
+                                help=("Simple mode without initial setup step."
+                                " Stave will use the default configuration."))
     subparsers = parser.add_subparsers(dest="command",
                                 help="Valid commands")
     subparsers.required=True
@@ -85,8 +105,10 @@ def get_args():
 
     parser_config = subparsers.add_parser(CONFIG,
                                 help="Show or change Stave configuration")
+    parser_config.add_argument("-i", "--interact-config", action="store_true",
+                                help="Interactively set up the configuration")
     for opt in CONFIG_ARGS.values():
-        parser_config.add_argument(*opt["name_or_flags"], help=opt["help"])
+        parser_config.add_argument(*opt["name_or_flags"], **opt["kwargs"])
 
     return parser.parse_args()
 
@@ -106,6 +128,38 @@ def set_logger_verbose(verbose: bool):
 
     return root_logger
 
+def interactive_config(config: StaveConfig):
+    """
+    Interactively set up the configuration
+    """
+    print(config.README)
+    def set_val(name: str):
+        """
+        Set attribute value based on user input
+        """
+        val: Union[str, List] = input(
+            f"\nname: {name}\n"
+            f"default/current: {getattr(config, name)}\n"
+            f"description: {CONFIG_ARGS[name]['kwargs']['help']}\n"
+            f"Enter the config below or press ENTER to accept the "
+            "default/current setting: \n> "
+        )
+        if val:
+            if val in ("None", "null"):
+                val = None
+            if val in ("''", '""'):
+                val = ""
+            setattr(config, name, val)
+        return val
+
+    dsm_name: str = "django_settings_module"
+    if not set_val(dsm_name):
+        for name in CONFIG_ARGS.keys():
+            if name == dsm_name:
+                continue
+            set_val(name)
+    config.show_config()
+
 def main():
     
     args = get_args()
@@ -114,28 +168,18 @@ def main():
     thread_daemon = not (args.command == START)
 
     if args.command == CONFIG:
-        for field in CONFIG_ARGS.keys():
-            if getattr(args, field) is not None:
-                setattr(config, field, getattr(args, field))
-        config.show_config()
+        if args.interact_config:
+            interactive_config(config=config)
+        else:
+            for field in CONFIG_ARGS.keys():
+                if getattr(args, field) is not None:
+                    setattr(config, field, getattr(args, field))
+            config.show_config()
         sys.exit()
 
     # Interactively set up the configuration
-    if not config.is_initialized():
-        print(
-            "\nInitialize Stave configuraion\nEnter the entry for each "
-            "prompt below.\nYou may leave empty to accept the default value."
-            "\nNote: If you set the 'django_settings_module' field, the "
-            "other configs (e.g., 'db_file', 'log_file') will be ignored."
-        )
-        for name, opt in CONFIG_ARGS.items():
-            val: str = input(
-                f"\n<name: {name}>\n<description: {opt['help']}>\n"
-                f"<default: {getattr(config, name)}>\n> "
-            )
-            if val:
-                setattr(config, name, val)
-        config.show_config()
+    if not config.is_initialized() and not args.simple:
+        interactive_config(config=config)
 
     sv = StaveViewer(
         project_path=args.project_path if in_viewer_mode else '',
