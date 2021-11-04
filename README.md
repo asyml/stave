@@ -43,6 +43,14 @@ At any time, you can still load the example projects:
 stave load-samples
 ```
 
+By default the Stave server runs at http://localhost:8888. If you need to switch the port, you can add `-n` to specify the port number. For example, the following command will start a Stave service at http://localhost:8002.
+```bash
+stave start -n 8002
+```
+For more options to start Stave server, refer to:
+```bash
+stave start -h
+```
 #### Stave Configuration
 After you start the Stave server, a `.stave/` folder is automatically created under your home directory `~`. It has the following structure:
 ```
@@ -60,12 +68,68 @@ You may follow the prompts to interactively set up the configuration:
 ```bash
 stave config -i
 ```
-For more information, refer to:
+Stave CLI allows you to configure the database file, log file, the allowed hosts, etc. For more options, run
 ```bash
 stave config -h
 ```
+and you shall see the following help message:
+```bash
+usage: stave config [-h] [-i] [-s DJANGO_SETTINGS_MODULE] [-d DB_FILE]
+                    [-l LOG_FILE] [-a ALLOWED_HOSTS [ALLOWED_HOSTS ...]]
 
-#### More about the command line tool:
+optional arguments:
+  -h, --help            show this help message and exit
+  -i, --interact-config
+                        Interactively set up the configuration
+  -s DJANGO_SETTINGS_MODULE, --django-settings-module DJANGO_SETTINGS_MODULE
+                        Module path to settings.py of django project. If you
+                        have not set up any django project, you should leave
+                        this field empty and stave will use its default
+                        configuration. To set this field you should already
+                        have a django project and the 'settings.py' file under
+                        your project must be accessible from PYTHONPATH so
+                        that django can import it as a module. Example:
+                        'myproject.settings'
+  -d DB_FILE, --db-file DB_FILE
+                        Path to database file of Stave
+  -l LOG_FILE, --log-file LOG_FILE
+                        Path to log file for logging
+  -a ALLOWED_HOSTS [ALLOWED_HOSTS ...], --allowed-hosts ALLOWED_HOSTS [ALLOWED_HOSTS ...]
+                        A list of strings representing the host/domain names
+                        that stave can serve.
+```
+For example, you can change the path of database file by running:
+```bash
+stave config -d ~/db.sqlite3
+```
+You may also add your own host names to the allowed hosts that Stave can serve:
+```bash
+stave config -a localhost myhost1.com myhost2.com
+```
+
+#### Import and Export
+Stave provides a set of interfaces that allow you to import/export projects from/to disk. This is useful when you need to transfer Stave projects between backend database and local storage.
+
+To export a project, you need to specify the path to store the project and its database id (which can be retrieved from URL, e.g., the id of project at http://localhost:8888/project/3 is 3). For example, the following command will save project with `id=3` to `~/project_3`:
+```bash
+stave export ~/project_3 3
+```
+Note that you will be prompted to enter your username and password before moving forward.
+
+Now that you've saved a Stave project to a directory, you can either render this project in viewer mode
+```bash
+stave start -o -p ~/project_3
+```
+or import it to the database (which also requires authentication with username and password)
+```bash
+stave import ~/project_3
+```
+`stave import` is also useful when you use [StaveProcessor](https://github.com/asyml/forte/blob/master/forte/processors/stave/stave_processor.py#L46) inside a forte pipeline and want to save the generated visualization to database. `StaveProcessor` normally would save a Stave project to a folder (by default the name of folder is `Auto generated project`), and you can import this folder into stave backend by running
+```bash
+stave import PATH_TO_STAVE_PROJECT
+```
+
+#### More about the command line tool
 To learn more about Stave CLI, run the following command to see the help message:
 ```bash
 stave -h

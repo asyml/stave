@@ -46,7 +46,9 @@ def __load_pipeline(remote_configs: Dict):
       }
 
   #Create the pipeline and add the processor.
-  pipeline = Pipeline[DataPack](do_init_type_check=True)
+  pipeline = Pipeline[DataPack](
+    do_init_type_check=remote_configs.get("doValidation")
+  )
   pipeline.set_reader(RawDataDeserializeReader())
   pipeline.add(RemoteProcessor(), config={
     "url": remote_configs.get("pipelineUrl"),
@@ -107,7 +109,7 @@ def run_pipeline(request, document_id: int):
   response: JsonResponse
   if pipeline:
     processedPack = pipeline.process([docJson['textPack']])
-    doc.textPack = processedPack.serialize(True)
+    doc.textPack = processedPack.to_string(True)
     doc.save()    
     response = JsonResponse(model_to_dict(doc), safe=False)
   else:
