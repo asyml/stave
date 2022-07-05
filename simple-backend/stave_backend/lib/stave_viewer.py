@@ -34,6 +34,7 @@ from tornado.wsgi import WSGIContainer
 from .stave_project import StaveProjectReader
 from .stave_session import StaveSession
 from .stave_config import StaveConfig
+from .stave_pack_parser import StavePackParser
 
 logger = logging.getLogger(__name__)
 
@@ -123,8 +124,9 @@ class StaveViewer:
 
         def get(self, doc_id: str):
             ontology = json.dumps(self._project_reader.ontology)
-            textpack = json.dumps(
-                        self._project_reader.get_textpack(int(doc_id)))
+            textpack = json.dumps(StavePackParser(raw_pack=json.dumps(
+                self._project_reader.get_textpack(int(doc_id))
+            ), raw_ontology=ontology).transform_pack())
             self.write({
                 "id": doc_id,
                 "textPack": textpack,
@@ -295,6 +297,8 @@ class StaveViewer:
                 project_names = set(p["name"] for p in project_list)
                 for project_dir in os.listdir(sample_path):
                     project_path = os.path.join(sample_path, project_dir)
+                    if not os.path.isdir(project_path):
+                        continue
                     project_reader = StaveProjectReader(project_path)
                     # Avoid loading duplicate sample projects
                     if project_reader.project_name in project_names:

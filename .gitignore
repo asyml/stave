@@ -9,7 +9,7 @@
 /coverage
 
 # production
-/build
+build/
 
 # misc
 .DS_Store
@@ -37,3 +37,4 @@ simple-backend/db-old.sqlite3
 .eslintcache
 stave.iml
 package-lock.json
+*.egg-info

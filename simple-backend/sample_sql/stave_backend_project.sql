@@ -530,6 +530,12 @@ INSERT INTO "stave_backend_project" ("id","name","ontology","user_id","config", 
 
   "name": "all_ontology",
 
+  "additional_prefixes": [
+    
+    "edu.cmu"
+
+  ],
+
   "definitions": [
 
     {

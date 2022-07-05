@@ -9,6 +9,7 @@ from django.http import Http404
 
 from ..models import Document
 from ..lib.require_login import require_login
+from ..lib.stave_pack_parser import StavePackParser
 
 forte_msg = "Forte is not installed or imported successfully. To get NLP support from Forte, install it from https://github.com/asyml/forte"
 forte_installed = False
@@ -110,12 +111,14 @@ def run_pipeline(request, document_id: int):
   if pipeline:
     processedPack = pipeline.process([docJson['textPack']])
     doc.textPack = processedPack.to_string(True)
-    doc.save()    
-    response = JsonResponse(model_to_dict(doc), safe=False)
+    doc.save()
+    docJson = model_to_dict(doc)
   else:
     logging.error(
       f"The NLP model of name {model_name} is not "
       f"loaded, please check the log for possible reasons."
     )
-    response = JsonResponse(docJson, safe=False)
-  return response
+  docJson["textPack"] = json.dumps(StavePackParser(
+    raw_pack=doc.textPack, raw_ontology=doc.project.ontology
+  ).transform_pack())
+  return JsonResponse(docJson, safe=False)

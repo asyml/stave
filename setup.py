@@ -27,11 +27,9 @@ setuptools.setup(
         'requests==2.25.1',
         'django>=3.0.4',
         'django-guardian==2.3.0',
-        'tornado==6.1'
+        'tornado==6.1',
+        'forte',
     ],
-    extras_require={
-        "forte": ["forte"],
-    },
     entry_points={
         'console_scripts':[
             'stave = stave_backend.lib.stave_cli:main'
