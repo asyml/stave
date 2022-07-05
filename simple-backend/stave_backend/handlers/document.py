@@ -1,14 +1,14 @@
-from django.contrib import admin
-from django.urls import include, path
 from django.http import HttpResponse, JsonResponse, Http404
 from django.forms import model_to_dict
 import uuid
 import json
 from django.contrib.auth.decorators import permission_required
-from guardian.decorators import permission_required_or_403
-from ..models import Document, User, Project, Job
+from ..models import Document, Project, Job
 from ..lib.require_login import require_login
-from ..lib.utils import fetch_doc_check_perm, check_perm_project, fetch_job
+from ..lib.utils import (
+    fetch_doc_check_perm, check_perm_project, fetch_job
+)
+from ..lib.stave_pack_parser import StavePackParser
 
 @require_login
 @permission_required('stave_backend.view_document', raise_exception=True)
@@ -228,18 +228,15 @@ def new_annotation(request, document_id):
     # }
 
     doc = fetch_doc_check_perm(document_id, request.user, "stave_backend.edit_annotation")
-    
-    docJson = model_to_dict(doc)
-    textPackJson = json.loads(docJson['textPack'])
-
     annotation_id = uuid.uuid4().int
 
     received_json_data = json.loads(request.body)
     annotation = received_json_data.get('data')
     annotation["py/state"]['_tid'] = annotation_id
 
-    textPackJson['py/state']['annotations'].append(annotation)
-    doc.textPack = json.dumps(textPackJson)
+    doc.textPack = StavePackParser(
+        raw_pack=doc.textPack, raw_ontology=doc.project.ontology
+    ).add_entry_to_doc(entry_dict=annotation)
     doc.save()
 
     return JsonResponse({"id": str(annotation_id)}, safe=False)
@@ -270,18 +267,9 @@ def edit_annotation(request, document_id, annotation_id):
        OK if succeeded, otherwise forbidden or not found 
     """
     doc = fetch_doc_check_perm(document_id, request.user, "stave_backend.edit_annotation")
-
-    received_json_data = json.loads(request.body)
-    annotation = received_json_data.get('data')
-
-    docJson = model_to_dict(doc)
-    textPackJson = json.loads(docJson['textPack'])
-
-    for index, item in enumerate(textPackJson['py/state']['annotations']):
-        if item["py/state"]['_tid'] == annotation_id:
-            textPackJson['py/state']['annotations'][index] = annotation
-
-    doc.textPack = json.dumps(textPackJson)
+    doc.textPack = StavePackParser(
+        raw_pack=doc.textPack, raw_ontology=doc.project.ontology
+    ).edit_entry_in_doc(entry_dict=json.loads(request.body).get('data'))
     doc.save()
 
     return HttpResponse('OK')
@@ -310,17 +298,9 @@ def delete_annotation(request, document_id, annotation_id):
 
     # if doc doesn't exist
     doc = fetch_doc_check_perm(document_id, request.user, "stave_backend.edit_annotation")
-
-    docJson = model_to_dict(doc)
-    textPackJson = json.loads(docJson['textPack'])
-
-    deleteIndex = -1
-    for index, item in enumerate(textPackJson['py/state']['annotations']):
-        if item["py/state"]['_tid'] == annotation_id:
-            deleteIndex = index
-
-    del textPackJson['py/state']['annotations'][deleteIndex]
-    doc.textPack = json.dumps(textPackJson)
+    doc.textPack = StavePackParser(
+        raw_pack=doc.textPack, raw_ontology=doc.project.ontology
+    ).delete_annotation_from_doc(entry_tid=annotation_id)
     doc.save()
 
     return HttpResponse('OK')
@@ -371,10 +351,9 @@ def new_link(request, document_id):
     link = received_json_data.get('data')
     link["py/state"]['_tid'] = link_id
 
-    docJson = model_to_dict(doc)
-    textPackJson = json.loads(docJson['textPack'])
-    textPackJson['py/state']['links'].append(link)
-    doc.textPack = json.dumps(textPackJson)
+    doc.textPack = StavePackParser(
+        raw_pack=doc.textPack, raw_ontology=doc.project.ontology
+    ).add_entry_to_doc(entry_dict=link)
     doc.save()
 
     return JsonResponse({"id": str(link_id)}, safe=False)
@@ -397,18 +376,9 @@ def edit_link(request, document_id, link_id):
        OK if succeeded, otherwise forbidden or not found.
     """
     doc = fetch_doc_check_perm(document_id, request.user, "stave_backend.edit_annotation")
-
-    received_json_data = json.loads(request.body)
-    link = received_json_data.get('data')
-
-    docJson = model_to_dict(doc)
-    textPackJson = json.loads(docJson['textPack'])
-
-    for index, item in enumerate(textPackJson['py/state']['links']):
-        if item["py/state"]['_tid'] == link_id:
-            textPackJson['py/state']['links'][index] = link
-
-    doc.textPack = json.dumps(textPackJson)
+    doc.textPack = StavePackParser(
+        raw_pack=doc.textPack, raw_ontology=doc.project.ontology
+    ).edit_entry_in_doc(entry_dict=json.loads(request.body).get('data'))
     doc.save()
 
     return HttpResponse('OK')
@@ -431,17 +401,9 @@ def delete_link(request, document_id, link_id):
        OK if succeeded, otherwise forbidden or not found.
     """
     doc = fetch_doc_check_perm(document_id, request.user, "stave_backend.edit_annotation")
-
-    docJson = model_to_dict(doc)
-    textPackJson = json.loads(docJson['textPack'])
-
-    deleteIndex = -1
-    for index, item in enumerate(textPackJson['py/state']['links']):
-        if item["py/state"]['_tid'] == link_id:
-            deleteIndex = index
-
-    del textPackJson['py/state']['links'][deleteIndex]
-    doc.textPack = json.dumps(textPackJson)
+    doc.textPack = StavePackParser(
+        raw_pack=doc.textPack, raw_ontology=doc.project.ontology
+    ).delete_link_from_doc(entry_tid=link_id)
     doc.save()
 
     return HttpResponse('OK')
@@ -468,14 +430,11 @@ def get_doc_ontology_pack(request, document_id):
     """
     doc = fetch_doc_check_perm(document_id, request.user, "stave_backend.read_project")
 
-    # Convert every large integer to string to prevent precision loss
-    # In javascript, integers are accurate up to 15 digits.
-    textPackJson = json.loads(doc.textPack,
-        parse_int=lambda si: int(si) if len(si) < 15 else si)
-
     docJson = {
         'id': document_id,
-        'textPack': json.dumps(textPackJson),
+        'textPack': json.dumps(StavePackParser(
+            raw_pack=doc.textPack, raw_ontology=doc.project.ontology
+        ).transform_pack()),
         'ontology': doc.project.ontology
     }
 
